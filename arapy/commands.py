@@ -19,6 +19,8 @@ def resolve_out_path(args: dict, service: str, action: str, data_format: str) ->
     return str(config.LOG_DIR / f"{base}_{action}.{data_format}")
 
 def build_payload_from_args(args, reserved_keys):
+    # Removes reserved keys from args (config.RESERVED = reserved keys) to build the payload for API calls.
+    # This allows users to specify payload fields directly as command-line arguments, while keeping reserved keys for internal use.
     payload = {k: v for k, v in args.items() if k not in reserved_keys}
     return payload
 
@@ -33,6 +35,11 @@ def add_handler(cp, token, APIPath, args):
     info = args.get("verbose", False)
     debug = args.get("debug", False)
     console = args.get("console", False)
+    csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
+    # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
+    if isinstance(csv_fieldnames, str):
+        csv_fieldnames = [s.strip() for s in csv_fieldnames.split(",") if s.strip()]
+
     data_format = args.get("data_format", config.DEFAULT_FORMAT)
     out_path = resolve_out_path(args, args["service"], args["action"], data_format)
 
@@ -44,7 +51,7 @@ def add_handler(cp, token, APIPath, args):
             if info:
                 log.info(f"Adding {len(payload)} items to {args['service']} from file: {args['file']} with payload: {payload}")
             call = [cp._add(APIPath, token, args, p) for p in payload]
-            log_to_file(call, filename=out_path, data_format=data_format, also_console=console)
+            log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
             return
 
     else:
@@ -64,12 +71,18 @@ def add_handler(cp, token, APIPath, args):
         log.info(f"Adding {args['service']} with payload: {payload}")
     call = cp._add(APIPath, token, args, payload)
 
-    log_to_file(call,filename=out_path,data_format=data_format, also_console=console)
+    log_to_file(call,filename=out_path,data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
 
+# ---- Generic handler for all delete calls ----
 def delete_handler(cp, token, APIPath, args):
     info = args.get("verbose", False)
     debug = args.get("debug", False)
     console = args.get("console", False)
+    csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
+    # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
+    if isinstance(csv_fieldnames, str):
+        csv_fieldnames = [s.strip() for s in csv_fieldnames.split(",") if s.strip()]
+
     data_format = args.get("data_format", config.DEFAULT_FORMAT)
     out_path = resolve_out_path(args, args["service"], args["action"], data_format)
 
@@ -108,6 +121,11 @@ def get_handler(cp, token, APIPath, args):
     info = args.get("verbose", False)
     debug = args.get("debug", False)
     console = args.get("console", False)
+    csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
+    # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
+    if isinstance(csv_fieldnames, str):
+        csv_fieldnames = [s.strip() for s in csv_fieldnames.split(",") if s.strip()]
+
     data_format = args.get("data_format", config.DEFAULT_FORMAT)
     out_path = resolve_out_path(args, args["service"], args["action"], data_format)
 
@@ -131,6 +149,11 @@ def list_handler(cp, token, APIPath, args):
     info = args.get("verbose", False)
     debug = args.get("debug", False)
     console = args.get("console", False)
+    csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
+    # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
+    if isinstance(csv_fieldnames, str):
+        csv_fieldnames = [s.strip() for s in csv_fieldnames.split(",") if s.strip()]
+
     data_format = args.get("data_format", config.DEFAULT_FORMAT)
     out_path = resolve_out_path(args, args["service"], args["action"], data_format)
 
@@ -151,7 +174,8 @@ def list_handler(cp, token, APIPath, args):
         log.info(f"Listing {args['service']} with filter='{filter_expr}', sort='{sort}', offset={offset}, limit={limit}, calculate_count={calc_count}")
 
     call = cp._list(APIPath, token, args, offset=offset, limit=limit, sort=sort, filter=filter_expr, calculate_count=calc_count)
-    log_to_file(call, filename=out_path, data_format=data_format, also_console=console)
+
+    log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
 
 # ---- Generic handler for all replace calls ----
 def put_handler():

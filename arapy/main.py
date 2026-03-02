@@ -60,16 +60,19 @@ def print_help(args=None):
 
     usage = (
         "Usage:\n"
-        "  arapy <module> <service> <action> [--key=value] [-vvv]\n"
-        "  arapy --help | --version\n"
+        "  arapy <module> <service> <action> [--key=value] [--verbose | --debug]\n"
+        "  arapy [--help | --version]\n"
         "\n"
         "Notes:\n"
-        "  - Use -vvv / --verbose to also print output to console (otherwise logs to file only).\n"
+        "  - Use --verbose to print output to console (otherwise logs to file only).\n"
+        "  - Use --debug to print detailed output to console (otherwise logs to file only).\n"
         "  - Use --out=FILE to override default log output path.\n"
-        "  - Use --filter=JSON to provide a server-side JSON filter expression (URL-encoded).\n"
+        "  - Use --data_format=json|csv to specify output format (default: json).\n"
+        "  - Use --csv_fieldnames=field1,field2,... to specify fields and order for CSV output.\n"
+        #"  - Use --filter=JSON to provide a server-side JSON filter expression (URL-encoded).\n"
         "  - Use --calculate_count=true|false to request a total count from the server.\n"
         "  - Note: --limit must be between 1 and 1000 per API constraints.\n"
-        "  - Set ARAPY_OUT_DIR to override the default output directory for logs.\n"
+        #"  - Set ARAPY_OUT_DIR to override the default output directory for logs.\n"
     )
 
     # ---- TOP LEVEL HELP ----
@@ -78,6 +81,7 @@ def print_help(args=None):
         examples = (
             "Examples:\n"
             "  arapy policy-elements network-device list\n"
+            "  arapy policy-elements network-device list --data_format=csv --csv_fieldnames=id, name, ip_address\n"
             "  arapy identities endpoint list --limit=5\n"
             "  arapy identities endpoint get --id=1234\n"
         )
@@ -361,12 +365,14 @@ def parse_cli(argv):
     for item in argv[1:]:
         if item in ("-h", "--help"):
             args["help"] = True
-        elif item in ("-v", "--verbose"):
+        elif item in ("--verbose"):
             args["verbose"] = True
         elif item in ("--version"):
             args["version"] = True
-        elif item in ("-debug"):
+        elif item in ("--debug"):
             args["debug"] = True
+        elif item in ("--console"):
+            args["console"] = True
         elif item.startswith("--") and "=" in item:
             key, value = item[2:].split("=", 1)
             args[key] = value

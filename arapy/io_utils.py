@@ -6,12 +6,14 @@ import csv
 import os
 from pathlib import Path
 
+#---- custom libs
+
 def log_to_file(
     thing,
     filename: str | Path | None = None,
     *args,
     also_console: bool = False,
-    mode: str = "a",
+    mode: str = "w",
     data_format: str = "json",  # "json" (default) or "csv" or "raw"
     csv_fieldnames=None,  # optional list of columns
     csv_include_header: bool = True,  # header for CSV
@@ -24,6 +26,7 @@ def log_to_file(
     - items_path: tuple path used to extract rows when data is a dict container
       default: ("_embedded", "items") for ClearPass list endpoints
     """
+
     if mode not in ("a", "w"):
         raise ValueError("mode must be 'a' or 'w'")
     if data_format not in ("json", "csv", "raw"):
@@ -35,7 +38,6 @@ def log_to_file(
 
     path = Path(filename)
     ensure_parent_dir(str(path))
-
     # If thing is callable, call it to obtain value to write
     if callable(thing):
         result = thing(*args, **kwargs)
@@ -75,7 +77,6 @@ def _write_value_to_file(value, path: Path, mode: str, data_format: str, csv_fie
                 print(s)
 
     elif data_format == "csv":
-        # Determine rows via same logic as previous implementation
         rows = None
         if isinstance(value, dict) and items_path:
             extracted = _extract_by_path(value, items_path)
@@ -84,40 +85,55 @@ def _write_value_to_file(value, path: Path, mode: str, data_format: str, csv_fie
 
         if rows is None and isinstance(value, list):
             rows = value
-
         if rows is None and isinstance(value, dict):
             rows = [value]
-
         if rows is None:
             rows = [{"value": value}]
 
         if not rows:
             return
 
-        file_exists = path.exists()
         append_mode = mode == "a"
+        need_header = csv_include_header and (not append_mode or (append_mode and path.stat().st_size == 0))
 
         # Write CSV rows
         with path.open(mode, encoding="utf-8", newline="") as f:
             if isinstance(rows[0], dict):
                 fieldnames = csv_fieldnames or list(rows[0].keys())
-                writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n", extrasaction="ignore")
-                write_header = csv_include_header and (not append_mode or (append_mode and path.stat().st_size == 0))
-                if write_header:
+                writer = csv.DictWriter(
+                    f,
+                    fieldnames=fieldnames,
+                    lineterminator="\n",
+                    extrasaction="ignore",
+                )
+
+                if need_header:
                     writer.writeheader()
+                    if also_console:
+                        print(",".join(fieldnames))
+
                 for r in rows:
                     writer.writerow(r)
+                    if also_console:
+                        # print the row in the same column order as the header
+                        print(",".join("" if r.get(k) is None else str(r.get(k)) for k in fieldnames))
+
             else:
                 writer = csv.writer(f, lineterminator="\n")
-                write_header = csv_include_header and (not append_mode or (append_mode and path.stat().st_size == 0))
-                if write_header:
+
+                if need_header:
                     writer.writerow(["value"])
+                    if also_console:
+                        print("value")
+
                 for r in rows:
                     writer.writerow([r])
+                    if also_console:
+                        print(r)
 
-        if also_console:
-            # Print a short message to console to indicate where written
-            print(f"Wrote CSV to {path}")
+    if also_console:
+        # Print a short message to console to indicate where written
+        print(f"Wrote file to {path}")
 
 def _extract_by_path(data, path):
     """
