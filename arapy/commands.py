@@ -172,6 +172,54 @@ ACTIONS = {
     "update": patch_handler,
 }
 
+ACTIONS_DOCUMENTATION = {
+    "list": {
+        "summary": "",
+        "options": [
+            ("--limit=N", "Max items (1..1000)."),
+            ("--offset=N", "Pagination offset."),
+            ("--sort=+id|-id", "Sort order (default: +id)."),
+            ("--filter=JSON", "Server-side filter expression."),
+            ("--calculate_count=true|false", "Request total count."),
+            ("--data_format=json|csv|raw", "Output format (default: json)."),
+            ("--csv_fieldnames=a,b,c", "CSV columns and order."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "get": {
+        "summary": "",
+        "options": [
+            ("--id=N", "Numeric id."),
+            ("--name=NAME", "Name."),
+            ("--data_format=json|csv|raw", "Output format."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "add": {
+        "summary": "",
+        "options": [
+            ("--file=FILE.json|FILE.csv", "Create multiple objects from file."),
+            ("--key=value", "Any non-reserved keys become JSON payload fields."),
+            ("--data_format=json|csv|raw", "Output format."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "delete": {
+        "summary": "",
+        "options": [
+            ("--id=N", "Numeric id."),
+            ("--name=NAME", "Name."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "replace": {"summary": "Replace a resource (not implemented yet).", "options": []},
+    "update": {"summary": "Update a resource (not implemented yet).", "options": []},
+}
+
 DISPATCH = {
     "policy-elements": {
         "network-device": ACTIONS,

@@ -26,54 +26,6 @@ from .logger import build_logger_from_env
 if not config.VERIFY_SSL:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-ACTION_DOCS = {
-    "list": {
-        "summary": "",
-        "options": [
-            ("--limit=N", "Max items (1..1000)."),
-            ("--offset=N", "Pagination offset."),
-            ("--sort=+id|-id", "Sort order (default: +id)."),
-            ("--filter=JSON", "Server-side filter expression."),
-            ("--calculate_count=true|false", "Request total count."),
-            ("--data_format=json|csv|raw", "Output format (default: json)."),
-            ("--csv_fieldnames=a,b,c", "CSV columns and order."),
-            ("--out=FILE", "Write output to this file."),
-            ("--console", "Also print output to terminal."),
-        ],
-    },
-    "get": {
-        "summary": "",
-        "options": [
-            ("--id=N", "Numeric id."),
-            ("--name=NAME", "Name."),
-            ("--data_format=json|csv|raw", "Output format."),
-            ("--out=FILE", "Write output to this file."),
-            ("--console", "Also print output to terminal."),
-        ],
-    },
-    "add": {
-        "summary": "",
-        "options": [
-            ("--file=FILE.json|FILE.csv", "Create multiple objects from file."),
-            ("--key=value", "Any non-reserved keys become JSON payload fields."),
-            ("--data_format=json|csv|raw", "Output format."),
-            ("--out=FILE", "Write output to this file."),
-            ("--console", "Also print output to terminal."),
-        ],
-    },
-    "delete": {
-        "summary": "",
-        "options": [
-            ("--id=N", "Numeric id."),
-            ("--name=NAME", "Name."),
-            ("--out=FILE", "Write output to this file."),
-            ("--console", "Also print output to terminal."),
-        ],
-    },
-    "replace": {"summary": "Replace a resource (not implemented yet).", "options": []},
-    "update": {"summary": "Update a resource (not implemented yet).", "options": []},
-}
-
 def print_help(args=None):
     if args is None:
         args = {}
@@ -160,7 +112,7 @@ def print_help(args=None):
         return
 
     # Generic action docs (no per-service static blocks)
-    doc = ACTION_DOCS.get(action, {"summary": "", "options": []})
+    doc = commands.ACTIONS_DOCUMENTATION.get(action, {"summary": "", "options": []})
     summary = doc.get("summary", "")
     options = doc.get("options", [])
 
@@ -183,22 +135,44 @@ def parse_cli(argv):
     args = {}
     positionals = []
 
+    completing = "--_complete" in argv  # detect early
+
     for item in argv[1:]:
-        if item in ("-h", "--help"):
+        if item == "--_complete":
+            args["_complete"] = True
+
+        elif item.startswith("--_cword="):
+            args["_cword"] = int(item.split("=", 1)[1])
+
+        elif item.startswith("--_cur="):
+            args["_cur"] = item.split("=", 1)[1]
+
+        elif item in ("-h", "--help"):
             args["help"] = True
-        elif item in ("--verbose"):
+
+        elif item == "--verbose":
             args["verbose"] = True
-        elif item in ("--version"):
+
+        elif item == "--version":
             args["version"] = True
-        elif item in ("--console"):
+
+        elif item == "--debug":
+            args["debug"] = True
+
+        elif item == "--console":
             args["console"] = True
+
         elif item.startswith("--") and "=" in item:
             key, value = item[2:].split("=", 1)
             args[key] = value
+
         elif item.startswith("-"):
+            # In completion mode, ignore unknown/partial flags so tab completion doesn't crash
+            if completing:
+                continue
             raise ValueError(f"Unknown flag: {item}")
+
         else:
-            # bare word => positional
             positionals.append(item)
 
     if len(positionals) >= 1:
@@ -210,7 +184,65 @@ def parse_cli(argv):
 
     return args
 
+def _complete(words: list[str]) -> None:
+    dispatch = commands.DISPATCH
+
+    # Extract internal completion context
+    cur = ""
+    for w in words:
+        if w.startswith("--_cur="):
+            cur = w.split("=", 1)[1]
+
+    # Keep only positionals (module/service/action)
+    pos = [w for w in words if not w.startswith("-")]
+
+    # If user is currently typing a token (cur != ""), complete THAT position.
+    # If cur == "" user typed a space and wants next position.
+
+    # module position
+    if len(pos) == 0:
+        print("\n".join(sorted(dispatch.keys())))
+        return
+
+    module = pos[0]
+    if module not in dispatch:
+        print("\n".join(sorted(dispatch.keys())))
+        return
+
+    services = dispatch[module]
+
+    # service position
+    if len(pos) == 1:
+        print("\n".join(sorted(services.keys())))
+        return
+
+    service = pos[1]
+
+    # If user is still typing service token, offer service matches (even if exact match exists)
+    if len(pos) == 2 and cur != "":
+        print("\n".join(sorted(services.keys())))
+        return
+
+    if service not in services:
+        print("\n".join(sorted(services.keys())))
+        return
+
+    actions = services[service]
+
+    # action position
+    if len(pos) == 2:
+        print("\n".join(sorted(actions.keys())))
+        return
+
+    print("")
+
 def main():
+    if "--_complete" in sys.argv:
+        # keep internal flags --_cword/--_cur, but strip --_complete
+        words = [w for w in sys.argv[1:] if w != "--_complete"]
+        _complete(words)
+        return
+       
     log_mgr = build_logger_from_env(root_name=sys.argv[0])
     log = log_mgr.get_logger(__name__)
 
