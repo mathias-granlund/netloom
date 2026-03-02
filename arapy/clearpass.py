@@ -3,6 +3,7 @@
 #---- standard libs
 
 from doctest import debug
+from tabnanny import verbose
 
 from arapy import config
 from .logger import AppLogger
@@ -48,27 +49,47 @@ class ClearPassClient:
             if len(body) > 4000:
                 body = body[:4000] + "\n... (truncated)"
 
+            # Mask secrets in request JSON (if any)
             request_json = json_body
             if isinstance(request_json, dict):
                 masked = dict(request_json)
-
                 for k in config.SECRETS:
                     if k in masked:
                         masked[k] = "***"
                 request_json = masked
 
-            msg = (
-                f"HTTP {resp.status_code} {resp.reason}\n"
-                f"URL: {resp.url}\n"
-                f"Method: {method.upper()}\n"
-                f"Content-Type: {content_type}\n"
-                f"Response body:\n{body}"
-            )
+            # One-line-per-record debug output
+            debug_lines = [
+                "HTTP ERROR (details below)",
+                f"HTTP {resp.status_code} {resp.reason}",
+                f"URL: {resp.url}",
+                f"Method: {method.upper()}",
+                f"Content-Type: {content_type}",
+            ]
+
+            if params:
+                debug_lines.append(f"Query params: {params}")
+
             if request_json is not None:
-                msg += f"\n\nRequest JSON:\n{request_json}"
+                debug_lines.append(f"Request JSON: {request_json}")
 
-            raise requests.HTTPError(msg, response=resp) from e
+            # Keep response body readable; split into lines so each becomes its own log record
+            debug_lines.append("Response body:")
+            if body:
+                debug_lines.extend(body.splitlines())
+            else:
+                debug_lines.append("<empty>")
 
+            # Summary at ERROR (one line), full dump at DEBUG (many lines)
+            log.error("HTTP %s %s - %s", resp.status_code, resp.reason, resp.url)
+            for line in debug_lines:
+                if line.strip():
+                    log.debug(line)
+
+            # Re-raise original exception (keeps traceback clean)
+            raise
+
+        # No content responses (204) and responses with empty body will return None to avoid JSON parsing errors.
         if resp.status_code == 204 or not resp.content:
             return None
 
@@ -102,16 +123,28 @@ class ClearPassClient:
         if filter is not None:
             params["filter"] = filter
 
+        log.info(f"Listing {args['service']} with filter='{filter}', sort='{sort}', offset={offset}, limit={limit}, calculate_count={calculate_count}")
+
         return self.request(api_paths, "GET", args["service"], token=token, params=params)
 
 #---- Generic method for [module] [service] [action]=add
     def _add(self, api_paths: dict, token: str, args:dict, payload: dict):
+
+        log.info(f"Adding {args['service']} name: {payload.get('name')}")
+        log.debug(f"Adding {args['service']} with payload: {payload}")
+
         return self.request(api_paths, "POST", args["service"], token=token, json_body=payload)
 
 #---- Generic method for [module] [service] [action]=get
     def _get(self, api_paths: dict, token: str, args, entity):
+
+        log.info(f"Fetching {args['service']}: {entity}")
+
         return self.request(api_paths, "GET", args["service"], token=token, path_suffix=f"/{entity}")
 
 #---- Generic method for [module] [service] [action]=delete
     def _delete(self, api_paths: dict, token: str, args, entity):
+
+        log.info(f"Deleting {args['service']}: {entity}")
+
         return self.request(api_paths, "DELETE", args["service"], token=token, path_suffix=f"/{entity}")

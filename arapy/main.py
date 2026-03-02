@@ -4,7 +4,7 @@
 # description       :
 # author            :Mathias Granlund [mathias.granlund@aranya.se]
 # date              :2026-02-20
-# script version    :1.1.3
+# script version    :1.1.6
 # clearpass version :6.11.13
 # python_version    :3.10.12
 # ======================================================================
@@ -14,9 +14,7 @@ from doctest import debug
 import sys
 from tabnanny import verbose
 import urllib3
-
 #---- custom libs start
-
 from .api_endpoints import API_ENDPOINTS as APIPath
 from .clearpass import ClearPassClient
 from . import config
@@ -24,22 +22,59 @@ from . import commands
 from . import get_version
 from .gui import run_gui
 from .logger import build_logger_from_env
-
-
 #---- globals start
 if not config.VERIFY_SSL:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def print_help(args=None):
-    """
-    Context-aware help, driven by commands.DISPATCH.
+ACTION_DOCS = {
+    "list": {
+        "summary": "",
+        "options": [
+            ("--limit=N", "Max items (1..1000)."),
+            ("--offset=N", "Pagination offset."),
+            ("--sort=+id|-id", "Sort order (default: +id)."),
+            ("--filter=JSON", "Server-side filter expression."),
+            ("--calculate_count=true|false", "Request total count."),
+            ("--data_format=json|csv|raw", "Output format (default: json)."),
+            ("--csv_fieldnames=a,b,c", "CSV columns and order."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "get": {
+        "summary": "",
+        "options": [
+            ("--id=N", "Numeric id."),
+            ("--name=NAME", "Name."),
+            ("--data_format=json|csv|raw", "Output format."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "add": {
+        "summary": "",
+        "options": [
+            ("--file=FILE.json|FILE.csv", "Create multiple objects from file."),
+            ("--key=value", "Any non-reserved keys become JSON payload fields."),
+            ("--data_format=json|csv|raw", "Output format."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "delete": {
+        "summary": "",
+        "options": [
+            ("--id=N", "Numeric id."),
+            ("--name=NAME", "Name."),
+            ("--out=FILE", "Write output to this file."),
+            ("--console", "Also print output to terminal."),
+        ],
+    },
+    "replace": {"summary": "Replace a resource (not implemented yet).", "options": []},
+    "update": {"summary": "Update a resource (not implemented yet).", "options": []},
+}
 
-    Examples:
-      arapy --help
-      arapy identities --help
-      arapy identities endpoint --help
-      arapy identities endpoint add --help
-    """
+def print_help(args=None):
     if args is None:
         args = {}
 
@@ -47,7 +82,7 @@ def print_help(args=None):
     service = args.get("service")
     action = args.get("action")
 
-    dispatch = commands.DISPATCH
+    dispatch = commands.DISPATCH  # dynamic tree :contentReference[oaicite:2]{index=2}
 
     def list_keys(d):
         return sorted(d.keys())
@@ -56,36 +91,42 @@ def print_help(args=None):
         pad = " " * n
         return "\n".join(pad + line if line else "" for line in lines.splitlines())
 
+    def render_kv(options):
+        if not options:
+            return ""
+        return "\n".join(f"  {flag:<28} {desc}" for flag, desc in options)
+
     header = f"ClearPass API tool v{get_version()}\n"
 
-    usage = (
+    global_usage = (
         "Usage:\n"
-        "  arapy <module> <service> <action> [--key=value] [--verbose | --debug]\n"
+        "  arapy <module> <service> <action> [--key=value] [--log_level=debug|info|warning|error|critical] [--console]\n"
         "  arapy [--help | --version]\n"
         "\n"
-        "Notes:\n"
-        "  - Use --verbose to print output to console (otherwise logs to file only).\n"
-        "  - Use --debug to print detailed output to console (otherwise logs to file only).\n"
+        "Logging:\n"
+        "  - Use --log_level=LEVEL to set log level (default: info).\n"
+        "  - Use --console to also print output to console (default: logs to file only).\n"
+        "\n"
+        "Options:\n"
         "  - Use --out=FILE to override default log output path.\n"
-        "  - Use --data_format=json|csv to specify output format (default: json).\n"
+        "  - Use --data_format=json|csv|raw to specify output format (default: json).\n"
         "  - Use --csv_fieldnames=field1,field2,... to specify fields and order for CSV output.\n"
-        #"  - Use --filter=JSON to provide a server-side JSON filter expression (URL-encoded).\n"
+        "  - Use --filter=JSON to provide a server-side JSON filter expression (URL-encoded).\n"
         "  - Use --calculate_count=true|false to request a total count from the server.\n"
-        "  - Note: --limit must be between 1 and 1000 per API constraints.\n"
-        #"  - Set ARAPY_OUT_DIR to override the default output directory for logs.\n"
+        "  - Use --limit=N to limit results (default: 25, max: 1000)\n"
     )
 
-    # ---- TOP LEVEL HELP ----
+   # ---- TOP LEVEL HELP ----
     if not module:
         modules = "\n".join(f"- {m}" for m in list_keys(dispatch))
         examples = (
             "Examples:\n"
-            "  arapy policy-elements network-device list\n"
-            "  arapy policy-elements network-device list --data_format=csv --csv_fieldnames=id, name, ip_address\n"
+            "  arapy policy-elements network-device list --help\n"
+            "  arapy policy-elements network-device list --data_format=csv --csv_fieldnames=id,name,ip_address --console\n"
             "  arapy identities endpoint list --limit=5\n"
             "  arapy identities endpoint get --id=1234\n"
         )
-        print(header + usage + "\nAvailable modules:\n" + indent(modules) + "\n\n" + examples)
+        print(header + global_usage + "\nAvailable modules:\n" + indent(modules) + "\n\n" + examples)
         return
 
     # ---- MODULE HELP ----
@@ -97,12 +138,7 @@ def print_help(args=None):
     services_dict = dispatch[module]
     if not service:
         services = "\n".join(f"- {s}" for s in list_keys(services_dict))
-        examples = (
-            "Examples:\n"
-            f"  arapy {module} {list_keys(services_dict)[0]} list\n"
-            f"  arapy {module} {list_keys(services_dict)[0]} --help\n"
-        )
-        print(header + usage + f"\nModule: {module}\nAvailable services:\n" + indent(services) + "\n\n" + examples)
+        print(header + global_usage + f"\nModule: {module}\nAvailable services:\n" + indent(services))
         return
 
     # ---- SERVICE HELP ----
@@ -114,19 +150,7 @@ def print_help(args=None):
     actions_dict = services_dict[service]
     if not action:
         actions = "\n".join(f"- {a}" for a in list_keys(actions_dict))
-        examples = (
-            "Examples:\n"
-            f"  arapy {module} {service} list\n"
-            f"  arapy {module} {service} add --help\n"
-        )
-        print(
-            header
-            + usage
-            + f"\nModule: {module}\nService: {service}\nAvailable actions:\n"
-            + indent(actions)
-            + "\n\n"
-            + examples
-        )
+        print(header + global_usage + f"\nModule: {module}\nService: {service}\nAvailable actions:\n" + indent(actions))
         return
 
     # ---- ACTION HELP ----
@@ -135,228 +159,25 @@ def print_help(args=None):
         print(header + f"Unknown action '{action}' for {module} {service}. Available actions: {available}")
         return
 
-    # Action-specific help (hand-written “best” docs per action)
-    # You can expand this incrementally.
-    action_help = ""
+    # Generic action docs (no per-service static blocks)
+    doc = ACTION_DOCS.get(action, {"summary": "", "options": []})
+    summary = doc.get("summary", "")
+    options = doc.get("options", [])
 
-    #### BAD STATIC HELP, REPLACE WITH DYNAMIC GENERATION BASED ON ARG SPECS IN COMMANDS.py LATER ####
-    if (module, service, action) == ("policy-elements", "network-device", "list"):
-        action_help = (
-            "Network Device list\n"
-            "Usage:\n"
-            "  arapy policy-elements network-device list [--limit=N] [--offset=N] [--sort=+id] [--out=FILE] [-vvv]\n"
-            "  Optional: --csv_fieldnames=id,name,ip_address\n"
-        )
+    action_usage = (
+        "Usage:\n"
+        f"  arapy {module} {service} {action} [--key=value] "
+        "[--log_level=debug|info|warning|error|critical] [--console]\n"
+    )
 
-    elif (module, service, action) == ("policy-elements", "network-device", "add"):
-        action_help = (
-            "Network Device add\n"
-            "Usage:\n"
-            "  arapy policy-elements network-device add --name=NAME --ip_address=IP --vendor_name=VENDOR "
-            "[--radius_secret=SECRET] [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy policy-elements network-device add --file=devices.csv [--out=FILE] [-vvv]\n"
-            "  arapy policy-elements network-device add --file=devices.json [--out=FILE] [-vvv]\n"
-        )
+    out = header
+    if summary:
+        out += summary + "\n"
+    out += action_usage
+    if options:
+        out += "\nOptions:\n" + render_kv(options) + "\n"
 
-    elif (module, service, action) == ("policy-elements", "network-device", "delete"):
-        action_help = (
-            "Network Device delete\n"
-            "Usage:\n"
-            "  arapy policy-elements network-device delete --id=1234 [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "network-device", "get"):
-        action_help = (
-            "Network Device get\n"
-            "Usage:\n"
-            "  arapy policy-elements network-device get --id=1234 [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "endpoint", "list"):
-        action_help = (
-            "Endpoint list\n"
-            "Usage:\n"
-            "  arapy identities endpoint list [--limit=N] [--offset=N] [--sort=+id] [--out=FILE] [-vvv]\n"
-            "  Optional: --csv_fieldnames=id,mac_address,description,status,device_insight_tags\n"
-            "  Optional: --filter=JSON (server-side filter expression)\n"
-            "  Optional: --calculate_count=true|false\n"
-        )
-
-    elif (module, service, action) == ("identities", "endpoint", "get"):
-        action_help = (
-            "Endpoint get\n"
-            "Usage:\n"
-            "  arapy identities endpoint get --id=1234 [--out=FILE] [-vvv]\n"
-            "  arapy identities endpoint get --mac_address=aa:bb:cc:dd:ee:ff [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "endpoint", "add"):
-        action_help = (
-            "Endpoint add\n"
-            "Usage:\n"
-            "  arapy identities endpoint add --mac_address=aa:bb:cc:dd:ee:ff --status=Known "
-            "[--description=TEXT] [--device_insight_tags=...] [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy identities endpoint add --file=endpoints.csv [--out=FILE] [-vvv]\n"
-            "  arapy identities endpoint add --file=endpoints.json [--out=FILE] [-vvv]\n"
-            "\n"
-            "Notes:\n"
-            "  status must be one of: Known, Unknown, Disabled\n"
-        )
-
-    elif (module, service, action) == ("identities", "endpoint", "delete"):
-        action_help = (
-            "Endpoint delete\n"
-            "Usage:\n"
-            "  arapy identities endpoint delete --id=1234 [--out=FILE] [-vvv]\n"
-            "  arapy identities endpoint delete --mac_address=aa:bb:cc:dd:ee:ff [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "device", "list"):
-        action_help = (
-            "Device Account list\n"
-            "Usage:\n"
-            "  arapy identities device list [--limit=N] [--offset=N] [--sort=-id] [--filter=JSON] [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "device", "add"):
-        action_help = (
-            "Device Account add\n"
-            "Usage:\n"
-            "  arapy identities device add --mac=MACADDR [--enabled=true|false] [--role_id=N] [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy identities device add --file=devices.json [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "device", "delete"):
-        action_help = (
-            "Device Account delete\n"
-            "Usage:\n"
-            "  arapy identities device delete --id=DEVID [--out=FILE] [-vvv]\n"
-            "  arapy identities device delete --mac_address=MACADDR [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "device", "get"):
-        action_help = (
-            "Device Account get\n"
-            "Usage:\n"
-            "  arapy identities device get --id=DEVID [--out=FILE] [-vvv]\n"
-            "  arapy identities device get --mac_address=MACADDR [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "user", "list"):
-        action_help = (
-            "Guest User list\n"
-            "Usage:\n"
-            "  arapy identities user list [--limit=N] [--filter=JSON] [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "user", "add"):
-        action_help = (
-            "Guest User add\n"
-            "Usage:\n"
-            "  arapy identities user add --username=USERNAME [--password=PASSWORD] [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy identities user add --file=users.json [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "user", "delete"):
-        action_help = (
-            "Guest User delete\n"
-            "Usage:\n"
-            "  arapy identities user delete --id=USERID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "user", "get"):
-        action_help = (
-            "Guest User get\n"
-            "Usage:\n"
-            "  arapy identities user get --id=USERID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "api-client", "list"):
-        action_help = (
-            "API Client list\n"
-            "Usage:\n"
-            "  arapy identities api-client list [--limit=N] [--filter=JSON] [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "api-client", "add"):
-        action_help = (
-            "API Client add\n"
-            "Usage:\n"
-            "  arapy identities api-client add --client_id=ID [--client_secret=SECRET] [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy identities api-client add --file=clients.json [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "api-client", "delete"):
-        action_help = (
-            "API Client delete\n"
-            "Usage:\n"
-            "  arapy identities api-client delete --id=CLIENT_ID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("identities", "api-client", "get"):
-        action_help = (
-            "API Client get\n"
-            "Usage:\n"
-            "  arapy identities api-client get --id=CLIENT_ID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "auth-method", "list"):
-        action_help = (
-            "Authentication Method list\n"
-            "Usage:\n"
-            "  arapy policy-elements auth-method list [--limit=N] [--filter=JSON] [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "auth-method", "add"):
-        action_help = (
-            "Authentication Method add\n"
-            "Usage:\n"
-            "  arapy policy-elements auth-method add --name=NAME --method_type=TYPE [--out=FILE] [-vvv]\n"
-            "  Or from file:\n"
-            "  arapy policy-elements auth-method add --file=methods.json [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "auth-method", "delete"):
-        action_help = (
-            "Authentication Method delete\n"
-            "Usage:\n"
-            "  arapy policy-elements auth-method delete --id=METHOD_ID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "auth-method", "get"):
-        action_help = (
-            "Authentication Method get\n"
-            "Usage:\n"
-            "  arapy policy-elements auth-method get --id=METHOD_ID [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "enforcement-profile", "list"):
-        action_help = (
-            "Enforcement Profile list\n"
-            "Usage:\n"
-            "  arapy policy-elements enforcement-profile list [--limit=N] [--filter=JSON] [--out=FILE] [-vvv]\n"
-        )
-
-    elif (module, service, action) == ("policy-elements", "enforcement-profile", "get"):
-        action_help = (
-            "Enforcement Profile get\n"
-            "Usage:\n"
-            "  arapy policy-elements enforcement-profile get --id=PROFILE_ID [--out=FILE] [-vvv]\n"
-        )
-
-    else:
-        action_help = (
-            f"Help for: {module} {service} {action}\n"
-            "No detailed help is defined yet for this action.\n"
-            "Tip: run with -vvv to see console output while logging.\n"
-        )
-
-    print(header + action_help)
+    print(out)
 
 def parse_cli(argv):
     args = {}
@@ -369,8 +190,6 @@ def parse_cli(argv):
             args["verbose"] = True
         elif item in ("--version"):
             args["version"] = True
-        elif item in ("--debug"):
-            args["debug"] = True
         elif item in ("--console"):
             args["console"] = True
         elif item.startswith("--") and "=" in item:
@@ -394,16 +213,27 @@ def parse_cli(argv):
 def main():
     log_mgr = build_logger_from_env(root_name=sys.argv[0])
     log = log_mgr.get_logger(__name__)
-    log_mgr.set_debug_mode(config.DEBUG)
 
     args = parse_cli(sys.argv)
 
-    debug = args.get("debug", False)
-    verbose = args.get("verbose", config.VERBOSE)
-    if debug:
-        log_mgr.set_debug_mode(True)
-        log.debug("Debug mode enabled via CLI argument.")
-        log.debug(f"Parsed CLI arguments: {args}")
+    log_level = args.get("log_level")
+    if log_level:
+        import logging
+        level_map = {
+            "debug": logging.DEBUG,
+            "info": logging.INFO,
+            "warning": logging.WARNING,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
+        }
+        if log_level not in level_map:
+            log.error(f"Invalid log level: {log_level}. Valid options are: {', '.join(level_map.keys())}")
+            return
+        log_mgr.set_level(level_map[log_level])
+
+
+    log.debug("Debug mode enabled.")
+    log.debug(f"Parsed CLI arguments: {args}")
 
     # ---- VERSION FIRST ----
     if args.get("version"):
@@ -433,20 +263,19 @@ def main():
         return
 
     try:
-        command = commands.FUNCTIONS[action]
+        command = commands.ACTIONS[action]
     except KeyError:
         print_help(args)
         print(f"\nUnknown command: {module} {service} {action}")
         return
     
     cp = ClearPassClient(
-        config.SERVER,
+        server=config.SERVER,
         https_prefix=config.HTTPS,
         verify_ssl=config.VERIFY_SSL,
         timeout=config.DEFAULT_TIMEOUT,
     )
-    if verbose:
-        log.info(f"Connecting to ClearPass server: {config.SERVER} (SSL verify: {config.VERIFY_SSL})")
+    log.info(f"Connecting to ClearPass server: {config.SERVER} (SSL verify: {config.VERIFY_SSL})")
 
     token = cp.login(APIPath, config.CREDENTIALS)["access_token"]
     command(cp, token, APIPath, args)

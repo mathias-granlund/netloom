@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.1.3-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.1.5-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-Internal-orange.svg)]()
@@ -42,7 +42,7 @@ All services support:
 
 ---
 
-# ✨ Features (v1.1.3)
+# ✨ Features (v1.1.5)
 
 ## 🔧 Modular Command Architecture
 

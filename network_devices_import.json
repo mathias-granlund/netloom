@@ -1,0 +1,41 @@
+[{
+  "name": "TEST-NET-1",
+  "description": "loopbacks",
+  "ip_address": "127.0.0.0/8",
+  "radius_secret": "fortiPSK",
+  "tacacs_secret": "fortiPSK",
+  "vendor_name": "Fortinet",
+  "coa_capable": false,
+  "coa_port": 3799
+},
+{
+  "name": "TEST-NET-2",
+  "description": "RFC 3927",
+  "ip_address": "169.254.0.0/16",
+  "radius_secret": "admin",
+  "tacacs_secret": "admin",
+  "vendor_name": "Hewlett-Packard-Enterprise",
+  "coa_capable": true,
+  "coa_port": 3799
+},
+{
+  "name": "TEST-NET-3",
+  "description": "RFC 6598",
+  "ip_address": "100.64.0.0/10",
+  "radius_secret": "ciscodisco",
+  "tacacs_secret": "ciscodisco",
+  "vendor_name": "Cisco",
+  "coa_capable": false,
+  "coa_port": 3799
+},
+{
+  "name": "TEST-NET-4",
+  "description": "RFC 1918",
+  "ip_address": "10.0.0.0/8",
+  "radius_secret": "aruba123",
+  "tacacs_secret": "aruba123",
+  "vendor_name": "Aruba",
+  "coa_capable": false,
+  "coa_port": 3799
+}
+]

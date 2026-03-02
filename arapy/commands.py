@@ -2,7 +2,6 @@
 
 #---- standard libs
 from multiprocessing.util import debug
-import sys
 from unittest.mock import call
 #---- custom libs
 from . import config
@@ -26,9 +25,8 @@ def build_payload_from_args(args, reserved_keys):
 
 # ---- Generic handler for all add calls ----
 def add_handler(cp, token, APIPath, args):
-    info = args.get("verbose", False)
-    debug = args.get("debug", False)
-    console = args.get("console", False)
+    console = args.get("console", config.CONSOLE)
+    log_level = args.get("log_level")
     csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
     # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
     if isinstance(csv_fieldnames, str):
@@ -42,10 +40,8 @@ def add_handler(cp, token, APIPath, args):
         payload = load_payload_file(args["file"])
 
         if isinstance(payload, list):
-            if info:
-                log.info(f"Adding {len(payload)} items to {args['service']} from file: {args['file']} with payload: {payload}")
             call = [cp._add(APIPath, token, args, p) for p in payload]
-            log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
+            log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console, log_level=log_level)
             return
 
     else:
@@ -61,17 +57,13 @@ def add_handler(cp, token, APIPath, args):
             f"Missing: {', '.join(missing)}"
     )
 
-    if info:
-        log.info(f"Adding {args['service']} with payload: {payload}")
     call = cp._add(APIPath, token, args, payload)
 
-    log_to_file(call,filename=out_path,data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
+    log_to_file(call,filename=out_path,data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console, log_level=log_level)
 
 # ---- Generic handler for all delete calls ----
 def delete_handler(cp, token, APIPath, args):
-    info = args.get("verbose", False)
-    debug = args.get("debug", False)
-    console = args.get("console", False)
+    console = args.get("console", config.CONSOLE)
     csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
     # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
     if isinstance(csv_fieldnames, str):
@@ -103,18 +95,14 @@ def delete_handler(cp, token, APIPath, args):
         cp._delete(APIPath, token, args, api_name)
         call = {"deleted": args.get("name"), "status": "ok"}
     else:
+        log.error(f"{args['service']} delete requires --id=<id> or --name=<name>")
         raise ValueError(f"{args['service']} delete requires --id=<id> or --name=<name>")
-        
-    if info:
-        log.info(f"Deleted {args['service']} with identifier: {id or name}")
-        
+                
     log_to_file(call, filename=out_path, data_format=data_format, also_console=console)
 
 # ---- Generic handler for all get calls ----
 def get_handler(cp, token, APIPath, args):
-    info = args.get("verbose", False)
-    debug = args.get("debug", False)
-    console = args.get("console", False)
+    console = args.get("console", config.CONSOLE)
     csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
     # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
     if isinstance(csv_fieldnames, str):
@@ -140,9 +128,8 @@ def get_handler(cp, token, APIPath, args):
 
 # ---- Generic handler for all list calls ----
 def list_handler(cp, token, APIPath, args):
-    info = args.get("verbose", False)
-    debug = args.get("debug", False)
-    console = args.get("console", False)
+    console = args.get("console", config.CONSOLE)
+    log_level = args.get("log_level")
     csv_fieldnames = args.get("csv_fieldnames", config.DEFAULT_CSV_FIELDNAMES)
     # normalize csv_fieldnames from "a,b,c" -> ["a","b","c"]
     if isinstance(csv_fieldnames, str):
@@ -164,22 +151,19 @@ def list_handler(cp, token, APIPath, args):
     if limit < 1 or limit > 1000:
         raise ValueError("--limit must be between 1 and 1000")
     
-    if info:
-        log.info(f"Listing {args['service']} with filter='{filter_expr}', sort='{sort}', offset={offset}, limit={limit}, calculate_count={calc_count}")
-
     call = cp._list(APIPath, token, args, offset=offset, limit=limit, sort=sort, filter=filter_expr, calculate_count=calc_count)
 
-    log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console)
+    log_to_file(call, filename=out_path, data_format=data_format, csv_fieldnames=csv_fieldnames, also_console=console, log_level=log_level)
 
 # ---- Generic handler for all replace calls ----
-def put_handler():
+def put_handler(cp, token, APIPath, args):
     return
 
 # ---- Generic handler for all update calls ----
-def patch_handler():
+def patch_handler(cp, token, APIPath, args):
     return
 
-FUNCTIONS = {
+ACTIONS = {
     "add": add_handler,
     "delete": delete_handler,
     "get": get_handler,
@@ -190,24 +174,24 @@ FUNCTIONS = {
 
 DISPATCH = {
     "policy-elements": {
-        "network-device": FUNCTIONS,
-        "network-device-group": FUNCTIONS,
-        "auth-method": FUNCTIONS,
-        "enforcement-profile": FUNCTIONS,
+        "network-device": ACTIONS,
+        "network-device-group": ACTIONS,
+        "auth-method": ACTIONS,
+        "enforcement-profile": ACTIONS,
     },
     "platform-certificates": {
-        "cert-sign-request": FUNCTIONS,
-        "cert-trust-list": FUNCTIONS,
-        "client-cert": FUNCTIONS,
-        "revocation-list": FUNCTIONS,
-        "self-signed-cert": FUNCTIONS,
-        "server-cert": FUNCTIONS,
-        "service-cert": FUNCTIONS,
+        "cert-sign-request": ACTIONS,
+        "cert-trust-list": ACTIONS,
+        "client-cert": ACTIONS,
+        "revocation-list": ACTIONS,
+        "self-signed-cert": ACTIONS,
+        "server-cert": ACTIONS,
+        "service-cert": ACTIONS,
     },
     "identities": {
-        "endpoint": FUNCTIONS,
-        "device": FUNCTIONS,
-        "user": FUNCTIONS,
-        "api-client": FUNCTIONS,
+        "endpoint": ACTIONS,
+        "device": ACTIONS,
+        "user": ACTIONS,
+        "api-client": ACTIONS,
     },
 }

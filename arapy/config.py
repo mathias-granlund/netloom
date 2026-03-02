@@ -35,9 +35,8 @@ SERVER = "192.168.100.30:443"
 HTTPS = "https://"
 VERIFY_SSL = False
 DEFAULT_TIMEOUT = 15
-VERBOSE = True
-DEBUG = False
-RESERVED = {"help", "version", "verbose", "module", "service", "action", "out", "file", "csv_fieldnames", "id"}
+CONSOLE = False
+RESERVED = {"help", "version", "verbose", "debug", "console", "module", "service", "action", "out", "file", "csv_fieldnames"}
 SECRETS = ("client_secret", "radius_secret", "tacacs_secret", "password", "enable_password")
 
 # OAuth client credentials
