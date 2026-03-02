@@ -24,12 +24,6 @@ def build_payload_from_args(args, reserved_keys):
     payload = {k: v for k, v in args.items() if k not in reserved_keys}
     return payload
 
-def debug_print(message):
-    RED = "\033[31m"
-    RESET = "\033[0m"
-    caller = sys._getframe(1).f_code.co_name
-    print(f"{RED}DEBUG:{RESET} In {caller}() calling: {message}")
-
 # ---- Generic handler for all add calls ----
 def add_handler(cp, token, APIPath, args):
     info = args.get("verbose", False)

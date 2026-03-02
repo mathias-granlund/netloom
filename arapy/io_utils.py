@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 
 #---- custom libs
+from .logger import AppLogger
+log = AppLogger().get_logger(__name__)
 
 def log_to_file(
     thing,
@@ -131,9 +133,9 @@ def _write_value_to_file(value, path: Path, mode: str, data_format: str, csv_fie
                     if also_console:
                         print(r)
 
-    if also_console:
-        # Print a short message to console to indicate where written
-        print(f"Wrote file to {path}")
+
+    # Print a short message to console to indicate where written
+    log.info(f"Wrote file to {path}")
 
 def _extract_by_path(data, path):
     """

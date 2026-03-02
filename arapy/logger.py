@@ -37,6 +37,21 @@ class LoggerConfig:
     fmt: str = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
     datefmt: str = "%Y-%m-%d %H:%M:%S"
 
+class ColorFormatter(logging.Formatter):
+    BLUE = "\033[34m"
+    RED = "\033[31m"
+    RESET = "\033[0m"
+
+    LEVEL_COLORS = {
+        logging.INFO: BLUE,
+        logging.DEBUG: RED,
+    }
+
+    def format(self, record: logging.LogRecord) -> str:
+        color = self.LEVEL_COLORS.get(record.levelno)
+        if color:
+            record.levelname = f"{color}{record.levelname}{self.RESET}"
+        return super().format(record)
 
 class AppLogger:
     """
@@ -103,7 +118,7 @@ class AppLogger:
             return
         h = logging.StreamHandler(stream=sys.stderr)
         h.setLevel(self._root_logger.level)
-        h.setFormatter(self._formatter())
+        h.setFormatter(ColorFormatter(self.config.fmt, datefmt=self.config.datefmt))
         self._root_logger.addHandler(h)
 
     def _add_file_handler(self, path: Path) -> None:

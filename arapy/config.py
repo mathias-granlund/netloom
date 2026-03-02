@@ -20,6 +20,16 @@ else:
     LOG_DIR = Path.cwd() / "logs"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
+PROFILES = {
+    "lab": {
+        "SERVER": "192.168.100.30:443",
+        "VERIFY_SSL": False},
+    "prod": {
+        "SERVER": "clearpass.company.com:443",
+        "VERIFY_SSL": True},
+}
+ACTIVE_PROFILE = "lab"
+
 # ClearPass connection
 SERVER = "192.168.100.30:443"
 HTTPS = "https://"
@@ -41,8 +51,3 @@ CREDENTIALS = {
 DEFAULT_CSV_FIELDNAMES = None
 DEFAULT_FORMAT = "json"
 
-PROFILES = {
-    "lab": {"SERVER": "192.168.100.30:443", "VERIFY_SSL": False},
-    "prod": {"SERVER": "clearpass.company.com:443", "VERIFY_SSL": True},
-}
-ACTIVE_PROFILE = "lab"
