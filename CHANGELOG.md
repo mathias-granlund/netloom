@@ -7,6 +7,32 @@ principles.
 
 ------------------------------------------------------------------------
 
+## [1.2.3] - 2026-03-03
+
+### Added
+
+- Dynamic ClearPass API endpoint discovery via `/api-docs`
+- Full Swagger 1.2 (Apigility) documentation parsing
+- Automatic endpoint mapping (no more static endpoint file)
+- Endpoint caching under `cache/api_endpoints_cache.json`
+- `arapy cache clear` command for manual cache invalidation
+- Improved debug logging for API discovery process
+
+### Changed
+
+- CLI now builds endpoint map dynamically at runtime
+- Cache directory moved from `logs/` to dedicated `cache/`
+- Improved error visibility during API discovery
+- Refactored startup flow to bootstrap OAuth before API discovery
+
+### Removed
+
+- Static `api_endpoints.py`
+- GUI mode
+- `--refresh-api-cache` flag
+- Hardcoded endpoint mappings
+
+------------------------------------------------------------------------
 ## \[1.2.0\] - 2024-01-Release
 
 ### Added
