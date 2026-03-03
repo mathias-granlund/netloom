@@ -1,18 +1,10 @@
 import sys
-from pathlib import Path
-import pytest
+import types
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-
-@pytest.fixture
-def tmp_log_dir(tmp_path, monkeypatch):
-    """Patch arapy.config.LOG_DIR (and commands.config.LOG_DIR) to a tmp dir."""
-    import arapy.config as config
-    import arapy.commands as commands
-
-    monkeypatch.setattr(config, "LOG_DIR", tmp_path, raising=False)
-    monkeypatch.setattr(commands.config, "LOG_DIR", tmp_path, raising=False)
-    return tmp_path
+# Ensure importing arapy.main doesn't fail if arapy.gui isn't present.
+if "arapy.gui" not in sys.modules:
+    m = types.ModuleType("arapy.gui")
+    def run_gui():
+        raise RuntimeError("GUI not available in unit test environment")
+    m.run_gui = run_gui
+    sys.modules["arapy.gui"] = m
