@@ -120,7 +120,14 @@ def get_handler(cp, token, APIPath, args):
             raise ValueError("--id must be numeric")
     elif name is not None:
         api_name = "name/" + name  # API expects name-based GETs to be in the format /name/{name}
-        call = cp._get(APIPath, token, args, api_name)
+        try:
+            call = cp._get(APIPath, token, args, name)
+        except:
+            pass
+        try:
+            call = cp._get(APIPath, token, args, f"name/{name}")
+        except:
+            pass
     else:
         raise ValueError(f"{args['service']} get requires --id=<id> or --name=<name>")
     
@@ -168,8 +175,8 @@ ACTIONS = {
     "delete": delete_handler,
     "get": get_handler,
     "list": list_handler,
-    "replace": put_handler,
-    "update": patch_handler,
+    #"replace": put_handler,
+    #"update": patch_handler,
 }
 
 ACTIONS_DOCUMENTATION = {
@@ -221,15 +228,48 @@ ACTIONS_DOCUMENTATION = {
 }
 
 DISPATCH = {
-    "policy-elements": {
-        "network-device": ACTIONS,
-        "network-device-group": ACTIONS,
-        "auth-method": ACTIONS,
-        "enforcement-profile": ACTIONS,
+    "api-operations": {
+        "token-endpoint": ACTIONS,
+        "token-info": ACTIONS,
+        "token-privileges": ACTIONS,
+    },
+    "certificate-authority": {
+        "certificate": ACTIONS,
+        "certificate-chain": ACTIONS,
+        "certificate-export": ACTIONS,
+        "certificate-import": ACTIONS,
+        "certificate-new": ACTIONS,
+        "certiticate-reject": ACTIONS,
+        "certificate-request" : ACTIONS,
+        "certificate-revoke": ACTIONS,
+        "certificate-sign-request": ACTIONS,
+        "onboard-debice" : ACTIONS,
+        "onboard-user": ACTIONS,
+    },
+    "guest-actions": {
+        "generate-guest-digital-pass": ACTIONS,
+        "genereate-guest-receipt": ACTIONS,
+        "send-sms-receipt": ACTIONS,
+        "send-snmp-receipt": ACTIONS,
+        "sponsorship-approval": ACTIONS,
+    },
+    "guest-configuration": {
+        "digital-pass-template": ACTIONS,
+        "guest-authentication-configuration": ACTIONS,
+        "guest-manager": ACTIONS,
+        "print-template": ACTIONS,
+        "web-login": ACTIONS,
+    },
+    "tools-and-utilities": {
+        "email-send": ACTIONS,
+        "random-mpsk-generator": ACTIONS,
+        "random-password-generator": ACTIONS,
+        "send-sms": ACTIONS,
     },
     "platform-certificates": {
         "cert-sign-request": ACTIONS,
         "cert-trust-list": ACTIONS,
+        "cert-trust-list-details": ACTIONS,
         "client-cert": ACTIONS,
         "revocation-list": ACTIONS,
         "self-signed-cert": ACTIONS,
@@ -237,9 +277,123 @@ DISPATCH = {
         "service-cert": ACTIONS,
     },
     "identities": {
-        "endpoint": ACTIONS,
-        "device": ACTIONS,
-        "user": ACTIONS,
         "api-client": ACTIONS,
+        "deny-listed-users": ACTIONS,
+        "device": ACTIONS,
+        "endpoint": ACTIONS,
+        "external-account": ACTIONS,
+        "guest-user": ACTIONS,
+        "local-user": ACTIONS,
+        "static-host-list": ACTIONS,
+    },
+    "logs":{
+        "endpoint-info": ACTIONS,
+        "login-audit": ACTIONS,
+        "system-events": ACTIONS,
+    },
+    "local-server-configuration":{
+        "ad-domain": ACTIONS,
+        "access-control": ACTIONS,
+        "cppm-version": ACTIONS,
+        "server-configuration": ACTIONS,
+        "server-fips": ACTIONS,
+        "server-snmp": ACTIONS,
+        "server-version": ACTIONS,
+        "service-parameter": ACTIONS,
+        "system-service-control": ACTIONS,
+    },
+    "global-server-configuration":{
+        "admin-privilege": ACTIONS,
+        "admin-user": ACTIONS,
+        "admin-user-password-policy": ACTIONS,
+        "application-license": ACTIONS,
+        "attribute": ACTIONS,
+        "clearpass-portal": ACTIONS,
+        "cluster-db-sync": ACTIONS,
+        "cluster-wide-parameter": ACTIONS,
+        "data-filter": ACTIONS,
+        "file-backup-server": ACTIONS,
+        "list-all-privileges": ACTIONS,
+        "local-user-password-policy": ACTIONS,
+        "messaging-setup": ACTIONS,
+        "operator-profile": ACTIONS,
+        "policy-manager-zone": ACTIONS,
+        "snmp-trap-receiver": ACTIONS,
+    },
+    "integrations":{
+        "context-server-action": ACTIONS,
+        "device-insight": ACTIONS,
+        "endpoint-context-server": ACTIONS,
+        "event-source": ACTIONS,
+        "extension-instance": ACTIONS,
+        "extension-instance-config": ACTIONS,
+        "extension-instance-log": ACTIONS,
+        "extension-instance-reinstall": ACTIONS,
+        "extension-instance-restart": ACTIONS,
+        "extension-instance-start": ACTIONS,
+        "extension-instance-stop": ACTIONS,
+        "extension-instance-upgrade": ACTIONS,
+        "extension-store": ACTIONS,
+        "ingress-event-dictionary": ACTIONS,
+        "syslog-export-filter": ACTIONS,
+        "syslog-target": ACTIONS,
+    },
+    "policy-elements": {
+        "application-dictionary": ACTIONS,
+        "auth-method": ACTIONS,
+        "auth-source": ACTIONS,
+        "enforcement-policy": ACTIONS,
+        "network-device": ACTIONS,
+        "network-device-group": ACTIONS,
+        "posture-policy": ACTIONS,
+        "radius-dictionary": ACTIONS,
+        "radius-dynamic-authorization-template": ACTIONS,
+        "radius-proxy-target": ACTIONS,
+        "role": ACTIONS,
+        "role-mapping": ACTIONS,
+        "service": ACTIONS,
+        "tacacs-service-dictionary": ACTIONS,
+    },
+    "endpoint-visibility":{
+        "agentless-onguard-settings": ACTIONS,
+        "agentless-onguard-subnet-mapping": ACTIONS,
+        "device-fingerprint": ACTIONS,
+        "fingerprint-dictionary": ACTIONS,
+        "network-scan": ACTIONS,
+        "onguard-activity": ACTIONS,
+        "onguard-custom-script": ACTIONS,
+        "onguard-global-settings": ACTIONS,
+        "onguard-settings": ACTIONS,
+        "onguard-zone-mapping": ACTIONS,
+        "profiler-subnet-mapping": ACTIONS,
+        "windows-hotfix": ACTIONS,
+    },
+    "session-control":{
+        "active-session": ACTIONS,
+        "active-session-disconnect": ACTIONS,
+        "active-session-reauthorize": ACTIONS,
+        "mac-active-session": ACTIONS,
+        "session-action": ACTIONS,
+    },
+    "enforcement-profile":{
+        "captive-portal-profile": ACTIONS,
+        "dur-class": ACTIONS,
+        "enforcement-profile": ACTIONS,
+        "ethertype-access-control-list": ACTIONS,
+        "mac-access-control-list": ACTIONS,
+        "nat-pool": ACTIONS,
+        "net-destination": ACTIONS,
+        "net-service": ACTIONS,
+        "policer-profile": ACTIONS,
+        "policy": ACTIONS,
+        "qos-profile": ACTIONS,
+        "session-access-control-list": ACTIONS,
+        "statless-access-control-list": ACTIONS,
+        "time-range": ACTIONS,
+        "voip-profile": ACTIONS,
+    },
+    "insight":{
+        "alert": ACTIONS,
+        "report": ACTIONS,
     },
 }

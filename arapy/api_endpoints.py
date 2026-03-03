@@ -6,172 +6,171 @@ ClearPass 6.11.13 API endpoints
 
 API_ENDPOINTS = {
     # ----API Operations
-    # API Operations > TokenEndpoint
     "oauth": "/api/oauth",
-    # API Operations > TokenInfo
     "oauth-me": "/api/oauth/me",
-    # API Operations > TokenPrivileges
     "oauth-privileges": "/api/oauth/privileges",
 
     # ----Certificate Authority
-    #TODO later
+    "certificate": "/api/certificate",
+    "certificate-chain": "/api/certificate/{cert_id}/chain",
+    "certificate-export": "/api/certificate/{cert_id}/export",
+    "certificate-import": "/api/certificate/import",
+    "certificate-new": "/api/certificate/new",
+    "certiticate-reject": "/api/certificate/{cert_id}/reject",
+    "certificate-request" : "/api/certificate/request",
+    "certificate-revoke": "/api/certificate/{cert_id}/revoke",
+    "certificate-sign-request": "/api/certificate/{cert_id}/sign",
+    "onboard-debice" : "/api/onboard/device",
+    "onboard-user": "/api/user",
 
     #----Guest Actions
-    #TODO later
+    "generate-guest-digital-pass": "/api/guest/{guest_id}/pass/{id}",
+    "genereate-guest-receipt": "/api/guest/{guest_id}/receipt/{id}",
+    "send-sms-receipt": "/api/guest/{guest_id}/sendreceipt/sms",
+    "send-snmp-receipt": "/api/guest/{guest_id}/sendreceipt/smtp",
+    "sponsorship-approval": "/api/guest/{guest_id}/sponsor",
 
     #----Guest Configuration
-    #TODO later
+    "digital-pass-template": "/api/template/pass",
+    "guest-authentication-configuration": "/api/guest/authentication",
+    "guest-manager": "/api/guestmanager",
+    "print-template": "/api/template/print",
+    "web-login": "/api/weblogin",
 
     #----Tools and Utilities
-    #TODO later
+    "email-send": "/api/email/send",
+    "random-mpsk-generator": "/api/random-mpsk",
+    "random-password-generator": "/api/random-password",
+    "send-sms": "/api/sms/send",
 
     #----Platform Certificates
-    # Platform Certificates > Certificate Signing Request
     "cert-sign-request": "/api/cert-sign-request",
-    # Platform Certificates > Certificate Trust List
     "cert-trust-list": "/api/cert-trust-list",
-    # Platform Certificates > Certificate Trust List Details
     "cert-trust-list-details": "/api/cert-trust-list-details",
-    # Platform Certificates > Client Cert
     "client-cert": "/api/client-cert",
-    # Platform Certificates > Revocation List
     "revocation-list": "/api/revocation-list",
-    # Platform Certificates > Self Signed Cert
     "self-signed-cert": "/api/self-signed-cert",
-    # Platform Certificates > Server Certificate
     "server-cert": "/api/server-cert",
-    # Platform Certificates > Service Certificate
     "service-cert": "/api/service-cert",
 
     #----Identities
-    # Identities > API Client
     "api-client": "/api/api-client",
-    # Identities > Deny Listed Users
     "deny-listed-users": "/api/deny-listed-users",
-    # Identities > Device
     "device": "/api/device",
-    # Identities > Endpoint
     "endpoint": "/api/endpoint",
-    # Identities > External Account
     "external-account": "/api/external-account",
-    # Identities > Guest User
-    # Keep key name in sync with ClearPassClient.user-* (uses 'guest-user')
     "guest-user": "/api/guest-user",
-    # Identities > Local User
     "local-user": "/api/local-user",
-    # Identities > Static Host List
     "static-host-list": "/api/static-host-list",
 
     #----Logs
-    # Logs > Endpoint Info
-    "insight-endpoint-mac": "/api/insight/endpoint/mac",
-    # Logs > Login Audit
+    "endpoint-info": "/api/insight/endpoint/mac",
     "login-audit": "/api/login-audit",
-    # Logs > System Event
     "system-event": "/api/system-event",
 
     #----Local Server Configuration
-    # Local Server Configuration > AD Domain
     "ad-domain": "/api/ad-domain",
-    # Local Server Configuration > Access Control
     "access-control": "/api/server/access-control",
-    # Local Server Configuration > CPPM Version
     "cppm-version": "/api/cppm-version",
-    # Local Server Configuration > Server Configuration
     "server-configuration": "/api/cluster/server",
-    # Local Server Configuration > Server FIPS
     "server-fips": "/api/server/fips",
-    # Local Server Configuration > Server SNMP
     "server-snmp": "/api/server/snmp",
-    # Local Server Configuration > Server Version
     "server-version": "/api/server/version",
-    # Local Server Configuration > Service Parameter
     "service-parameter": "/api/service-parameter",
-    # Local Server Configuration > System Service Control
     "system-service-control": "/api/server/service",
 
     #----Global Server Configuration
-    # Global Server Configuration > Admin Privilege
-    "admin-privileges": "/api/admin-privilege",
-    # Global Server Configuration > Admin User
+    "admin-privilege": "/api/admin-privilege",
     "admin-user": "/api/admin-user",
-    # Global Server Configuration > Admin User Password Policy
     "admin-user-password-policy": "/api/admin-user/password-policy",
-    # Global Server Configuration > Application License
     "application-license": "/api/application-license",
-    # Global Server Configuration > Attribute
     "attribute": "/api/attribute",
-    # Global Server Configuration > ClearPass Portal
     "clearpass-portal": "/api/clearpass-portal",
-    # Global Server Configuration > Cluster DB Sync
     "cluster-db-sync": "/api/cluster/db-sync",
-    # Global Server Configuration > Cluster Wide Parameters
     "cluster-wide-parameters": "/api/cluster/parameters",
-    # Global Server Configuration > Data Filter
     "data-filter": "/api/data-filter",
-    # Global Server Configuration > File Backup Server
     "file-backup-server": "/api/file-backup-server",
-    # Global Server Configuration > List All Privileges
     "list-all-privileges": "/api/oauth/all-privileges",
-    # Global Server Configuration > Local User Password Policy
     "local-user-password-policy": "/api/local-user/password-policy",
-    # Global Server Configuration > Messaging Setup
     "essaging-setup": "/api/messaging-setup",
-    # Global Server Configuration > Operator Profile
     "operator-profile": "/api/operator-profile",
-    # Global Server Configuration > Policy Manager Zone
     "policy-manager-zone": "/api/server/policy-manager-zones",
-    # Global Server Configuration > SNMP Trap Receiver
     "snmp-trap-receiver": "/api/snmp-trap-receiver",
 
     #----Integrations
-    #TODO later
+    "context-server-action": "/api/context-server-action",
+    "device-insight": "/api/device-insight",
+    "endpoint-context-server": "/api/endpoint-context-server",
+    "event-source": "/api/event-sources",
+    "extension-instance": "/api/extension/instance",
+    "extension-instance-config": "/api/extension/instance/{id}/config",
+    "extension-instance-log": "/api/extension/instance/{id}/log",
+    "extension-instance-reinstall": "/api/extension/instance/{id}/reinstall",
+    "extension-instance-restart": "/api/extension/instance/{id}/restart",
+    "extension-instance-start": "/api/extension/instance/{id}/start",
+    "extension-instance-stop": "/api/extension/instance/{id}/stop",
+    "extension-instance-upgrade": "/api/extension/instance/{id}/upgrade",
+    "extension-store": "/api/extension/store",
+    "ingress-event-dictionary": "/api/ingress-event-dictionary",
+    "syslog-export-filter": "/api/syslog-export-filter",
+    "syslog-target": "/api/syslog-target",
 
     # ----Policy Elements
-    # Policy Elements > Application Dictionary
     "application-dictionary": "/api/application-dictionary",
-    # Policy Elements > Auth Method
     "auth-method": "/api/auth-method",
-    # Policy Elements > Auth Source
     "auth-source": "/api/auth-source",
-    # Policy Elements > Enforcement Policy
     "enforcement-policy": "/api/enforcement-policy",
-    # Policy Elements > Network Device
     "network-device": "/api/network-device",
-    # Policy Elements > Network Device Group
     "network-device-group": "/api/network-device-group",
-    # Policy Elements > Posture Policy
     "posture-policy": "/api/posture-policy",
-    # Policy Elements > RADIUS Dictionary
     "radius-dictionary": "/api/radius-dictionary",
-    # Policy Elements > RADIUS Dynamic Authorization Template
     "radius-dynamic-authorization-template": "/api/radius-dynamic-authorization-template",
-    # Policy Elements > RADIUS Proxy Target
-    "proxy-target": "/api/proxy-target",
-    # Policy Elements > Role
+    "radius-proxy-target": "/api/proxy-target",
     "role": "/api/role",
-    # Policy Elements > Role Mapping
     "role-mapping": "/api/role-mapping",
-    # Policy Elements > Service
     "service": "/api/service",
-    # Policy Elements > TACACS Service Dictionary
     "tacacs-service-dictionary": "/api/tacacs-service-dictionary",
 
     #----Endpoint Visibility
-    #TODO later
+    "agentless-onguard-settings": "/api/agentless-onguard/settings",
+    "agentless-onguard-subnet-mapping": "/api/agentless-onguard/subnet-mapping",
+    "device-fingerprint": "/api/device-profiler/device-fingerprint",
+    "fingerprint-dictionary": "/api/fingerprint",
+    "network-scan": "/api/config/network-scan",
+    "onguard-activity": "api/onguard-activity",
+    "onguard-custom-script": "/api/onguard-custom-script",
+    "onguard-global-settings": "/api/onguard/global-settings",
+    "onguard-settings": "/api/onguard/settings",
+    "onguard-zone-mapping": "/api/onguard/policy-manager-zones",
+    "profiler-subnet-mapping": "/api/profiler-subnet-mapping",
+    "windows-hotfix": "/api/windows-hotfix",
 
     #----Session Control
-    #TODO later
+    "active-session": "/api/session",
+    "active-session-disconnect": "/api/session/{id}/disconnect",
+    "active-session-reauthorize": "/api/session/{id}/reauthorize",
+    "mac-active-session": "/api/active-session/{mac_address}",
+    "session-action": "/api/session-action/disconnect",
 
     #----Enforcement Profile
+    "captive-portal-profile": "/api/enforcement-profile-dur/captive-portal-profile/{product_name}",
+    "dur-class": "/api/enforcement-profile-dur/dur-class/{product_name}",
     "enforcement-profile": "/api/enforcement-profile",
+    "ethertype-access-control-list": "/api/enforcement-profile-dur/ethertype-access-control-list/{product_name}",
+    "mac-access-control-list": "/api/enforcement-profile-dur/mac-access-control-list/{product_name}",
+    "nat-pool": "/api/enforcement-profile-dur/nat-pool/{product_name}",
+    "net-destination": "/api/enforcement-profile-dur/net-destination/{product_name}",
+    "net-service": "/api/enforcement-profile-dur/net-service/{product_name}",
+    "policer-profile": "/api/enforcement-profile-dur/policer-profile/{product_name}",
+    "policy": "/api/enforcement-profile-dur/policy/{product_name}",
+    "qos-profile": "/api/enforcement-profile-dur/qos-profile/{product_name}",
+    "session-access-control-list": "/api/enforcement-profile-dur/session-access-control-list/{product_name}",
+    "statless-access-control-list": "/api/enforcement-profile-dur/stateless-access-control-list/{product_name}",
+    "time-range": "/api/enforcement-profile-dur/time-range/{product_name}",
+    "voip-profile": "/api/enforcement-profile-dur/voip-profile/{product_name}",
 
     #----Insight
-    #TODO later
-    
-    #----DEV
-    # These are not actual API endpoints, but are used for testing the CLI tool during development. They can be removed later.
-    "test": "/api/network-device",    
-
+    "alert": "/api/alert",
+    "report": "/api/report",
 }
 
