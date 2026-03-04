@@ -117,11 +117,11 @@ class ClearPassClient:
 # This way we can avoid writing separate methods for each endpoint when the logic is the same.
 
 #---- Generic method for [module] [service] [action]=list
-    def _list(self, api_paths: dict, token: str, args:dict, *, offset: int = 0, limit: int = 25, sort: str = "+id", filter: str | None = None, calculate_count: bool | None = None):
+    def _list(self, api_paths: dict, token: str, args:dict, *, offset: int = 0, limit: int = 25, sort: str = "+id", filter: str | None = None, calculate_count: str | None = None):
         params = {
             "offset": offset,
             "limit": limit,
-            "sort": sort,
+            "sort": sort
         }
         if calculate_count is not None:
             params["calculate_count"] = calculate_count

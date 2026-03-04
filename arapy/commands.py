@@ -151,10 +151,11 @@ def list_handler(cp, token, APIPath, args):
     limit = int(args.get("limit", 25))
     calc_count_arg = args.get("calculate_count")
     if isinstance(calc_count_arg, str):
-        calc_count = calc_count_arg.lower() in ("1", "true", "yes")
+        if calc_count_arg.lower() in ("1","true","yes"):
+            calc_count = "true"
     else:
-        calc_count = bool(calc_count_arg) if calc_count_arg is not None else None
-
+        calc_count = "false"
+ 
     if limit < 1 or limit > 1000:
         raise ValueError("--limit must be between 1 and 1000")
     
