@@ -106,20 +106,20 @@ arapy policy-elements network-device get --id=1001
 
 # ⚙️ Global Options
 
-  Option                           Description
-  -------------------------------- --------------------------------
-  `--log_level=LEVEL`              Set logging level
-  `--console`                      Print API response to terminal
-  `--limit=N`                      Limit results (1--1000)
-  `--offset=N`                     Pagination offset
-  `--sort=±field`                  Sort results
-  `--filter=JSON`                  Server-side filter
-  `--calculate_count=true/false`   Request total count
-  `--csv_fieldnames=a,b,c`         CSV column selection
-  `--file=FILE`                    Bulk import JSON/CSV
-  `--out=FILE`                     Override output file
-  `--help`                         Context-aware help
-  `--version`                      Show version
+| Option                             | Description                          |
+|------------------------------------|--------------------------------------|
+| `--log_level=LEVEL`               | Set logging level                   |
+| `--console`                       | Print API response to terminal      |
+| `--limit=N`                       | Limit results (1–1000)              |
+| `--offset=N`                      | Pagination offset                   |
+| `--sort=±field`                   | Sort results                        |
+| `--filter=JSON`                   | Server-side filter                  |
+| `--calculate_count=true/false`    | Request total count                 |
+| `--csv_fieldnames=a,b,c`          | CSV column selection                |
+| `--file=FILE`                     | Bulk import JSON/CSV                |
+| `--out=FILE`                      | Override output file                |
+| `--help`                          | Context-aware help                  |
+| `--version`                       | Show version                        |
 
 ------------------------------------------------------------------------
 
@@ -129,24 +129,6 @@ arapy policy-elements network-device get --id=1001
 -   Logging level controlled via `--log_level`.
 -   Debug mode provides structured, line-by-line HTTP diagnostics.
 -   Sensitive fields are automatically masked.
-
-------------------------------------------------------------------------
-
-# 🪟 GUI Mode
-
-Launch:
-
-``` bash
-arapy gui
-```
-
-or
-
-``` bash
-arapy-gui
-```
-
-------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
