@@ -65,16 +65,12 @@ Run once per session:
 source /path/to/your/repo/scripts/arapy-completion.bash
 ```
 
-To enable permanently, add to `~/.bashrc`:
+To enable permanently, add to `~/.bashrc` then reload terminal:
 
 ``` bash
-source /path/to/your/repo/scripts/arapy-completion.bash
-```
-
-Reload:
-
-``` bash
-source ~/.bashrc
+for f in ~/.bash_completion.d/*; do
+  [ -r "$f" ] && source "$f"
+done
 ```
 
 ### Zsh Support
@@ -99,7 +95,7 @@ Example:
 
 ``` bash
 arapy identities endpoint list --limit=10
-arapy policy-elements network-device get --id=1001
+arapy policyelements network-device get --id=1001
 ```
 
 ------------------------------------------------------------------------
@@ -167,18 +163,19 @@ The next authenticated command will rebuild the cache automatically.
 # 🏗 Architecture
 
     arapy/
-    ├── api_catalog.py        # Dynamic API discovery & caching
-    ├── clearpass.py          # REST client
-    ├── commands.py           # CLI command routing
-    ├── config.py             # Configuration
-    ├── io_utils.py
-    ├── logger.py
-    ├── main.py               # CLI entrypoint
-    ├── scripts/
-    │   └── arapy-completion.bash
-    ├── cache/                # Endpoint cache
-    ├── logs/
-    └── tests/
+    ├── api_catalog.py                     # Dynamic API discovery & caching
+    ├── clearpass.py                       # REST client
+    ├── commands.py                        # CLI command routing
+    ├── config.py                          # Default configuration
+    ├── io_utils.py                        # File input / output
+    ├── logger.py                          # Terminal logs
+    ├── main.py                            # CLI entrypoint
+    ├── scripts/                        
+    │   └── arapy-completion.bash          # Command tab-completion
+    ├── cache/                
+    |   └── api_endpoints_cache.json       # Endpoint cache
+    ├── logs/                              # API response logs
+    └── tests/                             # Unit tests
 
 ------------------------------------------------------------------------
 
@@ -189,5 +186,5 @@ Internal / Custom Use\
 
 ------------------------------------------------------------------------
 
-**arapy v1.2.4**\
+**arapy v1.2.5**\
 Clean. Modular. Production-ready ClearPass automation.
