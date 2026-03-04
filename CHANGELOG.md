@@ -6,6 +6,18 @@ The format loosely follows Keep a Changelog and Semantic Versioning
 principles.
 ------------------------------------------------------------------------
 
+## [1.2.5] - 2026-03-04
+
+### Changed
+- Help and bash completion now rely exclusively on dynamically discovered ClearPass API data (`/api-docs`)
+- Removed fallback to static `commands.DISPATCH` when the API catalog cache is missing
+
+### Notes
+- If the API cache is missing, run any authenticated command to build it (for example: `arapy identities endpoint list`)
+- You can clear the cache with: `arapy cache clear`
+
+------------------------------------------------------------------------
+
 ## [1.2.4] - 2026-03-04
 
 ### Added

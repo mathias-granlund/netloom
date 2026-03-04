@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.2.4-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.2.5-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-Internal-orange.svg)]()
@@ -20,7 +20,7 @@ A modern, modular CLI toolkit for interacting with\
 -   Reliable error diagnostics
 -   Native tab completion support
 
-Version: **1.2.4**
+Version: **1.2.5**
 
 ------------------------------------------------------------------------
 
@@ -104,22 +104,22 @@ arapy policy-elements network-device get --id=1001
 
 ------------------------------------------------------------------------
 
-# ⚙️ Global Options
+## 🌍 Global Options
 
-  Option                           Description
-  -------------------------------- --------------------------------
-  `--log_level=LEVEL`              Set logging level
-  `--console`                      Print API response to terminal
-  `--limit=N`                      Limit results (1--1000)
-  `--offset=N`                     Pagination offset
-  `--sort=±field`                  Sort results
-  `--filter=JSON`                  Server-side filter
-  `--calculate_count=true/false`   Request total count
-  `--csv_fieldnames=a,b,c`         CSV column selection
-  `--file=FILE`                    Bulk import JSON/CSV
-  `--out=FILE`                     Override output file
-  `--help`                         Context-aware help
-  `--version`                      Show version
+| Option                          | Description                          |
+|---------------------------------|--------------------------------------|
+| `--log_level=LEVEL`             | Set logging level                    |
+| `--console`                     | Print API response to terminal       |
+| `--limit=N`                     | Limit results (1–1000)               |
+| `--offset=N`                    | Pagination offset                    |
+| `--sort=±field`                 | Sort results                         |
+| `--filter=JSON`                 | Server-side filter                   |
+| `--calculate_count=true/false`  | Request total count                  |
+| `--csv_fieldnames=a,b,c`        | CSV column selection                 |
+| `--file=FILE`                   | Bulk import JSON/CSV                 |
+| `--out=FILE`                    | Override output file                 |
+| `--help`                        | Context-aware help                   |
+| `--version`                     | Show version                         |
 
 ------------------------------------------------------------------------
 
@@ -132,23 +132,6 @@ arapy policy-elements network-device get --id=1001
 
 ------------------------------------------------------------------------
 
-# 🪟 GUI Mode
-
-Launch:
-
-``` bash
-arapy gui
-```
-
-or
-
-``` bash
-arapy-gui
-```
-
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
 
 ## 🔍 Dynamic API Discovery
 
@@ -158,6 +141,9 @@ Starting with **v1.2.4**, arapy discovers available ClearPass API modules and se
 - `/api/apigility/documentation/<Module-v1>`
 
 This removes the need for hardcoded endpoint maps and makes arapy more resilient to ClearPass upgrades.
+
+**Help and tab completion are generated from the discovered API catalog.**
+If the cache is missing, run any authenticated command once to build it.
 
 ------------------------------------------------------------------------
 
@@ -203,5 +189,5 @@ Internal / Custom Use\
 
 ------------------------------------------------------------------------
 
-**arapy v1.2.0**\
+**arapy v1.2.4**\
 Clean. Modular. Production-ready ClearPass automation.
