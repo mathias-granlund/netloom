@@ -4,7 +4,7 @@
 # description       :
 # author            :Mathias Granlund [mathias.granlund@aranya.se]
 # date              :2026-02-20
-# script version    :1.2.3
+# script version    :1.2.5
 # clearpass version :6.11.13
 # python_version    :3.10.12
 # ======================================================================
@@ -25,8 +25,12 @@ if not config.VERIFY_SSL:
 
 def print_help(args=None):
     """
-    Dynamic help driven primarily by cache/api_endpoints_cache.json (discovered from ClearPass /api-docs).
-    Falls back to static dispatch (commands.DISPATCH) if cache doesn't exist yet.
+    Help is driven entirely by the dynamically discovered API catalog.
+    The catalog is cached in cache/api_endpoints_cache.json after the first
+    authenticated run.
+
+    If the cache does not exist yet (or is empty), arapy cannot show modules/services,
+    because it has no authoritative source of truth without contacting ClearPass.
     """
     if args is None:
         args = {}
@@ -41,7 +45,6 @@ def print_help(args=None):
         "Usage:\n"
         "  arapy <module> <service> <action> [--key=value] [--log_level=debug|info|warning|error|critical] [--console]\n"
         "  arapy [--help | --version]\n"
-        "  arapy cache clear\n"
         "\n"
         "Logging:\n"
         "  - Use --log_level=LEVEL to set log level (default: info).\n"
@@ -71,12 +74,13 @@ def print_help(args=None):
             ("--name=NAME", "Object name (when supported)."),
         ],
         "add": [
-            ("--file=FILE.json|FILE.csv", "Create from file."),
+            ("--file=FILE", "Create from file."),
             ("--key=value", "Any non-reserved keys become JSON payload fields."),
         ],
         "delete": [
             ("--id=N", "Object id."),
             ("--name=NAME", "Object name (when supported)."),
+            ("--file=FILE", "Delete from file."),
         ],
     }
 
@@ -85,41 +89,35 @@ def print_help(args=None):
 
     catalog = load_cached_catalog()
     modules = (catalog or {}).get("modules") or {}
-    have_dynamic = bool(modules)
+
+    if not modules:
+        msg = (
+            "No API catalog cache found.\n"
+            "  arapy relies on ClearPass /api-docs for modules/services/actions.\n\n"
+            "To build the catalog cache run:\n"
+            "  arapy cache update"
+        )
+        # Still show global usage so users know how to proceed
+        print(header + global_usage + "\n" + msg)
+        return
 
     # --- TOP LEVEL HELP ---
     if not module:
-        if have_dynamic:
-            mod_list = "\n".join(f"- {m}" for m in sorted(modules.keys()))
-        else:
-            # fallback before cache is built
-            mod_list = "\n".join(f"- {m}" for m in sorted(commands.DISPATCH.keys()))
+        mod_list = "\n".join(f"- {m}" for m in sorted(modules.keys()))
         examples = (
-            "Examples:\n"
-            "  arapy policy-elements network-device list --help\n"
-            "  arapy policy-elements network-device list --data_format=csv --csv_fieldnames=id,name,ip_address --console\n"
-            "  arapy identities endpoint list --limit=5\n"
-            "  arapy identities endpoint get --id=1234\n"
-            "\n"
             "Tip:\n"
-            "  If this is your first run and help looks empty, run any command once to build the API cache.\n"
-            "  You can also clear the cache with: arapy cache clear\n"
+            "  Clear and rebuild the API cache if ClearPass version was changed:\n"
+            "  arapy cache clear\n"
         )
         print(header + global_usage + "\nAvailable modules:\n  " + mod_list.replace("\n", "\n  ") + "\n\n" + examples)
         return
 
     # --- MODULE HELP ---
-    if have_dynamic:
-        if module not in modules:
-            print(header + f"Unknown module '{module}'. Available modules: {', '.join(sorted(modules.keys()))}")
-            return
-        services_dict = modules[module]
-    else:
-        # fallback to static dispatch before cache is built
-        if module not in commands.DISPATCH:
-            print(header + f"Unknown module '{module}'. Available modules: {', '.join(sorted(commands.DISPATCH.keys()))}")
-            return
-        services_dict = commands.DISPATCH[module]
+    if module not in modules:
+        print(header + f"Unknown module '{module}'. Available modules: {', '.join(sorted(modules.keys()))}")
+        return
+
+    services_dict = modules[module]
 
     if not service:
         services = "\n".join(f"- {s}" for s in sorted(services_dict.keys()))
@@ -135,20 +133,12 @@ def print_help(args=None):
         return
 
     svc_entry = services_dict[service]
-
-    # In dynamic mode, svc_entry is a dict with route/methods/actions.
-    # In fallback mode, svc_entry is an actions dict from commands.DISPATCH.
-    if have_dynamic:
-        route = svc_entry.get("route", "<unknown>")
-        actions = svc_entry.get("actions") or ["list", "get", "add", "delete"]
-    else:
-        route = "<dynamic route not loaded>"
-        actions = sorted(svc_entry.keys())
+    route = svc_entry.get("route", "<unknown>")
+    actions = svc_entry.get("actions") or ["list", "get", "add", "delete"]
 
     if not action:
         out = header + global_usage + f"\nModule: {module}\nService: {service}\n"
-        if have_dynamic:
-            out += f"Route: {route}\n"
+        out += f"Route: {route}\n"
         out += "Available actions:\n  " + "\n  ".join(actions)
         print(out)
         return
@@ -161,8 +151,7 @@ def print_help(args=None):
     out = header
     out += "Usage:\n"
     out += f"  arapy {module} {service} {action} [--key=value] [--log_level=debug|info|warning|error|critical] [--console]\n"
-    if have_dynamic:
-        out += f"\nRoute:\n  {route}\n"
+    out += f"\nRoute:\n  {route}\n"
 
     opts = action_options.get(action, [])
     if opts:
@@ -227,12 +216,11 @@ def parse_cli(argv):
 
 def _complete(words: list[str]) -> None:
     """
-    Bash completion helper.
-    Prefers dynamic catalog (cache) when available, falls back to commands.DISPATCH.
+    Bash completion helper driven by the cached API catalog only.
+    If the cache doesn't exist yet, we can only suggest the 'cache' command.
     """
     catalog = load_cached_catalog()
     modules = (catalog or {}).get("modules") or {}
-    dispatch = modules if modules else commands.DISPATCH
 
     cur = ""
     for w in words:
@@ -243,15 +231,25 @@ def _complete(words: list[str]) -> None:
 
     # module position
     if len(pos) == 0:
-        print("\n".join(sorted(dispatch.keys())))
+        suggestions = ["cache"] + sorted(modules.keys())
+        print("\n".join(suggestions))
         return
 
     module = pos[0]
-    if module not in dispatch:
-        print("\n".join(sorted(dispatch.keys())))
+    if module == "cache":
+        # supports: arapy cache clear
+        if len(pos) == 1:
+            print("clear")
+            return
+        print("")
         return
 
-    services = dispatch[module]
+    if module not in modules:
+        suggestions = ["cache"] + sorted(modules.keys())
+        print("\n".join(suggestions))
+        return
+
+    services = modules[module]
 
     # service position
     if len(pos) == 1:
@@ -260,7 +258,7 @@ def _complete(words: list[str]) -> None:
 
     service = pos[1]
 
-    # If user is still typing service token, offer service matches (even if exact match exists)
+    # If user is still typing service token, offer service matches
     if len(pos) == 2 and cur != "":
         print("\n".join(sorted(services.keys())))
         return
@@ -270,10 +268,7 @@ def _complete(words: list[str]) -> None:
         return
 
     # actions position
-    if modules:
-        actions = services[service].get("actions") or ["list", "get", "add", "delete"]
-    else:
-        actions = services[service].keys()
+    actions = services[service].get("actions") or ["list", "get", "add", "delete"]
 
     if len(pos) == 2:
         print("\n".join(sorted(actions)))
@@ -339,8 +334,19 @@ def main():
             else:
                 log.info("No API endpoint cache file found (already clear).")
             return
+        if service == "update" and not args.get("action"):
+                cp = ClearPassClient(
+                    server=config.SERVER,
+                    https_prefix=config.HTTPS,
+                    verify_ssl=config.VERIFY_SSL,
+                    timeout=config.DEFAULT_TIMEOUT,
+    )
+                token = cp.login(OAUTH_ENDPOINTS, config.CREDENTIALS)["access_token"]
+                log.debug(f"Authorization: Bearer {token}")
 
-        print("Usage:\n  arapy cache clear")
+                api_paths = get_api_paths(cp, token=token)
+                log.debug(f"Loaded {len(api_paths)} API endpoints. Example keys: {sorted(list(api_paths))[:20]}")
+                return
         return
 
     module = args.get("module")
