@@ -1,1681 +1,5661 @@
 {
-  "flat": {
-    "access-control": "/api/server/access-control",
-    "activate-offline": "/api/application-license/activate-offline",
-    "activate-online": "/api/application-license/activate-online",
-    "admin-privilege": "/api/admin-privilege",
-    "admin-user": "/api/admin-user",
-    "all-privileges": "/api/oauth/all-privileges",
-    "api-client": "/api/api-client",
-    "apioperations:me": "/api/oauth/me",
-    "apioperations:oauth": "/api/oauth",
-    "apioperations:privileges": "/api/oauth/privileges",
-    "application-license": "/api/application-license",
-    "attribute": "/api/attribute",
-    "auth-method": "/api/auth-method",
-    "auth-source": "/api/auth-source",
-    "authentication": "/api/guest/authentication",
-    "cert-sign-request": "/api/cert-sign-request",
-    "cert-trust-list": "/api/cert-trust-list",
-    "cert-trust-list-details": "/api/cert-trust-list-details",
-    "certificate": "/api/certificate",
-    "certificateauthority:certificate": "/api/certificate",
-    "certificateauthority:device": "/api/onboard/device",
-    "certificateauthority:import": "/api/certificate/import",
-    "certificateauthority:new": "/api/certificate/new",
-    "certificateauthority:request": "/api/certificate/request",
-    "certificateauthority:user": "/api/user",
-    "clearpass-portal": "/api/clearpass-portal",
-    "client-cert": "/api/client-cert",
-    "coa": "/api/session-action/coa",
-    "context-server-action": "/api/context-server-action",
-    "cppm-version": "/api/cppm-version",
-    "db-sync": "/api/cluster/db-sync",
-    "device": "/api/device",
-    "device-fingerprint": "/api/device-profiler/device-fingerprint",
-    "device-insight": "/api/device-insight",
-    "disconnect": "/api/session-action/disconnect",
-    "endpoint": "/api/insight/endpoint",
-    "endpoint-context-server": "/api/endpoint-context-server",
-    "endpointvisibility:device-fingerprint": "/api/device-profiler/device-fingerprint",
-    "endpointvisibility:fingerprint": "/api/fingerprint",
-    "endpointvisibility:global-settings": "/api/onguard/global-settings",
-    "endpointvisibility:name": "/api/onguard/policy-manager-zones/name",
-    "endpointvisibility:network-scan": "/api/config/network-scan",
-    "endpointvisibility:onguard-custom-script": "/api/onguard-custom-script",
-    "endpointvisibility:policy-manager-zones": "/api/onguard/policy-manager-zones",
-    "endpointvisibility:profiler-subnet-mapping": "/api/profiler-subnet-mapping",
-    "endpointvisibility:settings": "/api/onguard/settings",
-    "endpointvisibility:subnet-mapping": "/api/agentless-onguard/subnet-mapping",
-    "essaging-setup": "/api/messaging-setup",
-    "event-sources": "/api/event-sources",
-    "external-account": "/api/external-account",
-    "file-backup-server": "/api/file-backup-server",
-    "fingerprint": "/api/fingerprint",
-    "fips": "/api/server/fips",
-    "global-settings": "/api/onguard/global-settings",
-    "globalserverconfiguration:activate-offline": "/api/application-license/activate-offline",
-    "globalserverconfiguration:activate-online": "/api/application-license/activate-online",
-    "globalserverconfiguration:admin-privilege": "/api/admin-privilege",
-    "globalserverconfiguration:admin-user": "/api/admin-user",
-    "globalserverconfiguration:all-privileges": "/api/oauth/all-privileges",
-    "globalserverconfiguration:application-license": "/api/application-license",
-    "globalserverconfiguration:attribute": "/api/attribute",
-    "globalserverconfiguration:clearpass-portal": "/api/clearpass-portal",
-    "globalserverconfiguration:db-sync": "/api/cluster/db-sync",
-    "globalserverconfiguration:file-backup-server": "/api/file-backup-server",
-    "globalserverconfiguration:host-address": "/api/file-backup-server/host-address",
-    "globalserverconfiguration:messaging-setup": "/api/messaging-setup",
-    "globalserverconfiguration:name": "/api/snmp-trap-receiver/name",
-    "globalserverconfiguration:operator-profile": "/api/operator-profile",
-    "globalserverconfiguration:parameters": "/api/cluster/parameters",
-    "globalserverconfiguration:password-policy": "/api/local-user/password-policy",
-    "globalserverconfiguration:policy-manager-zones": "/api/server/policy-manager-zones",
-    "globalserverconfiguration:snmp-trap-receiver": "/api/snmp-trap-receiver",
-    "globalserverconfiguration:summary": "/api/application-license/summary",
-    "globalserverconfiguration:user-id": "/api/admin-user/user-id",
-    "guest": "/api/guest",
-    "guestconfiguration:authentication": "/api/guest/authentication",
-    "guestconfiguration:guestmanager": "/api/guestmanager",
-    "guestconfiguration:page-name": "/api/weblogin/page-name",
-    "guestconfiguration:pass": "/api/template/pass",
-    "guestconfiguration:print": "/api/template/print",
-    "guestconfiguration:weblogin": "/api/weblogin",
-    "guestmanager": "/api/guestmanager",
-    "host-address": "/api/syslog-target/host-address",
-    "identities:api-client": "/api/api-client",
-    "identities:device": "/api/device",
-    "identities:endpoint": "/api/endpoint",
-    "identities:external-account": "/api/external-account",
-    "identities:guest": "/api/guest",
-    "identities:local-user": "/api/local-user",
-    "identities:mac": "/api/device/mac",
-    "identities:mac-address": "/api/endpoint/mac-address",
-    "identities:name": "/api/static-host-list/name",
-    "identities:static-host-list": "/api/static-host-list",
-    "identities:user-id": "/api/local-user/user-id",
-    "identities:username": "/api/guest/username",
-    "import": "/api/certificate/import",
-    "instance": "/api/extension/instance",
-    "integrations:context-server-action": "/api/context-server-action",
-    "integrations:device-insight": "/api/device-insight",
-    "integrations:endpoint-context-server": "/api/endpoint-context-server",
-    "integrations:event-sources": "/api/event-sources",
-    "integrations:host-address": "/api/syslog-target/host-address",
-    "integrations:instance": "/api/extension/instance",
-    "integrations:name": "/api/syslog-export-filter/name",
-    "integrations:server-name": "/api/endpoint-context-server/server-name",
-    "integrations:store": "/api/extension/store",
-    "integrations:syslog-export-filter": "/api/syslog-export-filter",
-    "integrations:syslog-target": "/api/syslog-target",
-    "ip": "/api/session-action/coa/ip",
-    "ip-range": "/api/insight/endpoint/ip-range",
-    "local-user": "/api/local-user",
-    "localserverconfiguration:access-control": "/api/server/access-control",
-    "localserverconfiguration:cppm-version": "/api/cppm-version",
-    "localserverconfiguration:fips": "/api/server/fips",
-    "localserverconfiguration:server": "/api/cluster/server",
-    "localserverconfiguration:service": "/api/server/service",
-    "localserverconfiguration:snmp": "/api/server/snmp",
-    "localserverconfiguration:version": "/api/server/version",
-    "login-audit": "/api/login-audit",
-    "logs:endpoint": "/api/insight/endpoint",
-    "logs:ip": "/api/insight/endpoint/ip",
-    "logs:ip-range": "/api/insight/endpoint/ip-range",
-    "logs:login-audit": "/api/login-audit",
-    "logs:mac": "/api/insight/endpoint/mac",
-    "logs:system-event": "/api/system-event",
-    "mac": "/api/session-action/coa/mac",
-    "mac-address": "/api/endpoint/mac-address",
-    "me": "/api/oauth/me",
-    "messaging-setup": "/api/messaging-setup",
-    "name": "/api/config/service/name",
-    "network-device": "/api/network-device",
-    "network-device-group": "/api/network-device-group",
-    "network-scan": "/api/config/network-scan",
-    "new": "/api/certificate/new",
-    "oauth": "/api/oauth",
-    "oauth-me": "/api/oauth/me",
-    "oauth-privileges": "/api/oauth/privileges",
-    "onguard-custom-script": "/api/onguard-custom-script",
-    "operator-profile": "/api/operator-profile",
-    "page-name": "/api/weblogin/page-name",
-    "parameters": "/api/cluster/parameters",
-    "pass": "/api/template/pass",
-    "password-policy": "/api/local-user/password-policy",
-    "platformcertificates:cert-sign-request": "/api/cert-sign-request",
-    "platformcertificates:cert-trust-list": "/api/cert-trust-list",
-    "platformcertificates:cert-trust-list-details": "/api/cert-trust-list-details",
-    "platformcertificates:client-cert": "/api/client-cert",
-    "platformcertificates:revocation-list": "/api/revocation-list",
-    "platformcertificates:self-signed-cert": "/api/self-signed-cert",
-    "platformcertificates:server-cert": "/api/server-cert",
-    "platformcertificates:service-cert": "/api/service-cert",
-    "policy-manager-zones": "/api/server/policy-manager-zones",
-    "policyelements:auth-method": "/api/auth-method",
-    "policyelements:auth-source": "/api/auth-source",
-    "policyelements:name": "/api/config/service/name",
-    "policyelements:network-device": "/api/network-device",
-    "policyelements:network-device-group": "/api/network-device-group",
-    "policyelements:proxy-target": "/api/proxy-target",
-    "policyelements:role": "/api/role",
-    "policyelements:role-mapping": "/api/role-mapping",
-    "policyelements:service": "/api/config/service",
-    "print": "/api/template/print",
-    "privileges": "/api/oauth/privileges",
-    "profiler-subnet-mapping": "/api/profiler-subnet-mapping",
-    "proxy-target": "/api/proxy-target",
-    "random-mpsk": "/api/random-mpsk",
-    "random-password": "/api/random-password",
-    "request": "/api/certificate/request",
-    "revocation-list": "/api/revocation-list",
-    "role": "/api/role",
-    "role-mapping": "/api/role-mapping",
-    "self-signed-cert": "/api/self-signed-cert",
-    "send": "/api/sms/send",
-    "server": "/api/cluster/server",
-    "server-cert": "/api/server-cert",
-    "server-name": "/api/endpoint-context-server/server-name",
-    "service": "/api/config/service",
-    "service-cert": "/api/service-cert",
-    "session": "/api/session",
-    "session-action": "/api/session-action",
-    "sessioncontrol:coa": "/api/session-action/coa",
-    "sessioncontrol:disconnect": "/api/session-action/disconnect",
-    "sessioncontrol:ip": "/api/session-action/coa/ip",
-    "sessioncontrol:mac": "/api/session-action/coa/mac",
-    "sessioncontrol:session": "/api/session",
-    "sessioncontrol:session-action": "/api/session-action",
-    "sessioncontrol:username": "/api/session-action/coa/username",
-    "settings": "/api/onguard/settings",
-    "snmp": "/api/server/snmp",
-    "snmp-trap-receiver": "/api/snmp-trap-receiver",
-    "static-host-list": "/api/static-host-list",
-    "store": "/api/extension/store",
-    "subnet-mapping": "/api/agentless-onguard/subnet-mapping",
-    "summary": "/api/application-license/summary",
-    "syslog-export-filter": "/api/syslog-export-filter",
-    "syslog-target": "/api/syslog-target",
-    "system-event": "/api/system-event",
-    "toolsandutilities:random-mpsk": "/api/random-mpsk",
-    "toolsandutilities:random-password": "/api/random-password",
-    "toolsandutilities:send": "/api/sms/send",
-    "user": "/api/user",
-    "user-id": "/api/local-user/user-id",
-    "username": "/api/session-action/coa/username",
-    "version": "/api/server/version",
-    "weblogin": "/api/weblogin"
-  },
-  "generated_at": "2026-03-04T15:18:31Z",
+  "generated_at": "2026-03-09T13:28:48Z",
   "modules": {
     "apioperations": {
       "me": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/oauth/me"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "info",
+              "name",
+              "..."
+            ],
+            "paths": [
+              "/api/oauth/me"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/oauth/me"
+            ]
+          }
+        }
       },
       "oauth": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/oauth"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "grant_type",
+              "client_id",
+              "client_secret",
+              "username",
+              "password",
+              "scope",
+              "refresh_token"
+            ],
+            "paths": [
+              "/api/oauth"
+            ]
+          }
+        }
       },
       "privileges": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/oauth/privileges"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/oauth/privileges"
+            ]
+          }
+        }
       }
     },
     "certificateauthority": {
       "certificate": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET"
-        ],
-        "route": "/api/certificate"
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/certificate/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/certificate/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/certificate"
+            ]
+          }
+        }
+      },
+      "chain": {
+        "actions": {
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/certificate/{id}/chain"
+            ]
+          }
+        }
       },
       "device": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH"
-        ],
-        "route": "/api/onboard/device"
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "params": [
+              "disconnect_active_sessions",
+              "ignore_disconnect_errors"
+            ],
+            "paths": [
+              "/api/onboard/device/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/onboard/device/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/onboard/device"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "status",
+              "device_type",
+              "device_name",
+              "device_udid",
+              "device_imei",
+              "device_iccid",
+              "device_serial",
+              "product_name",
+              "product_version",
+              "mac_address",
+              "serial_number",
+              "usernames",
+              "enrolled",
+              "expanded_type",
+              "mdm_managed",
+              "device_identifier"
+            ],
+            "paths": [
+              "/api/onboard/device/{id}"
+            ]
+          }
+        }
+      },
+      "export": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "export_format",
+              "include_chain",
+              "include_ca",
+              "export_password",
+              "export_password2"
+            ],
+            "paths": [
+              "/api/certificate/{id}/export"
+            ]
+          }
+        }
       },
       "import": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/certificate/import"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "ca_id",
+              "type",
+              "certificate_file",
+              "certificate_file_encoding",
+              "key_file",
+              "key_file_encoding",
+              "key_passphrase"
+            ],
+            "paths": [
+              "/api/certificate/import"
+            ]
+          }
+        }
       },
       "new": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/certificate/new"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "ca_id",
+              "cert_type",
+              "country",
+              "state",
+              "locality",
+              "organization",
+              "organizational_unit",
+              "common_name",
+              "email_address",
+              "key_type",
+              "device_type",
+              "device_udid",
+              "device_imei",
+              "device_iccid",
+              "device_serial",
+              "mac_address",
+              "product_name",
+              "product_version",
+              "user_name",
+              "dns_name",
+              "issue_cert",
+              "days",
+              "device_name",
+              "custom_field",
+              "user_email_address"
+            ],
+            "paths": [
+              "/api/certificate/new"
+            ]
+          }
+        }
+      },
+      "reject": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "confirm_reject"
+            ],
+            "paths": [
+              "/api/certificate/{id}/reject"
+            ]
+          }
+        }
       },
       "request": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/certificate/request"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "ca_id",
+              "file_csr_encoding",
+              "file_csr",
+              "cert_type",
+              "issue_cert",
+              "days"
+            ],
+            "paths": [
+              "/api/certificate/request"
+            ]
+          }
+        }
+      },
+      "revoke": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "ca_id",
+              "confirm_revoke"
+            ],
+            "paths": [
+              "/api/certificate/{id}/revoke"
+            ]
+          }
+        }
+      },
+      "sign": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "ca_id",
+              "days",
+              "confirm_sign",
+              "custom_subject",
+              "custom_subject_alt_name"
+            ],
+            "paths": [
+              "/api/certificate/{id}/sign"
+            ]
+          }
+        }
       },
       "user": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH"
-        ],
-        "route": "/api/user"
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/user/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/user/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/user"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "status",
+              "username",
+              "device_count"
+            ],
+            "paths": [
+              "/api/user/{id}"
+            ]
+          }
+        }
       }
     },
     "endpointvisibility": {
       "device-fingerprint": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ],
-        "route": "/api/device-profiler/device-fingerprint"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "mac",
+              "ip",
+              "hostname",
+              "dhcp",
+              "active_sync",
+              "host",
+              "snmp",
+              "device",
+              "tcp",
+              "nmap",
+              "ssh",
+              "wmi",
+              "ports"
+            ],
+            "paths": [
+              "/api/device-profiler/device-fingerprint"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/device-profiler/device-fingerprint/{mac_or_ip}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/device-profiler/device-fingerprint/{mac_or_ip}"
+            ]
+          }
+        }
       },
       "fingerprint": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/fingerprint"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "category",
+              "family",
+              "name"
+            ],
+            "paths": [
+              "/api/fingerprint"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/fingerprint/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/fingerprint/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/fingerprint"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "category",
+              "family",
+              "name"
+            ],
+            "paths": [
+              "/api/fingerprint/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "category",
+              "family",
+              "name"
+            ],
+            "paths": [
+              "/api/fingerprint/{id}"
+            ]
+          }
+        }
+      },
+      "fingerprint-name": {
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/fingerprint/name/{category}/{family}/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/fingerprint/name/{category}/{family}/{name}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "category",
+              "family",
+              "name"
+            ],
+            "paths": [
+              "/api/fingerprint/name/{category}/{family}/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "category",
+              "family",
+              "name"
+            ],
+            "paths": [
+              "/api/fingerprint/name/{category}/{family}/{name}"
+            ]
+          }
+        }
       },
       "global-settings": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/onguard/global-settings"
-      },
-      "name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/onguard/policy-manager-zones/name"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "AllowRemoteDesktopSession",
+              "CacheCredentialsForDays",
+              "EnableClientLoadBalance",
+              "HealthCheckQuietPeriod",
+              "HideLogoutButton",
+              "InstallVPNComponent",
+              "KeepAliveIntervalSeconds",
+              "LogoutBounceDelay",
+              "RunOnGuardAs",
+              "ServerCertificateValidation",
+              "ServerCommunicationMode",
+              "SupportEmailAddress",
+              "UseCurrentOSLanguage",
+              "UseWindowsCredentials",
+              "VPNDeviceNames",
+              "VPNDeviceNamesMacOS",
+              "VPNDeviceNamesLinux",
+              "WiredAllowedSubnets",
+              "WirelessAllowedSubnets"
+            ],
+            "paths": [
+              "/api/onguard/global-settings"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/onguard/global-settings"
+            ]
+          }
+        }
       },
       "network-scan": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/config/network-scan"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "zone",
+              "type",
+              "seed_device_or_ip_subnet",
+              "scan_frequency",
+              "start_time",
+              "interval",
+              "day_of_week",
+              "depth",
+              "probe_arp",
+              "enabled"
+            ],
+            "paths": [
+              "/api/config/network-scan"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/config/network-scan/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/config/network-scan/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/config/network-scan"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "zone",
+              "type",
+              "seed_device_or_ip_subnet",
+              "scan_frequency",
+              "start_time",
+              "interval",
+              "day_of_week",
+              "depth",
+              "probe_arp",
+              "enabled"
+            ],
+            "paths": [
+              "/api/config/network-scan/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "zone",
+              "type",
+              "seed_device_or_ip_subnet",
+              "scan_frequency",
+              "start_time",
+              "interval",
+              "day_of_week",
+              "depth",
+              "probe_arp",
+              "enabled"
+            ],
+            "paths": [
+              "/api/config/network-scan/{id}"
+            ]
+          }
+        }
+      },
+      "network-scan-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/network-scan/{id}/disable"
+            ]
+          }
+        }
+      },
+      "network-scan-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/network-scan/{id}/enable"
+            ]
+          }
+        }
       },
       "onguard-custom-script": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/onguard-custom-script"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "os_type",
+              "script_type",
+              "attributes",
+              "output_format",
+              "output_details",
+              "rule_eval_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/onguard-custom-script"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/onguard-custom-script/{id}",
+              "/api/onguard-custom-script/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/onguard-custom-script/{id}",
+              "/api/onguard-custom-script/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/onguard-custom-script"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "os_type",
+              "script_type",
+              "attributes",
+              "output_format",
+              "output_details",
+              "rule_eval_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/onguard-custom-script/{id}",
+              "/api/onguard-custom-script/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "attributes",
+              "output_format",
+              "output_details",
+              "rule_eval_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/onguard-custom-script/{id}",
+              "/api/onguard-custom-script/name/{name}"
+            ]
+          }
+        }
       },
       "policy-manager-zones": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/onguard/policy-manager-zones"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "policy_manager_zone_name",
+              "client_subnets",
+              "override_server_ips"
+            ],
+            "paths": [
+              "/api/onguard/policy-manager-zones"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/onguard/policy-manager-zones/{id}",
+              "/api/onguard/policy-manager-zones/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/onguard/policy-manager-zones/{id}",
+              "/api/onguard/policy-manager-zones/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/onguard/policy-manager-zones"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "client_subnets",
+              "override_server_ips"
+            ],
+            "paths": [
+              "/api/onguard/policy-manager-zones/{id}",
+              "/api/onguard/policy-manager-zones/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "client_subnets",
+              "override_server_ips"
+            ],
+            "paths": [
+              "/api/onguard/policy-manager-zones/{id}",
+              "/api/onguard/policy-manager-zones/name/{name}"
+            ]
+          }
+        }
       },
       "profiler-subnet-mapping": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/profiler-subnet-mapping"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "network",
+              "scan_type",
+              "ext_accounts"
+            ],
+            "paths": [
+              "/api/profiler-subnet-mapping"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/{profiler_subnet_mapping_id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/{profiler_subnet_mapping_id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/profiler-subnet-mapping"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "network",
+              "scan_type",
+              "ext_accounts"
+            ],
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/{profiler_subnet_mapping_id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "network",
+              "scan_type",
+              "ext_accounts"
+            ],
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/{profiler_subnet_mapping_id}"
+            ]
+          }
+        }
+      },
+      "profiler-subnet-mapping-network": {
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/network/{network}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/network/{network}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "network",
+              "scan_type",
+              "ext_accounts"
+            ],
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/network/{network}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "network",
+              "scan_type",
+              "ext_accounts"
+            ],
+            "paths": [
+              "/api/profiler-subnet-mapping/{scan_type}/network/{network}"
+            ]
+          }
+        }
       },
       "settings": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/onguard/settings"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "client_os",
+              "domain_account",
+              "ssh_account",
+              "working_dir",
+              "action",
+              "servers",
+              "download_url",
+              "validate_url_cert",
+              "override_checksum",
+              "checksums_32",
+              "checksums_64",
+              "mode",
+              "interfaces",
+              "web_agent_interfaces",
+              "auth_type",
+              "field_username_caption",
+              "field_password_caption",
+              "cert_filter_criteria",
+              "upgrade_action",
+              "install_vpn_component",
+              "version",
+              "agentLibraryVersion",
+              "installer_modified_time",
+              "installer_modified_time_formatted",
+              "agent_installers",
+              "agent_web_installers",
+              "ip_version_onguard",
+              "ip_version_native",
+              "custom_remediation"
+            ],
+            "paths": [
+              "/api/agentless-onguard/settings",
+              "/api/onguard/settings"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/agentless-onguard/settings/{id}",
+              "/api/agentless-onguard/settings/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/agentless-onguard/settings/{id}",
+              "/api/agentless-onguard/settings/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/agentless-onguard/settings",
+              "/api/onguard/settings"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "client_os",
+              "domain_account",
+              "ssh_account",
+              "working_dir",
+              "action",
+              "servers",
+              "download_url",
+              "validate_url_cert",
+              "override_checksum",
+              "checksums_32",
+              "checksums_64"
+            ],
+            "paths": [
+              "/api/agentless-onguard/settings/{id}",
+              "/api/agentless-onguard/settings/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "client_os",
+              "domain_account",
+              "ssh_account",
+              "working_dir",
+              "action",
+              "servers",
+              "download_url",
+              "validate_url_cert",
+              "override_checksum",
+              "checksums_32",
+              "checksums_64"
+            ],
+            "paths": [
+              "/api/agentless-onguard/settings/{id}",
+              "/api/agentless-onguard/settings/name/{name}"
+            ]
+          }
+        }
       },
       "subnet-mapping": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/agentless-onguard/subnet-mapping"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "client_subnets",
+              "zone",
+              "agentless_onguard_setting_windows",
+              "agentless_onguard_setting_macOS",
+              "agentless_onguard_setting_linux",
+              "client_scan_setting",
+              "enabled"
+            ],
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}",
+              "/api/agentless-onguard/subnet-mapping/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}",
+              "/api/agentless-onguard/subnet-mapping/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "client_subnets",
+              "zone",
+              "agentless_onguard_setting_windows",
+              "agentless_onguard_setting_macOS",
+              "agentless_onguard_setting_linux",
+              "client_scan_setting",
+              "enabled"
+            ],
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}",
+              "/api/agentless-onguard/subnet-mapping/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "client_subnets",
+              "zone",
+              "agentless_onguard_setting_windows",
+              "agentless_onguard_setting_macOS",
+              "agentless_onguard_setting_linux",
+              "client_scan_setting",
+              "enabled"
+            ],
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}",
+              "/api/agentless-onguard/subnet-mapping/name/{name}"
+            ]
+          }
+        }
+      },
+      "subnet-mapping-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}/disable"
+            ]
+          }
+        }
+      },
+      "subnet-mapping-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/{id}/enable"
+            ]
+          }
+        }
+      },
+      "subnet-mapping-name-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/name/{name}/disable"
+            ]
+          }
+        }
+      },
+      "subnet-mapping-name-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/agentless-onguard/subnet-mapping/name/{name}/enable"
+            ]
+          }
+        }
       }
     },
     "globalserverconfiguration": {
-      "activate-offline": {
-        "actions": [],
-        "methods": [
-          "PATCH"
-        ],
-        "route": "/api/application-license/activate-offline"
-      },
-      "activate-online": {
-        "actions": [],
-        "methods": [
-          "PATCH"
-        ],
-        "route": "/api/application-license/activate-online"
-      },
       "admin-privilege": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/admin-privilege"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "access_type",
+              "cppm_privileges",
+              "insight_privileges",
+              "allow_passwords",
+              "allow_security_configs"
+            ],
+            "paths": [
+              "/api/admin-privilege"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/admin-privilege/{id}",
+              "/api/admin-privilege/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/admin-privilege/{id}",
+              "/api/admin-privilege/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/admin-privilege"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "access_type",
+              "cppm_privileges",
+              "insight_privileges",
+              "allow_passwords",
+              "allow_security_configs"
+            ],
+            "paths": [
+              "/api/admin-privilege/{id}",
+              "/api/admin-privilege/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "access_type",
+              "cppm_privileges",
+              "insight_privileges",
+              "allow_passwords",
+              "allow_security_configs"
+            ],
+            "paths": [
+              "/api/admin-privilege/{id}",
+              "/api/admin-privilege/name/{name}"
+            ]
+          }
+        }
       },
       "admin-user": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/admin-user"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "user_id",
+              "enabled",
+              "password",
+              "privilege_level"
+            ],
+            "paths": [
+              "/api/admin-user"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/admin-user/{id}",
+              "/api/admin-user/user-id/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/admin-user/{id}",
+              "/api/admin-user/user-id/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/admin-user"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "user_id",
+              "enabled",
+              "password",
+              "privilege_level"
+            ],
+            "paths": [
+              "/api/admin-user/{id}",
+              "/api/admin-user/user-id/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "user_id",
+              "enabled",
+              "password",
+              "privilege_level"
+            ],
+            "paths": [
+              "/api/admin-user/{id}",
+              "/api/admin-user/user-id/{id}"
+            ]
+          }
+        }
       },
       "all-privileges": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/oauth/all-privileges"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "params": [
+              "format"
+            ],
+            "paths": [
+              "/api/oauth/all-privileges"
+            ]
+          }
+        }
       },
       "application-license": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/application-license"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "license_key"
+            ],
+            "paths": [
+              "/api/application-license"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/application-license/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/application-license/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/application-license"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "license_key"
+            ],
+            "paths": [
+              "/api/application-license/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/application-license/activate-online/{id}",
+              "/api/application-license/activate-offline/{id}"
+            ]
+          }
+        }
+      },
+      "application-license-summary": {
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/application-license/summary"
+            ]
+          }
+        }
       },
       "attribute": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/attribute"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "entity_name",
+              "data_type",
+              "mandatory",
+              "default_value",
+              "allow_multiple",
+              "allowed_value"
+            ],
+            "paths": [
+              "/api/attribute"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/attribute/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/attribute/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/attribute"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "entity_name",
+              "data_type",
+              "mandatory",
+              "default_value",
+              "allow_multiple",
+              "allowed_value"
+            ],
+            "paths": [
+              "/api/attribute/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "entity_name",
+              "data_type",
+              "mandatory",
+              "default_value",
+              "allow_multiple",
+              "allowed_value"
+            ],
+            "paths": [
+              "/api/attribute/{id}"
+            ]
+          }
+        }
+      },
+      "attribute-name": {
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/attribute/{entity_name}/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/attribute/{entity_name}/name/{name}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "entity_name",
+              "data_type",
+              "mandatory",
+              "default_value",
+              "allow_multiple",
+              "allowed_value"
+            ],
+            "paths": [
+              "/api/attribute/{entity_name}/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "entity_name",
+              "data_type",
+              "mandatory",
+              "default_value",
+              "allow_multiple",
+              "allowed_value"
+            ],
+            "paths": [
+              "/api/attribute/{entity_name}/name/{name}"
+            ]
+          }
+        }
       },
       "clearpass-portal": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/clearpass-portal"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "title",
+              "header",
+              "footer",
+              "copyright",
+              "app_name",
+              "guest_portal",
+              "url"
+            ],
+            "paths": [
+              "/api/clearpass-portal"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/clearpass-portal"
+            ]
+          }
+        }
       },
       "db-sync": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/cluster/db-sync"
-      },
-      "essaging-setup": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ],
-        "route": "/api/messaging-setup"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "timeout"
+            ],
+            "paths": [
+              "/api/cluster/db-sync"
+            ]
+          }
+        }
       },
       "file-backup-server": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/file-backup-server"
-      },
-      "host-address": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/file-backup-server/host-address"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "host_address",
+              "description",
+              "protocol",
+              "port",
+              "username",
+              "password",
+              "time_out",
+              "remote_dir",
+              "cppm_servers"
+            ],
+            "paths": [
+              "/api/file-backup-server"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/file-backup-server/{id}",
+              "/api/file-backup-server/host-address/{host_address}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/file-backup-server/{id}",
+              "/api/file-backup-server/host-address/{host_address}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/file-backup-server"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "host_address",
+              "description",
+              "protocol",
+              "port",
+              "username",
+              "password",
+              "time_out",
+              "remote_dir",
+              "cppm_servers"
+            ],
+            "paths": [
+              "/api/file-backup-server/{id}",
+              "/api/file-backup-server/host-address/{host_address}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "host_address",
+              "description",
+              "protocol",
+              "port",
+              "username",
+              "password",
+              "time_out",
+              "remote_dir",
+              "cppm_servers"
+            ],
+            "paths": [
+              "/api/file-backup-server/{id}",
+              "/api/file-backup-server/host-address/{host_address}"
+            ]
+          }
+        }
       },
       "messaging-setup": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ],
-        "route": "/api/messaging-setup"
-      },
-      "name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/snmp-trap-receiver/name"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "server_name",
+              "user_name",
+              "password",
+              "default_from_address",
+              "connection_security",
+              "port",
+              "connection_timeout"
+            ],
+            "paths": [
+              "/api/messaging-setup"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/messaging-setup"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/messaging-setup"
+            ]
+          }
+        }
       },
       "operator-profile": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/operator-profile"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "id",
+              "name",
+              "comment",
+              "enabled",
+              "privileges",
+              "user_dbs_list",
+              "sponsor_filter",
+              "filter_useraccount",
+              "filter_radacct",
+              "max_users",
+              "max_devices",
+              "userskin",
+              "userskin_name",
+              "start_page",
+              "lang",
+              "timezone_id",
+              "override_ui",
+              "override_guest_sessions",
+              "override_change_expiration",
+              "override_create_multi_result",
+              "override_create_multi",
+              "override_mac_create",
+              "override_mac_create_receipt",
+              "override_create_user",
+              "override_create_user_receipt",
+              "override_guest_edit",
+              "override_guest_multi",
+              "override_mac_edit",
+              "override_mac_multi",
+              "override_guest_multi_form",
+              "override_mac_multi_form",
+              "override_guest_multi_result",
+              "override_mac_multi_result",
+              "override_mac_export",
+              "override_guest_export",
+              "override_mac_list",
+              "override_guest_users",
+              "override_guest_edit_receipt",
+              "override_mac_edit_receipt"
+            ],
+            "paths": [
+              "/api/operator-profile"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/operator-profile/{id}",
+              "/api/operator-profile/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/operator-profile/{id}",
+              "/api/operator-profile/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/operator-profile"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "id",
+              "name",
+              "comment",
+              "enabled",
+              "privileges",
+              "user_dbs_list",
+              "sponsor_filter",
+              "filter_useraccount",
+              "filter_radacct",
+              "max_users",
+              "max_devices",
+              "userskin",
+              "userskin_name",
+              "start_page",
+              "lang",
+              "timezone_id",
+              "override_ui",
+              "override_guest_sessions",
+              "override_change_expiration",
+              "override_create_multi_result",
+              "override_create_multi",
+              "override_mac_create",
+              "override_mac_create_receipt",
+              "override_create_user",
+              "override_create_user_receipt",
+              "override_guest_edit",
+              "override_guest_multi",
+              "override_mac_edit",
+              "override_mac_multi",
+              "override_guest_multi_form",
+              "override_mac_multi_form",
+              "override_guest_multi_result",
+              "override_mac_multi_result",
+              "override_mac_export",
+              "override_guest_export",
+              "override_mac_list",
+              "override_guest_users",
+              "override_guest_edit_receipt",
+              "override_mac_edit_receipt"
+            ],
+            "paths": [
+              "/api/operator-profile/{id}",
+              "/api/operator-profile/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "name",
+              "comment",
+              "enabled",
+              "privileges",
+              "user_dbs_list",
+              "sponsor_filter",
+              "filter_useraccount",
+              "filter_radacct",
+              "max_users",
+              "max_devices",
+              "userskin",
+              "userskin_name",
+              "start_page",
+              "lang",
+              "timezone_id",
+              "override_ui",
+              "override_guest_sessions",
+              "override_change_expiration",
+              "override_create_multi_result",
+              "override_create_multi",
+              "override_mac_create",
+              "override_mac_create_receipt",
+              "override_create_user",
+              "override_create_user_receipt",
+              "override_guest_edit",
+              "override_guest_multi",
+              "override_mac_edit",
+              "override_mac_multi",
+              "override_guest_multi_form",
+              "override_mac_multi_form",
+              "override_guest_multi_result",
+              "override_mac_multi_result",
+              "override_mac_export",
+              "override_guest_export",
+              "override_mac_list",
+              "override_guest_users",
+              "override_guest_edit_receipt",
+              "override_mac_edit_receipt"
+            ],
+            "paths": [
+              "/api/operator-profile/{id}",
+              "/api/operator-profile/name/{name}"
+            ]
+          }
+        }
       },
       "parameters": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/cluster/parameters"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/cluster/parameters"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "ConsoleSessionIdleTimeout",
+              "ExpiredGuestAccountsCleanupInterval",
+              "ContextServerPollStartTime",
+              "ProcessWiredFromIfMap",
+              "PostAuthUnsubscribeEndpoints",
+              "KnownEndpointsCleanupInterval",
+              "SessionLogsCleanupInterval",
+              "PostAuthV2",
+              "AdminSessionIdleTimeout",
+              "TacacsAllowUnencryptedCommunication",
+              "NotificationEmailAddress",
+              "CommonCriteriaMode",
+              "FreeDiskSpaceThreshold",
+              "SystemAlertLevel",
+              "ContentSecurityPolicy",
+              "ProfilerPostureEnable",
+              "CLISessionIdleTimeout",
+              "ProfilerNmapEnable",
+              "AutoBackupConfigOptions",
+              "UnknownEndpointsCleanupInterval",
+              "DisableTLS1.0",
+              "DisableTLS1.1",
+              "EnablePublisherFailover",
+              "AdminUserLoginRemoteTacacsServerPort",
+              "ContextServerPollInterval",
+              "InformationStoredCleanupInterval",
+              "ProfiledUnknownEndpointsCleanupInterval",
+              "ProfilingAutoUpdatesFlag",
+              "OnGuardAutoUpdatesFlag",
+              "UseTacacsSessionFromUsername",
+              "AdminUserLoginRemoteTacacsServerIP",
+              "SyslogBatchInterval",
+              "IgnoreConflictNetworkBootAgents",
+              "ProfilerSubnetScanInterval",
+              "ICMPv6Filters",
+              "UserPrompt",
+              "NotificationSmsAddress",
+              "SSHCipherMode",
+              "EnableTelemetry",
+              "LoginBannerText",
+              "StoreReversibleLocalUserPasswords",
+              "AdminUserLoginRemoteTacacsServerSecret",
+              "SoftwareAutoUpdatesFlag",
+              "StandbyFailoverWaitTime",
+              "ProfilerConflictStrictMode",
+              "ClearPassZoneCache",
+              "StaticIPEndpointsCleanupOption",
+              "DesignatedStandbyPublisher",
+              "AlertNotificationTimeout",
+              "FreeMemoryThreshold",
+              "NetflowReprofileInterval",
+              "TacacsDisableChangePassword",
+              "DbAppexternalUserPassword",
+              "TacacsIdleTimeout",
+              "AdminUserLoginTacacsClientIpSetByHeaderXFF",
+              "EnableNTLMV1ForWmi",
+              "allowConcurrentLogin",
+              "PerformanceMonitorRenderingPort",
+              "ClusterCommunicationMode",
+              "PolicyResultCacheTimeout",
+              "ProfiledKnownEndpointsCleanupOption",
+              "ProfilerScanPorts",
+              "ReplicationBatchInterval",
+              "StorePasswordHash",
+              "AuditRecordsCleanupInterval",
+              "PasswordPrompt"
+            ],
+            "paths": [
+              "/api/cluster/parameters"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "ConsoleSessionIdleTimeout",
+              "ExpiredGuestAccountsCleanupInterval",
+              "ContextServerPollStartTime",
+              "ProcessWiredFromIfMap",
+              "PostAuthUnsubscribeEndpoints",
+              "KnownEndpointsCleanupInterval",
+              "SessionLogsCleanupInterval",
+              "PostAuthV2",
+              "AdminSessionIdleTimeout",
+              "TacacsAllowUnencryptedCommunication",
+              "NotificationEmailAddress",
+              "CommonCriteriaMode",
+              "FreeDiskSpaceThreshold",
+              "SystemAlertLevel",
+              "ContentSecurityPolicy",
+              "ProfilerPostureEnable",
+              "CLISessionIdleTimeout",
+              "ProfilerNmapEnable",
+              "AutoBackupConfigOptions",
+              "UnknownEndpointsCleanupInterval",
+              "DisableTLS1.0",
+              "DisableTLS1.1",
+              "EnablePublisherFailover",
+              "AdminUserLoginRemoteTacacsServerPort",
+              "ContextServerPollInterval",
+              "InformationStoredCleanupInterval",
+              "ProfiledUnknownEndpointsCleanupInterval",
+              "ProfilingAutoUpdatesFlag",
+              "OnGuardAutoUpdatesFlag",
+              "UseTacacsSessionFromUsername",
+              "AdminUserLoginRemoteTacacsServerIP",
+              "SyslogBatchInterval",
+              "IgnoreConflictNetworkBootAgents",
+              "ProfilerSubnetScanInterval",
+              "ICMPv6Filters",
+              "UserPrompt",
+              "NotificationSmsAddress",
+              "SSHCipherMode",
+              "EnableTelemetry",
+              "LoginBannerText",
+              "StoreReversibleLocalUserPasswords",
+              "AdminUserLoginRemoteTacacsServerSecret",
+              "SoftwareAutoUpdatesFlag",
+              "StandbyFailoverWaitTime",
+              "ProfilerConflictStrictMode",
+              "ClearPassZoneCache",
+              "StaticIPEndpointsCleanupOption",
+              "DesignatedStandbyPublisher",
+              "AlertNotificationTimeout",
+              "FreeMemoryThreshold",
+              "NetflowReprofileInterval",
+              "TacacsDisableChangePassword",
+              "DbAppexternalUserPassword",
+              "TacacsIdleTimeout",
+              "AdminUserLoginTacacsClientIpSetByHeaderXFF",
+              "EnableNTLMV1ForWmi",
+              "allowConcurrentLogin",
+              "PerformanceMonitorRenderingPort",
+              "ClusterCommunicationMode",
+              "PolicyResultCacheTimeout",
+              "ProfiledKnownEndpointsCleanupOption",
+              "ProfilerScanPorts",
+              "ReplicationBatchInterval",
+              "StorePasswordHash",
+              "AuditRecordsCleanupInterval",
+              "PasswordPrompt"
+            ],
+            "paths": [
+              "/api/cluster/parameters"
+            ]
+          }
+        }
       },
       "password-policy": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/local-user/password-policy"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/admin-user/password-policy",
+              "/api/local-user/password-policy"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "password_minimum_length",
+              "password_complexity",
+              "password_disallowed_characters",
+              "password_disallowed_words",
+              "password_prohibit_user_id",
+              "password_prohibit_repeated_chars",
+              "password_expiry_days",
+              "disable_after_failed_attempts",
+              "reset_failed_attempts_count",
+              "password_remember_history",
+              "reminder_days",
+              "reminder_message",
+              "disable_after_days",
+              "disable_after_date",
+              "disable_after_unchanged_days"
+            ],
+            "paths": [
+              "/api/admin-user/password-policy",
+              "/api/local-user/password-policy"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "password_minimum_length",
+              "password_complexity",
+              "password_disallowed_characters",
+              "password_disallowed_words",
+              "password_prohibit_user_id",
+              "password_prohibit_repeated_chars",
+              "password_expiry_days",
+              "disable_after_failed_attempts",
+              "reset_failed_attempts_count",
+              "password_remember_history",
+              "reminder_days",
+              "reminder_message",
+              "disable_after_days",
+              "disable_after_date",
+              "disable_after_unchanged_days"
+            ],
+            "paths": [
+              "/api/admin-user/password-policy",
+              "/api/local-user/password-policy"
+            ]
+          }
+        }
       },
       "policy-manager-zones": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/server/policy-manager-zones"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "zone_name"
+            ],
+            "paths": [
+              "/api/server/policy-manager-zones"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/server/policy-manager-zones/{id}",
+              "/api/server/policy-manager-zones/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server/policy-manager-zones/{id}",
+              "/api/server/policy-manager-zones/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/server/policy-manager-zones"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "zone_name"
+            ],
+            "paths": [
+              "/api/server/policy-manager-zones/{id}",
+              "/api/server/policy-manager-zones/name/{name}"
+            ]
+          }
+        }
       },
       "snmp-trap-receiver": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/snmp-trap-receiver"
-      },
-      "summary": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/application-license/summary"
-      },
-      "user-id": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/admin-user/user-id"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "host_address",
+              "description",
+              "snmp_version",
+              "community_string",
+              "server_port",
+              "user",
+              "type",
+              "auth_key",
+              "priv_key",
+              "priv_protocol",
+              "auth_protocol",
+              "security_level"
+            ],
+            "paths": [
+              "/api/snmp-trap-receiver"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/snmp-trap-receiver/{id}",
+              "/api/snmp-trap-receiver/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/snmp-trap-receiver/{id}",
+              "/api/snmp-trap-receiver/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/snmp-trap-receiver"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "host_address",
+              "description",
+              "snmp_version",
+              "community_string",
+              "server_port",
+              "user",
+              "type",
+              "auth_key",
+              "priv_key",
+              "priv_protocol",
+              "auth_protocol",
+              "security_level"
+            ],
+            "paths": [
+              "/api/snmp-trap-receiver/{id}",
+              "/api/snmp-trap-receiver/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "host_address",
+              "description",
+              "snmp_version",
+              "community_string",
+              "server_port",
+              "user",
+              "type",
+              "auth_key",
+              "priv_key",
+              "priv_protocol",
+              "auth_protocol",
+              "security_level"
+            ],
+            "paths": [
+              "/api/snmp-trap-receiver/{id}",
+              "/api/snmp-trap-receiver/name/{name}"
+            ]
+          }
+        }
       }
     },
-    "guestactions": {},
+    "guestactions": {
+      "sms": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "confirm"
+            ],
+            "paths": [
+              "/api/guest/{id}/sendreceipt/sms"
+            ]
+          }
+        }
+      },
+      "smtp": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "confirm"
+            ],
+            "paths": [
+              "/api/guest/{id}/sendreceipt/smtp"
+            ]
+          }
+        }
+      },
+      "sponsor": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "token",
+              "register_token",
+              "register_reject",
+              "role_id",
+              "modify_expire_time",
+              "confirm_expire_time",
+              "id"
+            ],
+            "paths": [
+              "/api/guest/{id}/sponsor"
+            ]
+          }
+        }
+      },
+      "{id}": {
+        "actions": {
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/guest/{guest_id}/pass/{id}",
+              "/api/guest/{guest_id}/receipt/{id}"
+            ]
+          }
+        }
+      }
+    },
     "guestconfiguration": {
       "authentication": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "PATCH",
-          "POST"
-        ],
-        "route": "/api/guest/authentication"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "g_admin_access_guest_require_https",
+              "change_of_authorization",
+              "g_radius_default_vendor",
+              "g_radius_server_bind_3576",
+              "g_radius_internal_auth_type"
+            ],
+            "paths": [
+              "/api/guest/authentication"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/guest/authentication"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "g_admin_access_guest_require_https",
+              "change_of_authorization",
+              "g_radius_default_vendor",
+              "g_radius_server_bind_3576",
+              "g_radius_internal_auth_type"
+            ],
+            "paths": [
+              "/api/guest/authentication"
+            ]
+          }
+        }
       },
       "guestmanager": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "PATCH",
-          "POST"
-        ],
-        "route": "/api/guestmanager"
-      },
-      "page-name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/weblogin/page-name"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "random_username_method",
+              "random_username_multi_prefix",
+              "random_username_picture",
+              "random_username_length",
+              "guest_initial_sequence_options",
+              "random_password_method",
+              "random_password_picture",
+              "random_password_length",
+              "guest_password_complexity",
+              "guest_password_minimum",
+              "guest_password_disallowed",
+              "guest_password_disallowed_words",
+              "guest_view_account_password",
+              "guest_do_expire",
+              "guest_account_expiry_options",
+              "guest_modify_expire_time_options",
+              "guest_lifetime_options",
+              "g_action_notify_account_expire_enabled",
+              "g_action_notify_account_expiration_duration",
+              "g_action_notify_account_expire_email_unknown",
+              "g_action_notify_account_expire_email_unknown_fixed",
+              "g_action_notify_account_expire_email_unknown_domain",
+              "g_action_notify_account_expire_subject",
+              "g_action_notify_account_expire_message",
+              "g_action_notify_account_expire_skin",
+              "g_action_notify_account_expire_copies",
+              "g_action_notify_account_expire_copies_to",
+              "g_action_notify_device_expire_email_unknown",
+              "g_action_notify_device_expire_email_unknown_fixed",
+              "g_action_notify_device_expire_subject",
+              "g_action_notify_device_expire_message",
+              "g_action_notify_device_expire_skin",
+              "g_action_notify_device_expire_copies",
+              "g_action_notify_device_expire_copies_to",
+              "site_ssid",
+              "site_wpa_key",
+              "guest_receipt_print_button",
+              "guest_account_terms_of_use_url",
+              "guest_active_sessions",
+              "guest_about_guest_network_access"
+            ],
+            "paths": [
+              "/api/guestmanager"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/guestmanager"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "random_username_method",
+              "random_username_multi_prefix",
+              "random_username_picture",
+              "random_username_length",
+              "guest_initial_sequence_options",
+              "random_password_method",
+              "random_password_picture",
+              "random_password_length",
+              "guest_password_complexity",
+              "guest_password_minimum",
+              "guest_password_disallowed",
+              "guest_password_disallowed_words",
+              "guest_view_account_password",
+              "guest_do_expire",
+              "guest_account_expiry_options",
+              "guest_modify_expire_time_options",
+              "guest_lifetime_options",
+              "g_action_notify_account_expire_enabled",
+              "g_action_notify_account_expiration_duration",
+              "g_action_notify_account_expire_email_unknown",
+              "g_action_notify_account_expire_email_unknown_fixed",
+              "g_action_notify_account_expire_email_unknown_domain",
+              "g_action_notify_account_expire_subject",
+              "g_action_notify_account_expire_message",
+              "g_action_notify_account_expire_skin",
+              "g_action_notify_account_expire_copies",
+              "g_action_notify_account_expire_copies_to",
+              "g_action_notify_device_expire_email_unknown",
+              "g_action_notify_device_expire_email_unknown_fixed",
+              "g_action_notify_device_expire_subject",
+              "g_action_notify_device_expire_message",
+              "g_action_notify_device_expire_skin",
+              "g_action_notify_device_expire_copies",
+              "g_action_notify_device_expire_copies_to",
+              "site_ssid",
+              "site_wpa_key",
+              "guest_receipt_print_button",
+              "guest_account_terms_of_use_url",
+              "guest_active_sessions",
+              "guest_about_guest_network_access"
+            ],
+            "paths": [
+              "/api/guestmanager"
+            ]
+          }
+        }
       },
       "pass": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/template/pass"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "id",
+              "name",
+              "description",
+              "background_color",
+              "foreground_color",
+              "reset",
+              "label_color",
+              "summary_template",
+              "pass_style",
+              "transit_type",
+              "icon_image",
+              "logo_image",
+              "logo_text_template",
+              "background_image",
+              "thumbnail_image",
+              "strip_image",
+              "strip_shine",
+              "footer_image",
+              "pass_fields",
+              "relevant_locations",
+              "pass_locations",
+              "relevant_date",
+              "relevant_date_mode",
+              "relevant_date_rank",
+              "relevant_date_template",
+              "associated_apps",
+              "pass_apps"
+            ],
+            "paths": [
+              "/api/template/pass"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/template/pass/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/template/pass/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/template/pass"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "id",
+              "name",
+              "description",
+              "background_color",
+              "foreground_color",
+              "reset",
+              "label_color",
+              "summary_template",
+              "pass_style",
+              "transit_type",
+              "icon_image",
+              "logo_image",
+              "logo_text_template",
+              "background_image",
+              "thumbnail_image",
+              "strip_image",
+              "strip_shine",
+              "footer_image",
+              "pass_fields",
+              "relevant_locations",
+              "pass_locations",
+              "relevant_date",
+              "relevant_date_mode",
+              "relevant_date_rank",
+              "relevant_date_template",
+              "associated_apps",
+              "pass_apps"
+            ],
+            "paths": [
+              "/api/template/pass/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "name",
+              "description",
+              "background_color",
+              "foreground_color",
+              "reset",
+              "label_color",
+              "summary_template",
+              "pass_style",
+              "transit_type",
+              "icon_image",
+              "logo_image",
+              "logo_text_template",
+              "background_image",
+              "thumbnail_image",
+              "strip_image",
+              "strip_shine",
+              "footer_image",
+              "pass_fields",
+              "relevant_locations",
+              "pass_locations",
+              "relevant_date",
+              "relevant_date_mode",
+              "relevant_date_rank",
+              "relevant_date_template",
+              "associated_apps",
+              "pass_apps"
+            ],
+            "paths": [
+              "/api/template/pass/{id}"
+            ]
+          }
+        }
       },
       "print": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/template/print"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "id",
+              "name",
+              "enabled",
+              "columns",
+              "per_account",
+              "header",
+              "footer",
+              "wizard_template",
+              "wizard_logo",
+              "wizard_title",
+              "wizard_subtitle",
+              "wizard_field_header",
+              "wizard_fields",
+              "wizard_notes",
+              "wizard_footer"
+            ],
+            "paths": [
+              "/api/template/print"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/template/print/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/template/print/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/template/print"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "id",
+              "name",
+              "enabled",
+              "columns",
+              "per_account",
+              "header",
+              "footer",
+              "wizard_template",
+              "wizard_logo",
+              "wizard_title",
+              "wizard_subtitle",
+              "wizard_field_header",
+              "wizard_fields",
+              "wizard_notes",
+              "wizard_footer"
+            ],
+            "paths": [
+              "/api/template/print/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "name",
+              "enabled",
+              "columns",
+              "per_account",
+              "header",
+              "footer",
+              "wizard_template",
+              "wizard_logo",
+              "wizard_title",
+              "wizard_subtitle",
+              "wizard_field_header",
+              "wizard_fields",
+              "wizard_notes",
+              "wizard_footer"
+            ],
+            "paths": [
+              "/api/template/print/{id}"
+            ]
+          }
+        }
       },
       "weblogin": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/weblogin"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "id",
+              "name",
+              "page_name",
+              "description",
+              "vendor_preset",
+              "vendor_ip",
+              "require_https",
+              "webauth",
+              "form_action",
+              "form_method",
+              "form_username_label",
+              "form_username",
+              "form_username_suffix",
+              "form_password_label",
+              "form_password",
+              "form_extra",
+              "submit_label",
+              "form_password_encryption",
+              "uam_secret",
+              "url",
+              "default_url",
+              "default_url_override",
+              "dynamic_address",
+              "dynamic_allowlist",
+              "dynamic_denylist",
+              "access_allowlist",
+              "access_denylist",
+              "access_if_denied",
+              "login_title",
+              "login_header",
+              "login_footer",
+              "login_message",
+              "login_delay",
+              "login_skin",
+              "login_terms_require",
+              "login_terms_label",
+              "login_terms_text",
+              "login_terms_layout",
+              "login_terms_error",
+              "login_captcha",
+              "username_auth",
+              "certificate_request",
+              "username_auth_username",
+              "certificate_auth",
+              "register_policy_manager",
+              "register_policy_manager_adv",
+              "register_policy_manager_attrs",
+              "hash_url",
+              "hash_secret",
+              "bypass_cna",
+              "onguard_healthcheck",
+              "onguard_agents",
+              "onguard_header",
+              "onguard_footer",
+              "oauth_enabled",
+              "oauth_debug",
+              "oauth_providers",
+              "login_custom_form",
+              "login_pre_auth_check",
+              "login_pre_auth_error",
+              "mfa_enabled",
+              "mfa_first",
+              "mfa_duo_ikey",
+              "mfa_duo_skey",
+              "mfa_duo_host",
+              "mfa_fn_client_id",
+              "mfa_fn_client_secret",
+              "mfa_fn_factors",
+              "mfa_fn_email",
+              "mfa_iws_tenant",
+              "mfa_iws_app",
+              "mfa_iws_hostname",
+              "mfa_mc_scope",
+              "mfa_mc_context",
+              "mfa_mc_binding_message",
+              "mfa_mc_acr_values",
+              "mfa_mc_display",
+              "mfa_mc_prompt",
+              "mfa_mc_max_age",
+              "mfa_mc_login_hint",
+              "mfa_mc_version",
+              "mfa_mc_discovery_service_endpoint",
+              "mfa_mc_redirect_url",
+              "mfa_mc_client_id",
+              "mfa_mc_client_secret",
+              "mfa_header_html",
+              "mfa_footer_html"
+            ],
+            "paths": [
+              "/api/weblogin"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/weblogin/{id}",
+              "/api/weblogin/page-name/{page-name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/weblogin/{id}",
+              "/api/weblogin/page-name/{page-name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/weblogin"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "id",
+              "name",
+              "page_name",
+              "description",
+              "vendor_preset",
+              "vendor_ip",
+              "require_https",
+              "webauth",
+              "form_action",
+              "form_method",
+              "form_username_label",
+              "form_username",
+              "form_username_suffix",
+              "form_password_label",
+              "form_password",
+              "form_extra",
+              "submit_label",
+              "form_password_encryption",
+              "uam_secret",
+              "url",
+              "default_url",
+              "default_url_override",
+              "dynamic_address",
+              "dynamic_allowlist",
+              "dynamic_denylist",
+              "access_allowlist",
+              "access_denylist",
+              "access_if_denied",
+              "login_title",
+              "login_header",
+              "login_footer",
+              "login_message",
+              "login_delay",
+              "login_skin",
+              "login_terms_require",
+              "login_terms_label",
+              "login_terms_text",
+              "login_terms_layout",
+              "login_terms_error",
+              "login_captcha",
+              "username_auth",
+              "certificate_request",
+              "username_auth_username",
+              "certificate_auth",
+              "register_policy_manager",
+              "register_policy_manager_adv",
+              "register_policy_manager_attrs",
+              "hash_url",
+              "hash_secret",
+              "bypass_cna",
+              "onguard_healthcheck",
+              "onguard_agents",
+              "onguard_header",
+              "onguard_footer",
+              "oauth_enabled",
+              "oauth_debug",
+              "oauth_providers",
+              "login_custom_form",
+              "login_pre_auth_check",
+              "login_pre_auth_error",
+              "mfa_enabled",
+              "mfa_first",
+              "mfa_duo_ikey",
+              "mfa_duo_skey",
+              "mfa_duo_host",
+              "mfa_fn_client_id",
+              "mfa_fn_client_secret",
+              "mfa_fn_factors",
+              "mfa_fn_email",
+              "mfa_iws_tenant",
+              "mfa_iws_app",
+              "mfa_iws_hostname",
+              "mfa_mc_scope",
+              "mfa_mc_context",
+              "mfa_mc_binding_message",
+              "mfa_mc_acr_values",
+              "mfa_mc_display",
+              "mfa_mc_prompt",
+              "mfa_mc_max_age",
+              "mfa_mc_login_hint",
+              "mfa_mc_version",
+              "mfa_mc_discovery_service_endpoint",
+              "mfa_mc_redirect_url",
+              "mfa_mc_client_id",
+              "mfa_mc_client_secret",
+              "mfa_header_html",
+              "mfa_footer_html"
+            ],
+            "paths": [
+              "/api/weblogin/{id}",
+              "/api/weblogin/page-name/{page-name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "id",
+              "name",
+              "page_name",
+              "description",
+              "vendor_preset",
+              "vendor_ip",
+              "require_https",
+              "webauth",
+              "form_action",
+              "form_method",
+              "form_username_label",
+              "form_username",
+              "form_username_suffix",
+              "form_password_label",
+              "form_password",
+              "form_extra",
+              "submit_label",
+              "form_password_encryption",
+              "uam_secret",
+              "url",
+              "default_url",
+              "default_url_override",
+              "dynamic_address",
+              "dynamic_allowlist",
+              "dynamic_denylist",
+              "access_allowlist",
+              "access_denylist",
+              "access_if_denied",
+              "login_title",
+              "login_header",
+              "login_footer",
+              "login_message",
+              "login_delay",
+              "login_skin",
+              "login_terms_require",
+              "login_terms_label",
+              "login_terms_text",
+              "login_terms_layout",
+              "login_terms_error",
+              "login_captcha",
+              "username_auth",
+              "certificate_request",
+              "username_auth_username",
+              "certificate_auth",
+              "register_policy_manager",
+              "register_policy_manager_adv",
+              "register_policy_manager_attrs",
+              "hash_url",
+              "hash_secret",
+              "bypass_cna",
+              "onguard_healthcheck",
+              "onguard_agents",
+              "onguard_header",
+              "onguard_footer",
+              "oauth_enabled",
+              "oauth_debug",
+              "oauth_providers",
+              "login_custom_form",
+              "login_pre_auth_check",
+              "login_pre_auth_error",
+              "mfa_enabled",
+              "mfa_first",
+              "mfa_duo_ikey",
+              "mfa_duo_skey",
+              "mfa_duo_host",
+              "mfa_fn_client_id",
+              "mfa_fn_client_secret",
+              "mfa_fn_factors",
+              "mfa_fn_email",
+              "mfa_iws_tenant",
+              "mfa_iws_app",
+              "mfa_iws_hostname",
+              "mfa_mc_scope",
+              "mfa_mc_context",
+              "mfa_mc_binding_message",
+              "mfa_mc_acr_values",
+              "mfa_mc_display",
+              "mfa_mc_prompt",
+              "mfa_mc_max_age",
+              "mfa_mc_login_hint",
+              "mfa_mc_version",
+              "mfa_mc_discovery_service_endpoint",
+              "mfa_mc_redirect_url",
+              "mfa_mc_client_id",
+              "mfa_mc_client_secret",
+              "mfa_header_html",
+              "mfa_footer_html"
+            ],
+            "paths": [
+              "/api/weblogin/{id}",
+              "/api/weblogin/page-name/{page-name}"
+            ]
+          }
+        }
       }
     },
     "identities": {
       "api-client": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/api-client"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "access_lifetime",
+              "access_token_lifetime",
+              "access_token_lifetime_units",
+              "auto_confirm",
+              "client_description",
+              "client_id",
+              "client_public",
+              "client_refresh",
+              "client_secret",
+              "enabled",
+              "id",
+              "grant_types",
+              "profile_id",
+              "profile_name",
+              "redirect_uri",
+              "refresh_lifetime",
+              "refresh_token_lifetime",
+              "refresh_token_lifetime_units",
+              "scope",
+              "user_id"
+            ],
+            "paths": [
+              "/api/api-client"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/api-client/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/api-client/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/api-client"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "access_lifetime",
+              "access_token_lifetime",
+              "access_token_lifetime_units",
+              "auto_confirm",
+              "client_description",
+              "client_id",
+              "client_public",
+              "client_refresh",
+              "client_secret",
+              "enabled",
+              "id",
+              "grant_types",
+              "profile_id",
+              "profile_name",
+              "redirect_uri",
+              "refresh_lifetime",
+              "refresh_token_lifetime",
+              "refresh_token_lifetime_units",
+              "scope",
+              "user_id"
+            ],
+            "paths": [
+              "/api/api-client/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "access_lifetime",
+              "access_token_lifetime",
+              "access_token_lifetime_units",
+              "auto_confirm",
+              "client_description",
+              "client_id",
+              "client_public",
+              "client_refresh",
+              "client_secret",
+              "enabled",
+              "id",
+              "grant_types",
+              "profile_id",
+              "profile_name",
+              "redirect_uri",
+              "refresh_lifetime",
+              "refresh_token_lifetime",
+              "refresh_token_lifetime_units",
+              "scope",
+              "user_id"
+            ],
+            "paths": [
+              "/api/api-client/{id}"
+            ]
+          }
+        }
       },
       "device": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/device"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "create_time",
+              "current_state",
+              "enabled",
+              "expire_time",
+              "mac",
+              "notes",
+              "role_id",
+              "role_name",
+              "source",
+              "sponsor_name",
+              "sponsor_profile",
+              "sponsor_profile_name",
+              "start_time",
+              "visitor_name",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/device"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "params": [
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/device/{id}",
+              "/api/device/mac/{macaddr}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/device/{id}",
+              "/api/device/mac/{macaddr}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/device"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "create_time",
+              "current_state",
+              "enabled",
+              "expire_time",
+              "id",
+              "mac",
+              "notes",
+              "role_id",
+              "role_name",
+              "source",
+              "sponsor_name",
+              "sponsor_profile",
+              "sponsor_profile_name",
+              "start_time",
+              "visitor_name",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/device/{id}",
+              "/api/device/mac/{macaddr}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "create_time",
+              "current_state",
+              "enabled",
+              "expire_time",
+              "id",
+              "mac",
+              "mac_auth",
+              "notes",
+              "password",
+              "role_id",
+              "role_name",
+              "source",
+              "sponsor_name",
+              "sponsor_profile",
+              "sponsor_profile_name",
+              "start_time",
+              "username",
+              "visitor_name",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/device/{id}",
+              "/api/device/mac/{macaddr}"
+            ]
+          }
+        }
       },
       "endpoint": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/endpoint"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "mac_address",
+              "description",
+              "status",
+              "device_insight_tags",
+              "attributes"
+            ],
+            "paths": [
+              "/api/endpoint"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/endpoint/{id}",
+              "/api/endpoint/mac-address/{mac_address}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/endpoint/{id}",
+              "/api/endpoint/mac-address/{mac_address}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/endpoint"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "mac_address",
+              "description",
+              "status",
+              "device_insight_tags",
+              "attributes"
+            ],
+            "paths": [
+              "/api/endpoint/{id}",
+              "/api/endpoint/mac-address/{mac_address}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "mac_address",
+              "description",
+              "status",
+              "device_insight_tags",
+              "attributes"
+            ],
+            "paths": [
+              "/api/endpoint/{id}",
+              "/api/endpoint/mac-address/{mac_address}"
+            ]
+          }
+        }
       },
       "external-account": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/external-account"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "type",
+              "description",
+              "username",
+              "password",
+              "domain",
+              "enable_password",
+              "snmp_version",
+              "community",
+              "security_level",
+              "auth_protocol",
+              "auth_key",
+              "priv_protocol",
+              "priv_key"
+            ],
+            "paths": [
+              "/api/external-account"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/external-account/{id}",
+              "/api/external-account/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/external-account/{id}",
+              "/api/external-account/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/external-account"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "type",
+              "description",
+              "username",
+              "password",
+              "domain",
+              "enable_password",
+              "snmp_version",
+              "community",
+              "security_level",
+              "auth_protocol",
+              "auth_key",
+              "priv_protocol",
+              "priv_key"
+            ],
+            "paths": [
+              "/api/external-account/{id}",
+              "/api/external-account/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "type",
+              "description",
+              "username",
+              "password",
+              "domain",
+              "enable_password",
+              "snmp_version",
+              "community",
+              "security_level",
+              "auth_protocol",
+              "auth_key",
+              "priv_protocol",
+              "priv_key"
+            ],
+            "paths": [
+              "/api/external-account/{id}",
+              "/api/external-account/name/{name}"
+            ]
+          }
+        }
       },
       "guest": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/guest"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "create_time",
+              "do_expire",
+              "email",
+              "enabled",
+              "expire_time",
+              "mac",
+              "notes",
+              "password",
+              "role_id",
+              "simultaneous_use",
+              "sponsor_email",
+              "sponsor_name",
+              "sponsor_profile",
+              "start_time",
+              "username",
+              "visitor_company",
+              "visitor_name",
+              "visitor_phone",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/guest"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "params": [
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/guest/{id}",
+              "/api/guest/username/{username}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/guest/{id}",
+              "/api/guest/username/{username}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/guest"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "create_time",
+              "do_expire",
+              "email",
+              "enabled",
+              "expire_time",
+              "id",
+              "mac",
+              "notes",
+              "password",
+              "role_id",
+              "simultaneous_use",
+              "sponsor_email",
+              "sponsor_name",
+              "sponsor_profile",
+              "start_time",
+              "username",
+              "visitor_company",
+              "visitor_name",
+              "visitor_phone",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/guest/{id}",
+              "/api/guest/username/{username}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "create_time",
+              "do_expire",
+              "email",
+              "enabled",
+              "expire_time",
+              "id",
+              "mac",
+              "notes",
+              "password",
+              "role_id",
+              "simultaneous_use",
+              "sponsor_email",
+              "sponsor_name",
+              "sponsor_profile",
+              "start_time",
+              "username",
+              "visitor_company",
+              "visitor_name",
+              "visitor_phone",
+              "...",
+              "change_of_authorization"
+            ],
+            "paths": [
+              "/api/guest/{id}",
+              "/api/guest/username/{username}"
+            ]
+          }
+        }
       },
       "local-user": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/local-user"
-      },
-      "mac": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/device/mac"
-      },
-      "mac-address": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/endpoint/mac-address"
-      },
-      "name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/static-host-list/name"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "user_id",
+              "password",
+              "username",
+              "role_name",
+              "enabled",
+              "change_pwd_next_login",
+              "attributes"
+            ],
+            "paths": [
+              "/api/local-user"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/local-user/{id}",
+              "/api/local-user/user-id/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/local-user/{id}",
+              "/api/local-user/user-id/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/local-user"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "user_id",
+              "password",
+              "username",
+              "role_name",
+              "enabled",
+              "change_pwd_next_login",
+              "attributes"
+            ],
+            "paths": [
+              "/api/local-user/{id}",
+              "/api/local-user/user-id/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "user_id",
+              "password",
+              "username",
+              "role_name",
+              "enabled",
+              "change_pwd_next_login",
+              "attributes"
+            ],
+            "paths": [
+              "/api/local-user/{id}",
+              "/api/local-user/user-id/{id}"
+            ]
+          }
+        }
       },
       "static-host-list": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/static-host-list"
-      },
-      "user-id": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/local-user/user-id"
-      },
-      "username": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/guest/username"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "host_format",
+              "host_type",
+              "value",
+              "host_entries"
+            ],
+            "paths": [
+              "/api/static-host-list"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/static-host-list/{id}",
+              "/api/static-host-list/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/static-host-list/{id}",
+              "/api/static-host-list/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/static-host-list"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "host_format",
+              "host_type",
+              "value",
+              "host_entries"
+            ],
+            "paths": [
+              "/api/static-host-list/{id}",
+              "/api/static-host-list/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "host_format",
+              "host_type",
+              "value",
+              "host_entries"
+            ],
+            "paths": [
+              "/api/static-host-list/{id}",
+              "/api/static-host-list/name/{name}"
+            ]
+          }
+        }
       }
     },
     "integrations": {
+      "config": {
+        "actions": {
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/extension/instance/{id}/config"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "paths": [
+              "/api/extension/instance/{id}/config"
+            ]
+          }
+        }
+      },
       "context-server-action": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/context-server-action"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "server_type",
+              "server_name",
+              "action_name",
+              "action_type",
+              "description",
+              "http_method",
+              "auth_method",
+              "url",
+              "content_type",
+              "content",
+              "headers",
+              "attributes"
+            ],
+            "paths": [
+              "/api/context-server-action"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/context-server-action/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/context-server-action/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/context-server-action"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "server_type",
+              "server_name",
+              "action_name",
+              "action_type",
+              "description",
+              "http_method",
+              "auth_method",
+              "url",
+              "content_type",
+              "content",
+              "headers",
+              "attributes"
+            ],
+            "paths": [
+              "/api/context-server-action/{id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "server_type",
+              "server_name",
+              "action_name",
+              "action_type",
+              "description",
+              "http_method",
+              "auth_method",
+              "url",
+              "content_type",
+              "content",
+              "headers",
+              "attributes"
+            ],
+            "paths": [
+              "/api/context-server-action/{id}"
+            ]
+          }
+        }
+      },
+      "context-server-action-action-name": {
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/context-server-action/{server_type}/action-name/{action_name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/context-server-action/{server_type}/action-name/{action_name}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "server_type",
+              "server_name",
+              "action_name",
+              "action_type",
+              "description",
+              "http_method",
+              "auth_method",
+              "url",
+              "content_type",
+              "content",
+              "headers",
+              "attributes"
+            ],
+            "paths": [
+              "/api/context-server-action/{server_type}/action-name/{action_name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "server_type",
+              "server_name",
+              "action_name",
+              "action_type",
+              "description",
+              "http_method",
+              "auth_method",
+              "url",
+              "content_type",
+              "content",
+              "headers",
+              "attributes"
+            ],
+            "paths": [
+              "/api/context-server-action/{server_type}/action-name/{action_name}"
+            ]
+          }
+        }
       },
       "device-insight": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/device-insight"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "enable_device_insight",
+              "activation_token",
+              "primary_clearpass_server_uuid",
+              "standby_clearpass_server_uuid",
+              "bypass_proxy",
+              "polling_interval",
+              "sync_time",
+              "activation_status",
+              "activation_error",
+              "activation_timestamp",
+              "registration_status",
+              "last_sync_timestamp",
+              "last_sync_run",
+              "aruba_central_tenant_id",
+              "device_insight_collector_id",
+              "tag_update_action",
+              "tags_for_disconnect",
+              "radius_coa_action",
+              "analyzer_admin_url"
+            ],
+            "paths": [
+              "/api/device-insight"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/device-insight"
+            ]
+          }
+        }
       },
       "endpoint-context-server": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/endpoint-context-server"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "server_type",
+              "server_name",
+              "server_base_url",
+              "auth_method",
+              "username",
+              "password",
+              "oauth2_client_id",
+              "oauth2_client_secret",
+              "oauth2_access_token_url",
+              "client_cert_CN",
+              "client_cert_expiry_date",
+              "vendor_attrs",
+              "validate_server",
+              "status",
+              "ip_version",
+              "bypass_proxy"
+            ],
+            "paths": [
+              "/api/endpoint-context-server"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/endpoint-context-server/{id}",
+              "/api/endpoint-context-server/server-name/{server_name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/endpoint-context-server/{id}",
+              "/api/endpoint-context-server/server-name/{server_name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/endpoint-context-server"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "server_type",
+              "server_name",
+              "server_base_url",
+              "auth_method",
+              "username",
+              "password",
+              "oauth2_client_id",
+              "oauth2_client_secret",
+              "oauth2_access_token_url",
+              "client_cert_CN",
+              "client_cert_expiry_date",
+              "vendor_attrs",
+              "validate_server",
+              "status",
+              "ip_version",
+              "bypass_proxy"
+            ],
+            "paths": [
+              "/api/endpoint-context-server/{id}",
+              "/api/endpoint-context-server/server-name/{server_name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "server_type",
+              "server_name",
+              "server_base_url",
+              "auth_method",
+              "username",
+              "password",
+              "oauth2_client_id",
+              "oauth2_client_secret",
+              "oauth2_access_token_url",
+              "client_cert_CN",
+              "client_cert_expiry_date",
+              "vendor_attrs",
+              "validate_server",
+              "status",
+              "ip_version",
+              "bypass_proxy"
+            ],
+            "paths": [
+              "/api/endpoint-context-server/{id}",
+              "/api/endpoint-context-server/server-name/{server_name}"
+            ]
+          }
+        }
+      },
+      "endpoint-context-server-server-name-trigger-poll": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/endpoint-context-server/server-name/{server_name}/trigger-poll"
+            ]
+          }
+        }
+      },
+      "endpoint-context-server-trigger-poll": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/endpoint-context-server/{id}/trigger-poll"
+            ]
+          }
+        }
       },
       "event-sources": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/event-sources"
-      },
-      "host-address": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/syslog-target/host-address"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "ipaddress",
+              "vendor",
+              "type",
+              "enable"
+            ],
+            "paths": [
+              "/api/event-sources"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/event-sources/{id}",
+              "/api/event-sources/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/event-sources/{id}",
+              "/api/event-sources/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/event-sources"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "ipaddress",
+              "vendor",
+              "type",
+              "enable"
+            ],
+            "paths": [
+              "/api/event-sources/{id}",
+              "/api/event-sources/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "ipaddress",
+              "vendor",
+              "type",
+              "enable"
+            ],
+            "paths": [
+              "/api/event-sources/{id}",
+              "/api/event-sources/name/{name}"
+            ]
+          }
+        }
       },
       "instance": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST"
-        ],
-        "route": "/api/extension/instance"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "state",
+              "store_id",
+              "files",
+              "ip_address"
+            ],
+            "paths": [
+              "/api/extension/instance"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "params": [
+              "force"
+            ],
+            "paths": [
+              "/api/extension/instance/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/extension/instance/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/extension/instance"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "state"
+            ],
+            "paths": [
+              "/api/extension/instance/{id}"
+            ]
+          }
+        }
       },
-      "name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/syslog-export-filter/name"
+      "log": {
+        "actions": {
+          "list": {
+            "method": "GET",
+            "params": [
+              "stdout",
+              "stderr",
+              "since",
+              "timestamps",
+              "tail"
+            ],
+            "paths": [
+              "/api/extension/instance/{id}/log"
+            ]
+          }
+        }
       },
-      "server-name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/endpoint-context-server/server-name"
+      "reinstall": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "state",
+              "files",
+              "ip_address"
+            ],
+            "paths": [
+              "/api/extension/instance/{id}/reinstall"
+            ]
+          }
+        }
+      },
+      "restart": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "paths": [
+              "/api/extension/instance/{id}/restart"
+            ]
+          }
+        }
+      },
+      "start": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "paths": [
+              "/api/extension/instance/{id}/start"
+            ]
+          }
+        }
+      },
+      "stop": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "paths": [
+              "/api/extension/instance/{id}/stop"
+            ]
+          }
+        }
       },
       "store": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/extension/store"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/extension/store/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/extension/store"
+            ]
+          }
+        }
       },
       "syslog-export-filter": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/syslog-export-filter"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "export_template",
+              "export_event_format_type",
+              "local_facility_level",
+              "syslog_servers",
+              "cluster_servers",
+              "enabled",
+              "data_filter",
+              "selected_columns",
+              "field_group_name",
+              "custom_sql",
+              "include_audit_data"
+            ],
+            "paths": [
+              "/api/syslog-export-filter"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/syslog-export-filter/{id}",
+              "/api/syslog-export-filter/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/syslog-export-filter/{id}",
+              "/api/syslog-export-filter/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/syslog-export-filter"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "export_template",
+              "export_event_format_type",
+              "local_facility_level",
+              "syslog_servers",
+              "cluster_servers",
+              "enabled",
+              "data_filter",
+              "selected_columns",
+              "field_group_name",
+              "custom_sql",
+              "include_audit_data"
+            ],
+            "paths": [
+              "/api/syslog-export-filter/{id}",
+              "/api/syslog-export-filter/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "export_template",
+              "export_event_format_type",
+              "local_facility_level",
+              "syslog_servers",
+              "cluster_servers",
+              "enabled",
+              "data_filter",
+              "selected_columns",
+              "field_group_name",
+              "custom_sql",
+              "include_audit_data"
+            ],
+            "paths": [
+              "/api/syslog-export-filter/{id}",
+              "/api/syslog-export-filter/name/{name}"
+            ]
+          }
+        }
       },
       "syslog-target": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/syslog-target"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "host_address",
+              "description",
+              "server_port",
+              "protocol"
+            ],
+            "paths": [
+              "/api/syslog-target"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/syslog-target/{id}",
+              "/api/syslog-target/host-address/{host_address}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/syslog-target/{id}",
+              "/api/syslog-target/host-address/{host_address}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/syslog-target"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "host_address",
+              "description",
+              "server_port",
+              "protocol"
+            ],
+            "paths": [
+              "/api/syslog-target/{id}",
+              "/api/syslog-target/host-address/{host_address}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "host_address",
+              "description",
+              "server_port",
+              "protocol"
+            ],
+            "paths": [
+              "/api/syslog-target/{id}",
+              "/api/syslog-target/host-address/{host_address}"
+            ]
+          }
+        }
       }
     },
     "localserverconfiguration": {
-      "access-control": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/server/access-control"
-      },
       "cppm-version": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/cppm-version"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/cppm-version"
+            ]
+          }
+        }
       },
       "fips": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/server/fips"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server/fips"
+            ]
+          }
+        }
       },
       "server": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET",
-          "PATCH"
-        ],
-        "route": "/api/cluster/server"
-      },
-      "service": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/server/service"
-      },
-      "snmp": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/server/snmp"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/cluster/server/{uuid}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/cluster/server"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "is_insight_enabled"
+            ],
+            "paths": [
+              "/api/cluster/server/{uuid}"
+            ]
+          }
+        }
       },
       "version": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/server/version"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server/version"
+            ]
+          }
+        }
+      },
+      "{server_uuid}": {
+        "actions": {
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/server/access-control/{server_uuid}/{resource_name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server/access-control/{server_uuid}/{resource_name}",
+              "/api/server/service/{server_uuid}/{service_name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/server/access-control/{server_uuid}",
+              "/api/server/snmp/{server_uuid}",
+              "/api/server/service/{server_uuid}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "access",
+              "networks",
+              "system_location",
+              "system_contact",
+              "engine_id",
+              "version",
+              "community_string",
+              "username",
+              "security_level",
+              "auth_protocol",
+              "auth_key",
+              "privacy_protocol",
+              "privacy_key"
+            ],
+            "paths": [
+              "/api/server/access-control/{server_uuid}/{resource_name}",
+              "/api/server/snmp/{server_uuid}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "system_location",
+              "system_contact",
+              "engine_id",
+              "version",
+              "community_string",
+              "username",
+              "security_level",
+              "auth_protocol",
+              "auth_key",
+              "privacy_protocol",
+              "privacy_key"
+            ],
+            "paths": [
+              "/api/server/snmp/{server_uuid}"
+            ]
+          }
+        }
+      },
+      "{server_uuid}-start": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/server/service/{server_uuid}/{service_name}/start"
+            ]
+          }
+        }
+      },
+      "{server_uuid}-stop": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/server/service/{server_uuid}/{service_name}/stop"
+            ]
+          }
+        }
+      },
+      "{service_id}": {
+        "actions": {
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/service-parameter/{server_uuid}/{service_id}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "param_name_1",
+              "param_name_2"
+            ],
+            "paths": [
+              "/api/service-parameter/{server_uuid}/{service_id}"
+            ]
+          }
+        }
       }
     },
     "logs": {
       "endpoint": {
-        "actions": [],
-        "methods": [],
-        "route": "/api/insight/endpoint"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/insight/endpoint/mac/{mac}",
+              "/api/insight/endpoint/ip/{ip}",
+              "/api/insight/endpoint/ip-range/{ip_range}"
+            ]
+          }
+        }
       },
-      "ip": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/insight/endpoint/ip"
-      },
-      "ip-range": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/insight/endpoint/ip-range"
+      "endpoint-time-range": {
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/insight/endpoint/time-range/{from_time}/{to_time}"
+            ]
+          }
+        }
       },
       "login-audit": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/login-audit"
-      },
-      "mac": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/insight/endpoint/mac"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/login-audit/{name}"
+            ]
+          }
+        }
       },
       "system-event": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/system-event"
-      }
-    },
-    "oauth": {
-      "oauth": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [],
-        "route": "/api/oauth"
-      },
-      "oauth-me": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [],
-        "route": "/api/oauth/me"
-      },
-      "oauth-privileges": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [],
-        "route": "/api/oauth/privileges"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "source",
+              "level",
+              "category",
+              "action",
+              "description",
+              "timestamp"
+            ],
+            "paths": [
+              "/api/system-event"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/system-event"
+            ]
+          }
+        }
       }
     },
     "platformcertificates": {
       "cert-sign-request": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/cert-sign-request"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "subject_CN",
+              "subject_O",
+              "subject_OU",
+              "subject_L",
+              "subject_ST",
+              "subject_C",
+              "subject_SAN",
+              "private_key_password",
+              "private_key_type",
+              "digest_algorithm"
+            ],
+            "paths": [
+              "/api/cert-sign-request"
+            ]
+          }
+        }
       },
       "cert-trust-list": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST"
-        ],
-        "route": "/api/cert-trust-list"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "cert_file",
+              "enabled",
+              "cert_usage"
+            ],
+            "paths": [
+              "/api/cert-trust-list"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/cert-trust-list/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/cert-trust-list/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/cert-trust-list"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "cert_file",
+              "enabled",
+              "cert_usage"
+            ],
+            "paths": [
+              "/api/cert-trust-list/{id}"
+            ]
+          }
+        }
       },
       "cert-trust-list-details": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/cert-trust-list-details"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/cert-trust-list-details/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/cert-trust-list-details"
+            ]
+          }
+        }
       },
       "client-cert": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ],
-        "route": "/api/client-cert"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "certificate_url",
+              "pkcs12_file_url",
+              "pkcs12_passphrase"
+            ],
+            "paths": [
+              "/api/client-cert"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/client-cert/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/client-cert/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/client-cert"
+            ]
+          }
+        }
       },
       "revocation-list": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST"
-        ],
-        "route": "/api/revocation-list"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "url",
+              "bypass_proxy",
+              "periodic_update",
+              "periodic_update_interval",
+              "last_update_status",
+              "last_updated_time",
+              "next_updated_time"
+            ],
+            "paths": [
+              "/api/revocation-list"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/revocation-list/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/revocation-list/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/revocation-list"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "url",
+              "bypass_proxy",
+              "periodic_update",
+              "periodic_update_interval",
+              "last_update_status",
+              "last_updated_time",
+              "next_updated_time"
+            ],
+            "paths": [
+              "/api/revocation-list/{id}"
+            ]
+          }
+        }
       },
       "self-signed-cert": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/self-signed-cert"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "certificate_type",
+              "server",
+              "type",
+              "subject_CN",
+              "subject_O",
+              "subject_OU",
+              "subject_L",
+              "subject_ST",
+              "subject_C",
+              "subject_SAN",
+              "private_key_password",
+              "private_key_type",
+              "digest_algorithm"
+            ],
+            "paths": [
+              "/api/self-signed-cert"
+            ]
+          }
+        }
       },
       "server-cert": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/server-cert"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server-cert"
+            ]
+          }
+        }
+      },
+      "server-cert-name": {
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/server-cert/name/{server_uuid}/{service_name}"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "certificate_url",
+              "pkcs12_file_url",
+              "pkcs12_passphrase"
+            ],
+            "paths": [
+              "/api/server-cert/name/{server_uuid}/{service_name}"
+            ]
+          }
+        }
+      },
+      "server-cert-name-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/server-cert/name/{server_uuid}/{service_name}/disable"
+            ]
+          }
+        }
+      },
+      "server-cert-name-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/server-cert/name/{server_uuid}/{service_name}/enable"
+            ]
+          }
+        }
       },
       "service-cert": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ],
-        "route": "/api/service-cert"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "certificate_url",
+              "pkcs12_file_url",
+              "pkcs12_passphrase"
+            ],
+            "paths": [
+              "/api/service-cert"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/service-cert/{id}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/service-cert/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/service-cert"
+            ]
+          }
+        }
       }
     },
     "policyelements": {
       "auth-method": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/auth-method"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "method_type",
+              "details",
+              "inner_methods"
+            ],
+            "paths": [
+              "/api/auth-method"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/auth-method/{id}",
+              "/api/auth-method/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/auth-method/{id}",
+              "/api/auth-method/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/auth-method"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "method_type",
+              "details",
+              "inner_methods"
+            ],
+            "paths": [
+              "/api/auth-method/{id}",
+              "/api/auth-method/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "method_type",
+              "details",
+              "inner_methods"
+            ],
+            "paths": [
+              "/api/auth-method/{id}",
+              "/api/auth-method/name/{name}"
+            ]
+          }
+        }
       },
       "auth-source": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/auth-source"
-      },
-      "name": {
-        "actions": [
-          "list",
-          "get",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "PUT"
-        ],
-        "route": "/api/config/service/name"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "type",
+              "use_for_authorization",
+              "authorization_source_names",
+              "cppm_primary_auth_source_connection_details",
+              "auth_source_radius_attributes",
+              "cppm_auth_source_connection_backups",
+              "auth_source_filters",
+              "server_timeout",
+              "cache_timeout"
+            ],
+            "paths": [
+              "/api/auth-source"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/auth-source/{id}",
+              "/api/auth-source/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/auth-source/{id}",
+              "/api/auth-source/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/auth-source"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "type",
+              "use_for_authorization",
+              "authorization_source_names",
+              "cppm_primary_auth_source_connection_details",
+              "auth_source_radius_attributes",
+              "cppm_auth_source_connection_backups",
+              "auth_source_filters",
+              "server_timeout",
+              "cache_timeout"
+            ],
+            "paths": [
+              "/api/auth-source/{id}",
+              "/api/auth-source/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "type",
+              "use_for_authorization",
+              "authorization_source_names",
+              "cppm_primary_auth_source_connection_details",
+              "auth_source_radius_attributes",
+              "cppm_auth_source_connection_backups",
+              "auth_source_filters",
+              "server_timeout",
+              "cache_timeout"
+            ],
+            "paths": [
+              "/api/auth-source/{id}",
+              "/api/auth-source/name/{name}"
+            ]
+          }
+        }
       },
       "network-device": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/network-device"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "description",
+              "nad_groups",
+              "name",
+              "ip_address",
+              "radius_secret",
+              "tacacs_secret",
+              "vendor_name",
+              "coa_capable",
+              "coa_port",
+              "radsec_enabled",
+              "snmp_read",
+              "snmp_write",
+              "radsec_config",
+              "cli_config",
+              "onConnect_enforcement",
+              "attributes"
+            ],
+            "paths": [
+              "/api/network-device"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/network-device/{id}",
+              "/api/network-device/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/network-device/{id}",
+              "/api/network-device/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/network-device"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "description",
+              "nad_groups",
+              "name",
+              "ip_address",
+              "radius_secret",
+              "tacacs_secret",
+              "vendor_name",
+              "coa_capable",
+              "coa_port",
+              "radsec_enabled",
+              "snmp_read",
+              "snmp_write",
+              "radsec_config",
+              "cli_config",
+              "onConnect_enforcement",
+              "attributes"
+            ],
+            "paths": [
+              "/api/network-device/{id}",
+              "/api/network-device/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "description",
+              "nad_groups",
+              "name",
+              "ip_address",
+              "radius_secret",
+              "tacacs_secret",
+              "vendor_name",
+              "coa_capable",
+              "coa_port",
+              "radsec_enabled",
+              "snmp_read",
+              "snmp_write",
+              "radsec_config",
+              "cli_config",
+              "onConnect_enforcement",
+              "attributes"
+            ],
+            "paths": [
+              "/api/network-device/{id}",
+              "/api/network-device/name/{name}"
+            ]
+          }
+        }
       },
       "network-device-group": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/network-device-group"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "group_format",
+              "value"
+            ],
+            "paths": [
+              "/api/network-device-group"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/network-device-group/{id}",
+              "/api/network-device-group/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/network-device-group/{id}",
+              "/api/network-device-group/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/network-device-group"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "group_format",
+              "value"
+            ],
+            "paths": [
+              "/api/network-device-group/{id}",
+              "/api/network-device-group/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "group_format",
+              "value"
+            ],
+            "paths": [
+              "/api/network-device-group/{id}",
+              "/api/network-device-group/name/{name}"
+            ]
+          }
+        }
       },
       "proxy-target": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/proxy-target"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "host_name",
+              "description",
+              "authentication_port",
+              "proxy_type",
+              "accounting_port",
+              "secret",
+              "radsec_port",
+              "radsec_verify_cert",
+              "cert_subject",
+              "enable_status_server_msgs"
+            ],
+            "paths": [
+              "/api/proxy-target"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/proxy-target/{id}",
+              "/api/proxy-target/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/proxy-target/{id}",
+              "/api/proxy-target/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/proxy-target"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "host_name",
+              "description",
+              "authentication_port",
+              "proxy_type",
+              "accounting_port",
+              "secret",
+              "radsec_port",
+              "radsec_verify_cert",
+              "cert_subject",
+              "enable_status_server_msgs"
+            ],
+            "paths": [
+              "/api/proxy-target/{id}",
+              "/api/proxy-target/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "host_name",
+              "description",
+              "authentication_port",
+              "proxy_type",
+              "accounting_port",
+              "secret",
+              "radsec_port",
+              "radsec_verify_cert",
+              "cert_subject",
+              "enable_status_server_msgs"
+            ],
+            "paths": [
+              "/api/proxy-target/{id}",
+              "/api/proxy-target/name/{name}"
+            ]
+          }
+        }
       },
       "role": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/role"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description"
+            ],
+            "paths": [
+              "/api/role"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/role/{id}",
+              "/api/role/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/role/{id}",
+              "/api/role/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/role"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description"
+            ],
+            "paths": [
+              "/api/role/{id}",
+              "/api/role/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description"
+            ],
+            "paths": [
+              "/api/role/{id}",
+              "/api/role/name/{name}"
+            ]
+          }
+        }
       },
       "role-mapping": {
-        "actions": [
-          "list",
-          "get",
-          "add",
-          "delete"
-        ],
-        "methods": [
-          "DELETE",
-          "GET",
-          "PATCH",
-          "POST",
-          "PUT"
-        ],
-        "route": "/api/role-mapping"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "name",
+              "description",
+              "default_role_name",
+              "rule_combine_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/role-mapping"
+            ]
+          },
+          "delete": {
+            "method": "DELETE",
+            "paths": [
+              "/api/role-mapping/{id}",
+              "/api/role-mapping/name/{name}"
+            ]
+          },
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/role-mapping/{id}",
+              "/api/role-mapping/name/{name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/role-mapping"
+            ]
+          },
+          "replace": {
+            "method": "PUT",
+            "params": [
+              "name",
+              "description",
+              "default_role_name",
+              "rule_combine_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/role-mapping/{id}",
+              "/api/role-mapping/name/{name}"
+            ]
+          },
+          "update": {
+            "method": "PATCH",
+            "params": [
+              "name",
+              "description",
+              "default_role_name",
+              "rule_combine_algo",
+              "rules"
+            ],
+            "paths": [
+              "/api/role-mapping/{id}",
+              "/api/role-mapping/name/{name}"
+            ]
+          }
+        }
       },
       "service": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/config/service"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/config/service/{id}",
+              "/api/config/service/name/{services_name}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/config/service"
+            ]
+          }
+        }
+      },
+      "service-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/service/{id}/disable"
+            ]
+          }
+        }
+      },
+      "service-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/service/{id}/enable"
+            ]
+          }
+        }
+      },
+      "service-name-disable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/service/name/{services_name}/disable"
+            ]
+          }
+        }
+      },
+      "service-name-enable": {
+        "actions": {
+          "update": {
+            "method": "PATCH",
+            "paths": [
+              "/api/config/service/name/{services_name}/enable"
+            ]
+          }
+        }
       }
     },
     "sessioncontrol": {
-      "coa": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/session-action/coa"
-      },
       "disconnect": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/session-action/disconnect"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "id",
+              "confirm_disconnect"
+            ],
+            "paths": [
+              "/api/session/{id}/disconnect"
+            ]
+          }
+        }
       },
-      "ip": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/session-action/coa/ip"
-      },
-      "mac": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/session-action/coa/mac"
+      "reauthorize": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "confirm_reauthorize",
+              "reauthorize_profile"
+            ],
+            "paths": [
+              "/api/session/{id}/reauthorize"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/session/{id}/reauthorize"
+            ]
+          }
+        }
       },
       "session": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/session"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "paths": [
+              "/api/session/{id}"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "params": [
+              "filter",
+              "sort",
+              "offset",
+              "limit",
+              "calculate_count"
+            ],
+            "paths": [
+              "/api/session"
+            ]
+          }
+        }
       },
       "session-action": {
-        "actions": [
-          "list",
-          "get"
-        ],
-        "methods": [
-          "GET"
-        ],
-        "route": "/api/session-action"
+        "actions": {
+          "get": {
+            "method": "GET",
+            "params": [
+              "offset",
+              "limit"
+            ],
+            "paths": [
+              "/api/session-action/{id}"
+            ]
+          }
+        }
       },
-      "username": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/session-action/coa/username"
+      "session-action-coa": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/coa"
+            ]
+          }
+        }
+      },
+      "session-action-coa-ip": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/coa/ip/{client_ip_address}"
+            ]
+          }
+        }
+      },
+      "session-action-coa-mac": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/coa/mac/{mac_address}"
+            ]
+          }
+        }
+      },
+      "session-action-coa-username": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/coa/username/{username}"
+            ]
+          }
+        }
+      },
+      "session-action-disconnect": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/disconnect"
+            ]
+          }
+        }
+      },
+      "session-action-disconnect-ip": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/disconnect/ip/{client_ip_address}"
+            ]
+          }
+        }
+      },
+      "session-action-disconnect-mac": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/disconnect/mac/{mac_address}"
+            ]
+          }
+        }
+      },
+      "session-action-disconnect-username": {
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "filter",
+              "enforcement_profile",
+              "sort",
+              "async"
+            ],
+            "paths": [
+              "/api/session-action/disconnect/username/{username}"
+            ]
+          }
+        }
       }
     },
     "toolsandutilities": {
       "random-mpsk": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/random-mpsk"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "random_mpsk_method",
+              "random_mpsk_length",
+              "random_mpsk_picture"
+            ],
+            "paths": [
+              "/api/random-mpsk"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/random-mpsk"
+            ]
+          }
+        }
       },
       "random-password": {
-        "actions": [
-          "list",
-          "get",
-          "add"
-        ],
-        "methods": [
-          "GET",
-          "POST"
-        ],
-        "route": "/api/random-password"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "random_password_method",
+              "random_password_length",
+              "random_password_picture"
+            ],
+            "paths": [
+              "/api/random-password"
+            ]
+          },
+          "list": {
+            "method": "GET",
+            "paths": [
+              "/api/random-password"
+            ]
+          }
+        }
       },
       "send": {
-        "actions": [
-          "add"
-        ],
-        "methods": [
-          "POST"
-        ],
-        "route": "/api/sms/send"
+        "actions": {
+          "add": {
+            "method": "POST",
+            "params": [
+              "to",
+              "subject",
+              "message",
+              "cc_recipients",
+              "bcc_recipients",
+              "headers",
+              "handler",
+              "recipient",
+              "carrier"
+            ],
+            "paths": [
+              "/api/email/send",
+              "/api/sms/send"
+            ]
+          }
+        }
       }
     }
   },
   "server": "192.168.100.30:443",
-  "version": 1
+  "version": 2
 }

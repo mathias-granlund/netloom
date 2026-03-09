@@ -1,4 +1,3 @@
-# arapy/api_catalog.py
 from __future__ import annotations
 
 import json
@@ -10,6 +9,9 @@ from pathlib import Path
 from typing import Any
 
 from . import config
+from .logger import AppLogger
+
+log = AppLogger().get_logger(__name__)
 
 
 # Minimal static endpoints needed to obtain a token (login bootstrap).
@@ -19,52 +21,9 @@ OAUTH_ENDPOINTS: dict[str, str] = {
     "oauth-privileges": "/api/oauth/privileges",
 }
 
-# Keep CLI compatibility with existing typos in older versions (optional but recommended).
-ALIASES: dict[str, str] = {
-    "certiticate-reject": "certificate-reject",
-    "onboard-debice": "onboard-device",
-    "genereate-guest-receipt": "generate-guest-receipt",
-    "essaging-setup": "messaging-setup",
-    "statless-access-control-list": "stateless-access-control-list",
-}
 
-
-def _camel_to_kebab(name: str) -> str:
-    # SystemEvents -> system-events, TokenEndpoint -> token-endpoint
-    s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1-\2", name)
-    s2 = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", s1)
-    return s2.replace("_", "-").lower()
-
-
-def _clean_apigility_route(route: str) -> str:
-    """
-    Apigility routes look like:
-      /login-audit[/:name]
-      /insight/endpoint[/:mac]
-    For request patterns, we want a stable "base collection" path.
-    """
-    route = re.sub(r"\[.*?\]", "", route)  # remove bracketed optional segments like [/:name]
-    return route.rstrip("/") or "/"
-
-
-def _is_json_content(text: str) -> bool:
-    t = text.lstrip()
-    return t.startswith("{") or t.startswith("[")
-
-
-def _extract_module_doc_paths_from_api_docs_html(html: str) -> list[str]:
-    """
-    Extract module roots from links like:
-      /api-docs/Logs-v1
-      /api-docs/PolicyElements-v1#!/NetworkDevice
-    Return unique module doc URLs: /api-docs/<Module-v1>
-    """
-    modules = set()
-    for m in re.findall(r"(/api-docs/[A-Za-z0-9_-]+-v\d+)", html):
-        modules.add(m)
-    for m in re.findall(r"(api-docs/[A-Za-z0-9_-]+-v\d+)", html):
-        modules.add("/" + m)
-    return sorted(modules)
+_PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
+_LIST_QUERY_PARAMS = ("filter", "sort", "offset", "limit", "calculate_count")
 
 
 @dataclass(frozen=True)
@@ -73,18 +32,238 @@ class EndpointCacheConfig:
     cache_filename: str = "api_endpoints_cache.json"
 
 
+def _camel_to_kebab(name: str) -> str:
+    s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1-\2", name)
+    s2 = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", s1)
+    return s2.replace("_", "-").lower()
+
+
+def _clean_apigility_route(route: str) -> str:
+    route = re.sub(r"\[.*?\]", "", route)
+    return route.rstrip("/") or "/"
+
+
+def _ensure_api_prefix(path: str) -> str:
+    path = path.strip()
+    if not path:
+        return "/api"
+    if path.startswith("http://") or path.startswith("https://"):
+        m = re.search(r"https?://[^/]+(?P<path>/.*)$", path)
+        path = m.group("path") if m else path
+    if not path.startswith("/"):
+        path = "/" + path
+    if path.startswith("/api/") or path == "/api":
+        return path.rstrip("/") or "/api"
+    return ("/api" + path).rstrip("/") or "/api"
+
+
+def _module_to_cli(module_name: str) -> str:
+    base = re.sub(r"-v\d+$", "", module_name)
+    return base.replace("_", "-").lower()
+
+
+def _is_json_content(text: str) -> bool:
+    t = text.lstrip()
+    return t.startswith("{") or t.startswith("[")
+
+
+def _extract_module_doc_paths_from_api_docs_html(html: str) -> list[str]:
+    modules = set()
+    for m in re.findall(r"(/api-docs/[A-Za-z0-9_-]+-v\d+)", html):
+        modules.add(m)
+    for m in re.findall(r"(api-docs/[A-Za-z0-9_-]+-v\d+)", html):
+        modules.add("/" + m)
+    return sorted(modules)
+
+
+def _extract_modules_from_api_docs(text: str) -> list[str]:
+    if _is_json_content(text):
+        try:
+            data = json.loads(text)
+        except Exception:
+            return []
+        out: list[str] = []
+        if isinstance(data, dict):
+            apis = data.get("apis")
+            if isinstance(apis, list):
+                for item in apis:
+                    if not isinstance(item, dict):
+                        continue
+                    p = item.get("path")
+                    if isinstance(p, str):
+                        m = re.search(r"(/api-docs/[A-Za-z0-9_-]+-v\d+)", p)
+                        if m:
+                            out.append(m.group(1))
+        return sorted(set(out))
+    return _extract_module_doc_paths_from_api_docs_html(text)
+
+
+def _extract_placeholders(path: str) -> list[str]:
+    return _PLACEHOLDER_RE.findall(path)
+
+
+def _normalize_template_placeholders(path: str) -> str:
+    placeholders = _extract_placeholders(path)
+    if len(placeholders) == 1:
+        name = placeholders[0]
+        if name == "id" or name.endswith("_id"):
+            return path.replace("{" + name + "}", "{id}")
+    return path
+
+
+def _dedupe_keep_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            out.append(item)
+    return out
+
+
+def _normalize_param_name(name: str) -> str:
+    return "id" if name == "id" or name.endswith("_id") else name
+
+
+def _resolve_model_property_names(models: dict[str, Any], model_name: str, seen: set[str] | None = None) -> list[str]:
+    if not model_name:
+        return []
+    if seen is None:
+        seen = set()
+    if model_name in seen:
+        return []
+    seen.add(model_name)
+
+    model = models.get(model_name)
+    if not isinstance(model, dict):
+        return []
+
+    params: list[str] = []
+
+    extends = model.get("extends")
+    if isinstance(extends, dict):
+        ref = extends.get("$ref")
+        if isinstance(ref, str):
+            params.extend(_resolve_model_property_names(models, ref, seen=seen))
+
+    properties = model.get("properties")
+    if isinstance(properties, dict):
+        params.extend(str(name) for name in properties.keys())
+
+    for submodels_key in ("subTypes", "subTypesModels"):
+        submodels = model.get(submodels_key)
+        if isinstance(submodels, list):
+            for sub in submodels:
+                if isinstance(sub, str):
+                    params.extend(_resolve_model_property_names(models, sub, seen=seen))
+
+    return _dedupe_keep_order(params)
+
+
+def _extract_operation_params(operation: dict[str, Any], models: dict[str, Any]) -> list[str]:
+    params: list[str] = []
+    for param in operation.get("parameters", []) or []:
+        if not isinstance(param, dict):
+            continue
+        param_type = str(param.get("paramType") or "").lower()
+        name = param.get("name")
+
+        if param_type == "body":
+            model_name = None
+            if isinstance(param.get("type"), str):
+                model_name = param["type"]
+            elif isinstance(param.get("$ref"), str):
+                model_name = param["$ref"]
+            elif isinstance(param.get("schema"), dict):
+                schema = param["schema"]
+                if isinstance(schema.get("$ref"), str):
+                    model_name = schema["$ref"]
+                elif isinstance(schema.get("type"), str):
+                    model_name = schema["type"]
+            if model_name:
+                params.extend(_resolve_model_property_names(models, model_name))
+            elif isinstance(name, str) and name:
+                params.append(name)
+            continue
+
+        if param_type == "path":
+            continue
+
+        if isinstance(name, str) and name:
+            params.append(_normalize_param_name(name))
+
+    return _dedupe_keep_order(params)
+
+
+def _has_list_query_params(params: list[str]) -> bool:
+    return any(p in _LIST_QUERY_PARAMS for p in params)
+
+
+def _path_segments(path: str) -> list[str]:
+    return [seg for seg in path.strip("/").split("/") if seg and seg != "api"]
+
+
+def _derive_service_key(base_path: str, normalized_path: str) -> str:
+    base_segments = _path_segments(base_path)
+    path_segments = _path_segments(normalized_path)
+    if path_segments[: len(base_segments)] != base_segments:
+        fixed = [seg for seg in path_segments if not (seg.startswith("{") and seg.endswith("}"))]
+        return fixed[-1] if fixed else "unknown"
+
+    relative = path_segments[len(base_segments) :]
+    if not relative:
+        return base_segments[-1]
+
+    # Alternate identifier lookup: /resource/name/{name} should stay under the base service.
+    if len(relative) == 1 and relative[0].startswith("{") and relative[0].endswith("}"):
+        return base_segments[-1]
+    if (
+        len(relative) == 2
+        and not relative[0].startswith("{")
+        and relative[1].startswith("{")
+        and relative[1].endswith("}")
+    ):
+        return base_segments[-1]
+
+    fixed_suffix = [seg for seg in relative if not (seg.startswith("{") and seg.endswith("}"))]
+    if not fixed_suffix:
+        return base_segments[-1]
+    return base_segments[-1] + "-" + "-".join(fixed_suffix)
+
+
+def _count_services(modules: dict[str, dict[str, Any]]) -> int:
+    return sum(len(services or {}) for services in modules.values())
+
+
+def _format_name_list(items: list[str], *, limit: int = 60) -> str:
+    if not items:
+        return "<none>"
+    if len(items) <= limit:
+        return ", ".join(items)
+    shown = ", ".join(items[:limit])
+    remaining = len(items) - limit
+    return f"{shown}, ... (+{remaining} more)"
+
+
 class ApiEndpointCache:
     """
-    Cache format (v1):
+    Cache format (v2):
       {
-        "version": 1,
-        "generated_at": "2026-03-03T19:59:08Z",
-        "server": "192.168.100.30:443",
-        "modules": { "<module>": { "<service>": {"route": "...", "methods":[...], "actions":[...]} } },
-        "flat": { "<service>": "/api/..." }
+        "version": 2,
+        "generated_at": "...",
+        "server": "host:port",
+        "modules": {
+          "policyelements": {
+            "network-device": {
+              "actions": {
+                "list": {"method": "GET", "paths": ["/api/network-device"], "params": [...]},
+                "get": {"method": "GET", "paths": ["/api/network-device/{id}", "/api/network-device/name/{name}"]},
+                ...
+              }
+            }
+          }
+        }
       }
-
-    Backwards compatible with older flat dict cache (service->route).
     """
 
     def __init__(self, cp_client, *, token: str, cfg: EndpointCacheConfig | None = None):
@@ -95,16 +274,6 @@ class ApiEndpointCache:
         cache_dir = Path(getattr(config, "CACHE_DIR", Path("./cache")))
         cache_dir.mkdir(parents=True, exist_ok=True)
         self.cache_path = cache_dir / self.cfg.cache_filename
-
-    def get_api_paths(self, *, force_refresh: bool = False) -> dict[str, str]:
-        if not force_refresh:
-            catalog = self._load_if_fresh()
-            if catalog:
-                return catalog["flat"]
-
-        catalog = self._build_catalog_from_clearpass()
-        self._save(catalog)
-        return catalog["flat"]
 
     def get_catalog(self, *, force_refresh: bool = False) -> dict[str, Any]:
         if not force_refresh:
@@ -130,14 +299,8 @@ class ApiEndpointCache:
         except Exception:
             return None
 
-        # NEW format: dict with "flat"
-        if isinstance(data, dict) and isinstance(data.get("flat"), dict):
+        if isinstance(data, dict) and data.get("version") == 2 and isinstance(data.get("modules"), dict):
             return data
-
-        # OLD format: flat dict[str,str] (service->route)
-        if isinstance(data, dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in data.items()):
-            return {"version": 0, "generated_at": None, "server": None, "modules": {}, "flat": data}
-
         return None
 
     def _save(self, api_catalog: dict[str, Any]) -> None:
@@ -146,13 +309,8 @@ class ApiEndpointCache:
         os.replace(tmp, self.cache_path)
 
     def _raw_get_text(self, path: str) -> str:
-        """
-        Uses the same server/SSL/session settings as ClearPassClient.request()
-        but without needing api_paths.
-        """
         base = self.cp.https_prefix + self.cp.server
         url = base + path
-
         headers = {
             "Accept": "application/json, application/vnd.swagger+json, */*",
             "Authorization": f"Bearer {self.token}",
@@ -161,291 +319,242 @@ class ApiEndpointCache:
         resp.raise_for_status()
         return resp.text
 
+    def _load_json(self, path: str) -> dict[str, Any] | None:
+        try:
+            text = self._raw_get_text(path)
+        except Exception as exc:
+            log.debug("[api_catalog] fetch %s failed: %s", path, exc)
+            return None
+        if not _is_json_content(text):
+            return None
+        try:
+            parsed = json.loads(text)
+        except Exception as exc:
+            log.debug("[api_catalog] parse %s failed: %s", path, exc)
+            return None
+        return parsed if isinstance(parsed, dict) else None
+
+    def _merge_action(self, service_actions: dict[str, Any], action_name: str, method: str, path: str, params: list[str]) -> None:
+        entry = service_actions.setdefault(action_name, {"method": method, "paths": []})
+        entry["method"] = method
+        entry["paths"] = _dedupe_keep_order(entry.get("paths", []) + [path])
+        if params:
+            entry["params"] = _dedupe_keep_order(entry.get("params", []) + params)
+
+    def _process_swagger_subdoc(self, module_services: dict[str, Any], subdoc: dict[str, Any]) -> None:
+        apis = subdoc.get("apis")
+        if not isinstance(apis, list) or not apis:
+            return
+
+        models = subdoc.get("models")
+        if not isinstance(models, dict):
+            models = {}
+
+        resource_path = subdoc.get("resourcePath") or apis[0].get("path")
+        if not isinstance(resource_path, str):
+            return
+        base_path = _normalize_template_placeholders(_ensure_api_prefix(_clean_apigility_route(resource_path)))
+
+        raw_entries: list[dict[str, Any]] = []
+        for api_item in apis:
+            if not isinstance(api_item, dict):
+                continue
+            raw_path = api_item.get("path")
+            if not isinstance(raw_path, str):
+                continue
+            normalized_path = _normalize_template_placeholders(_ensure_api_prefix(raw_path))
+            service_key = _derive_service_key(base_path, normalized_path)
+            for operation in api_item.get("operations", []) or []:
+                if not isinstance(operation, dict):
+                    continue
+                method = str(operation.get("method") or "").upper().strip()
+                if method not in {"GET", "POST", "DELETE", "PATCH", "PUT"}:
+                    continue
+                params = _extract_operation_params(operation, models)
+                raw_entries.append(
+                    {
+                        "service": service_key,
+                        "base_path": base_path,
+                        "path": normalized_path,
+                        "method": method,
+                        "params": params,
+                        "placeholders": _extract_placeholders(normalized_path),
+                    }
+                )
+
+        by_service: dict[str, list[dict[str, Any]]] = {}
+        for entry in raw_entries:
+            by_service.setdefault(entry["service"], []).append(entry)
+
+        for service_key, entries in by_service.items():
+            service = module_services.setdefault(service_key, {"actions": {}})
+            actions = service.setdefault("actions", {})
+
+            has_item_style = any(entry["placeholders"] for entry in entries)
+            has_post_on_base = any(entry["method"] == "POST" and entry["path"] == entry["base_path"] for entry in entries)
+
+            for entry in entries:
+                method = entry["method"]
+                params = entry["params"]
+                path = entry["path"]
+                base_path = entry["base_path"]
+
+                if method == "GET":
+                    is_base_get = path == base_path
+                    if is_base_get and (_has_list_query_params(params) or has_item_style or has_post_on_base):
+                        action_name = "list"
+                    else:
+                        action_name = "get"
+                elif method == "POST":
+                    action_name = "add"
+                elif method == "DELETE":
+                    action_name = "delete"
+                elif method == "PATCH":
+                    action_name = "update"
+                else:
+                    action_name = "replace"
+
+                self._merge_action(actions, action_name, method, path, params)
+
+    def _process_apigility_services(self, module_services: dict[str, Any], listing: dict[str, Any]) -> bool:
+        services = listing.get("services")
+        if not isinstance(services, list) or not services:
+            return False
+
+        added = 0
+        for svc in services:
+            if not isinstance(svc, dict):
+                continue
+            route = svc.get("route")
+            if not isinstance(route, str):
+                continue
+
+            base_path = _normalize_template_placeholders(_ensure_api_prefix(_clean_apigility_route(route)))
+            service_key = _camel_to_kebab(str(svc.get("name") or base_path.strip("/").split("/")[-1]))
+            service = module_services.setdefault(service_key, {"actions": {}})
+            actions = service.setdefault("actions", {})
+
+            collection_methods = {str(m).upper() for m in svc.get("collection_http_methods", []) if isinstance(m, str)}
+            entity_methods = {str(m).upper() for m in svc.get("entity_http_methods", []) if isinstance(m, str)}
+            entity_id = str(svc.get("entity_identifier_name") or "id")
+            entity_id = _normalize_param_name(entity_id)
+            entity_path = base_path + "/{" + entity_id + "}"
+
+            for method in sorted(collection_methods):
+                if method == "GET":
+                    self._merge_action(actions, "list", "GET", base_path, list(_LIST_QUERY_PARAMS))
+                elif method == "POST":
+                    self._merge_action(actions, "add", "POST", base_path, [])
+
+            for method in sorted(entity_methods):
+                if method == "GET":
+                    self._merge_action(actions, "get", "GET", entity_path, [])
+                elif method == "DELETE":
+                    self._merge_action(actions, "delete", "DELETE", entity_path, [])
+                elif method == "PATCH":
+                    self._merge_action(actions, "update", "PATCH", entity_path, [])
+                elif method == "PUT":
+                    self._merge_action(actions, "replace", "PUT", entity_path, [])
+
+            added += 1
+
+        return added > 0
+
+
+    def _log_module_services(self, cli_module: str, module_services: dict[str, Any]) -> None:
+        service_names = sorted(module_services.keys())
+        if service_names:
+            log.debug(
+                "[api_catalog] Loaded module: %s with (%d) services -> %s",
+                cli_module,
+                len(service_names),
+                _format_name_list(service_names),
+            )
+        else:
+            log.info("[api_catalog] %s: 0 services", cli_module)
+
     def _build_catalog_from_clearpass(self) -> dict[str, Any]:
-        """
-        ClearPass /api/apigility/documentation/<Module-v1> often returns a Swagger 1.2 "resource listing":
-            {"apiVersion": "...", "swaggerVersion": "...", "apis": [{"path": "/PolicyElements-v1/NetworkDevice", ...}, ...]}
-
-        We:
-        1) discover modules from /api-docs
-        2) fetch module listing JSON
-        3) follow each listing apis[].path to fetch the sub-doc
-        4) extract resource paths + supported HTTP methods into a module/service catalog
-        5) also build a flat service->route map for request() compatibility
-        """
-        from .logger import AppLogger
-
-        log = AppLogger().get_logger(__name__)
-
-        def _clean_swagger_path(p: str) -> str:
-            # "/network-device/{id}" -> "/network-device"
-            p = re.sub(r"\{[^}]+\}", "", p)
-            return p.rstrip("/") or "/"
-
-        def _add_flat(flat: dict[str, str], key: str, route: str, *, namespace: str | None = None) -> str:
-            """
-            Add a route to the flat map, and (when namespace is provided) also add a namespaced key
-            to prevent collisions across modules (e.g. identities:endpoint vs insight:endpoint).
-            Returns the resolved route value stored in the flat map.
-            """
-            key = key.strip()
-            if not key:
-                return ""
-
-            base_route = _clean_apigility_route(route)
-            if base_route.startswith("/api/"):
-                value = base_route
-            elif base_route.startswith("/"):
-                value = "/api" + base_route
-            else:
-                value = "/api/" + base_route
-
-            flat[key] = value
-            if namespace:
-                flat[f"{namespace}:{key}"] = value
-            return value
-
-        def _module_to_cli(module_name: str) -> str:
-            base = re.sub(r"-v\d+$", "", module_name)  # "PolicyElements-v1" -> "PolicyElements"
-            return base.replace("_", "-").lower()
-
-        def _derive_actions(methods: set[str]) -> list[str]:
-            m = {x.upper() for x in methods}
-            actions: list[str] = []
-            if "GET" in m:
-                actions += ["list", "get"]
-            if "POST" in m:
-                actions += ["add"]
-            if "DELETE" in m:
-                actions += ["delete"]
-            return actions
-
-        def _extract_modules_from_api_docs(text: str) -> list[str]:
-            if _is_json_content(text):
-                try:
-                    data = json.loads(text)
-                except Exception:
-                    return []
-                out: list[str] = []
-                if isinstance(data, dict):
-                    apis = data.get("apis")
-                    if isinstance(apis, list):
-                        for a in apis:
-                            p = a.get("path")
-                            if isinstance(p, str):
-                                m = re.search(r"(/api-docs/[A-Za-z0-9_-]+-v\d+)", p)
-                                if m:
-                                    out.append(m.group(1))
-                return sorted(set(out))
-            return _extract_module_doc_paths_from_api_docs_html(text)
-
-        def _load_json(path: str) -> dict[str, Any] | None:
-            try:
-                text = self._raw_get_text(path)
-            except Exception as e:
-                log.debug("[api_catalog] fetch %s failed: %s", path, e)
-                return None
-            if not _is_json_content(text):
-                return None
-            try:
-                parsed = json.loads(text)
-            except Exception as e:
-                log.debug("[api_catalog] parse %s failed: %s", path, e)
-                return None
-            return parsed if isinstance(parsed, dict) else None
-
-        # --- Step 1: discover modules from /api-docs
         api_docs_text = self._raw_get_text("/api-docs")
         module_doc_paths = _extract_modules_from_api_docs(api_docs_text)
 
-        log.info("[api_catalog] Discovered %d modules from /api-docs", len(module_doc_paths))
-        if module_doc_paths:
-            log.info("[api_catalog] First modules: %s", module_doc_paths[:10])
+        log.info("Discovered %d modules from /api-docs", len(module_doc_paths))
+        discovered_modules = [_module_to_cli(path.rsplit("/", 1)[-1]) for path in module_doc_paths]
+        if discovered_modules:
+            log.debug("[api_catalog] modules: %s", _format_name_list(discovered_modules))
 
-        flat: dict[str, str] = {}
-        modules: dict[str, dict[str, dict[str, Any]]] = {}
+        modules: dict[str, dict[str, Any]] = {}
 
-        # --- Step 2: for each module, fetch listing and follow apis[]
         for module_path in module_doc_paths:
-            module_name = module_path.rsplit("/", 1)[-1]  # "PolicyElements-v1"
+            module_name = module_path.rsplit("/", 1)[-1]
             cli_module = _module_to_cli(module_name)
-            modules.setdefault(cli_module, {})
+            module_services = modules.setdefault(cli_module, {})
 
-            listing_path = f"/api/apigility/documentation/{module_name}"
-            listing = _load_json(listing_path)
-
+            listing = self._load_json(f"/api/apigility/documentation/{module_name}")
             if listing is None:
                 for alt in (
                     f"/api/apigility/documentation/{module_name}/swagger",
                     module_path,
                     f"{module_path}.json",
                 ):
-                    listing = _load_json(alt)
+                    listing = self._load_json(alt)
                     if listing is not None:
-                        listing_path = alt
                         break
 
             if listing is None:
                 log.warning("[api_catalog] %s: no JSON docs found", module_name)
                 continue
 
-            added = 0
-
-            # Case A: Apigility services[]
-            services = listing.get("services")
-            if isinstance(services, list) and services:
-                for svc in services:
-                    if not isinstance(svc, dict):
-                        continue
-                    name = svc.get("name")
-                    route = svc.get("route")
-                    if not isinstance(name, str) or not isinstance(route, str):
-                        continue
-                    service_key = _camel_to_kebab(name)
-                    _add_flat(flat, service_key, route, namespace=cli_module)
-
-                    # methods/actions not exposed in this format without extra requests
-                    modules[cli_module].setdefault(
-                        service_key,
-                        {"route": flat[service_key], "methods": [], "actions": ["list", "get", "add", "delete"]},
-                    )
-                    added += 1
-
-                log.info("[api_catalog] %s: added %d endpoints (apigility services)", module_name, added)
+            if self._process_apigility_services(module_services, listing):
+                self._log_module_services(cli_module, module_services)
                 continue
 
-            # Case B: Swagger 1.2 resource listing
-            apis = listing.get("apis")
-            if isinstance(apis, list) and apis:
-                for item in apis:
-                    if not isinstance(item, dict):
-                        continue
-                    p = item.get("path")
-                    if not isinstance(p, str):
-                        continue
-
-                    # Normalize to a full API doc path
-                    if p.startswith("/api/"):
-                        sub_path = p
-                    elif p.startswith(f"/{module_name}/"):
-                        sub_path = f"/api/apigility/documentation{p}"
-                    elif p.startswith("/"):
-                        sub_path = f"/api/apigility/documentation/{module_name}{p}"
-                    else:
-                        sub_path = f"/api/apigility/documentation/{module_name}/{p}"
-
-                    sub = _load_json(sub_path)
-                    if not sub:
-                        continue
-
-                    sub_apis = sub.get("apis")
-                    if isinstance(sub_apis, list) and sub_apis:
-                        for a in sub_apis:
-                            if not isinstance(a, dict):
-                                continue
-                            sp = a.get("path")
-                            if not isinstance(sp, str):
-                                continue
-
-                            # Swagger paths may include path params like:
-                            #   /certificate/{id}/export
-                            # Your current CLI only supports collection-style routes (list) and id-at-end item routes (get/delete).
-                            # If a path param is not the last segment, we skip it to avoid generating invalid/listable routes.
-                            raw_segments = [s for s in sp.strip("/").split("/") if s]
-                            param_idxs = [i for i, s in enumerate(raw_segments) if s.startswith("{") and s.endswith("}")]
-                            if param_idxs:
-                                # Only support params at the very end: /resource/{id}
-                                if param_idxs == [len(raw_segments) - 1] and len(raw_segments) >= 2:
-                                    # Convert to collection route: /resource
-                                    sp_base = "/" + "/".join(raw_segments[:-1])
-                                    route = _clean_swagger_path(sp_base)
-                                    service_key = raw_segments[-2].lower()
-                                else:
-                                    log.debug("[api_catalog] Skipping unsupported parameterized path: %s", sp)
-                                    continue
-                            else:
-                                route = _clean_swagger_path(sp)
-                                service_key = route.strip("/").split("/")[-1].lower()
-
-                            if not service_key:
-                                continue
-
-                            # Collect methods from operations
-                            methods: set[str] = set()
-                            ops = a.get("operations")
-                            if isinstance(ops, list):
-                                for op in ops:
-                                    if isinstance(op, dict) and isinstance(op.get("method"), str):
-                                        methods.add(op["method"].upper())
-
-                            _add_flat(flat, service_key, route, namespace=cli_module)
-
-                            entry = modules[cli_module].get(service_key)
-                            if entry is None:
-                                modules[cli_module][service_key] = {
-                                    "route": flat[service_key],
-                                    "methods": sorted(methods),
-                                    "actions": _derive_actions(methods),
-                                }
-                            else:
-                                merged = set(entry.get("methods", [])) | methods
-                                entry["methods"] = sorted(merged)
-                                entry["actions"] = _derive_actions(merged)
-                                entry["route"] = flat[service_key]
-
-                            added += 1
-
-                    # Fallback if api declaration uses resourcePath only
-                    elif isinstance(sub.get("resourcePath"), str):
-                        route = _clean_swagger_path(sub["resourcePath"])
-                        service_key = route.strip("/").split("/")[-1].lower()
-                        if service_key:
-                            _add_flat(flat, service_key, route, namespace=cli_module)
-                            modules[cli_module].setdefault(
-                                service_key,
-                                {"route": flat[service_key], "methods": [], "actions": ["list", "get", "add", "delete"]},
-                            )
-                            added += 1
-
-                log.info("[api_catalog] %s: added %d endpoints (swagger 1.2 listing)", module_name, added)
+            listing_apis = listing.get("apis")
+            if not isinstance(listing_apis, list) or not listing_apis:
+                log.warning(
+                    "[api_catalog] %s: JSON docs contained neither usable 'services' nor usable 'apis' (keys=%s)",
+                    module_name,
+                    list(listing.keys())[:30],
+                )
                 continue
 
-            log.warning(
-                "[api_catalog] %s: JSON docs contained neither usable 'services' nor usable 'apis' (keys=%s, source=%s)",
-                module_name,
-                list(listing.keys())[:30],
-                listing_path,
-            )
+            for item in listing_apis:
+                if not isinstance(item, dict):
+                    continue
+                p = item.get("path")
+                if not isinstance(p, str):
+                    continue
 
-        # --- Step 3: add OAuth bootstrap endpoints and aliases
-        for k, v in OAUTH_ENDPOINTS.items():
-            flat[k] = v
+                if p.startswith("/api/"):
+                    sub_path = p
+                elif p.startswith(f"/{module_name}/"):
+                    sub_path = f"/api/apigility/documentation{p}"
+                elif p.startswith("/"):
+                    sub_path = f"/api/apigility/documentation/{module_name}{p}"
+                else:
+                    sub_path = f"/api/apigility/documentation/{module_name}/{p}"
 
-        modules.setdefault("oauth", {})
-        for k, v in OAUTH_ENDPOINTS.items():
-            modules["oauth"].setdefault(k, {"route": v, "methods": [], "actions": ["list", "get", "add", "delete"]})
+                subdoc = self._load_json(sub_path)
+                if not subdoc:
+                    continue
+                self._process_swagger_subdoc(module_services, subdoc)
 
-        for bad, good in ALIASES.items():
-            if good in flat and bad not in flat:
-                flat[bad] = flat[good]
-                for mod_services in modules.values():
-                    if good in mod_services and bad not in mod_services:
-                        mod_services[bad] = dict(mod_services[good])
+            if not module_services:
+                log.warning("[api_catalog] %s: no services were extracted", module_name)
+                continue
+
+            self._log_module_services(cli_module, module_services)
 
         catalog: dict[str, Any] = {
-            "version": 1,
+            "version": 2,
             "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "server": getattr(self.cp, "server", None),
             "modules": modules,
-            "flat": flat,
         }
-
-        log.info("[api_catalog] Total endpoints (including oauth): %d", len(flat))
+        total_modules = len(modules)
+        total_services = _count_services(modules)
+        log.info("Total modules in cache: %d", total_modules)
+        log.info("Total services in cache: %d", total_services)
         return catalog
-
-
-def get_api_paths(cp_client, *, token: str, force_refresh: bool = False) -> dict[str, str]:
-    return ApiEndpointCache(cp_client, token=token).get_api_paths(force_refresh=force_refresh)
 
 
 def get_api_catalog(cp_client, *, token: str, force_refresh: bool = False) -> dict[str, Any]:
@@ -466,17 +575,12 @@ def load_cached_catalog() -> dict[str, Any] | None:
     except Exception:
         return None
 
-    if isinstance(data, dict) and isinstance(data.get("flat"), dict):
+    if isinstance(data, dict) and data.get("version") == 2 and isinstance(data.get("modules"), dict):
         return data
-
-    if isinstance(data, dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in data.items()):
-        return {"version": 0, "generated_at": None, "server": None, "modules": {}, "flat": data}
-
     return None
 
 
 def clear_api_cache() -> bool:
-    """Returns True if a cache file was removed, False if it didn't exist."""
     p = get_cache_file_path()
     try:
         p.unlink()

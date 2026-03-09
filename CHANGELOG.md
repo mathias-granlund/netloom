@@ -6,6 +6,31 @@ The format loosely follows Keep a Changelog and Semantic Versioning
 principles.
 ------------------------------------------------------------------------
 
+## [1.3.0] - 2026-03-09
+
+### Added
+- Added `list` as an alias for `get --all` across dynamically discovered services
+- Added action-specific dynamic help output for `get`, `add`, `delete`, `update`, and `replace`
+- Added richer API catalog refresh logging that shows discovered module names, per-module services, and total service count
+
+### Changed
+- Updated the API catalog cache to a v2 structure: `module -> service -> action -> {method, paths, params}`
+- Preserved parameterized Swagger paths in the cache and expanded placeholders from CLI arguments at request time
+- Normalized single `*_id` path placeholders to `{id}` while keeping multi-placeholder paths unchanged
+- Switched the service dispatcher to action-aware endpoint resolution for `list`, `get`, `add`, `delete`, `update`, and `replace`
+- Moved dynamic help rendering into `ClearPassClient._help()`
+- Refined service help so `arapy <module> <service> --help` shows a compact summary, while `<action> --help` shows action-specific paths and params
+- Updated package metadata and documentation for the 1.3.0 release
+
+### Fixed
+- Stopped discarding valid parameterized endpoints discovered from ClearPass Swagger documentation
+- Improved list handling so both `list` and `get --all` resolve to the same collection action
+
+### Notes
+- After upgrading from an older cache format, run `arapy cache clear` followed by `arapy cache update`
+
+------------------------------------------------------------------------
+
 ## [1.2.6] - 2026-03-04
 
 ### Changed
@@ -47,53 +72,48 @@ principles.
 
 ------------------------------------------------------------------------
 
-## \[1.2.0\] - 2024-01-Release
+## [1.2.0] - 2024-01-Release
 
 ### Added
-
--   Dynamic, data-driven help system (`print_help()` refactor)
--   Bash tab-completion for modules, services, and actions
--   `--log_level` global flag with support for:
-    -   debug
-    -   info
-    -   warning
-    -   error
-    -   critical
--   Structured, line-by-line debug logging for HTTP errors
--   Cleaner CLI argument handling
--   Context-aware completion engine integrated into CLI
+- Dynamic, data-driven help system (`print_help()` refactor)
+- Bash tab-completion for modules, services, and actions
+- `--log_level` global flag with support for:
+  - `debug`
+  - `info`
+  - `warning`
+  - `error`
+  - `critical`
+- Structured, line-by-line debug logging for HTTP errors
+- Cleaner CLI argument handling
+- Context-aware completion engine integrated into CLI
 
 ### Changed
-
--   Removed large static help blocks
--   Standardized logging behavior
--   Improved CLI help formatting
--   Improved internal command routing structure
--   Updated README with installation & completion guide
+- Removed large static help blocks
+- Standardized logging behavior
+- Improved CLI help formatting
+- Improved internal command routing structure
+- Updated README with installation & completion guide
 
 ### Fixed
-
--   Completion behavior when service names share substrings
--   Logging inconsistencies between console and file output
--   Minor help text formatting issues
-
-------------------------------------------------------------------------
-
-## \[1.1.6\]
-
-### Added
-
--   Initial dynamic help rendering
--   Improved error handling structure
+- Completion behavior when service names share substrings
+- Logging inconsistencies between console and file output
+- Minor help text formatting issues
 
 ------------------------------------------------------------------------
 
-## \[1.1.5\]
+## [1.1.6]
 
 ### Added
+- Initial dynamic help rendering
+- Improved error handling structure
 
--   Extended module/service coverage
--   Improved structured logging
--   Context-aware help support
+------------------------------------------------------------------------
+
+## [1.1.5]
+
+### Added
+- Extended module/service coverage
+- Improved structured logging
+- Context-aware help support
 
 ------------------------------------------------------------------------
