@@ -294,6 +294,7 @@ class ClearPassClient:
             "Common flags:\n"
             "  --help                             Print help message (same as -h and ?).\n"
             "  --console                          Also prints output to terminal.\n"
+            "  --decrypt                          Include secrets in output (default: False).\n"
             "\n"
             "Notes:\n"
             "                                     Action 'list' is the same as 'get --all' \n"
