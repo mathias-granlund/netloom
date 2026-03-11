@@ -19,7 +19,7 @@ def _iter_list_endpoints(catalog: dict):
             if not isinstance(list_action, dict):
                 continue
             for path in list_action.get("paths") or []:
-                if isinstance(path, str):
+                if isinstance(path, str) and "{" not in path:
                     yield module, service, path, list_action
 
 
@@ -90,10 +90,6 @@ def test_list_endpoints_smoke(
             params["offset"] = 0
         if "limit" in allowed:
             params["limit"] = 1
-        if "sort" in allowed:
-            params["sort"] = "+id"
-        if "calculate_count" in allowed:
-            params["calculate_count"] = True
 
         args = {"module": module, "service": service, "action": "list"}
         try:

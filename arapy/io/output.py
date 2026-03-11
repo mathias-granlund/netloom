@@ -60,6 +60,21 @@ def _extract_by_path(data: Any, path: Iterable[str | int]):
     return current
 
 
+def _console_text_for_raw_bytes(value: bytes) -> str:
+    try:
+        decoded = value.decode("utf-8")
+    except UnicodeDecodeError:
+        return f"<binary data: {len(value)} bytes>"
+
+    if any(ord(char) < 32 and char not in "\r\n\t" for char in decoded):
+        return f"<binary data: {len(value)} bytes>"
+
+    if decoded and not any(char.isprintable() and not char.isspace() for char in decoded):
+        return f"<binary data: {len(value)} bytes>"
+
+    return decoded
+
+
 def write_value_to_file(
     value: Any,
     path: str | Path,
@@ -99,10 +114,7 @@ def write_value_to_file(
             with path.open(binary_mode) as handle:
                 handle.write(safe_value)
             if also_console:
-                try:
-                    print(safe_value.decode("utf-8"))
-                except UnicodeDecodeError:
-                    print(f"<binary data: {len(safe_value)} bytes>")
+                print(_console_text_for_raw_bytes(safe_value))
         else:
             text = str(safe_value)
             with path.open(mode, encoding="utf-8") as handle:

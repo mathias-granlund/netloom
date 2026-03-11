@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -18,16 +18,16 @@ A modular CLI toolkit for interacting with **HPE Aruba ClearPass Policy Manager*
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
 
-Version: **1.4.2**
+Version: **1.4.3**
 
 ---
 
-## What changed in 1.4.2
+## What changed in 1.4.3
 
-- enriched dynamic help with response codes, response content types, body field notes, and generated body examples from ClearPass API docs
-- added direct token and token-file authentication without losing the existing OAuth client-credential flow
-- improved binary/raw download handling for export-style endpoints such as certificates
-- restored explicit `list` action exposure in completion/help output
+- fixed raw byte console output so binary/control-heavy payloads are reported as binary instead of printing unreadable control characters
+- fixed `calculate_count` query serialization to use ClearPass-friendly lowercase boolean strings
+- tightened dynamic GET/list classification for placeholder-heavy Swagger routes
+- made the list-endpoint smoke coverage less aggressive so it better reflects real ClearPass list semantics
 
 ---
 

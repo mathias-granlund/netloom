@@ -179,14 +179,10 @@ def query_params_for_action(cp, api_catalog, args: dict, action: str) -> dict:
         if "calculate_count" in allowed and args.get("calculate_count") is not None:
             raw_value = args["calculate_count"]
             if isinstance(raw_value, str):
-                params["calculate_count"] = raw_value.strip().lower() in {
-                    "1",
-                    "true",
-                    "yes",
-                    "on",
-                }
+                enabled = raw_value.strip().lower() in {"1", "true", "yes", "on"}
             else:
-                params["calculate_count"] = bool(raw_value)
+                enabled = bool(raw_value)
+            params["calculate_count"] = "true" if enabled else "false"
 
     for name in allowed:
         if name in params:

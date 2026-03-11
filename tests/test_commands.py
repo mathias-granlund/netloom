@@ -152,7 +152,7 @@ def test_list_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
         "limit": 25,
         "sort": "-id",
         "filter": '{"name":"x"}',
-        "calculate_count": True,
+        "calculate_count": "true",
     }
     assert calls["logged"]["thing"]["count"] == 1
     assert calls["logged"]["filename"].endswith("endpoint_list.json")

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.3 - 2026-03-11
+
+### Fixed
+- raw byte output now treats control-heavy byte streams as binary for console display instead of echoing unreadable control characters
+- `calculate_count` query values are now serialized as lowercase `true` / `false` strings for ClearPass compatibility
+- Swagger GET routes with unresolved placeholder-style base paths are no longer overclassified as `list` actions
+- list endpoint smoke coverage now uses safer default query parameters and skips placeholder-dependent list routes
+
 ## 1.4.2 - 2026-03-11
 
 ### Added

@@ -726,8 +726,10 @@ class ApiEndpointCache:
                     is_base_get = path == base_path
                     if is_base_get and (
                         _has_list_query_params(params)
-                        or has_item_style
-                        or has_post_on_base
+                        or (
+                            not entry["placeholders"]
+                            and (has_item_style or has_post_on_base)
+                        )
                     ):
                         action_name = "list"
                     else:
