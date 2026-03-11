@@ -44,7 +44,7 @@ pip install -e .[dev]
 ### Standard install
 
 ```bash
-pip install .
+pip install git+https://github.com/mg-aranya/arapy
 ```
 
 ---

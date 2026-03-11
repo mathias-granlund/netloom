@@ -75,7 +75,7 @@ def query_params_for_action(cp, api_catalog, args: dict, action: str) -> dict:
         if "offset" in allowed:
             params["offset"] = int(args.get("offset", 0))
         if "sort" in allowed:
-            params["sort"] = args.get("sort", "+id")
+            params["sort"] = args.get("sort")
         if "filter" in allowed and args.get("filter") is not None:
             params["filter"] = args["filter"]
         if "calculate_count" in allowed and args.get("calculate_count") is not None:

@@ -8,8 +8,8 @@ def service_cli_actions(service_entry: dict) -> list[str]:
     cli_actions: list[str] = []
     if "get" in actions or "list" in actions:
         cli_actions.append("get")
-    if "list" in actions:
-        cli_actions.append("list")
+    #if "list" in actions:
+    #    cli_actions.append("list")
     for action in CLI_ACTION_ORDER[1:]:
         if action in actions:
             cli_actions.append(action)
@@ -46,7 +46,7 @@ def render_help(
         "  arapy <module> <service> <action> [options] [flags]\n\n"
         "Examples:\n"
         "  arapy <module> <service> "
-        "[add | delete | get | list | update | replace] "
+        "[add|delete|get|list|update|replace] "
         "[--key=value] "
         "[--log-level=debug|info|warning|error|critical] [--console]\n"
         "  arapy cache [clear | update]\n"
@@ -57,7 +57,7 @@ def render_help(
         "  --out=PATH                         Override the output file path.\n"
         "  --data-format=json|csv|raw         Output format (default: json).\n"
         "  --csv-fieldnames=a,b,c             Fields and order for CSV output.\n"
-        "  --log-level=debug|info|...         Select log level.\n\n"
+        "  --log-level=LEVEL                 Select log level.\n\n"
         "Common flags:\n"
         "  --help                             Print help message (same as -h and ?).\n"
         "  --console                          Also print output to terminal.\n"

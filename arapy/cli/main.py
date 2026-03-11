@@ -119,5 +119,6 @@ def main() -> None:
         settings.verify_ssl,
     )
     token = cp.login(OAUTH_ENDPOINTS, settings.credentials)["access_token"]
+    log.debug(f"Session token: {token}")
     api_catalog = get_api_catalog(cp, token=token, settings=settings)
     command(cp, token, api_catalog, args, settings=settings)
