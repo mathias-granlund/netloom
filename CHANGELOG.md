@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.4 - 2026-03-11
+
+### Changed
+- `--help` output now suppresses redundant `params:` sections for actions that already expose richer `body fields:` metadata
+- query/path-oriented actions such as `list` and `get` still show `params:` when no body metadata is available
+
 ## 1.4.3 - 2026-03-11
 
 ### Fixed

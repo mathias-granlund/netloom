@@ -28,10 +28,6 @@ def render_action_block(title: str, action_def: dict) -> str:
     if paths:
         lines.append("  paths:")
         lines.extend(f"    - {path}" for path in paths)
-    params = action_def.get("params") or []
-    if params:
-        lines.append("  params:")
-        lines.extend(f"    - {param}" for param in params)
     notes = action_def.get("notes") or []
     if notes:
         lines.append("  notes:")
@@ -52,6 +48,10 @@ def render_action_block(title: str, action_def: dict) -> str:
         lines.append("  body required:")
         lines.extend(f"    - {name}" for name in body_required)
     body_fields = action_def.get("body_fields") or []
+    params = action_def.get("params") or []
+    if params and not body_fields:
+        lines.append("  params:")
+        lines.extend(f"    - {param}" for param in params)
     if body_fields:
         lines.append("  body fields:")
         for field in body_fields:
