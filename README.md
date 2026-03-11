@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.4.6-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.4.7-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -18,14 +18,16 @@ A modular CLI toolkit for interacting with **HPE Aruba ClearPass Policy Manager*
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
 
-Version: **1.4.6**
+Version: **1.4.7**
 
 ---
 
-## What changed in 1.4.6
+## What changed in 1.4.7
 
-- added a static `arapy(1)` man page in `man/arapy.1`
-- documented how to view the bundled man page locally
+- added package metadata required for cleaner wheel and sdist publishing
+- added a packaged `arapy-install-manpage` helper for installed environments
+- added release validation support with `build` and `twine`
+- added GitHub Actions CI for test and package validation
 
 ---
 
@@ -41,6 +43,13 @@ pip install -e .[dev]
 
 ```bash
 pip install git+https://github.com/mg-aranya/arapy
+```
+
+To build release artifacts locally:
+
+```bash
+python -m build
+python -m twine check dist/*
 ```
 
 ---
@@ -106,9 +115,9 @@ arapy identities endpoint list --token-file=./token.json
 |---|---|
 | `--log-level=LEVEL` | Set logging level |
 | `--console` | Print API response to terminal |
-| `--limit=N` | Limit results (1–1000) |
+| `--limit=N` | Limit results (1-1000) |
 | `--offset=N` | Pagination offset |
-| `--sort=±field` | Sort results |
+| `--sort=+field` | Sort results |
 | `--filter=JSON` | Server-side filter |
 | `--calculate-count=true/false` | Request total count |
 | `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
@@ -202,27 +211,27 @@ source /path/to/your/repo/scripts/arapy-completion.bash
 
 ```text
 arapy/
-├── __init__.py
-├── __main__.py
-├── cli/
-│   ├── commands.py
-│   ├── completion.py
-│   ├── help.py
-│   ├── main.py
-│   └── parser.py
-├── core/
-│   ├── catalog.py
-│   ├── client.py
-│   ├── config.py
-│   └── resolver.py
-├── io/
-│   ├── files.py
-│   └── output.py
-├── logging/
-│   └── setup.py
-├── scripts/
-│   └── arapy-completion.bash
-└── tests/
+|-- __init__.py
+|-- __main__.py
+|-- cli/
+|   |-- commands.py
+|   |-- completion.py
+|   |-- help.py
+|   |-- main.py
+|   `-- parser.py
+|-- core/
+|   |-- catalog.py
+|   |-- client.py
+|   |-- config.py
+|   `-- resolver.py
+|-- io/
+|   |-- files.py
+|   `-- output.py
+|-- logging/
+|   `-- setup.py
+|-- scripts/
+|   `-- arapy-completion.bash
+`-- tests/
 ```
 
 ---
@@ -248,6 +257,28 @@ Static operator documentation is also available as a bundled man page:
 man -l man/arapy.1
 ```
 
+To install the bundled man page for normal `man arapy` usage:
+
+```bash
+arapy-install-manpage
+man arapy
+```
+
+If your system does not already search `~/.local/share/man`, add it to `MANPATH`.
+
+---
+
+## Packaging
+
+`arapy` now includes the baseline pieces expected from a releasable Python package:
+
+- explicit project metadata, classifiers, and project URLs in `pyproject.toml`
+- a packaged license file
+- wheel and sdist support for the bundled man page
+- a `MANIFEST.in` for predictable source distributions
+- build validation via `python -m build` and `python -m twine check`
+- CI coverage for tests and distribution validation on supported Python versions
+
 Run lint and formatting:
 
 ```bash
@@ -259,5 +290,5 @@ ruff format .
 
 ## License
 
-Internal / Custom Use  
-© Mathias Granlund
+Proprietary / Internal Use  
+See `LICENSE`.

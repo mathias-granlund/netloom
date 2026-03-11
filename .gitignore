@@ -8,6 +8,7 @@ build/
 .env
 .venv/
 .pytest_cache/
+.pytest_tmp/
 .hypothesis/
 .ruff_cache/
 .backup/

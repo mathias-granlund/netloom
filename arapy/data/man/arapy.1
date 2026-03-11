@@ -1,0 +1,376 @@
+.TH ARAPY 1 "March 2026" "arapy 1.4.x" "User Commands"
+.SH NAME
+arapy \- dynamic CLI for HPE Aruba ClearPass Policy Manager
+
+.SH SYNOPSIS
+.B arapy
+[\fIGLOBAL-OPTIONS\fR] \fIMODULE SERVICE ACTION\fR [\fIKEY=VALUE\fR ...]
+
+.br
+.B arapy
+cache clear
+
+.br
+.B arapy
+cache update
+
+.br
+.B arapy
+[\fB--help\fR|\fB?\fR]
+
+.br
+.B arapy
+\fB--version\fR
+
+.SH DESCRIPTION
+.B arapy
+is a command-line client for HPE Aruba ClearPass Policy Manager.
+
+It discovers available API modules, services, actions, and request metadata
+dynamically from the ClearPass API documentation endpoints. Because of this,
+the exact command surface depends on the connected ClearPass server.
+
+This manual describes the stable, static parts of
+.BR arapy :
+authentication, global options, cache behavior, output behavior, and common
+usage. For endpoint-specific help, use the built-in dynamic help:
+
+.PP
+.EX
+arapy <module> <service> ?
+arapy <module> <service> <action> ?
+.EE
+
+.SH COMMAND MODEL
+The general command form is:
+
+.PP
+.EX
+arapy <module> <service> <action> [--key=value ...]
+.EE
+
+Supported action names commonly include:
+
+.TP
+.B list
+List collection resources. Equivalent to \fBget --all\fR for many endpoints.
+
+.TP
+.B get
+Retrieve one resource or, with \fB--all\fR, a collection.
+
+.TP
+.B add
+Create a resource.
+
+.TP
+.B update
+Patch an existing resource.
+
+.TP
+.B replace
+Replace a resource.
+
+.TP
+.B delete
+Delete a resource.
+
+The available modules, services, and actions are determined dynamically from
+ClearPass and may vary by version and enabled API surface.
+
+.SH CACHE COMMANDS
+.TP
+.B arapy cache update
+Refresh the local API catalog from ClearPass.
+
+.TP
+.B arapy cache clear
+Remove the local API catalog cache.
+
+.SH AUTHENTICATION
+.B arapy
+supports the following authentication methods:
+
+.TP
+.B OAuth client credentials
+Configured with environment variables such as:
+.RS
+.PP
+.EX
+ARAPY_SERVER
+ARAPY_CLIENT_ID
+ARAPY_CLIENT_SECRET
+.EE
+.RE
+
+.TP
+.B Direct bearer token
+Configured with:
+.RS
+.PP
+.EX
+ARAPY_API_TOKEN
+.EE
+.RE
+
+.TP
+.B Token file
+Configured with:
+.RS
+.PP
+.EX
+ARAPY_API_TOKEN_FILE
+.EE
+.RE
+
+The token file may contain either a raw token string or JSON such as:
+
+.PP
+.EX
+{"access_token":"..."}
+.EE
+
+Command-line token overrides may also be used:
+
+.PP
+.EX
+arapy identities endpoint list --api-token=TOKEN
+arapy identities endpoint list --token-file=./token.json
+.EE
+
+.SH GLOBAL OPTIONS
+.TP
+.BI --log-level= LEVEL
+Set log level. Typical values: debug, info, warning, error, critical.
+
+.TP
+.B --console
+Also print response output to the terminal.
+
+.TP
+.BI --out= FILE
+Write output to a specific file.
+
+.TP
+.BI --data-format= FORMAT
+Set output format. Supported values: json, csv, raw.
+
+.TP
+.BI --csv-fieldnames= FIELDS
+Comma-separated field list for CSV output ordering.
+
+.TP
+.BI --file= FILE
+Load request payload from JSON or CSV for bulk/write actions.
+
+.TP
+.BI --api-token= TOKEN
+Use an existing bearer token instead of logging in.
+
+.TP
+.BI --token-file= FILE
+Load bearer token from file.
+
+.TP
+.BI --limit= N
+Set list page size when supported by the endpoint.
+
+.TP
+.BI --offset= N
+Set list offset when supported by the endpoint.
+
+.TP
+.BI --sort= FIELD
+Set server-side sort when supported by the endpoint.
+
+.TP
+.BI --filter= JSON
+Set server-side filter expression when supported by the endpoint.
+
+.TP
+.BI --calculate-count= true|false
+Request total count when supported by the endpoint.
+
+.TP
+.BI --encrypt= enable|disable
+Control masking of secret values in saved/logged output.
+
+.TP
+.B --decrypt
+Disable secret masking in output.
+
+.TP
+.BR --help ", " ?
+Show help.
+
+.TP
+.B --version
+Show version.
+
+.SH OUTPUT
+By default,
+.B arapy
+writes responses to files under its state and output directories.
+
+Supported output formats are:
+
+.TP
+.B json
+Pretty-printed JSON output.
+
+.TP
+.B csv
+CSV output for list-style data.
+
+.TP
+.B raw
+Raw text or binary output, used especially for export and download style
+endpoints.
+
+For binary responses,
+.B arapy
+may automatically choose raw output and use the filename provided by the
+server.
+
+.SH ENVIRONMENT
+.TP
+.B ARAPY_SERVER
+ClearPass server hostname or host:port.
+
+.TP
+.B ARAPY_CLIENT_ID
+OAuth client ID.
+
+.TP
+.B ARAPY_CLIENT_SECRET
+OAuth client secret.
+
+.TP
+.B ARAPY_API_TOKEN
+Direct bearer token.
+
+.TP
+.B ARAPY_API_TOKEN_FILE
+Path to token file.
+
+.TP
+.B ARAPY_VERIFY_SSL
+Enable or disable TLS certificate verification.
+
+.TP
+.B ARAPY_TIMEOUT
+HTTP timeout in seconds.
+
+.TP
+.B ARAPY_LOG_LEVEL
+Default log level.
+
+.TP
+.B ARAPY_DATA_FORMAT
+Default output format.
+
+.TP
+.B ARAPY_CONSOLE
+Enable console output by default.
+
+.TP
+.B ARAPY_ENCRYPT_SECRETS
+Mask secret values by default.
+
+.TP
+.B ARAPY_CACHE_DIR
+Override cache directory.
+
+.TP
+.B ARAPY_STATE_DIR
+Override state directory.
+
+.TP
+.B ARAPY_OUT_DIR
+Override response output directory.
+
+.TP
+.B ARAPY_APP_LOG_DIR
+Override application log directory.
+
+.SH FILES
+.TP
+.B ~/.cache/arapy/
+Default cache directory on Linux when XDG defaults are used.
+
+.TP
+.B ~/.local/state/arapy/
+Default state directory on Linux when XDG defaults are used.
+
+.TP
+.B ~/.local/state/arapy/responses/
+Default response output directory.
+
+.TP
+.B ~/.local/state/arapy/logs/
+Default log directory.
+
+.SH EXAMPLES
+Refresh API discovery cache:
+
+.PP
+.EX
+arapy cache update
+.EE
+
+List endpoints:
+
+.PP
+.EX
+arapy identities endpoint list --limit=10
+.EE
+
+Get one network device by id:
+
+.PP
+.EX
+arapy policyelements network-device get --id=1001
+.EE
+
+Update one network device:
+
+.PP
+.EX
+arapy policyelements network-device update --id=1001 --description="Core switch"
+.EE
+
+Use dynamic help for a discovered action:
+
+.PP
+.EX
+arapy policyelements network-device add ?
+.EE
+
+.SH NOTES
+This manual is intentionally static and does not attempt to list the full
+dynamic API surface discovered from ClearPass.
+
+Use built-in help for live endpoint metadata:
+
+.PP
+.EX
+arapy <module> <service> ?
+arapy <module> <service> <action> ?
+.EE
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+
+.TP
+.B non-zero
+Failure, invalid arguments, authentication failure, network failure, or API
+error.
+
+.SH SEE ALSO
+.BR python (1),
+.BR curl (1)
+
+ClearPass API documentation as exposed by the target server via
+.BR /api-docs .

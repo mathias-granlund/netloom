@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.7 - 2026-03-11
+
+### Added
+- `arapy-install-manpage` helper command to install the bundled `arapy(1)` page into a local `man1` directory after package installation
+- packaged copy of the man page under `arapy/data/man/arapy.1` so the helper works from installed wheels and editable installs
+- package metadata for classifiers, project URLs, and explicit license handling
+- `LICENSE` file and `MANIFEST.in` for cleaner source and binary distributions
+- GitHub Actions workflow to run tests and validate built distributions
+- `build` and `twine` in the `.[dev]` extra for local release validation
+
+### Changed
+- README now documents the helper-based `man arapy` setup path
+- README now documents local build and package validation commands
+
 ## 1.4.6 - 2026-03-11
 
 ### Added
