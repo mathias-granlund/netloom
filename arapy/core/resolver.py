@@ -6,14 +6,95 @@ from arapy.core.config import RESERVED_ARGS, Settings
 from arapy.io.files import load_payload_file
 
 
+_TEXT_CONTENT_MARKERS = (
+    "json",
+    "xml",
+    "javascript",
+    "yaml",
+    "html",
+    "csv",
+    "x-www-form-urlencoded",
+)
+_CONTENT_TYPE_EXTENSIONS = {
+    "application/x-pkcs12": "p12",
+    "application/pkcs12": "p12",
+    "application/x-pkcs7-certificates": "p7b",
+    "application/pkix-cert": "cer",
+    "application/x-x509-ca-cert": "cer",
+    "application/x-pem-file": "pem",
+    "application/pem-certificate-chain": "pem",
+    "application/octet-stream": "bin",
+    "application/zip": "zip",
+    "application/gzip": "gz",
+    "application/pdf": "pdf",
+    "text/plain": "txt",
+}
+
+
+def _normalize_content_type(value: str | None) -> str:
+    return (value or "").split(";", 1)[0].strip().lower()
+
+
+def _is_binary_content_type(content_type: str | None) -> bool:
+    parsed = _normalize_content_type(content_type)
+    if not parsed:
+        return False
+    if parsed.startswith("text/"):
+        return False
+    return not any(marker in parsed for marker in _TEXT_CONTENT_MARKERS)
+
+
+def action_response_content_types(action_def: dict | None) -> list[str]:
+    if not isinstance(action_def, dict):
+        return []
+    return [
+        _normalize_content_type(str(item))
+        for item in action_def.get("response_content_types", []) or []
+        if isinstance(item, str) and _normalize_content_type(item)
+    ]
+
+
+def action_prefers_raw_output(action_def: dict | None) -> bool:
+    content_types = action_response_content_types(action_def)
+    return bool(content_types) and all(
+        _is_binary_content_type(content_type) for content_type in content_types
+    )
+
+
+def _extension_for_content_type(content_type: str | None) -> str | None:
+    return _CONTENT_TYPE_EXTENSIONS.get(_normalize_content_type(content_type))
+
+
 def resolve_out_path(
-    args: dict, service: str, action: str, data_format: str, settings: Settings
+    args: dict,
+    service: str,
+    action: str,
+    data_format: str,
+    settings: Settings,
+    *,
+    action_def: dict | None = None,
+    response_meta=None,
 ) -> str:
     out_arg = args.get("out")
     if out_arg:
         return str(Path(out_arg))
+
+    if data_format == "raw" and response_meta is not None:
+        filename = getattr(response_meta, "filename", None)
+        if filename:
+            return str(settings.paths.response_dir / Path(str(filename)).name)
+
     base = service.replace("-", "_")
-    return str(settings.paths.response_dir / f"{base}_{action}.{data_format}")
+    extension = data_format
+    if data_format == "raw":
+        content_type = None
+        if response_meta is not None:
+            content_type = getattr(response_meta, "content_type", None)
+        if not content_type:
+            action_types = action_response_content_types(action_def)
+            content_type = action_types[0] if action_types else None
+        extension = _extension_for_content_type(content_type) or "bin"
+    return str(settings.paths.response_dir / f"{base}_{action}.{extension}")
 
 
 def csv_fieldnames_from_args(args: dict, settings: Settings) -> list[str] | None:
@@ -26,12 +107,29 @@ def csv_fieldnames_from_args(args: dict, settings: Settings) -> list[str] | None
 
 
 def output_settings(
-    args: dict, settings: Settings
+    args: dict,
+    settings: Settings,
+    *,
+    action_def: dict | None = None,
+    response_meta=None,
 ) -> tuple[bool, str, str, list[str] | None]:
     console = bool(args.get("console", settings.console))
-    data_format = str(args.get("data_format", settings.default_format))
+    if response_meta is not None and getattr(response_meta, "is_binary", False):
+        data_format = "raw"
+    elif "data_format" in args:
+        data_format = str(args["data_format"])
+    elif action_prefers_raw_output(action_def):
+        data_format = "raw"
+    else:
+        data_format = settings.default_format
     out_path = resolve_out_path(
-        args, args["service"], args["action"], data_format, settings
+        args,
+        args["service"],
+        args["action"],
+        data_format,
+        settings,
+        action_def=action_def,
+        response_meta=response_meta,
     )
     csv_fieldnames = csv_fieldnames_from_args(args, settings)
     return console, data_format, out_path, csv_fieldnames

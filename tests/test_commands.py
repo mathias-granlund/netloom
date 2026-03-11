@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 import arapy.cli.commands as commands
+from arapy.core.client import ResponseMetadata
 from arapy.core.config import AppPaths, Settings
 
 
@@ -86,6 +87,8 @@ def test_payload_from_args_strips_reserved():
 
 def test_list_handler_validates_limit_range(api_catalog, settings):
     class CP:
+        last_response_meta = None
+
         def get_action_definition(self, api_catalog, module, service, action):
             return api_catalog["modules"][module][service]["actions"][action]
 
@@ -111,6 +114,8 @@ def test_list_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
     calls = {}
 
     class CP:
+        last_response_meta = None
+
         def get_action_definition(self, api_catalog, module, service, action):
             return api_catalog["modules"][module][service]["actions"][action]
 
@@ -157,6 +162,8 @@ def test_get_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
     logged = {}
 
     class CP:
+        last_response_meta = None
+
         def get_action_definition(self, api_catalog, module, service, action):
             return api_catalog["modules"][module][service]["actions"][action]
 
@@ -191,6 +198,8 @@ def test_delete_handler_calls_delete(monkeypatch, api_catalog, settings):
     logged = {}
 
     class CP:
+        last_response_meta = None
+
         def get_action_definition(self, api_catalog, module, service, action):
             return api_catalog["modules"][module][service]["actions"][action]
 
@@ -230,6 +239,11 @@ def test_add_handler_builds_payload_from_args(monkeypatch, api_catalog, settings
     logged = {}
 
     class CP:
+        last_response_meta = None
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
         def resolve_action(self, api_catalog, module, service, action, args):
             return (
                 api_catalog["modules"][module][service]["actions"][action],
@@ -276,3 +290,44 @@ def test_add_handler_builds_payload_from_args(monkeypatch, api_catalog, settings
         "foo": "bar",
     }
     assert logged["thing"]["id"] == 7
+
+
+def test_get_handler_binary_response_uses_raw_output_and_filename(
+    monkeypatch, api_catalog, settings
+):
+    logged = {}
+    api_catalog["modules"]["identities"]["endpoint"]["actions"]["get"][
+        "response_content_types"
+    ] = ["application/x-pkcs12"]
+
+    class CP:
+        last_response_meta = ResponseMetadata(
+            content_type="application/x-pkcs12",
+            filename="endpoint-export.p12",
+            is_binary=True,
+        )
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def get(self, api_catalog, token, args, *, params=None):
+            return b"\x01\x02"
+
+    def fake_log_to_file(thing, filename, **kwargs):
+        logged["thing"] = thing
+        logged["filename"] = str(filename)
+        logged["kwargs"] = kwargs
+
+    monkeypatch.setattr(commands, "log_to_file", fake_log_to_file)
+
+    commands.get_handler(
+        CP(),
+        "tok",
+        api_catalog,
+        {"module": "identities", "service": "endpoint", "action": "get", "id": "1"},
+        settings=settings,
+    )
+
+    assert logged["thing"] == b"\x01\x02"
+    assert logged["kwargs"]["data_format"] == "raw"
+    assert logged["filename"].endswith("endpoint-export.p12")

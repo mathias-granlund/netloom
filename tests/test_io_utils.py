@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from arapy.io.files import load_payload_file
+from arapy.io.files import load_api_token_file, load_payload_file
 from arapy.io.output import _extract_by_path, log_to_file, sanitize_secrets
 
 
@@ -35,6 +35,14 @@ def test_log_to_file_raw_writes(tmp_path, capsys):
     log_to_file("hi", filename=out, data_format="raw", also_console=True)
     assert out.read_text(encoding="utf-8") == "hi"
     assert "hi" in capsys.readouterr().out
+
+
+def test_log_to_file_raw_bytes_writes_binary(tmp_path, capsys):
+    out = tmp_path / "cert.p12"
+    payload = b"\x00\x01\x02"
+    log_to_file(payload, filename=out, data_format="raw", also_console=True)
+    assert out.read_bytes() == payload
+    assert "<binary data: 3 bytes>" in capsys.readouterr().out
 
 
 def test_log_to_file_csv_extracts_embedded_items(tmp_path, capsys):
@@ -74,6 +82,18 @@ def test_load_payload_file_csv(tmp_path):
     path.write_text("a,b\n1,2\n3,4\n", encoding="utf-8")
     rows = load_payload_file(str(path))
     assert rows == [{"a": "1", "b": "2"}, {"a": "3", "b": "4"}]
+
+
+def test_load_api_token_file_json(tmp_path):
+    path = tmp_path / "token.json"
+    path.write_text(json.dumps({"access_token": "abc123"}), encoding="utf-8")
+    assert load_api_token_file(path) == "abc123"
+
+
+def test_load_api_token_file_raw_string(tmp_path):
+    path = tmp_path / "token.txt"
+    path.write_text("abc123\n", encoding="utf-8")
+    assert load_api_token_file(path) == "abc123"
 
 
 def test_load_payload_file_rejects_unknown_ext(tmp_path):

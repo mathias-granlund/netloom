@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.2 - 2026-03-11
+
+### Added
+- richer dynamic help metadata from ClearPass docs, including summaries, response codes, response content types, body field lists, and generated body examples when the API docs expose models
+- direct token authentication via `ARAPY_API_TOKEN` / `--api-token=...`
+- token-file authentication via `ARAPY_API_TOKEN_FILE` / `--token-file=...`
+- binary response awareness for dynamically discovered download/export endpoints, including raw output auto-selection and filename inference from response headers
+
+### Changed
+- `list` is once again exposed in completion/help output alongside `get`
+- raw output now writes binary payloads as bytes instead of forcing text decoding
+- API catalog cache format bumped to v3 while keeping v2 cache loading compatibility
+
 ## 1.4.1 - 2026-03-09
 
 ### Changed

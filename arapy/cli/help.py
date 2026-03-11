@@ -1,23 +1,29 @@
 from __future__ import annotations
 
-CLI_ACTION_ORDER = ["get", "add", "delete", "update", "replace"]
+import json
+
+CLI_ACTION_ORDER = ["list", "get", "add", "delete", "update", "replace"]
 
 
 def service_cli_actions(service_entry: dict) -> list[str]:
     actions = service_entry.get("actions") or {}
     cli_actions: list[str] = []
-    if "get" in actions or "list" in actions:
+    if "list" in actions:
+        cli_actions.append("list")
+    if "get" in actions:
         cli_actions.append("get")
-    #if "list" in actions:
-    #    cli_actions.append("list")
-    for action in CLI_ACTION_ORDER[1:]:
+    for action in CLI_ACTION_ORDER[2:]:
         if action in actions:
             cli_actions.append(action)
     return cli_actions
 
 
 def render_action_block(title: str, action_def: dict) -> str:
-    lines = [f"{title}:", f"  method: {action_def.get('method', '<unknown>')}"]
+    lines = [f"{title}:"]
+    summary = action_def.get("summary")
+    if summary:
+        lines.append(f"  summary: {summary}")
+    lines.append(f"  method: {action_def.get('method', '<unknown>')}")
     paths = action_def.get("paths") or []
     if paths:
         lines.append("  paths:")
@@ -26,6 +32,45 @@ def render_action_block(title: str, action_def: dict) -> str:
     if params:
         lines.append("  params:")
         lines.extend(f"    - {param}" for param in params)
+    notes = action_def.get("notes") or []
+    if notes:
+        lines.append("  notes:")
+        lines.extend(f"    - {note}" for note in notes)
+    response_codes = action_def.get("response_codes") or []
+    if response_codes:
+        lines.append("  response codes:")
+        lines.extend(f"    - {code}" for code in response_codes)
+    response_types = action_def.get("response_content_types") or []
+    if response_types:
+        lines.append("  response content types:")
+        lines.extend(f"    - {content_type}" for content_type in response_types)
+    body_description = action_def.get("body_description")
+    if body_description:
+        lines.append(f"  body: {body_description}")
+    body_required = action_def.get("body_required") or []
+    if body_required:
+        lines.append("  body required:")
+        lines.extend(f"    - {name}" for name in body_required)
+    body_fields = action_def.get("body_fields") or []
+    if body_fields:
+        lines.append("  body fields:")
+        for field in body_fields:
+            if not isinstance(field, dict):
+                continue
+            requirement = "required" if field.get("required") else "optional"
+            field_type = field.get("type") or "object"
+            description = field.get("description")
+            line = f"    - {field.get('name')}: {field_type} ({requirement})"
+            if description:
+                line += f" - {description}"
+            lines.append(line)
+    body_example = action_def.get("body_example")
+    if body_example not in (None, {}, []):
+        lines.append("  body example:")
+        lines.extend(
+            f"    {line}"
+            for line in json.dumps(body_example, indent=2, ensure_ascii=False).splitlines()
+        )
     return "\n".join(lines)
 
 

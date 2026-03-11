@@ -38,6 +38,9 @@ RESERVED_ARGS = {
     "calculate_count",
     "encrypt",
     "decrypt",
+    "api_token",
+    "token_file",
+    "api_token_file",
     "_complete",
     "_cword",
     "_cur",
@@ -97,6 +100,8 @@ class Settings:
     grant_type: str = "client_credentials"
     client_id: str | None = None
     client_secret: str | None = None
+    api_token: str | None = None
+    api_token_file: Path | None = None
     paths: AppPaths = field(default_factory=lambda: default_paths().ensure())
 
     @property
@@ -166,5 +171,13 @@ def load_settings() -> Settings:
         grant_type=os.getenv("ARAPY_GRANT_TYPE", "client_credentials"),
         client_id=os.getenv("ARAPY_CLIENT_ID") or os.getenv("ARAPY_USERNAME"),
         client_secret=os.getenv("ARAPY_CLIENT_SECRET") or os.getenv("ARAPY_PASSWORD"),
+        api_token=os.getenv("ARAPY_API_TOKEN") or os.getenv("ARAPY_TOKEN"),
+        api_token_file=(
+            Path(
+                os.getenv("ARAPY_API_TOKEN_FILE") or os.getenv("ARAPY_TOKEN_FILE", "")
+            )
+            if os.getenv("ARAPY_API_TOKEN_FILE") or os.getenv("ARAPY_TOKEN_FILE")
+            else None
+        ),
         paths=paths,
     )

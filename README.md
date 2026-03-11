@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -18,18 +18,16 @@ A modular CLI toolkit for interacting with **HPE Aruba ClearPass Policy Manager*
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
 
-Version: **1.4.1**
+Version: **1.4.2**
 
 ---
 
-## What changed in 1.4.1
+## What changed in 1.4.2
 
-- removed transitional compatibility wrapper modules from the top level
-- moved command handlers fully into `arapy.cli.commands`
-- cleaned the source release so it no longer includes `.git`, `.env`, caches, or build metadata
-- kept the `cli`, `core`, `io`, and `logging` package layout introduced in 1.4.0
-- retained environment-based configuration and deterministic logging
-- refreshed tests, docs, and packaging to match the final 1.4.x layout
+- enriched dynamic help with response codes, response content types, body field notes, and generated body examples from ClearPass API docs
+- added direct token and token-file authentication without losing the existing OAuth client-credential flow
+- improved binary/raw download handling for export-style endpoints such as certificates
+- restored explicit `list` action exposure in completion/help output
 
 ---
 
@@ -66,6 +64,8 @@ export ARAPY_VERIFY_SSL="true"
 export ARAPY_TIMEOUT="30"
 export ARAPY_LOG_LEVEL="INFO"
 export ARAPY_ENCRYPT_SECRETS="true"
+export ARAPY_API_TOKEN="optional-access-token"
+export ARAPY_API_TOKEN_FILE="/path/to/token.json"
 ```
 
 An example file is included as `.env.example`.
@@ -93,6 +93,13 @@ arapy policyelements network-device update --id=1001 --description="Core switch"
 
 Both `--log-level` and the legacy `--log_level` style are accepted. The same applies to flags like `--csv-fieldnames` / `--csv_fieldnames`.
 
+Authentication can also be provided per command with:
+
+```bash
+arapy identities endpoint list --api-token=your-token
+arapy identities endpoint list --token-file=./token.json
+```
+
 ---
 
 ## Global options
@@ -109,6 +116,8 @@ Both `--log-level` and the legacy `--log_level` style are accepted. The same app
 | `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
 | `--file=FILE` | Bulk import JSON/CSV |
 | `--out=FILE` | Override output file |
+| `--api-token=TOKEN` | Use an existing bearer token instead of logging in |
+| `--token-file=FILE` | Load a bearer token from JSON or plain text |
 | `--help` | Context-aware help |
 | `--version` | Show version |
 | `--encrypt=enable/disable` | Mask or show secret fields |
@@ -126,8 +135,17 @@ arapy discovers available ClearPass modules and services at runtime using:
 The generated cache stores actions as:
 
 ```text
-module -> service -> action -> {method, paths, params}
+module -> service -> action -> {method, paths, params, response metadata, body hints}
 ```
+
+When the ClearPass docs include Swagger model details, `arapy --help` now renders:
+
+- operation summaries and notes
+- response-code lists
+- response content types
+- generated request body examples and top-level body field descriptions
+
+Download-style endpoints that advertise binary response types are written as raw files automatically, and `arapy` will use the server-provided filename when one is supplied.
 
 To refresh the cache:
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
+from dataclasses import dataclass
 from urllib.parse import quote
 
 import requests
@@ -10,6 +11,44 @@ from arapy.core.config import SECRET_FIELDS
 
 log = logging.getLogger(__name__)
 _PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
+_TEXT_CONTENT_MARKERS = (
+    "json",
+    "xml",
+    "javascript",
+    "yaml",
+    "html",
+    "csv",
+    "x-www-form-urlencoded",
+)
+
+
+@dataclass(frozen=True)
+class ResponseMetadata:
+    content_type: str = ""
+    filename: str | None = None
+    is_binary: bool = False
+
+
+def _parse_content_type(value: str | None) -> str:
+    return (value or "").split(";", 1)[0].strip().lower()
+
+
+def _is_binary_content_type(content_type: str | None) -> bool:
+    parsed = _parse_content_type(content_type)
+    if not parsed:
+        return False
+    if parsed.startswith("text/"):
+        return False
+    return not any(marker in parsed for marker in _TEXT_CONTENT_MARKERS)
+
+
+def _filename_from_content_disposition(value: str | None) -> str | None:
+    if not value:
+        return None
+    match = re.search(r'filename\*?=(?:UTF-8\'\')?"?([^";]+)"?', value, re.IGNORECASE)
+    if not match:
+        return None
+    return match.group(1).strip().strip('"')
 
 
 class ClearPassClient:
@@ -27,6 +66,7 @@ class ClearPassClient:
         self.timeout = timeout
         self.session = requests.Session()
         self.session.headers.update({"accept": "application/json"})
+        self.last_response_meta = ResponseMetadata()
 
     def request(
         self,
@@ -72,6 +112,13 @@ class ClearPassClient:
             verify=self.verify_ssl,
             timeout=self.timeout,
         )
+        self.last_response_meta = ResponseMetadata(
+            content_type=_parse_content_type(response.headers.get("content-type")),
+            filename=_filename_from_content_disposition(
+                response.headers.get("content-disposition")
+            ),
+            is_binary=_is_binary_content_type(response.headers.get("content-type")),
+        )
 
         try:
             response.raise_for_status()
@@ -113,6 +160,9 @@ class ClearPassClient:
 
         if response.status_code == 204 or not response.content:
             return None
+
+        if self.last_response_meta.is_binary:
+            return response.content
 
         try:
             return response.json()

@@ -208,3 +208,48 @@ def test_main_complete_mode_outputs_and_exits(monkeypatch, capsys, tmp_path):
     main.main()
     out = capsys.readouterr().out
     assert "identities" in out
+
+
+def test_main_uses_direct_api_token_without_login(monkeypatch, tmp_path):
+    calls = {}
+    mgr = FakeLogMgr()
+    settings = make_settings(tmp_path)
+    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+
+    class FakeCP:
+        def __init__(self, server, https_prefix, verify_ssl, timeout):
+            calls["cp_init"] = dict(
+                server=server,
+                https_prefix=https_prefix,
+                verify_ssl=verify_ssl,
+                timeout=timeout,
+            )
+
+        def login(self, api_paths, credentials):
+            raise AssertionError("login should not be called when --api-token is set")
+
+    monkeypatch.setattr(main, "ClearPassClient", FakeCP)
+    monkeypatch.setattr(
+        main, "get_api_catalog", lambda cp, token, settings: {"modules": {}}
+    )
+
+    def fake_action(cp, token, api_paths, args, settings=None):
+        calls["action"] = {"token": token, "args": args, "settings": settings}
+
+    monkeypatch.setitem(main.ACTIONS, "list", fake_action)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "arapy",
+            "identities",
+            "endpoint",
+            "list",
+            "--api-token=CLI-TOKEN",
+        ],
+    )
+
+    main.main()
+
+    assert calls["action"]["token"] == "CLI-TOKEN"

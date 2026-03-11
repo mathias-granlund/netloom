@@ -94,6 +94,30 @@ def test_request_non_json_returns_text(monkeypatch):
     assert cp.request({"x": "/api/x"}, "GET", "x") == "hi"
 
 
+def test_request_binary_returns_bytes_and_metadata(monkeypatch):
+    cp = clearpass.ClearPassClient(
+        "server:443", https_prefix="https://", verify_ssl=False
+    )
+    monkeypatch.setattr(
+        cp.session,
+        "request",
+        lambda **kw: FakeResp(
+            headers={
+                "content-type": "application/x-pkcs12",
+                "content-disposition": 'attachment; filename="cert-export.p12"',
+            },
+            text="",
+            content=b"\x01\x02\x03",
+            json_value=None,
+        ),
+    )
+
+    out = cp.request({"x": "/api/x"}, "GET", "x")
+    assert out == b"\x01\x02\x03"
+    assert cp.last_response_meta.is_binary is True
+    assert cp.last_response_meta.filename == "cert-export.p12"
+
+
 def test_request_http_error_masks_secrets_and_reraises(monkeypatch):
     cp = clearpass.ClearPassClient(
         "server:443", https_prefix="https://", verify_ssl=False

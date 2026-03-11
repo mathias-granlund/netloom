@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import replace
 
 import urllib3
 
@@ -17,6 +18,7 @@ from arapy.core.catalog import (
 )
 from arapy.core.client import ClearPassClient
 from arapy.core.config import Settings, load_settings
+from arapy.io.files import load_api_token_file
 from arapy.logging.setup import LOG_LEVELS, configure_logging
 
 
@@ -44,6 +46,24 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
     print_completions(words, catalog)
 
 
+def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
+    api_token = args.get("api_token") or args.get("token") or settings.api_token
+    token_file = (
+        args.get("token_file")
+        or args.get("api_token_file")
+        or settings.api_token_file
+    )
+    return replace(settings, api_token=api_token, api_token_file=token_file)
+
+
+def resolve_auth_token(cp: ClearPassClient, settings: Settings) -> str:
+    if settings.api_token:
+        return settings.api_token
+    if settings.api_token_file:
+        return load_api_token_file(settings.api_token_file)
+    return cp.login(OAUTH_ENDPOINTS, settings.credentials)["access_token"]
+
+
 def main() -> None:
     settings = load_settings()
     if not settings.verify_ssl:
@@ -58,6 +78,7 @@ def main() -> None:
     log = log_mgr.get_logger(__name__)
 
     args = parse_cli(sys.argv)
+    active_settings = settings_with_cli_overrides(settings, args)
 
     log_level = args.get("log_level")
     if log_level:
@@ -83,16 +104,18 @@ def main() -> None:
     if args.get("module") == "cache":
         service = args.get("service")
         if service == "clear" and not args.get("action"):
-            removed = clear_api_cache(settings=settings)
+            removed = clear_api_cache(settings=active_settings)
             if removed:
                 log.info("API endpoint cache cleared.")
             else:
                 log.info("No API endpoint cache file found (already clear).")
             return
         if service == "update" and not args.get("action"):
-            cp = build_client(settings)
-            token = cp.login(OAUTH_ENDPOINTS, settings.credentials)["access_token"]
-            get_api_catalog(cp, token=token, force_refresh=True, settings=settings)
+            cp = build_client(active_settings)
+            token = resolve_auth_token(cp, active_settings)
+            get_api_catalog(
+                cp, token=token, force_refresh=True, settings=active_settings
+            )
             return
         print_help({"module": "cache"})
         return
@@ -112,13 +135,13 @@ def main() -> None:
         print(f"\nUnknown command: {module} {service} {action}")
         return
 
-    cp = build_client(settings)
+    cp = build_client(active_settings)
     log.info(
         "Connecting to ClearPass server: %s (SSL verify: %s)",
-        settings.server,
-        settings.verify_ssl,
+        active_settings.server,
+        active_settings.verify_ssl,
     )
-    token = cp.login(OAUTH_ENDPOINTS, settings.credentials)["access_token"]
+    token = resolve_auth_token(cp, active_settings)
     log.debug(f"Session token: {token}")
-    api_catalog = get_api_catalog(cp, token=token, settings=settings)
-    command(cp, token, api_catalog, args, settings=settings)
+    api_catalog = get_api_catalog(cp, token=token, settings=active_settings)
+    command(cp, token, api_catalog, args, settings=active_settings)

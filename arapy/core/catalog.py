@@ -122,6 +122,247 @@ def _normalize_param_name(name: str) -> str:
     return "id" if name == "id" or name.endswith("_id") else name
 
 
+def _clean_text(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    cleaned = " ".join(value.strip().split())
+    return cleaned or None
+
+
+def _dedupe_texts(items: list[str]) -> list[str]:
+    return _dedupe_keep_order([item for item in (_clean_text(x) for x in items) if item])
+
+
+def _type_label_for_schema(schema: dict[str, Any]) -> str:
+    if not isinstance(schema, dict):
+        return "object"
+
+    ref = schema.get("$ref")
+    if isinstance(ref, str) and ref:
+        return ref
+
+    schema_type = schema.get("type") or schema.get("dataType")
+    if isinstance(schema_type, str):
+        if schema_type.lower() == "array":
+            items = schema.get("items")
+            if isinstance(items, dict):
+                return f"array[{_type_label_for_schema(items)}]"
+        return schema_type
+
+    nested = schema.get("schema")
+    if isinstance(nested, dict):
+        return _type_label_for_schema(nested)
+
+    return "object"
+
+
+def _model_required_names(model: dict[str, Any]) -> set[str]:
+    required = {
+        str(name)
+        for name in model.get("required", []) or []
+        if isinstance(name, str) and name
+    }
+    properties = model.get("properties")
+    if isinstance(properties, dict):
+        for name, prop in properties.items():
+            if isinstance(prop, dict) and prop.get("required") is True:
+                required.add(str(name))
+    return required
+
+
+def _example_for_schema(
+    schema: dict[str, Any], models: dict[str, Any], seen: set[str] | None = None
+):
+    if seen is None:
+        seen = set()
+
+    if not isinstance(schema, dict):
+        return {}
+
+    ref = schema.get("$ref")
+    if isinstance(ref, str) and ref:
+        return _example_for_model(models, ref, seen=seen)
+
+    nested = schema.get("schema")
+    if isinstance(nested, dict):
+        return _example_for_schema(nested, models, seen=seen)
+
+    enum = schema.get("enum")
+    if isinstance(enum, list) and enum:
+        return enum[0]
+
+    default_value = schema.get("defaultValue")
+    if default_value not in (None, ""):
+        return default_value
+
+    schema_type = str(schema.get("type") or schema.get("dataType") or "").lower()
+    if schema_type in {"int", "integer", "long"}:
+        return 0
+    if schema_type in {"number", "float", "double"}:
+        return 0
+    if schema_type in {"bool", "boolean"}:
+        return True
+    if schema_type == "array":
+        items = schema.get("items")
+        if isinstance(items, dict):
+            return [_example_for_schema(items, models, seen=set(seen))]
+        return []
+    if schema_type == "object":
+        properties = schema.get("properties")
+        if isinstance(properties, dict):
+            return {
+                str(name): _example_for_schema(prop, models, seen=set(seen))
+                for name, prop in properties.items()
+                if isinstance(prop, dict)
+            }
+        return {}
+    return ""
+
+
+def _example_for_model(
+    models: dict[str, Any], model_name: str, seen: set[str] | None = None
+):
+    if seen is None:
+        seen = set()
+    if not model_name or model_name in seen:
+        return {}
+    seen.add(model_name)
+
+    model = models.get(model_name)
+    if not isinstance(model, dict):
+        return {}
+
+    example: dict[str, Any] = {}
+
+    extends = model.get("extends")
+    if isinstance(extends, dict):
+        ref = extends.get("$ref")
+        if isinstance(ref, str) and ref:
+            parent = _example_for_model(models, ref, seen=set(seen))
+            if isinstance(parent, dict):
+                example.update(parent)
+
+    properties = model.get("properties")
+    if isinstance(properties, dict):
+        for name, prop in properties.items():
+            if isinstance(prop, dict):
+                example[str(name)] = _example_for_schema(prop, models, seen=set(seen))
+
+    return example
+
+
+def _body_fields_for_model(
+    models: dict[str, Any], model_name: str, seen: set[str] | None = None
+) -> list[dict[str, Any]]:
+    if seen is None:
+        seen = set()
+    if not model_name or model_name in seen:
+        return []
+    seen.add(model_name)
+
+    model = models.get(model_name)
+    if not isinstance(model, dict):
+        return []
+
+    fields: list[dict[str, Any]] = []
+
+    extends = model.get("extends")
+    if isinstance(extends, dict):
+        ref = extends.get("$ref")
+        if isinstance(ref, str) and ref:
+            fields.extend(_body_fields_for_model(models, ref, seen=set(seen)))
+
+    required = _model_required_names(model)
+    properties = model.get("properties")
+    if not isinstance(properties, dict):
+        return fields
+
+    existing_names = {field["name"] for field in fields}
+    for name, prop in properties.items():
+        if not isinstance(prop, dict):
+            continue
+        field_name = str(name)
+        if field_name in existing_names:
+            continue
+        fields.append(
+            {
+                "name": field_name,
+                "type": _type_label_for_schema(prop),
+                "required": field_name in required,
+                "description": _clean_text(prop.get("description")),
+            }
+        )
+        existing_names.add(field_name)
+
+    return fields
+
+
+def _extract_response_codes(operation: dict[str, Any]) -> list[str]:
+    codes: list[str] = []
+    for item in operation.get("responseMessages", []) or []:
+        if not isinstance(item, dict):
+            continue
+        code = item.get("code")
+        if code is None:
+            continue
+        message = _clean_text(item.get("message"))
+        codes.append(f"{code} {message}".strip() if message else str(code))
+    return _dedupe_texts(codes)
+
+
+def _extract_response_content_types(
+    operation: dict[str, Any], subdoc: dict[str, Any]
+) -> list[str]:
+    raw_types = operation.get("produces")
+    if raw_types is None:
+        raw_types = subdoc.get("produces")
+    if isinstance(raw_types, str):
+        raw_types = [raw_types]
+    if not isinstance(raw_types, list):
+        return []
+    return _dedupe_texts([str(item) for item in raw_types if isinstance(item, str)])
+
+
+def _extract_body_metadata(
+    operation: dict[str, Any], models: dict[str, Any]
+) -> tuple[Any | None, list[str], list[dict[str, Any]], str | None]:
+    for param in operation.get("parameters", []) or []:
+        if not isinstance(param, dict):
+            continue
+        if str(param.get("paramType") or "").lower() != "body":
+            continue
+
+        description = _clean_text(param.get("description"))
+        model_name = None
+        if isinstance(param.get("type"), str):
+            model_name = param["type"]
+        elif isinstance(param.get("$ref"), str):
+            model_name = param["$ref"]
+        elif isinstance(param.get("schema"), dict):
+            schema = param["schema"]
+            if isinstance(schema.get("$ref"), str):
+                model_name = schema["$ref"]
+
+        if model_name:
+            fields = _body_fields_for_model(models, model_name)
+            required = [field["name"] for field in fields if field.get("required")]
+            example = _example_for_model(models, model_name)
+            return example or None, required, fields, description
+
+        field_name = str(param.get("name") or "body")
+        field = {
+            "name": field_name,
+            "type": _type_label_for_schema(param),
+            "required": bool(param.get("required")),
+            "description": description,
+        }
+        example = {field_name: _example_for_schema(param, models)}
+        required = [field_name] if field["required"] else []
+        return example, required, [field], description
+
+    return None, [], [], None
+
+
 def _resolve_model_property_names(
     models: dict[str, Any], model_name: str, seen: set[str] | None = None
 ) -> list[str]:
@@ -298,7 +539,7 @@ class ApiEndpointCache:
 
         if (
             isinstance(data, dict)
-            and data.get("version") == 2
+            and data.get("version") in {2, 3}
             and isinstance(data.get("modules"), dict)
         ):
             return data
@@ -345,12 +586,60 @@ class ApiEndpointCache:
         method: str,
         path: str,
         params: list[str],
+        *,
+        summary: str | None = None,
+        notes: list[str] | None = None,
+        response_codes: list[str] | None = None,
+        response_content_types: list[str] | None = None,
+        body_example: Any | None = None,
+        body_required: list[str] | None = None,
+        body_fields: list[dict[str, Any]] | None = None,
+        body_description: str | None = None,
     ) -> None:
         entry = service_actions.setdefault(action_name, {"method": method, "paths": []})
         entry["method"] = method
         entry["paths"] = _dedupe_keep_order(entry.get("paths", []) + [path])
         if params:
             entry["params"] = _dedupe_keep_order(entry.get("params", []) + params)
+        if summary and not entry.get("summary"):
+            entry["summary"] = summary
+        if notes:
+            entry["notes"] = _dedupe_texts(entry.get("notes", []) + notes)
+        if response_codes:
+            entry["response_codes"] = _dedupe_texts(
+                entry.get("response_codes", []) + response_codes
+            )
+        if response_content_types:
+            entry["response_content_types"] = _dedupe_texts(
+                entry.get("response_content_types", []) + response_content_types
+            )
+        if body_description and not entry.get("body_description"):
+            entry["body_description"] = body_description
+        if body_required:
+            entry["body_required"] = _dedupe_keep_order(
+                entry.get("body_required", []) + body_required
+            )
+        if body_fields:
+            existing_names = {
+                field.get("name")
+                for field in entry.get("body_fields", [])
+                if isinstance(field, dict)
+            }
+            merged_fields = list(entry.get("body_fields", []))
+            for field in body_fields:
+                if not isinstance(field, dict):
+                    continue
+                name = field.get("name")
+                if name in existing_names:
+                    continue
+                merged_fields.append(field)
+                existing_names.add(name)
+            entry["body_fields"] = merged_fields
+        if (
+            body_example not in (None, {}, [])
+            and entry.get("body_example") in (None, {}, [])
+        ):
+            entry["body_example"] = body_example
 
     def _process_swagger_subdoc(
         self, module_services: dict[str, Any], subdoc: dict[str, Any]
@@ -388,6 +677,9 @@ class ApiEndpointCache:
                 if method not in {"GET", "POST", "DELETE", "PATCH", "PUT"}:
                     continue
                 params = _extract_operation_params(operation, models)
+                body_example, body_required, body_fields, body_description = (
+                    _extract_body_metadata(operation, models)
+                )
                 raw_entries.append(
                     {
                         "service": service_key,
@@ -396,6 +688,18 @@ class ApiEndpointCache:
                         "method": method,
                         "params": params,
                         "placeholders": _extract_placeholders(normalized_path),
+                        "summary": _clean_text(operation.get("summary")),
+                        "notes": _dedupe_texts(
+                            [_clean_text(operation.get("notes")) or ""]
+                        ),
+                        "response_codes": _extract_response_codes(operation),
+                        "response_content_types": _extract_response_content_types(
+                            operation, subdoc
+                        ),
+                        "body_example": body_example,
+                        "body_required": body_required,
+                        "body_fields": body_fields,
+                        "body_description": body_description,
                     }
                 )
 
@@ -437,7 +741,21 @@ class ApiEndpointCache:
                 else:
                     action_name = "replace"
 
-                self._merge_action(actions, action_name, method, path, params)
+                self._merge_action(
+                    actions,
+                    action_name,
+                    method,
+                    path,
+                    params,
+                    summary=entry.get("summary"),
+                    notes=entry.get("notes"),
+                    response_codes=entry.get("response_codes"),
+                    response_content_types=entry.get("response_content_types"),
+                    body_example=entry.get("body_example"),
+                    body_required=entry.get("body_required"),
+                    body_fields=entry.get("body_fields"),
+                    body_description=entry.get("body_description"),
+                )
 
     def _process_apigility_services(
         self, module_services: dict[str, Any], listing: dict[str, Any]
@@ -590,7 +908,7 @@ class ApiEndpointCache:
             self._log_module_services(cli_module, module_services)
 
         catalog: dict[str, Any] = {
-            "version": 2,
+            "version": 3,
             "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "server": getattr(self.cp, "server", None),
             "modules": modules,
@@ -630,7 +948,7 @@ def load_cached_catalog(settings: Settings | None = None) -> dict[str, Any] | No
 
     if (
         isinstance(data, dict)
-        and data.get("version") == 2
+        and data.get("version") in {2, 3}
         and isinstance(data.get("modules"), dict)
     ):
         return data

@@ -38,8 +38,8 @@ def payload_from_cli_args(args: dict, excluded_keys: set[str]) -> dict:
 
 def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
-    console, data_format, out_path, csv_fieldnames = output_settings(
-        args, active_settings
+    action_def = cp.get_action_definition(
+        api_catalog, args["module"], args["service"], "add"
     )
     mask_secrets = should_mask_secrets(args, active_settings)
     payload = payload_for_write_action(cp, api_catalog, args, "add")
@@ -51,6 +51,12 @@ def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     else:
         result = cp.add(api_catalog, token, args, payload)
 
+    console, data_format, out_path, csv_fieldnames = output_settings(
+        args,
+        active_settings,
+        action_def=action_def,
+        response_meta=getattr(cp, "last_response_meta", None),
+    )
     return log_to_file(
         result,
         filename=out_path,
@@ -63,12 +69,18 @@ def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
 
 def delete_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
-    console, data_format, out_path, csv_fieldnames = output_settings(
-        args, active_settings
+    action_def = cp.get_action_definition(
+        api_catalog, args["module"], args["service"], "delete"
     )
     mask_secrets = should_mask_secrets(args, active_settings)
     params = query_params_for_action(cp, api_catalog, args, "delete")
     result = cp.delete(api_catalog, token, args, params=params or None)
+    console, data_format, out_path, csv_fieldnames = output_settings(
+        args,
+        active_settings,
+        action_def=action_def,
+        response_meta=getattr(cp, "last_response_meta", None),
+    )
     return log_to_file(
         result,
         filename=out_path,
@@ -81,18 +93,26 @@ def delete_handler(cp, token, api_catalog, args, settings: Settings | None = Non
 
 def get_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = settings or load_settings()
-    console, data_format, out_path, csv_fieldnames = output_settings(
-        args, active_settings
-    )
     mask_secrets = should_mask_secrets(args, active_settings)
 
     if args.get("all"):
+        action_name = "list"
         params = query_params_for_action(cp, api_catalog, args, "list")
         result = cp.list(api_catalog, token, args, params=params or None)
     else:
+        action_name = "get"
         params = query_params_for_action(cp, api_catalog, args, "get")
         result = cp.get(api_catalog, token, args, params=params or None)
 
+    action_def = cp.get_action_definition(
+        api_catalog, args["module"], args["service"], action_name
+    )
+    console, data_format, out_path, csv_fieldnames = output_settings(
+        args,
+        active_settings,
+        action_def=action_def,
+        response_meta=getattr(cp, "last_response_meta", None),
+    )
     return log_to_file(
         result,
         filename=out_path,
@@ -112,8 +132,8 @@ def list_handler(cp, token, api_catalog, args, settings: Settings | None = None)
 
 def replace_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
-    console, data_format, out_path, csv_fieldnames = output_settings(
-        args, active_settings
+    action_def = cp.get_action_definition(
+        api_catalog, args["module"], args["service"], "replace"
     )
     mask_secrets = should_mask_secrets(args, active_settings)
     payload = payload_for_write_action(cp, api_catalog, args, "replace")
@@ -125,6 +145,12 @@ def replace_handler(cp, token, api_catalog, args, settings: Settings | None = No
     else:
         result = cp.replace(api_catalog, token, args, payload)
 
+    console, data_format, out_path, csv_fieldnames = output_settings(
+        args,
+        active_settings,
+        action_def=action_def,
+        response_meta=getattr(cp, "last_response_meta", None),
+    )
     return log_to_file(
         result,
         filename=out_path,
@@ -137,8 +163,8 @@ def replace_handler(cp, token, api_catalog, args, settings: Settings | None = No
 
 def update_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
-    console, data_format, out_path, csv_fieldnames = output_settings(
-        args, active_settings
+    action_def = cp.get_action_definition(
+        api_catalog, args["module"], args["service"], "update"
     )
     mask_secrets = should_mask_secrets(args, active_settings)
     payload = payload_for_write_action(cp, api_catalog, args, "update")
@@ -150,6 +176,12 @@ def update_handler(cp, token, api_catalog, args, settings: Settings | None = Non
     else:
         result = cp.update(api_catalog, token, args, payload)
 
+    console, data_format, out_path, csv_fieldnames = output_settings(
+        args,
+        active_settings,
+        action_def=action_def,
+        response_meta=getattr(cp, "last_response_meta", None),
+    )
     return log_to_file(
         result,
         filename=out_path,

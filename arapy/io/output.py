@@ -94,15 +94,21 @@ def write_value_to_file(
             else:
                 print(safe_value)
     elif data_format == "raw":
-        text = (
-            safe_value.decode("utf-8")
-            if isinstance(safe_value, bytes)
-            else str(safe_value)
-        )
-        with path.open(mode, encoding="utf-8") as handle:
-            handle.write(text)
-        if also_console:
-            print(text)
+        if isinstance(safe_value, bytes):
+            binary_mode = "ab" if mode == "a" else "wb"
+            with path.open(binary_mode) as handle:
+                handle.write(safe_value)
+            if also_console:
+                try:
+                    print(safe_value.decode("utf-8"))
+                except UnicodeDecodeError:
+                    print(f"<binary data: {len(safe_value)} bytes>")
+        else:
+            text = str(safe_value)
+            with path.open(mode, encoding="utf-8") as handle:
+                handle.write(text)
+            if also_console:
+                print(text)
     else:
         rows = None
         if isinstance(safe_value, dict):
