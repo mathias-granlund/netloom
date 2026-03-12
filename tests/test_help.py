@@ -61,6 +61,22 @@ def test_render_action_block_keeps_params_without_body_fields():
     assert "limit" in text
 
 
+def test_render_action_block_indents_multiline_notes():
+    text = helpmod.render_action_block(
+        "list",
+        {
+            "method": "GET",
+            "paths": ["/api/example"],
+            "notes": ["Line one\nLine two\nLine three"],
+        },
+    )
+
+    assert "  notes:" in text
+    assert "    - Line one" in text
+    assert "      Line two" in text
+    assert "      Line three" in text
+
+
 def test_render_help_includes_server_builtin(monkeypatch):
     monkeypatch.setattr(helpmod, "list_profiles", lambda: ["dev", "prod"])
     monkeypatch.setattr(helpmod, "profiles_env_path", lambda: "/tmp/profiles.env")

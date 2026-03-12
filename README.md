@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.4.8-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.4.9-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -18,16 +18,15 @@ A modular CLI toolkit for interacting with **HPE Aruba ClearPass Policy Manager*
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
 
-Version: **1.4.8**
+Version: **1.4.9**
 
 ---
 
-## What changed in 1.4.8
+## What changed in 1.4.9
 
-- added built-in `arapy server list`, `show`, and `use <profile>` commands
-- added profile-aware config loading from `~/.config/arapy/profiles.env` and `credentials.env`
-- replaced `.env.example` with `profiles.env.example` and `credentials.env.example`
-- updated help, completion, and docs for named environment profiles
+- cleaned `/api-docs` HTML out of dynamic help notes instead of printing raw tags
+- preserved multiline formatting for long filter/documentation notes in `list` help output
+- added regression coverage for HTML-heavy Swagger note cleanup and multiline help rendering
 
 ---
 

@@ -33,7 +33,12 @@ def render_action_block(title: str, action_def: dict) -> str:
     notes = action_def.get("notes") or []
     if notes:
         lines.append("  notes:")
-        lines.extend(f"    - {note}" for note in notes)
+        for note in notes:
+            note_lines = [line for line in str(note).splitlines() if line.strip()]
+            if not note_lines:
+                continue
+            lines.append(f"    - {note_lines[0]}")
+            lines.extend(f"      {line}" for line in note_lines[1:])
     response_codes = action_def.get("response_codes") or []
     if response_codes:
         lines.append("  response codes:")

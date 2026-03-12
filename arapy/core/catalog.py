@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import json
 import logging
 import os
@@ -125,7 +126,28 @@ def _normalize_param_name(name: str) -> str:
 def _clean_text(value: Any) -> str | None:
     if not isinstance(value, str):
         return None
-    cleaned = " ".join(value.strip().split())
+    cleaned = html.unescape(value).strip()
+    if "<" in cleaned and ">" in cleaned:
+        cleaned = re.sub(r"(?i)<br\s*/?>", "\n", cleaned)
+        cleaned = re.sub(r"(?i)<(p|div|tr|li|table|thead|tbody|ul|ol|h\d)\b[^>]*>", "\n", cleaned)
+        cleaned = re.sub(r"(?i)</(p|div|tr|li|table|thead|tbody|ul|ol|h\d)>", "\n", cleaned)
+        cleaned = re.sub(r"(?i)</(td|th)>", " | ", cleaned)
+        cleaned = re.sub(r"(?i)<[^>]+>", "", cleaned)
+
+    normalized_lines: list[str] = []
+    for raw_line in cleaned.splitlines():
+        line = " ".join(raw_line.strip().split())
+        if not line:
+            continue
+        line = re.sub(r"\s+\|\s+", " | ", line)
+        line = re.sub(r"\s+([,.;:!?])", r"\1", line)
+        line = re.sub(r'"\s*([^"]*?)\s*"', lambda match: f'"{match.group(1).strip()}"', line)
+        line = re.sub(r'([{\[(:])\s+', r"\1", line)
+        line = re.sub(r'\s+([}\]):])', r"\1", line)
+        line = re.sub(r"\s+\|$", "", line)
+        normalized_lines.append(line)
+
+    cleaned = "\n".join(normalized_lines)
     return cleaned or None
 
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.9 - 2026-03-12
+
+### Fixed
+- `/api-docs` help notes now strip embedded HTML more cleanly instead of dumping raw tags into `--help` output
+- list-action help notes now preserve multiline structure for filter documentation and similar table-style notes
+
 ## 1.4.8 - 2026-03-12
 
 ### Added
