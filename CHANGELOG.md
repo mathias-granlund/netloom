@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.2 - 2026-03-13
+
+### Fixed
+- `arapy copy` now omits blank `radius_secret` and `tacacs_secret` values from generated payloads so hidden source credentials are not replayed as empty strings on target updates or replacements
+- `policyelements network-device` copy creates now fail before the API call with a clearer message when the source response does not include usable RADIUS, TACACS+, or SNMP credentials
+- copy summaries now print item-level failure reasons directly in terminal output to make validation issues easier to diagnose without debug logging
+
 ## 1.5.1 - 2026-03-13
 
 ### Fixed

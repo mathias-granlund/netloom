@@ -6,4 +6,4 @@ def get_version() -> str:
     try:
         return _version("arapy")
     except PackageNotFoundError:
-        return "1.5.1"
+        return "1.5.2"

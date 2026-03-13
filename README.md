@@ -1,6 +1,6 @@
 # arapy
 
-[![Version](https://img.shields.io/badge/version-1.5.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.5.2-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -18,9 +18,15 @@ A modular CLI toolkit for interacting with **HPE Aruba ClearPass Policy Manager*
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
 
-Version: **1.5.1**
+Version: **1.5.2**
 
 ---
+
+## What changed in 1.5.2
+
+- `arapy copy` now drops blank secret fields from generated payloads so hidden source credentials do not get replayed as empty strings on updates or replacements
+- `network-device` creates now fail locally with a clear copy-specific error when the source response does not include usable RADIUS, TACACS+, or SNMP credentials
+- copy summaries now print per-item failure reasons directly in the terminal for faster troubleshooting
 
 ## What changed in 1.5.1
 

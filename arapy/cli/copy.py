@@ -16,6 +16,8 @@ from arapy.io.output import sanitize_secrets, should_mask_secrets, write_value_t
 
 VALID_CONFLICT_MODES = {"fail", "skip", "update", "replace"}
 VALID_MATCH_MODES = {"auto", "name", "id"}
+_SECRET_PAYLOAD_FIELDS = ("radius_secret", "tacacs_secret")
+_NETWORK_DEVICE_SNMP_FIELDS = ("snmp_read", "snmp_write")
 
 
 def _copy_item_label(item: dict[str, Any]) -> str:
@@ -192,6 +194,48 @@ def _restore_secret_fields(result, payload, *, mask_secrets: bool):
     return result
 
 
+def _drop_blank_secret_fields(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in payload.items()
+        if key not in _SECRET_PAYLOAD_FIELDS or value not in (None, "")
+    }
+
+
+def _normalize_copy_payload(
+    cp, api_catalog: dict, args: dict[str, Any], action: str, item: dict[str, Any]
+) -> dict[str, Any]:
+    payload = normalize_file_payload_for_action(cp, api_catalog, args, action, item)
+    return _drop_blank_secret_fields(payload)
+
+
+def _network_device_credentials_present(payload: dict[str, Any]) -> bool:
+    for field in _SECRET_PAYLOAD_FIELDS:
+        if payload.get(field) not in (None, ""):
+            return True
+    for field in _NETWORK_DEVICE_SNMP_FIELDS:
+        if payload.get(field) not in (None, {}, []):
+            return True
+    return False
+
+
+def _preflight_error_for_payload(
+    module: str, service: str, action_name: str, payload: dict[str, Any] | None
+) -> str | None:
+    if (
+        action_name == "create"
+        and module == "policyelements"
+        and service == "network-device"
+        and isinstance(payload, dict)
+        and not _network_device_credentials_present(payload)
+    ):
+        return (
+            "source response did not include usable RADIUS, TACACS+, or SNMP "
+            "credentials for network-device create"
+        )
+    return None
+
+
 def _emit_summary(report: dict[str, Any]) -> None:
     mode = "Dry run" if report.get("dry_run") else "Copy completed"
     summary = report["summary"]
@@ -205,6 +249,11 @@ def _emit_summary(report: dict[str, Any]) -> None:
     print(f"Replaced: {summary['replaced']}")
     print(f"Skipped: {summary['skipped']}")
     print(f"Failed: {summary['failed']}")
+    failed_items = [item for item in report.get("items", []) if item.get("status") == "failed"]
+    if failed_items:
+        print("Failure reasons:")
+        for item in failed_items[:10]:
+            print(f"- {item.get('label', '<unknown>')}: {item.get('reason', 'unknown error')}")
 
 
 def _validate_copy_args(args: dict[str, Any]) -> None:
@@ -315,7 +364,7 @@ def handle_copy_command(
         if target_match is None:
             action_name = "create"
             action_args = _service_args(module, service, "add")
-            payload = normalize_file_payload_for_action(
+            payload = _normalize_copy_payload(
                 target_cp, target_catalog, action_args, "add", item
             )
         elif on_conflict == "skip":
@@ -329,7 +378,7 @@ def handle_copy_command(
             action_args = _service_args(
                 module, service, "update", id=target_match.get("id")
             )
-            payload = normalize_file_payload_for_action(
+            payload = _normalize_copy_payload(
                 target_cp, target_catalog, action_args, "update", item
             )
         else:
@@ -337,9 +386,12 @@ def handle_copy_command(
             action_args = _service_args(
                 module, service, "replace", id=target_match.get("id")
             )
-            payload = normalize_file_payload_for_action(
+            payload = _normalize_copy_payload(
                 target_cp, target_catalog, action_args, "replace", item
             )
+        preflight_error = _preflight_error_for_payload(
+            module, service, action_name, payload
+        )
 
         plan_items.append(
             {
@@ -355,6 +407,7 @@ def handle_copy_command(
                 else None,
                 "action": action_name,
                 "payload": payload,
+                "reason": preflight_error,
             }
         )
 
@@ -364,11 +417,14 @@ def handle_copy_command(
             result_items.append(
                 {
                     **item,
-                    "status": "planned",
+                    "status": "failed" if item.get("reason") else "planned",
                     "reason": (
-                        None
-                        if item["action"] != "conflict"
-                        else "target object already exists"
+                        item.get("reason")
+                        or (
+                            None
+                            if item["action"] != "conflict"
+                            else "target object already exists"
+                        )
                     ),
                 }
             )
@@ -376,7 +432,11 @@ def handle_copy_command(
         for item in plan_items:
             action_name = item["action"]
             try:
-                if action_name == "create":
+                if item.get("reason"):
+                    result_items.append({**item, "status": "failed"})
+                    if not continue_on_error:
+                        break
+                elif action_name == "create":
                     request_args = _service_args(module, service, "add")
                     response = target_cp.add(
                         target_catalog, target_token, request_args, item["payload"]

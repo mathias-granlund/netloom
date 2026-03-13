@@ -301,6 +301,112 @@ def test_handle_copy_command_uses_cached_catalog_by_default(monkeypatch, tmp_pat
     assert catalog_calls[1]["force_refresh"] is False
 
 
+def test_handle_copy_command_omits_blank_secrets_on_update(monkeypatch, tmp_path):
+    catalog = _catalog()
+    source_cp = _SourceCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "switch-a",
+                "ip_address": "10.0.0.1",
+                "radius_secret": "",
+                "tacacs_secret": "",
+            }
+        ],
+    )
+    target_cp = _TargetCP(catalog, {"switch-a": {"id": 42, "name": "switch-a"}})
+
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["dev", "prod"])
+    monkeypatch.setattr(
+        copymod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+    def build_client(settings, *, mask_secrets=True):
+        return source_cp if settings.server == "dev" else target_cp
+
+    report = copymod.handle_copy_command(
+        {
+            "module": "copy",
+            "copy_module": "policyelements",
+            "copy_service": "network-device",
+            "from": "dev",
+            "to": "prod",
+            "all": True,
+            "on_conflict": "update",
+        },
+        settings=_make_settings(tmp_path, "prod"),
+        build_client=build_client,
+        resolve_auth_token=lambda cp, settings: f"{settings.server}-token",
+        get_api_catalog=lambda cp, token, settings, force_refresh=True: catalog,
+    )
+
+    assert report["summary"]["updated"] == 1
+    assert target_cp.update_calls[0]["payload"] == {
+        "name": "switch-a",
+        "ip_address": "10.0.0.1",
+    }
+
+
+def test_handle_copy_command_fails_early_for_network_device_create_without_credentials(
+    monkeypatch, tmp_path, capsys
+):
+    catalog = _catalog()
+    source_cp = _SourceCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "switch-a",
+                "ip_address": "10.0.0.1",
+                "radius_secret": "",
+                "tacacs_secret": "",
+            }
+        ],
+    )
+    target_cp = _TargetCP(catalog, {})
+
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["dev", "prod"])
+    monkeypatch.setattr(
+        copymod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+    def build_client(settings, *, mask_secrets=True):
+        return source_cp if settings.server == "dev" else target_cp
+
+    report = copymod.handle_copy_command(
+        {
+            "module": "copy",
+            "copy_module": "policyelements",
+            "copy_service": "network-device",
+            "from": "dev",
+            "to": "prod",
+            "all": True,
+            "dry_run": True,
+        },
+        settings=_make_settings(tmp_path, "prod"),
+        build_client=build_client,
+        resolve_auth_token=lambda cp, settings: f"{settings.server}-token",
+        get_api_catalog=lambda cp, token, settings, force_refresh=True: catalog,
+    )
+
+    out = capsys.readouterr().out
+    assert report["summary"]["created"] == 0
+    assert report["summary"]["failed"] == 1
+    assert report["items"][0]["status"] == "failed"
+    assert (
+        "did not include usable RADIUS, TACACS+, or SNMP credentials"
+        in report["items"][0]["reason"]
+    )
+    assert "Failure reasons:" in out
+    assert "did not include usable RADIUS, TACACS+, or SNMP credentials" in out
+    assert not target_cp.add_calls
+
+
 def test_handle_copy_command_console_masks_secrets_by_default(
     monkeypatch, tmp_path, capsys
 ):
