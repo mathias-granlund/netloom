@@ -66,6 +66,7 @@ def _console_text_for_raw_bytes(value: bytes) -> str:
     except UnicodeDecodeError:
         return f"<binary data: {len(value)} bytes>"
 
+    # Avoid spewing binary blobs into the terminal when the bytes are not readable text.
     if any(ord(char) < 32 and char not in "\r\n\t" for char in decoded):
         return f"<binary data: {len(value)} bytes>"
 
@@ -126,6 +127,7 @@ def write_value_to_file(
     else:
         rows = None
         if isinstance(safe_value, dict):
+            # Prefer ClearPass list payloads when exporting a single response object as CSV.
             extracted = _extract_by_path(safe_value, items_path)
             if isinstance(extracted, list):
                 rows = extracted

@@ -41,6 +41,7 @@ def payload_from_cli_args(args: dict, excluded_keys: set[str]) -> dict:
 def _request_args_and_payload(
     cp, api_catalog, args: dict, action: str, payload
 ) -> tuple[dict, dict]:
+    # File-based bulk payloads can also carry path placeholder values.
     request_args = (
         {**args, **payload}
         if "file" in args and isinstance(payload, dict)
@@ -149,6 +150,7 @@ def get_handler(cp, token, api_catalog, args, settings: Settings | None = None):
 
 
 def list_handler(cp, token, api_catalog, args, settings: Settings | None = None):
+    # Keep `list` behavior aligned with the documented `get --all` alias.
     alias_args = dict(args)
     alias_args["all"] = True
     alias_args["action"] = "list"

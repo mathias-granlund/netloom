@@ -213,6 +213,7 @@ def _resolve_value(
     *,
     active_profile: str | None,
 ) -> str | None:
+    # Resolution order is env var -> shared config -> active-profile override.
     raw = os.getenv(name)
     if raw is not None:
         return raw
@@ -241,6 +242,7 @@ def list_profiles(config_values: Mapping[str, str] | None = None) -> list[str]:
     values = dict(config_values or _load_config_values())
     profiles: set[str] = set()
 
+    # Profiles are discovered from any scoped key, not a dedicated registry.
     for key in values:
         for base_name in PROFILE_SCOPED_ENV_KEYS:
             prefix = f"{base_name}_"

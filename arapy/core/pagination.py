@@ -79,6 +79,7 @@ def fetch_all_list_results(cp, token: str, api_catalog: dict, args: dict[str, An
 
     response = cp.list(api_catalog, token, args, params=params or None)
     page_items = _extract_items(response)
+    # Fall back to the first response when the endpoint is not a classic paged list.
     if page_items is None or "limit" not in allowed or "offset" not in allowed:
         return response
     if explicit_limit:

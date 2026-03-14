@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.3 - 2026-03-14
+
+### Changed
+- added concise inline comments across the CLI, client, catalog, config, pagination, resolver, and output modules to clarify non-obvious control flow without cluttering self-explanatory code
+
 ## 1.6.2 - 2026-03-14
 
 ### Fixed

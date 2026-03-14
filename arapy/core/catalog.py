@@ -128,6 +128,7 @@ def _clean_text(value: Any) -> str | None:
         return None
     cleaned = html.unescape(value).strip()
     if "<" in cleaned and ">" in cleaned:
+        # ClearPass docs often embed HTML fragments in fields that we want as plain text.
         cleaned = re.sub(r"(?i)<br\s*/?>", "\n", cleaned)
         cleaned = re.sub(
             r"(?i)<(p|div|tr|li|table|thead|tbody|ul|ol|h\d)\b[^>]*>",
@@ -565,6 +566,7 @@ class ApiEndpointCache:
         except FileNotFoundError:
             return None
 
+        # A stale cache is treated as a miss so the next read rebuilds it.
         if time.time() - stat.st_mtime > self.cfg.ttl_seconds:
             return None
 
@@ -632,6 +634,7 @@ class ApiEndpointCache:
         body_fields: list[dict[str, Any]] | None = None,
         body_description: str | None = None,
     ) -> None:
+        # Multiple docs can describe the same action, so merge instead of overwrite.
         entry = service_actions.setdefault(action_name, {"method": method, "paths": []})
         entry["method"] = method
         entry["paths"] = _dedupe_keep_order(entry.get("paths", []) + [path])
@@ -759,6 +762,7 @@ class ApiEndpointCache:
                 base_path = entry["base_path"]
 
                 if method == "GET":
+                    # Base GET routes with paging/filter params behave like collection lists.
                     is_base_get = path == base_path
                     if is_base_get and (
                         _has_list_query_params(params)
@@ -889,6 +893,7 @@ class ApiEndpointCache:
             cli_module = _module_to_cli(module_name)
             module_services = modules.setdefault(cli_module, {})
 
+            # ClearPass exposes both Apigility listings and Swagger subdocuments.
             listing = self._load_json(f"/api/apigility/documentation/{module_name}")
             if listing is None:
                 for alt in (

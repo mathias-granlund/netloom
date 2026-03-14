@@ -42,6 +42,7 @@ def build_client(settings: Settings, *, mask_secrets: bool = True) -> ClearPassC
     except TypeError as exc:
         if "mask_secrets" not in str(exc):
             raise
+        # Older client implementations may not accept the newer constructor arg.
         cp = ClearPassClient(
             server=settings.server,
             https_prefix=settings.https_prefix,
@@ -73,6 +74,7 @@ def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
 
 
 def resolve_auth_token(cp: ClearPassClient, settings: Settings) -> str:
+    # Prefer explicit tokens before falling back to an OAuth login.
     if settings.api_token:
         return settings.api_token
     if settings.api_token_file:
@@ -127,6 +129,7 @@ def main() -> None:
                 log.info("No API endpoint cache file found (already clear).")
             return
         if service == "update" and not args.get("action"):
+            # Rebuild the API catalog from the live ClearPass docs.
             cp = build_client(active_settings)
             token = resolve_auth_token(cp, active_settings)
             get_api_catalog(

@@ -168,6 +168,7 @@ def _resolve_match(
     item: dict[str, Any],
     match_mode: str,
 ) -> tuple[dict[str, Any] | None, str | None]:
+    # Match by name first when available so copies are stable across environments.
     if match_mode in {"auto", "name"} and item.get("name") not in (None, ""):
         match = _fetch_target_by_name(
             cp, token, api_catalog, module, service, str(item["name"])
@@ -370,6 +371,7 @@ def handle_copy_command(
             target_cp, target_token, target_catalog, module, service, item, match_by
         )
 
+        # Build the full plan first so dry-run and live execution share the same logic.
         if target_match is None:
             action_name = "create"
             action_args = _service_args(module, service, "add")

@@ -116,6 +116,7 @@ def output_settings(
     response_meta=None,
 ) -> tuple[bool, str, str, list[str] | None]:
     console = bool(args.get("console", settings.console))
+    # Binary responses bypass JSON/CSV rendering and are written out verbatim.
     if response_meta is not None and getattr(response_meta, "is_binary", False):
         data_format = "raw"
     elif "data_format" in args:
@@ -155,6 +156,7 @@ def payload_for_write_action(cp, api_catalog, args: dict, action: str):
         return load_payload_file(args["file"])
 
     placeholders = set(resolve_placeholders_for_action(cp, api_catalog, args, action))
+    # Path variables belong in the URL, not the request body.
     excluded = set(RESERVED_ARGS) | placeholders
     return payload_from_args(args, excluded)
 
@@ -209,6 +211,7 @@ def normalize_file_payload_for_action(
         for key, value in payload.items()
         if key in allowed_fields and key not in excluded_fields
     }
+    # Drop blank optional values so file-based updates do not erase fields by accident.
     return {
         key: value
         for key, value in normalized.items()

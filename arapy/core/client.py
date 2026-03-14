@@ -83,6 +83,7 @@ class ClearPassClient:
     ):
         path = api_paths.get(endpoint_key)
         if path is None and ":" in endpoint_key:
+            # Allow callers to pass namespaced keys like "module:oauth".
             path = api_paths.get(endpoint_key.split(":", 1)[1])
         if path is None:
             raise KeyError(endpoint_key)
@@ -148,6 +149,7 @@ class ClearPassClient:
             debug_lines.append("Response body:")
             debug_lines.extend(body.splitlines() or ["<empty>"])
 
+            # Keep the user-facing error short and push the details into debug logs.
             log.error(
                 "HTTP %s %s - %s", response.status_code, response.reason, response.url
             )
@@ -233,6 +235,7 @@ class ClearPassClient:
                 missing_sets.append(missing)
 
         if candidates:
+            # Prefer the most specific matching route when multiple templates fit.
             best_path, placeholders = sorted(
                 candidates, key=lambda item: (-len(item[1]), len(item[0]))
             )[0]

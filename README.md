@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.6.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.6.3-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -30,12 +30,13 @@ Today, netloom is built first and foremost for **HPE Aruba ClearPass Policy Mana
 - shell completion and context-aware help
 - profile-based switching between environments like `dev` and `prod`
 
-Version: **1.6.2**
+Version: **1.6.3**
 
 ---
 
 ## Recent changes
 
+- added concise inline comments around the less obvious request resolution, catalog discovery, copy planning, and output-handling code paths to make maintenance easier without adding noise to straightforward code
 - shell completion now falls back cleanly between `netloom` and `arapy`, which fixes tab completion in setups where only one of the installed executables is directly discoverable by the shell
 - hyphenated server profile names such as `qa-edge` now round-trip correctly through profile-scoped config keys like `ARAPY_SERVER_QA_EDGE`
 - session tokens are no longer written to debug logs
