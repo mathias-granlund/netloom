@@ -54,5 +54,31 @@ jobs:
       - name: Smoke test installed wheel
         run: |
           python -m pip install dist/*.whl
+          netloom --version
           arapy --version
+          netloom-install-manpage --print-path
           arapy-install-manpage --print-path
+
+      - name: Upload built distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-pypi:
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download built distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

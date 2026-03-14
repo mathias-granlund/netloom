@@ -1,60 +1,45 @@
 # netloom
 
-[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.6.1-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
-A spec-driven network API CLI with first-class support for **HPE Aruba ClearPass Policy Manager**.
+Weave your network APIs into one CLI.
 
 ---
 
-## Overview
+## About netloom
 
-**netloom** is aimed at operators and automation engineers who need:
+**netloom** is a spec-driven network API CLI for operators and automation engineers. It discovers available API actions from vendor documentation, turns them into a practical command-line interface, and keeps the workflow centered around real operational tasks like listing objects, exporting data, replaying payloads, and copying configuration between environments.
+
+Today, netloom is built first and foremost for **HPE Aruba ClearPass Policy Manager**, with strong support for dynamic API discovery, context-aware help, structured output, profile-based server switching, and cross-environment copy workflows. The longer-term direction is broader: a reusable, spec-driven network API CLI that can grow beyond a single vendor without losing the operator-friendly UX that makes it useful day to day.
+
+## Highlights
 
 - dynamic API discovery through ClearPass `/api-docs`
 - a script-friendly CLI for `get`, `list`, `add`, `delete`, `update`, and `replace`
+- built-in cross-profile `copy` workflows for migration and dry-run planning
 - structured file output for JSON, CSV, or raw responses
 - safe handling of secrets in output and logs
 - shell completion and context-aware help
+- profile-based switching between environments like `dev` and `prod`
 
-Version: **1.6.0**
+Version: **1.6.1**
 
 ---
 
-## What changed in 1.6.0
+## Recent changes
 
+- `netloom-tool` packaging is now ready for Trusted Publishing to PyPI, including a tagged GitHub Actions publish workflow and an in-repo release checklist
+- added the `netloom-install-manpage` helper command while keeping `arapy-install-manpage` available during the transition
+- package metadata now uses the modern Python packaging license fields for cleaner builds and PyPI validation
 - the project is now branded as `netloom`, with `netloom-tool` as the PyPI package name and `netloom` as the primary CLI command
 - the legacy `arapy` command remains available as a compatibility alias during the transition
 - the repository and project links now point to `netloom.se` and `github.com/mathias-granlund/netloom`
 - explicit `--limit` values on `list`, `get --all`, and `copy` are now honored as requested instead of being overridden by automatic paging
 - the bundled Bash completion script now registers completion for both `netloom` and `arapy`
 
-## What changed in 1.5.3
-
-- `list`, `get --all`, and `copy` source reads now page automatically across all matching results instead of stopping after the first 1000 entries
-- `--filter` now applies across the full paged collection, and `--limit` acts as the per-request page size instead of silently capping the overall result set
-- built-in `--help` text now calls out the filtered paging behavior directly
-
-## What changed in 1.5.2
-
-- `arapy copy` now drops blank secret fields from generated payloads so hidden source credentials do not get replayed as empty strings on updates or replacements
-- `network-device` creates now fail locally with a clear copy-specific error when the source response does not include usable RADIUS, TACACS+, or SNMP credentials
-- copy summaries now print per-item failure reasons directly in the terminal for faster troubleshooting
-
-## What changed in 1.5.1
-
-- fixed `arapy copy` so it now reuses the cached API catalog for both source and target profiles instead of refetching `/api-docs` on every run
-- added regression coverage for the copy catalog-loading path so normal copy operations stay aligned with the rest of the CLI cache behavior
-
-## What changed in 1.5.0
-
-- added built-in `arapy copy <module> <service> --from=... --to=...` support for cross-profile resource migration workflows
-- copy mode supports `--dry-run`, `--match-by`, `--on-conflict`, `--decrypt`, and report artifact options like `--save-source`, `--save-payload`, and `--save-plan`
-- copy mode normalizes source responses into writable target payloads, strips response-only fields, preserves requested secret visibility, and applies creates or updates against the destination profile
-- path overrides such as `ARAPY_OUT_DIR` now resolve through the same config and profile loading path as the other settings
-- profile-scoped path settings like `ARAPY_OUT_DIR_PROD` are now respected
-- `~` is now expanded correctly in path override settings such as `ARAPY_OUT_DIR=~/responses`
+Full release history is kept in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -67,7 +52,7 @@ pip install -e .[dev]
 ```
 
 If `pip` performs a user install on Linux or macOS, the `netloom` and
-`arapy-install-manpage` commands are typically written to `~/.local/bin`.
+`netloom-install-manpage` commands are typically written to `~/.local/bin`.
 Make sure that directory is on your `PATH`:
 
 ```bash
@@ -182,10 +167,10 @@ Authentication can also be provided per command with:
 ```bash
 netloom identities endpoint list --api-token=your-token
 netloom identities endpoint list --token-file=./token.json
+```
 
 The legacy `arapy` command still works during the transition, but new examples
 and docs use `netloom`.
-```
 
 ---
 
@@ -342,12 +327,12 @@ man -l man/arapy.1
 To install the bundled man page for normal `man arapy` usage:
 
 ```bash
-arapy-install-manpage
+netloom-install-manpage
 man arapy
 ```
 
-The manpage helper and bundled manpage name still use `arapy` during this
-first transition stage.
+The legacy `arapy-install-manpage` helper still works, and the bundled manpage
+name remains `arapy` during this first transition stage.
 
 If your system does not already search `~/.local/share/man`, add it to `MANPATH`.
 
@@ -380,6 +365,7 @@ profile-scoped values such as `ARAPY_SERVER_PROD` and
 - a `MANIFEST.in` for predictable source distributions
 - build validation via `python -m build` and `python -m twine check`
 - CI coverage for tests and distribution validation on supported Python versions
+- Trusted Publishing-ready GitHub Actions for tagged PyPI releases
 
 Run lint and formatting:
 
@@ -387,6 +373,9 @@ Run lint and formatting:
 ruff check .
 ruff format .
 ```
+
+For the release checklist and Trusted Publishing setup steps, see
+[RELEASING.md](RELEASING.md).
 
 ---
 

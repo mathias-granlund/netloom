@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.1 - 2026-03-14
+
+### Changed
+- added the `netloom-install-manpage` helper command alongside the existing `arapy-install-manpage` compatibility alias
+- GitHub packaging workflow now smoke-tests both `netloom` and `netloom-install-manpage` before tagged releases
+- package metadata now uses modern `license` and `license-files` fields for cleaner PyPI builds
+- added `RELEASING.md` with a Trusted Publishing setup and release checklist for `netloom-tool`
+
 ## 1.6.0 - 2026-03-14
 
 ### Changed
