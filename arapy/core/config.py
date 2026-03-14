@@ -135,7 +135,18 @@ def _profile_env_key(name: str, profile: str) -> str:
 
 
 def _profile_name_from_suffix(suffix: str) -> str:
-    return suffix.strip().lower()
+    # Profile-scoped keys normalize "-" into "_" in env-style names, so we
+    # map them back to the user-facing hyphen form when enumerating profiles.
+    return suffix.strip().lower().replace("_", "-")
+
+
+def _profile_has_scoped_values(profile: str, config_values: Mapping[str, str]) -> bool:
+    suffix = _profile_suffix(profile)
+    for base_name in PROFILE_SCOPED_ENV_KEYS:
+        scoped_key = f"{base_name}_{suffix}"
+        if scoped_key in os.environ or scoped_key in config_values:
+            return True
+    return False
 
 
 def _read_env_file(path: Path) -> dict[str, str]:
@@ -286,9 +297,15 @@ def set_active_profile(profile: str) -> Path:
     normalized = _normalize_profile_name(profile)
     if not normalized:
         raise ValueError("Profile name must not be empty.")
-    available_profiles = list_profiles()
-    if normalized not in available_profiles:
-        available_text = ", ".join(available_profiles) if available_profiles else "<none>"
+    values = _load_config_values()
+    available_profiles = list_profiles(values)
+    if (
+        normalized not in available_profiles
+        and not _profile_has_scoped_values(normalized, values)
+    ):
+        available_text = (
+            ", ".join(available_profiles) if available_profiles else "<none>"
+        )
         raise ValueError(
             f"Unknown profile '{profile}'. Available profiles: {available_text}"
         )

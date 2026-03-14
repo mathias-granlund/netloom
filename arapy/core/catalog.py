@@ -129,8 +129,16 @@ def _clean_text(value: Any) -> str | None:
     cleaned = html.unescape(value).strip()
     if "<" in cleaned and ">" in cleaned:
         cleaned = re.sub(r"(?i)<br\s*/?>", "\n", cleaned)
-        cleaned = re.sub(r"(?i)<(p|div|tr|li|table|thead|tbody|ul|ol|h\d)\b[^>]*>", "\n", cleaned)
-        cleaned = re.sub(r"(?i)</(p|div|tr|li|table|thead|tbody|ul|ol|h\d)>", "\n", cleaned)
+        cleaned = re.sub(
+            r"(?i)<(p|div|tr|li|table|thead|tbody|ul|ol|h\d)\b[^>]*>",
+            "\n",
+            cleaned,
+        )
+        cleaned = re.sub(
+            r"(?i)</(p|div|tr|li|table|thead|tbody|ul|ol|h\d)>",
+            "\n",
+            cleaned,
+        )
         cleaned = re.sub(r"(?i)</(td|th)>", " | ", cleaned)
         cleaned = re.sub(r"(?i)<[^>]+>", "", cleaned)
 
@@ -141,7 +149,11 @@ def _clean_text(value: Any) -> str | None:
             continue
         line = re.sub(r"\s+\|\s+", " | ", line)
         line = re.sub(r"\s+([,.;:!?])", r"\1", line)
-        line = re.sub(r'"\s*([^"]*?)\s*"', lambda match: f'"{match.group(1).strip()}"', line)
+        line = re.sub(
+            r'"\s*([^"]*?)\s*"',
+            lambda match: f'"{match.group(1).strip()}"',
+            line,
+        )
         line = re.sub(r'([{\[(:])\s+', r"\1", line)
         line = re.sub(r'\s+([}\]):])', r"\1", line)
         line = re.sub(r"\s+\|$", "", line)
@@ -152,7 +164,9 @@ def _clean_text(value: Any) -> str | None:
 
 
 def _dedupe_texts(items: list[str]) -> list[str]:
-    return _dedupe_keep_order([item for item in (_clean_text(x) for x in items) if item])
+    return _dedupe_keep_order(
+        [item for item in (_clean_text(x) for x in items) if item]
+    )
 
 
 def _type_label_for_schema(schema: dict[str, Any]) -> str:

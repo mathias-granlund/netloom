@@ -1,7 +1,7 @@
+import re
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _version
 from pathlib import Path
-import re
 
 
 def _source_version() -> str | None:
@@ -26,4 +26,4 @@ def get_version() -> str:
             return installed_version
         except PackageNotFoundError:
             continue
-    return source_version or "1.6.1"
+    return source_version or "1.6.2"

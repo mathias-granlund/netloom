@@ -94,10 +94,12 @@ def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
                             '<a href="#">More about JSON filter expressions</a>'
                             "<div><p>A filter is specified as a JSON object, "
                             "where the properties of the object specify the type "
-                            'of query to be performed.</p><table><tr><th>Description</th>'
+                            "of query to be performed.</p><table><tr>"
+                            "<th>Description</th>"
                             '<th>JSON Filter Syntax</th></tr><tr><td>Field is equal to '
                             '"value"</td><td class="code">{'
-                            '"<i>fieldName</i>":"<i>value</i>"}</td></tr></table></div></div>'
+                            '"<i>fieldName</i>":"<i>value</i>"}'
+                            "</td></tr></table></div></div>"
                         ),
                         "parameters": [
                             {"name": "filter"},
@@ -116,7 +118,8 @@ def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
         (
             "Get a list of enforcement policies.\n"
             "More about JSON filter expressions\n"
-            "A filter is specified as a JSON object, where the properties of the object specify the type of query to be performed.\n"
+            "A filter is specified as a JSON object, where the properties of "
+            "the object specify the type of query to be performed.\n"
             "Description | JSON Filter Syntax\n"
             'Field is equal to "value" | {"fieldName":"value"}'
         )

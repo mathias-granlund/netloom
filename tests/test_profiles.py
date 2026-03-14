@@ -142,10 +142,49 @@ def test_list_profiles_and_set_active_profile(monkeypatch, tmp_path):
     assert "ARAPY_ACTIVE_PROFILE=dev" in profiles_text
 
 
+def test_hyphenated_profile_names_round_trip(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    config_dir.mkdir(parents=True, exist_ok=True)
+    (config_dir / "profiles.env").write_text(
+        "\n".join(
+            [
+                "ARAPY_ACTIVE_PROFILE=qa-edge",
+                "ARAPY_SERVER_QA_EDGE=qa.clearpass.example:443",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (config_dir / "credentials.env").write_text(
+        "\n".join(
+            [
+                "ARAPY_CLIENT_ID_QA_EDGE=qa-client",
+                "ARAPY_CLIENT_SECRET_QA_EDGE=qa-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+
+    assert settings.active_profile == "qa-edge"
+    assert settings.server == "qa.clearpass.example:443"
+    assert config.list_profiles() == ["qa-edge"]
+
+    target = config.set_active_profile("qa-edge")
+
+    assert "ARAPY_ACTIVE_PROFILE=qa-edge" in target.read_text(encoding="utf-8")
+
+
 def test_main_server_use_switches_profile(monkeypatch, capsys, tmp_path):
     config_dir = _configure_runtime(monkeypatch, tmp_path)
     _write_profiles(config_dir)
-    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: _FakeLogMgr())
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda settings, root_name: _FakeLogMgr(),
+    )
     monkeypatch.setattr(main, "load_settings", lambda: _make_settings(tmp_path))
     monkeypatch.setattr(
         main,
@@ -169,7 +208,11 @@ def test_main_server_use_switches_profile(monkeypatch, capsys, tmp_path):
 def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):
     config_dir = _configure_runtime(monkeypatch, tmp_path)
     _write_profiles(config_dir)
-    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: _FakeLogMgr())
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda settings, root_name: _FakeLogMgr(),
+    )
     monkeypatch.setattr(main, "load_settings", lambda: _make_settings(tmp_path))
 
     monkeypatch.setattr(sys, "argv", ["arapy", "server", "show"])

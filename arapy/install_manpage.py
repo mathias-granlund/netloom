@@ -38,7 +38,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dir",
         dest="target_dir",
-        help="Target man directory or man base directory. Defaults to ~/.local/share/man/man1",
+        help=(
+            "Target man directory or man base directory. Defaults to "
+            "~/.local/share/man/man1"
+        ),
     )
     parser.add_argument(
         "--print-path",

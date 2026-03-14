@@ -59,7 +59,9 @@ nested_values = st.recursive(
 
 @st.composite
 def valid_cli_cases(draw):
-    bool_flags = draw(st.lists(st.sampled_from(sorted(BOOLEAN_FLAGS)), unique=True, max_size=4))
+    bool_flags = draw(
+        st.lists(st.sampled_from(sorted(BOOLEAN_FLAGS)), unique=True, max_size=4)
+    )
     key_values = draw(
         st.dictionaries(flag_keys, flag_values, max_size=4)
     )

@@ -69,7 +69,9 @@ def _console_text_for_raw_bytes(value: bytes) -> str:
     if any(ord(char) < 32 and char not in "\r\n\t" for char in decoded):
         return f"<binary data: {len(value)} bytes>"
 
-    if decoded and not any(char.isprintable() and not char.isspace() for char in decoded):
+    if decoded and not any(
+        char.isprintable() and not char.isspace() for char in decoded
+    ):
         return f"<binary data: {len(value)} bytes>"
 
     return decoded

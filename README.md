@@ -1,6 +1,6 @@
 # netloom
 
-[![Version](https://img.shields.io/badge/version-1.6.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.6.2-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -24,12 +24,16 @@ Today, netloom is built first and foremost for **HPE Aruba ClearPass Policy Mana
 - shell completion and context-aware help
 - profile-based switching between environments like `dev` and `prod`
 
-Version: **1.6.1**
+Version: **1.6.2**
 
 ---
 
 ## Recent changes
 
+- shell completion now falls back cleanly between `netloom` and `arapy`, which fixes tab completion in setups where only one of the installed executables is directly discoverable by the shell
+- hyphenated server profile names such as `qa-edge` now round-trip correctly through profile-scoped config keys like `ARAPY_SERVER_QA_EDGE`
+- session tokens are no longer written to debug logs
+- Ruff checks now run in CI alongside the existing test/build validation
 - `netloom-tool` packaging is now ready for Trusted Publishing to PyPI, including a tagged GitHub Actions publish workflow and an in-repo release checklist
 - added the `netloom-install-manpage` helper command while keeping `arapy-install-manpage` available during the transition
 - package metadata now uses the modern Python packaging license fields for cleaner builds and PyPI validation
@@ -258,9 +262,17 @@ The bundled completion script currently supports both `netloom` and `arapy`.
 Or to enable permanently, add to `~/.bashrc` then reload terminal:
 
 ```bash
-for f in ~/.bash_completion.d/*; do
-  [ -r "$f" ] && source "$f"
-done
+mkdir -p ~/.bash_completion.d
+cat > ~/.bash_completion.d/netloom <<'EOF'
+#!/usr/bin/env bash
+source "$HOME/Desktop/Scripts/netloom-main/scripts/arapy-completion.bash"
+EOF
+
+if [ -d "$HOME/.bash_completion.d" ]; then
+  for f in "$HOME"/.bash_completion.d/*; do
+    [ -r "$f" ] && source "$f"
+  done
+fi
 
 ```
 

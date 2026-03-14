@@ -174,7 +174,10 @@ def test_list_handler_fetches_all_pages(monkeypatch, api_catalog, settings):
             calls.append(dict(params or {}))
             offset = int((params or {}).get("offset", 0))
             limit = int((params or {}).get("limit", 25))
-            items = [{"id": item_id} for item_id in range(offset + 1, min(offset + limit, 5) + 1)]
+            items = [
+                {"id": item_id}
+                for item_id in range(offset + 1, min(offset + limit, 5) + 1)
+            ]
             response = {"_embedded": {"items": items}}
             if offset == 0:
                 response["count"] = 5
@@ -207,7 +210,13 @@ def test_list_handler_fetches_all_pages(monkeypatch, api_catalog, settings):
         {"limit": 2, "offset": 2, "sort": None, "calculate_count": "false"},
         {"limit": 2, "offset": 4, "sort": None, "calculate_count": "false"},
     ]
-    assert [item["id"] for item in logged["thing"]["_embedded"]["items"]] == [1, 2, 3, 4, 5]
+    assert [item["id"] for item in logged["thing"]["_embedded"]["items"]] == [
+        1,
+        2,
+        3,
+        4,
+        5,
+    ]
     assert logged["thing"]["count"] == 5
 
 
@@ -265,7 +274,10 @@ def test_get_handler_all_fetches_all_pages_without_count(
             calls.append(dict(params or {}))
             offset = int((params or {}).get("offset", 0))
             limit = int((params or {}).get("limit", 25))
-            items = [{"id": item_id} for item_id in range(offset + 1, min(offset + limit, 5) + 1)]
+            items = [
+                {"id": item_id}
+                for item_id in range(offset + 1, min(offset + limit, 5) + 1)
+            ]
             return {"_embedded": {"items": items}}
 
     logged = {}
@@ -295,7 +307,13 @@ def test_get_handler_all_fetches_all_pages_without_count(
         {"limit": 2, "offset": 2, "sort": None},
         {"limit": 2, "offset": 4, "sort": None},
     ]
-    assert [item["id"] for item in logged["thing"]["_embedded"]["items"]] == [1, 2, 3, 4, 5]
+    assert [item["id"] for item in logged["thing"]["_embedded"]["items"]] == [
+        1,
+        2,
+        3,
+        4,
+        5,
+    ]
 
 
 def test_list_handler_honors_explicit_limit(monkeypatch, api_catalog, settings):
@@ -447,7 +465,9 @@ def test_add_handler_file_payload_filters_response_fields(
         ),
         encoding="utf-8",
     )
-    api_catalog["modules"]["identities"]["endpoint"]["actions"]["add"]["body_fields"] = [
+    api_catalog["modules"]["identities"]["endpoint"]["actions"]["add"][
+        "body_fields"
+    ] = [
         {"name": "name", "required": True},
         {"name": "description", "required": False},
         {"name": "foo", "required": False},

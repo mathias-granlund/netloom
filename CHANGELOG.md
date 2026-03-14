@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.2 - 2026-03-14
+
+### Fixed
+- hardened shell completion so `netloom` can resolve completions through whichever installed backend executable is actually available, instead of assuming the typed command name is always directly executable
+- fixed profile-name round-tripping for hyphenated profiles such as `qa-edge` so profile-scoped keys like `ARAPY_SERVER_QA_EDGE` can be discovered and reselected correctly
+- stopped logging bearer session tokens in debug output
+
+### Changed
+- cleaned remaining Ruff and PEP 8 issues across the Python package and tests, and added Ruff checks to the packaging workflow so import-order and formatting regressions are caught in CI
+
 ## 1.6.1 - 2026-03-14
 
 ### Changed

@@ -104,6 +104,7 @@ def test_main_end_to_end_calls_login_and_action(monkeypatch, tmp_path):
     assert calls["action"]["args"]["service"] == "endpoint"
     assert calls["action"]["args"]["action"] == "list"
     assert calls["action"]["args"]["limit"] == "1"
+    assert all("TOKEN" not in message for message in mgr.logger.debugs)
 
 
 def test_main_invalid_log_level_exits_early(monkeypatch, tmp_path):

@@ -76,7 +76,9 @@ def render_action_block(title: str, action_def: dict) -> str:
         lines.append("  body example:")
         lines.extend(
             f"    {line}"
-            for line in json.dumps(body_example, indent=2, ensure_ascii=False).splitlines()
+            for line in json.dumps(
+                body_example, indent=2, ensure_ascii=False
+            ).splitlines()
         )
     return "\n".join(lines)
 
@@ -96,7 +98,8 @@ def render_help(
     usage = (
         "Usage:\n"
         "  netloom <module> <service> <action> [options] [flags]\n\n"
-        "  netloom copy <module> <service> --from=SOURCE --to=TARGET [options] [flags]\n\n"
+        "  netloom copy <module> <service> --from=SOURCE --to=TARGET "
+        "[options] [flags]\n\n"
         "Examples:\n"
         "  netloom <module> <service> "
         "[add|delete|get|list|update|replace] "
@@ -113,16 +116,19 @@ def render_help(
         "  --out=PATH                         Override the output file path.\n"
         "  --data-format=json|csv|raw         Output format (default: json).\n"
         "  --csv-fieldnames=a,b,c             Fields and order for CSV output.\n"
-        "  --filter=JSON                      Server-side filter; list/get --all keep paging until all matching rows are fetched.\n"
-        "  --limit=N                          Page size for paged list/get --all requests (1-1000 per request).\n"
-        "  --log-level=LEVEL                 Select log level.\n\n"
+        "  --filter=JSON                      Server-side filter; list/get "
+        "--all keep paging until all matching rows are fetched.\n"
+        "  --limit=N                          Page size for paged list/get "
+        "--all requests (1-1000 per request).\n"
+        "  --log-level=LEVEL                  Select log level.\n\n"
         "Common flags:\n"
         "  --help                             Print help message (same as -h and ?).\n"
         "  --console                          Also print output to terminal.\n"
         "  --decrypt                          Include secrets in output.\n\n"
         "Notes:\n"
         "  Action 'list' is the same as 'get --all'.\n"
-        "  When --filter is used with list/get --all, netloom fetches every matching page, not just the first 1000 results.\n"
+        "  When --filter is used with list/get --all, netloom fetches every "
+        "matching page, not just the first 1000 results.\n"
         "  The legacy 'arapy' command still works during the transition.\n"
     )
 
@@ -163,7 +169,8 @@ def render_help(
             + usage
             + "\nBuilt-in module: copy\n"
             + "Usage:\n"
-            + "  netloom copy <module> <service> --from=SOURCE_PROFILE --to=TARGET_PROFILE [options]\n\n"
+            + "  netloom copy <module> <service> --from=SOURCE_PROFILE "
+            "--to=TARGET_PROFILE [options]\n\n"
             + "Selectors:\n"
             + "  --id=VALUE\n"
             + "  --name=VALUE\n"
@@ -196,7 +203,12 @@ def render_help(
 
     if not module:
         available_modules = "\n".join(
-            ["  - cache", "  - copy", "  - server", *[f"  - {name}" for name in sorted(modules.keys())]]
+            [
+                "  - cache",
+                "  - copy",
+                "  - server",
+                *[f"  - {name}" for name in sorted(modules.keys())],
+            ]
         )
         return header + usage + "\nAvailable modules:\n" + available_modules
 

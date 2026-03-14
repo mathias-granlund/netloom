@@ -175,6 +175,5 @@ def main() -> None:
         active_settings.verify_ssl,
     )
     token = resolve_auth_token(cp, active_settings)
-    log.debug(f"Session token: {token}")
     api_catalog = get_api_catalog(cp, token=token, settings=active_settings)
     command(cp, token, api_catalog, args, settings=active_settings)

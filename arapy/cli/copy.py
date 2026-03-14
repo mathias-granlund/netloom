@@ -12,8 +12,15 @@ from arapy.core.config import (
     load_settings_for_profile,
 )
 from arapy.core.pagination import fetch_all_list_results
-from arapy.core.resolver import normalize_file_payload_for_action, query_params_for_action
-from arapy.io.output import sanitize_secrets, should_mask_secrets, write_value_to_file
+from arapy.core.resolver import (
+    normalize_file_payload_for_action,
+    query_params_for_action,
+)
+from arapy.io.output import (
+    sanitize_secrets,
+    should_mask_secrets,
+    write_value_to_file,
+)
 
 VALID_CONFLICT_MODES = {"fail", "skip", "update", "replace"}
 VALID_MATCH_MODES = {"auto", "name", "id"}
@@ -43,12 +50,9 @@ def _extract_items(value: Any) -> list[dict[str, Any]]:
 
 
 def _has_action(api_catalog: dict, module: str, service: str, action: str) -> bool:
-    return (
-        action
-        in (((api_catalog.get("modules") or {}).get(module) or {}).get(service) or {}).get(
-            "actions", {}
-        )
-    )
+    modules = api_catalog.get("modules") or {}
+    services = (modules.get(module) or {}).get(service) or {}
+    return action in (services.get("actions") or {})
 
 
 def _service_args(module: str, service: str, action: str, **extra) -> dict[str, Any]:
@@ -249,11 +253,16 @@ def _emit_summary(report: dict[str, Any]) -> None:
     print(f"Replaced: {summary['replaced']}")
     print(f"Skipped: {summary['skipped']}")
     print(f"Failed: {summary['failed']}")
-    failed_items = [item for item in report.get("items", []) if item.get("status") == "failed"]
+    failed_items = [
+        item for item in report.get("items", []) if item.get("status") == "failed"
+    ]
     if failed_items:
         print("Failure reasons:")
         for item in failed_items[:10]:
-            print(f"- {item.get('label', '<unknown>')}: {item.get('reason', 'unknown error')}")
+            print(
+                f"- {item.get('label', '<unknown>')}: "
+                f"{item.get('reason', 'unknown error')}"
+            )
 
 
 def _validate_copy_args(args: dict[str, Any]) -> None:
@@ -491,7 +500,9 @@ def handle_copy_command(
                     )
                     if not continue_on_error:
                         break
-            except Exception as exc:  # pragma: no cover - exercised by integration behavior
+            except (
+                Exception
+            ) as exc:  # pragma: no cover - exercised by integration behavior
                 result_items.append({**item, "status": "failed", "reason": str(exc)})
                 if not continue_on_error:
                     break

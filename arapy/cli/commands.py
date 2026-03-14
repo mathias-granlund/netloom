@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from arapy.core.pagination import fetch_all_list_results
 from arapy.core.config import Settings, load_settings
+from arapy.core.pagination import fetch_all_list_results
 from arapy.core.resolver import (
     normalize_file_payload_for_action,
     output_settings,
@@ -41,9 +41,15 @@ def payload_from_cli_args(args: dict, excluded_keys: set[str]) -> dict:
 def _request_args_and_payload(
     cp, api_catalog, args: dict, action: str, payload
 ) -> tuple[dict, dict]:
-    request_args = {**args, **payload} if "file" in args and isinstance(payload, dict) else args
+    request_args = (
+        {**args, **payload}
+        if "file" in args and isinstance(payload, dict)
+        else args
+    )
     request_payload = (
-        normalize_file_payload_for_action(cp, api_catalog, request_args, action, payload)
+        normalize_file_payload_for_action(
+            cp, api_catalog, request_args, action, payload
+        )
         if "file" in args and isinstance(payload, dict)
         else payload
     )

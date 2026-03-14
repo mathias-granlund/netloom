@@ -26,7 +26,9 @@ def _normalize_json_payload(data):
         embedded = data.get("_embedded")
         if isinstance(embedded, dict):
             items = embedded.get("items")
-            if isinstance(items, list) and all(isinstance(item, dict) for item in items):
+            if isinstance(items, list) and all(
+                isinstance(item, dict) for item in items
+            ):
                 return _strip_response_links(items)
         return _strip_response_links(data)
 

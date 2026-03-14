@@ -66,7 +66,9 @@ def fetch_all_list_results(cp, token: str, api_catalog: dict, args: dict[str, An
         api_catalog, args["module"], args["service"], "list"
     )
     allowed = {
-        str(name) for name in action_def.get("params", []) or [] if isinstance(name, str)
+        str(name)
+        for name in action_def.get("params", []) or []
+        if isinstance(name, str)
     }
 
     explicit_limit = "limit" in args and args.get("limit") not in (None, "")
