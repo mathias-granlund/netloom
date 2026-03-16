@@ -218,9 +218,7 @@ def _validate_copy_args(args: dict[str, Any]) -> None:
 
     on_conflict = str(args.get("on_conflict", "fail"))
     if on_conflict not in VALID_CONFLICT_MODES:
-        raise ValueError(
-            "--on-conflict must be one of: fail, skip, update, replace"
-        )
+        raise ValueError("--on-conflict must be one of: fail, skip, update, replace")
 
     match_by = str(args.get("match_by", "auto"))
     if match_by not in VALID_MATCH_MODES:
@@ -445,8 +443,7 @@ def handle_copy_command(
         "replaced": sum(
             1
             for item in result_items
-            if item["action"] == "replace"
-            and item["status"] in {"success", "planned"}
+            if item["action"] == "replace" and item["status"] in {"success", "planned"}
         ),
         "skipped": sum(
             1

@@ -128,7 +128,7 @@ def _clean_text(value: Any) -> str | None:
         return None
     cleaned = html.unescape(value).strip()
     if "<" in cleaned and ">" in cleaned:
-        # ClearPass docs often embed HTML fragments in fields that we want as plain text.
+        # ClearPass docs often embed HTML fragments that we want as plain text.
         cleaned = re.sub(r"(?i)<br\s*/?>", "\n", cleaned)
         cleaned = re.sub(
             r"(?i)<(p|div|tr|li|table|thead|tbody|ul|ol|h\d)\b[^>]*>",
@@ -155,8 +155,8 @@ def _clean_text(value: Any) -> str | None:
             lambda match: f'"{match.group(1).strip()}"',
             line,
         )
-        line = re.sub(r'([{\[(:])\s+', r"\1", line)
-        line = re.sub(r'\s+([}\]):])', r"\1", line)
+        line = re.sub(r"([{\[(:])\s+", r"\1", line)
+        line = re.sub(r"\s+([}\]):])", r"\1", line)
         line = re.sub(r"\s+\|$", "", line)
         normalized_lines.append(line)
 
@@ -674,9 +674,10 @@ class ApiEndpointCache:
                 merged_fields.append(field)
                 existing_names.add(name)
             entry["body_fields"] = merged_fields
-        if (
-            body_example not in (None, {}, [])
-            and entry.get("body_example") in (None, {}, [])
+        if body_example not in (None, {}, []) and entry.get("body_example") in (
+            None,
+            {},
+            [],
         ):
             entry["body_example"] = body_example
 
@@ -762,7 +763,8 @@ class ApiEndpointCache:
                 base_path = entry["base_path"]
 
                 if method == "GET":
-                    # Base GET routes with paging/filter params behave like collection lists.
+                    # Base GET routes with paging/filter params behave like
+                    # collection lists.
                     is_base_get = path == base_path
                     if is_base_get and (
                         _has_list_query_params(params)

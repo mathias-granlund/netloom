@@ -1,6 +1,7 @@
+import types
+
 import pytest
 import requests
-import types
 
 import netloom.cli.copy as copymod
 from netloom.core.config import AppPaths, Settings

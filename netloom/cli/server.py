@@ -21,7 +21,8 @@ def _format_profile_list(state: ProfileState) -> str:
             suffix.append(server)
         if plugin:
             suffix.append(f"plugin={plugin}")
-        lines.append(f"{marker} {profile}" + (f" ({', '.join(suffix)})" if suffix else ""))
+        suffix_text = f" ({', '.join(suffix)})" if suffix else ""
+        lines.append(f"{marker} {profile}{suffix_text}")
     return "\n".join(lines)
 
 

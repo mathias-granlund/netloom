@@ -58,10 +58,14 @@ def parse_cli(argv: list[str]) -> dict:
             args["copy_module"] = positionals[1]
         if len(positionals) >= 3:
             args["copy_service"] = positionals[2]
+        args["legacy_copy_syntax"] = True
     else:
         if len(positionals) >= 2:
             args["service"] = positionals[1]
         if len(positionals) >= 3:
             args["action"] = positionals[2]
+            if positionals[2] == "copy":
+                args["copy_module"] = positionals[0]
+                args["copy_service"] = positionals[1]
 
     return args

@@ -80,9 +80,7 @@ def test_render_action_block_indents_multiline_notes():
 def test_render_help_includes_server_builtin(monkeypatch):
     monkeypatch.setattr(helpmod, "list_profiles", lambda: ["dev", "prod"])
     monkeypatch.setattr(helpmod, "profiles_env_path", lambda: "/tmp/profiles.env")
-    monkeypatch.setattr(
-        helpmod, "credentials_env_path", lambda: "/tmp/credentials.env"
-    )
+    monkeypatch.setattr(helpmod, "credentials_env_path", lambda: "/tmp/credentials.env")
 
     text = helpmod.render_help({}, {"module": "server"}, version="1.6.0")
 
@@ -108,6 +106,52 @@ def test_render_help_includes_copy_builtin():
     assert "--from=SOURCE_PROFILE" in text
     assert "--on-conflict=fail|skip|update|replace" in text
     assert "copied across all matching paged results" in text
+
+
+def test_render_help_includes_copy_as_service_action():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "list": {"method": "GET", "paths": ["/api/network-device"]}
+                        }
+                    }
+                }
+            }
+        },
+        {"module": "policyelements", "service": "network-device"},
+        version="1.7.1",
+    )
+
+    assert "Available actions:" in text
+    assert "copy" in text
+
+
+def test_render_help_for_copy_action():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "list": {"method": "GET", "paths": ["/api/network-device"]}
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "copy",
+        },
+        version="1.7.1",
+    )
+
+    assert "usage: netloom <module> <service> copy" in text
+    assert "legacy alias: netloom copy <module> <service>" in text
 
 
 def test_render_help_mentions_filter_paging_behavior():

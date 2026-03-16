@@ -130,9 +130,7 @@ class ClearPassClient:
             if len(body) > 4000:
                 body = body[:4000] + "\n... (truncated)"
 
-            request_json = sanitize_secrets(
-                json_body, mask_secrets=self.mask_secrets
-            )
+            request_json = sanitize_secrets(json_body, mask_secrets=self.mask_secrets)
 
             debug_lines = [
                 "HTTP ERROR (details below)",

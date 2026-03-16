@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.1 - 2026-03-16
+
+### Changed
+- `copy` can now be used as a normal action with `netloom <module> <service> copy ...`, which lines it up with the rest of the command model
+- the legacy `netloom copy <module> <service> ...` form is still accepted as a compatibility alias for this release
+- help text, completion, and tests now treat `copy` as a first-class action on services
+
 ## 1.7.0 - 2026-03-16
 
 ### Added

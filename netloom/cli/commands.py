@@ -40,9 +40,7 @@ def _request_args_and_payload(
     cp, api_catalog, args: dict, action: str, payload
 ) -> tuple[dict, dict]:
     request_args = (
-        {**args, **payload}
-        if "file" in args and isinstance(payload, dict)
-        else args
+        {**args, **payload} if "file" in args and isinstance(payload, dict) else args
     )
     request_payload = (
         normalize_file_payload_for_action(
@@ -167,9 +165,7 @@ def replace_handler(cp, token, api_catalog, args, settings: Settings | None = No
             request_args, request_payload = _request_args_and_payload(
                 cp, api_catalog, args, "replace", item
             )
-            result.append(
-                cp.replace(api_catalog, token, request_args, request_payload)
-            )
+            result.append(cp.replace(api_catalog, token, request_args, request_payload))
     else:
         request_args, request_payload = _request_args_and_payload(
             cp, api_catalog, args, "replace", payload

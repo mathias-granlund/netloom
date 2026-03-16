@@ -30,7 +30,9 @@ def list_plugins() -> list[str]:
     return sorted(_registry().keys())
 
 
-def get_plugin(name: str | None, *, settings: Settings | None = None) -> PluginDefinition:
+def get_plugin(
+    name: str | None, *, settings: Settings | None = None
+) -> PluginDefinition:
     plugin_name = name or (settings.plugin if settings else None) or "clearpass"
     try:
         return _registry()[plugin_name]

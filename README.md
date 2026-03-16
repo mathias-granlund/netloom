@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.1-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -24,7 +24,7 @@ Today the first plugin is ClearPass, but the runtime is now organized so shared
 CLI logic lives in `netloom/` and vendor-specific behavior lives under
 `netloom/plugins/<plugin>/`.
 
-Version: **1.7.0**
+Version: **1.7.1**
 
 ## Highlights
 
@@ -126,8 +126,8 @@ netloom server list|show
 netloom server use <profile>
 netloom <module> <service> list [--key=value] [options]
 netloom <module> <service> get [--all] [--key=value] [options]
-netloom <module> <service> add|delete|update|replace [--key=value] [options]
-netloom copy <module> <service> --from=<profile> --to=<profile> [options]
+netloom <module> <service> add|copy|delete|update|replace [--key=value] [options]
+netloom copy <module> <service> --from=<profile> --to=<profile> [options]  # compatibility alias
 ```
 
 Recommended first run:
@@ -144,7 +144,7 @@ netloom load clearpass
 netloom identities endpoint list --limit=10
 netloom policyelements network-device get --id=1001
 netloom policyelements network-device update --id=1001 --description="Core switch"
-netloom copy policyelements network-device --from=dev --to=prod --all --dry-run
+netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
 netloom server use prod
 netloom server show
 ```

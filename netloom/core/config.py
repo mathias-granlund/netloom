@@ -77,6 +77,8 @@ RESERVED_ARGS = {
     "_cword",
     "_cur",
 }
+
+
 def _bool_value(raw: str | None, default: bool) -> bool:
     if raw is None:
         return default
@@ -334,11 +336,12 @@ def set_active_profile(profile: str) -> Path:
         raise ValueError("Profile name must not be empty.")
     values = _load_config_values()
     available_profiles = list_profiles(values)
-    if (
-        normalized not in available_profiles
-        and not _profile_has_scoped_values(normalized, values)
+    if normalized not in available_profiles and not _profile_has_scoped_values(
+        normalized, values
     ):
-        available_text = ", ".join(available_profiles) if available_profiles else "<none>"
+        available_text = (
+            ", ".join(available_profiles) if available_profiles else "<none>"
+        )
         raise ValueError(
             f"Unknown profile '{profile}'. Available profiles: {available_text}"
         )
@@ -480,11 +483,7 @@ def _build_settings_from_values(
     log_file_raw = _resolve_value(
         "NETLOOM_LOG_FILE", values, active_profile=active_profile
     )
-    log_file = (
-        Path(log_file_raw)
-        if log_file_raw
-        else paths.app_log_dir / "netloom.log"
-    )
+    log_file = Path(log_file_raw) if log_file_raw else paths.app_log_dir / "netloom.log"
     log_to_file = _bool_value(
         _resolve_value("NETLOOM_LOG_TO_FILE", values, active_profile=active_profile),
         False,

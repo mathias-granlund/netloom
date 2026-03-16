@@ -5,7 +5,7 @@ import json
 from netloom.core.config import credentials_env_path, list_profiles, profiles_env_path
 from netloom.core.plugin import list_plugins
 
-CLI_ACTION_ORDER = ["list", "get", "add", "delete", "update", "replace"]
+CLI_ACTION_ORDER = ["list", "get", "add", "delete", "update", "replace", "copy"]
 NETLOOM_BANNER = r"""
  _   _      _   _
 | \ | | ___| |_| | ___   ___  _ __ ___
@@ -23,9 +23,37 @@ def service_cli_actions(service_entry: dict) -> list[str]:
     if "get" in actions:
         cli_actions.append("get")
     for action in CLI_ACTION_ORDER[2:]:
-        if action in actions:
+        if action == "copy":
+            cli_actions.append("copy")
+        elif action in actions:
             cli_actions.append(action)
     return cli_actions
+
+
+def render_copy_action_help(module: str, service: str) -> str:
+    return (
+        f"copy ({module} {service}):\n"
+        "  usage: netloom <module> <service> copy --from=SOURCE_PROFILE "
+        "--to=TARGET_PROFILE [options]\n"
+        "  legacy alias: netloom copy <module> <service> --from=SOURCE_PROFILE "
+        "--to=TARGET_PROFILE [options]\n"
+        "  selectors:\n"
+        "    - --id=VALUE\n"
+        "    - --name=VALUE\n"
+        "    - --filter=JSON\n"
+        "    - --all\n"
+        "  behavior:\n"
+        "    - --on-conflict=fail|skip|update|replace\n"
+        "    - --match-by=auto|name|id\n"
+        "    - --dry-run\n"
+        "    - --continue-on-error\n"
+        "    - --decrypt\n"
+        "  artifacts:\n"
+        "    - --out=PATH\n"
+        "    - --save-source=PATH\n"
+        "    - --save-payload=PATH\n"
+        "    - --save-plan=PATH"
+    )
 
 
 def render_action_block(title: str, action_def: dict) -> str:
@@ -106,16 +134,19 @@ def render_help(
     usage = (
         "Usage:\n"
         "  netloom <module> <service> <action> [options] [flags]\n\n"
+        "  netloom <module> <service> copy --from=SOURCE --to=TARGET "
+        "[options] [flags]\n\n"
         "  netloom copy <module> <service> --from=SOURCE --to=TARGET "
         "[options] [flags]\n\n"
         "  netloom load <plugin>\n\n"
         "Examples:\n"
         "  netloom load clearpass\n"
         "  netloom <module> <service> "
-        "[add|delete|get|list|update|replace] "
+        "[add|copy|delete|get|list|update|replace] "
         "[--key=value] "
         "[--log-level=debug|info|warning|error|critical] [--console]\n"
-        "  netloom copy <module> <service> --from=dev --to=prod --all --dry-run\n"
+        "  netloom policyelements network-device copy "
+        "--from=dev --to=prod --all --dry-run\n"
         "  netloom cache [clear | update]\n"
         "  netloom server [list | show]\n"
         "  netloom server use <profile>\n"
@@ -194,6 +225,8 @@ def render_help(
             + "\nBuilt-in module: copy\n"
             + "Usage:\n"
             + "  netloom copy <module> <service> --from=SOURCE_PROFILE "
+            "--to=TARGET_PROFILE [options]\n"
+            + "  netloom <module> <service> copy --from=SOURCE_PROFILE "
             "--to=TARGET_PROFILE [options]\n\n"
             + "Selectors:\n"
             + "  --id=VALUE\n"
@@ -238,7 +271,9 @@ def render_help(
         return header + usage + "\nAvailable modules:\n" + available_modules
 
     if module not in modules:
-        available = ", ".join(["cache", "copy", "load", "server", *sorted(modules.keys())])
+        available = ", ".join(
+            ["cache", "copy", "load", "server", *sorted(modules.keys())]
+        )
         return header + f"Unknown module '{module}'. Available modules: {available}"
 
     services = modules[module]
@@ -289,7 +324,9 @@ def render_help(
         )
 
     blocks: list[str] = []
-    if action == "get":
+    if action == "copy":
+        blocks.append(render_copy_action_help(module, service))
+    elif action == "get":
         if "list" in action_map:
             blocks.append(
                 render_action_block("list (used by `get --all`)", action_map["list"])

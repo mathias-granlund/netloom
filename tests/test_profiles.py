@@ -202,9 +202,9 @@ def test_main_server_use_switches_profile(monkeypatch, capsys, tmp_path):
     assert "Active profile set to dev." in out
     assert "Server: dev.clearpass.example:443" in out
     assert "Plugin: clearpass" in out
-    assert "NETLOOM_ACTIVE_PROFILE=dev" in (
-        config_dir / "profiles.env"
-    ).read_text(encoding="utf-8")
+    assert "NETLOOM_ACTIVE_PROFILE=dev" in (config_dir / "profiles.env").read_text(
+        encoding="utf-8"
+    )
 
 
 def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):

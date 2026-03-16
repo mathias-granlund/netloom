@@ -62,7 +62,8 @@ def test_parse_cli_ignores_unknown_flags_in_completion_mode():
 
 
 def test_complete_outputs_modules(capsys, monkeypatch):
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _catalog_plugin(TEST_CATALOG))
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     main.complete(["--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "identities" in out
@@ -70,22 +71,26 @@ def test_complete_outputs_modules(capsys, monkeypatch):
 
 
 def test_complete_outputs_services_for_module(capsys, monkeypatch):
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _catalog_plugin(TEST_CATALOG))
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     main.complete(["identities", "--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "endpoint" in out
 
 
 def test_complete_outputs_actions_for_service(capsys, monkeypatch):
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _catalog_plugin(TEST_CATALOG))
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     main.complete(["identities", "endpoint"], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "list" in out
     assert "get" in out
+    assert "copy" in out
 
 
 def test_complete_outputs_server_profiles_for_use(capsys, monkeypatch):
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _catalog_plugin(TEST_CATALOG))
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     monkeypatch.setattr(completion, "list_profiles", lambda: ["dev", "prod"])
     main.complete(["server", "use"], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
@@ -94,7 +99,8 @@ def test_complete_outputs_server_profiles_for_use(capsys, monkeypatch):
 
 
 def test_complete_outputs_services_for_copy_module(capsys, monkeypatch):
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _catalog_plugin(TEST_CATALOG))
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     main.complete(["copy", "identities"], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "endpoint" in out
@@ -124,19 +130,37 @@ def test_parse_cli_decrypt_flag():
 def test_parse_cli_copy_command():
     argv = [
         "netloom",
-        "copy",
         "policyelements",
         "network-device",
+        "copy",
         "--from=dev",
         "--to=prod",
         "--all",
         "--dry-run",
     ]
     args = main.parse_cli(argv)
-    assert args["module"] == "copy"
+    assert args["module"] == "policyelements"
+    assert args["service"] == "network-device"
+    assert args["action"] == "copy"
     assert args["copy_module"] == "policyelements"
     assert args["copy_service"] == "network-device"
     assert args["from"] == "dev"
     assert args["to"] == "prod"
     assert args["all"] is True
     assert args["dry_run"] is True
+
+
+def test_parse_cli_legacy_copy_alias():
+    argv = [
+        "netloom",
+        "copy",
+        "policyelements",
+        "network-device",
+        "--from=dev",
+        "--to=prod",
+    ]
+    args = main.parse_cli(argv)
+    assert args["module"] == "copy"
+    assert args["copy_module"] == "policyelements"
+    assert args["copy_service"] == "network-device"
+    assert args["legacy_copy_syntax"] is True

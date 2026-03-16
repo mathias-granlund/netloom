@@ -188,12 +188,13 @@ def test_main_help_prints_and_exits(monkeypatch, capsys, tmp_path):
 def test_main_unknown_action_prints_help_and_message(monkeypatch, capsys, tmp_path):
     mgr = FakeLogMgr()
     settings = make_settings(tmp_path)
+    plugin = _plugin_with_catalog({"modules": {}})
     monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
     monkeypatch.setattr(
         main, "print_help", lambda args=None, **kwargs: print("Usage:\n  netloom ...")
     )
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _plugin_with_catalog({"modules": {}}))
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
 
     if "doesnotexist" in main.ACTIONS:
         monkeypatch.delitem(main.ACTIONS, "doesnotexist", raising=False)
@@ -292,6 +293,7 @@ def test_main_copy_invokes_copy_handler(monkeypatch, tmp_path):
     calls = {}
     mgr = FakeLogMgr()
     settings = make_settings(tmp_path)
+    plugin = _plugin_with_catalog({"modules": {}})
     monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
     monkeypatch.setattr(
@@ -299,7 +301,45 @@ def test_main_copy_invokes_copy_handler(monkeypatch, tmp_path):
         "handle_copy_command",
         lambda args, **kwargs: calls.update({"args": args, "kwargs": kwargs}),
     )
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: _plugin_with_catalog({"modules": {}}))
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "netloom",
+            "policyelements",
+            "network-device",
+            "copy",
+            "--from=dev",
+            "--to=prod",
+            "--all",
+        ],
+    )
+
+    main.main()
+
+    assert calls["args"]["module"] == "policyelements"
+    assert calls["args"]["service"] == "network-device"
+    assert calls["args"]["action"] == "copy"
+    assert calls["args"]["copy_module"] == "policyelements"
+    assert calls["args"]["copy_service"] == "network-device"
+    assert calls["kwargs"]["settings"] == settings
+
+
+def test_main_legacy_copy_alias_still_invokes_copy_handler(monkeypatch, tmp_path):
+    calls = {}
+    mgr = FakeLogMgr()
+    settings = make_settings(tmp_path)
+    plugin = _plugin_with_catalog({"modules": {}})
+    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(
+        main,
+        "handle_copy_command",
+        lambda args, **kwargs: calls.update({"args": args, "kwargs": kwargs}),
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
 
     monkeypatch.setattr(
         sys,
@@ -311,7 +351,6 @@ def test_main_copy_invokes_copy_handler(monkeypatch, tmp_path):
             "network-device",
             "--from=dev",
             "--to=prod",
-            "--all",
         ],
     )
 
@@ -320,4 +359,3 @@ def test_main_copy_invokes_copy_handler(monkeypatch, tmp_path):
     assert calls["args"]["module"] == "copy"
     assert calls["args"]["copy_module"] == "policyelements"
     assert calls["args"]["copy_service"] == "network-device"
-    assert calls["kwargs"]["settings"] == settings

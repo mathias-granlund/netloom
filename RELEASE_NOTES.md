@@ -1,45 +1,23 @@
-# netloom v1.7.0
+# netloom v1.7.1
 
-This release establishes the modular `netloom` runtime as the only supported
-package layout.
+This release makes `copy` available as a normal service action while keeping
+the old top-level syntax as a compatibility alias.
 
 ## Highlights
 
-- shared runtime under `netloom/`
-- plugin boundary under `netloom/plugins/<plugin>`
-- initial ClearPass plugin under `netloom/plugins/clearpass`
-- persisted plugin selection with `netloom load <plugin>`
-- profile-based server targeting through `~/.config/netloom/`
-- packaged completion and manpage assets renamed to `netloom`
+- preferred syntax is now `netloom <module> <service> copy ...`
+- legacy alias `netloom copy <module> <service> ...` still works
+- help and completion now present `copy` beside the normal service actions
 
-## What changed
-
-The CLI is now split into:
-
-- shared logic in `netloom/cli`, `netloom/core`, `netloom/io`, and
-  `netloom/logging`
-- plugin-specific behavior in `netloom/plugins/clearpass`
-
-The standard workflow is:
+## Examples
 
 ```bash
-netloom load clearpass
-netloom cache update
-netloom <module> <service> <action>
+netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
+netloom copy policyelements network-device --from=dev --to=prod --all --dry-run
 ```
 
-## Packaging and docs
+## Notes
 
-- updated README for the plugin-based workflow
-- updated architecture documentation to reflect the current repo layout
-- updated packaged assets to `netloom-completion.bash` and `netloom.1`
-- documented `NETLOOM_*` configuration and `~/.config/netloom/`
-
-## Upgrade notes
-
-Recommended setup:
-
-```bash
-netloom load clearpass
-netloom cache update
-```
+The action-style form is now the recommended syntax because it lets users stay
+in the same module/service path while moving from inspection commands like
+`get`, `list`, and `?` into copy workflows.

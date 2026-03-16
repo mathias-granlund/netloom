@@ -40,9 +40,7 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
 def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
     api_token = args.get("api_token") or args.get("token") or settings.api_token
     token_file = (
-        args.get("token_file")
-        or args.get("api_token_file")
-        or settings.api_token_file
+        args.get("token_file") or args.get("api_token_file") or settings.api_token_file
     )
     return replace(settings, api_token=api_token, api_token_file=token_file)
 
@@ -136,6 +134,10 @@ def main() -> None:
 
     if not (module and service and action):
         print_help(args, plugin=plugin, settings=active_settings)
+        return
+
+    if action == "copy":
+        handle_copy_command(args, settings=active_settings, plugin=plugin)
         return
 
     try:

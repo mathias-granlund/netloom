@@ -33,7 +33,9 @@ def install_manpage(target_dir: str | Path | None = None) -> Path:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="netloom-install-manpage",
-        description="Install the bundled netloom(1) man page into a local man directory.",
+        description=(
+            "Install the bundled netloom(1) man page into a local man directory."
+        ),
     )
     parser.add_argument(
         "--dir",
@@ -62,4 +64,6 @@ def main() -> None:
     print(f"Installed man page to {installed_path}")
     print(f"View with: man -l {installed_path}")
     if installed_path.parent == default_man1_dir():
-        print("If `man netloom` still does not work, add ~/.local/share/man to MANPATH.")
+        print(
+            "If `man netloom` still does not work, add ~/.local/share/man to MANPATH."
+        )

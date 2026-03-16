@@ -26,9 +26,7 @@ flag_keys = st.from_regex(r"[a-z][a-z0-9_-]{0,11}", fullmatch=True).filter(
     lambda key: key not in BOOLEAN_FLAGS and not key.startswith("_")
 )
 flag_values = st.text(alphabet=SAFE_VALUE_ALPHABET, min_size=0, max_size=20)
-positionals = st.from_regex(
-    r"[A-Za-z0-9][A-Za-z0-9._/]{0,15}", fullmatch=True
-)
+positionals = st.from_regex(r"[A-Za-z0-9][A-Za-z0-9._/]{0,15}", fullmatch=True)
 
 leaf_values = st.one_of(
     st.none(),
@@ -62,9 +60,7 @@ def valid_cli_cases(draw):
     bool_flags = draw(
         st.lists(st.sampled_from(sorted(BOOLEAN_FLAGS)), unique=True, max_size=4)
     )
-    key_values = draw(
-        st.dictionaries(flag_keys, flag_values, max_size=4)
-    )
+    key_values = draw(st.dictionaries(flag_keys, flag_values, max_size=4))
     args = ["netloom"]
     args.extend(f"--{flag}" for flag in bool_flags)
     args.extend(f"--{key}={value}" for key, value in key_values.items())
@@ -75,9 +71,7 @@ def valid_cli_cases(draw):
 
 @st.composite
 def completion_cli_cases(draw):
-    long_flags = draw(
-        st.lists(flag_keys, unique=True, max_size=4)
-    )
+    long_flags = draw(st.lists(flag_keys, unique=True, max_size=4))
     short_flags = draw(
         st.lists(st.sampled_from(list(string.ascii_lowercase)), unique=True, max_size=4)
     )

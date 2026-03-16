@@ -90,13 +90,13 @@ def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
                         "method": "GET",
                         "summary": "Get a list of enforcement policies",
                         "notes": (
-                            'Get a list of enforcement policies. <div>'
+                            "Get a list of enforcement policies. <div>"
                             '<a href="#">More about JSON filter expressions</a>'
                             "<div><p>A filter is specified as a JSON object, "
                             "where the properties of the object specify the type "
                             "of query to be performed.</p><table><tr>"
                             "<th>Description</th>"
-                            '<th>JSON Filter Syntax</th></tr><tr><td>Field is equal to '
+                            "<th>JSON Filter Syntax</th></tr><tr><td>Field is equal to "
                             '"value"</td><td class="code">{'
                             '"<i>fieldName</i>":"<i>value</i>"}'
                             "</td></tr></table></div></div>"

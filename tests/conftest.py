@@ -64,9 +64,7 @@ def token(clearpass_client):
     client_id = os.environ.get("NETLOOM_CLIENT_ID")
     client_secret = os.environ.get("NETLOOM_CLIENT_SECRET")
     if not client_id or not client_secret:
-        pytest.skip(
-            "Set NETLOOM_TOKEN or (NETLOOM_CLIENT_ID + NETLOOM_CLIENT_SECRET)"
-        )
+        pytest.skip("Set NETLOOM_TOKEN or (NETLOOM_CLIENT_ID + NETLOOM_CLIENT_SECRET)")
 
     grant_type = os.environ.get("NETLOOM_GRANT_TYPE", "client_credentials")
     creds = {

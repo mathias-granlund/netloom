@@ -198,9 +198,7 @@ def normalize_file_payload_for_action(
 
     if allowed_fields is None:
         return {
-            key: value
-            for key, value in payload.items()
-            if key not in excluded_fields
+            key: value for key, value in payload.items() if key not in excluded_fields
         }
 
     normalized = {
