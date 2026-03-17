@@ -20,9 +20,9 @@ consistent command surface, and keeps the workflow centered around operational
 tasks like listing objects, replaying payloads, refreshing API caches, and
 copying configuration between environments.
 
-Today the first plugin is ClearPass, but the runtime is now organized so shared
+At the moment ClearPass is the only supported plugin but the runtime is now organized so shared
 CLI logic lives in `netloom/` and vendor-specific behavior lives under
-`netloom/plugins/<plugin>/`.
+`netloom/plugins/<plugin>/`. More vendor support is planed for the future.
 
 Version: **1.7.1**
 
@@ -38,12 +38,6 @@ Version: **1.7.1**
 
 ## Installation
 
-Development install:
-
-```bash
-pip install -e .[dev]
-```
-
 Standard install:
 
 ```bash
@@ -56,11 +50,11 @@ Install directly from GitHub:
 pip install git+https://github.com/mathias-granlund/netloom
 ```
 
-Build release artifacts locally:
+Install the bundled man page:
 
 ```bash
-python -m build
-python -m twine check dist/*
+netloom-install-manpage
+man netloom
 ```
 
 ## Configuration
@@ -120,33 +114,23 @@ and [credentials.env.example](credentials.env.example).
 ## CLI syntax
 
 ```bash
-netloom load <plugin>
-netloom cache clear|update
-netloom server list|show
-netloom server use <profile>
-netloom <module> <service> list [--key=value] [options]
-netloom <module> <service> get [--all] [--key=value] [options]
-netloom <module> <service> add|copy|delete|update|replace [--key=value] [options]
-netloom copy <module> <service> --from=<profile> --to=<profile> [options]  # compatibility alias
-```
-
-Recommended first run:
-
-```bash
-netloom load clearpass
-netloom cache update
+  netloom load [list | show | <plugin>]
+  netloom server [list | show | [use <profile>]]
+  netloom cache [clear | update]
+  netloom <module> <service> <action> [options] [flags]
+  netloom --version
 ```
 
 Examples:
 
 ```bash
 netloom load clearpass
+netloom server use dev
 netloom identities endpoint list --limit=10
-netloom policyelements network-device get --id=1001
-netloom policyelements network-device update --id=1001 --description="Core switch"
-netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
-netloom server use prod
-netloom server show
+netloom policyelements network-device get --id=1337 --console
+netloom policyelements network-device update --id=1337 --description="Core switch"
+netloom policyelements network-device copy --from=dev --to=prod --filter='{"name":{"$contains":"VLAN10"}}' --dry-run
+
 ```
 
 Command-line token overrides are supported:
@@ -156,6 +140,24 @@ netloom identities endpoint list --api-token=your-token
 netloom identities endpoint list --token-file=./token.json
 ```
 
+When `--filter=` is used, the following operators and syntax is available:
+```bash
+  Key is equal to 'value'                  '{"key":{"$eq":"value"}}'
+  Key is one of a list of values           '{"key":{"$in":["value1", "value2"]}}'
+  Key is not one of a list of values       '{"key":{"$nin":["value1", "value2"]}}'
+  Key contains a substring 'value'         '{"key":{"$contains":"value"}}'
+  key is not equal to 'value'              '{"key":{"$ne":"value"}}'
+  Key is greater than 'value'              '{"key":{"$gt":"value"}}'
+  Key is greater than or equal to 'value'  '{"key":{"$gte":"value"}}'
+  Key is less than 'value'                 '{"key":{"$lt":"value"}}'
+  Key is less than or equal to 'value'     '{"key":{"$lte":"value"}}'
+  Key matches a regex (case-sensitive)     '{"key":{"$regex":"regex"}}'
+  Key exists (not null value)              '{"key":{"$exists":true}}'
+  Key is NULL                              '{"key":{"$exists":false}}'
+  Combining filter expressions with AND    '{"$and":[filter1, filter2,...]}'
+  Combining filter expressions with OR     '{"$or":[filter1, filter2,...]}'
+  Inverting a filter expression            '{"$not":{filter}}'
+  ```
 ## Global options
 
 | Option | Description |
@@ -230,18 +232,16 @@ Permanent Bash setup:
 
 ```bash
 mkdir -p ~/.bash_completion.d
-cat > ~/.bash_completion.d/netloom <<'EOF'
-#!/usr/bin/env bash
-source "$HOME/Desktop/Scripts/netloom-main/scripts/netloom-completion.bash"
+
+cp /path/to/your/repo/scripts/netloom-completion.bash ~/.bash_completion.d
+
+cat >> ~/.bashcr <<'EOF'
+if [ -d "$HOME/.bash_completion.d" ]; then
+  for f in "$HOME"/.bash_completion.d/*; do
+    [ -r "$f" ] && source "$f"
+  done
+fi
 EOF
-```
-
-For zsh:
-
-```zsh
-autoload -Uz bashcompinit
-bashcompinit
-source /path/to/your/repo/scripts/netloom-completion.bash
 ```
 
 ## Architecture
@@ -259,28 +259,11 @@ plugin-specific folders under `netloom/plugins/`.
 |-- profiles.env.example
 |-- credentials.env.example
 |-- examples/
-|   |-- network_device_groups_import.json
-|   |-- network_devices_import.csv
-|   `-- network_devices_import.json
 |-- man/
 |   `-- netloom.1
 |-- scripts/
 |   `-- netloom-completion.bash
 |-- tests/
-|   |-- conftest.py
-|   |-- test_catalog.py
-|   |-- test_clearpass.py
-|   |-- test_commands.py
-|   |-- test_copy.py
-|   |-- test_fuzz.py
-|   |-- test_help.py
-|   |-- test_integration_cli.py
-|   |-- test_io_utils.py
-|   |-- test_list_endpoints.py
-|   |-- test_logger.py
-|   |-- test_main.py
-|   |-- test_manpage.py
-|   `-- test_profiles.py
 `-- netloom/
     |-- __init__.py
     |-- __main__.py
@@ -317,6 +300,12 @@ plugin-specific folders under `netloom/plugins/`.
 
 ## Development
 
+Development install:
+
+```bash
+pip install -e .[dev]
+```
+
 Run tests:
 
 ```bash
@@ -330,17 +319,11 @@ ruff check .
 ruff format .
 ```
 
-View the static man page locally:
+Build release artifacts locally:
 
 ```bash
-man -l man/netloom.1
-```
-
-Install the bundled man page:
-
-```bash
-netloom-install-manpage
-man netloom
+python -m build
+python -m twine check dist/*
 ```
 
 Release guidance is documented in [RELEASING.md](RELEASING.md).
