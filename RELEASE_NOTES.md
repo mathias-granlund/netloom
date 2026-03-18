@@ -12,6 +12,8 @@ documented in much more depth without overloading the main CLI manual.
   profiles, cache, global options, output behavior, and shared paths
 - updated `netloom-install-manpage` so it installs both manuals into the
   correct man sections
+- copy source, payload, and plan artifacts now default into `NETLOOM_OUT_DIR`
+  with generated JSON filenames unless you override them explicitly
 
 ## Examples
 

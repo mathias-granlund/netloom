@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any
 
 import requests
@@ -20,6 +21,26 @@ def _copy_item_label(item: dict[str, Any]) -> str:
     if item.get("id") not in (None, ""):
         return str(item["id"])
     return "<unknown>"
+
+
+def _artifact_stem(module: str, service: str, source: str, target: str) -> str:
+    normalized = [
+        str(value).strip().replace("-", "_")
+        for value in (module, service, source, "to", target)
+    ]
+    return "_".join(part for part in normalized if part)
+
+
+def _default_artifact_path(
+    settings: Settings,
+    module: str,
+    service: str,
+    source_profile: str,
+    target_profile: str,
+    artifact: str,
+) -> str:
+    stem = _artifact_stem(module, service, source_profile, target_profile)
+    return str(Path(settings.paths.response_dir) / f"{stem}_{artifact}.json")
 
 
 def _extract_items(value: Any) -> list[dict[str, Any]]:
@@ -248,6 +269,17 @@ def _emit_summary(report: dict[str, Any]) -> None:
                 f"- {item.get('label', '<unknown>')}: "
                 f"{item.get('reason', 'unknown error')}"
             )
+    artifacts = report.get("artifacts") or {}
+    if artifacts:
+        print("Artifacts:")
+        if artifacts.get("source"):
+            print(f"- source: {artifacts['source']}")
+        if artifacts.get("payload"):
+            print(f"- payload: {artifacts['payload']}")
+        if artifacts.get("plan"):
+            print(f"- plan: {artifacts['plan']}")
+        if artifacts.get("report"):
+            print(f"- report: {artifacts['report']}")
 
 
 def handle_copy_command(
@@ -468,32 +500,50 @@ def handle_copy_command(
         "items": result_items,
     }
 
-    save_source = args.get("save_source")
-    if save_source:
-        write_value_to_file(
-            source_items,
-            save_source,
-            data_format="json",
-            mask_secrets=mask_secrets,
-        )
+    save_source = str(args.get("save_source") or "").strip() or _default_artifact_path(
+        active_settings,
+        module,
+        service,
+        source_profile,
+        target_profile,
+        "source",
+    )
+    write_value_to_file(
+        source_items,
+        save_source,
+        data_format="json",
+        mask_secrets=mask_secrets,
+    )
 
-    save_payload = args.get("save_payload")
-    if save_payload:
-        write_value_to_file(
-            [item["payload"] for item in plan_items if item.get("payload") is not None],
-            save_payload,
-            data_format="json",
-            mask_secrets=mask_secrets,
-        )
+    save_payload = str(args.get("save_payload") or "").strip() or _default_artifact_path(
+        active_settings,
+        module,
+        service,
+        source_profile,
+        target_profile,
+        "payload",
+    )
+    write_value_to_file(
+        [item["payload"] for item in plan_items if item.get("payload") is not None],
+        save_payload,
+        data_format="json",
+        mask_secrets=mask_secrets,
+    )
 
-    save_plan = args.get("save_plan")
-    if save_plan:
-        write_value_to_file(
-            plan_items,
-            save_plan,
-            data_format="json",
-            mask_secrets=mask_secrets,
-        )
+    save_plan = str(args.get("save_plan") or "").strip() or _default_artifact_path(
+        active_settings,
+        module,
+        service,
+        source_profile,
+        target_profile,
+        "plan",
+    )
+    write_value_to_file(
+        plan_items,
+        save_plan,
+        data_format="json",
+        mask_secrets=mask_secrets,
+    )
 
     out_path = args.get("out")
     if out_path:
@@ -503,6 +553,12 @@ def handle_copy_command(
             data_format="json",
             mask_secrets=mask_secrets,
         )
+    report["artifacts"] = {
+        "source": save_source,
+        "payload": save_payload,
+        "plan": save_plan,
+        "report": out_path,
+    }
 
     _emit_summary(report)
     if args.get("console"):

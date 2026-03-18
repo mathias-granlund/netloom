@@ -9,6 +9,7 @@
 - refocused `netloom(1)` on the shared CLI surface so plugin-specific behavior can live in separate manuals
 - updated `netloom-install-manpage` to install both the shared `netloom(1)` page and the ClearPass plugin guide into their respective man sections
 - updated packaged manpage assets, README install guidance, and release metadata for the split manual layout
+- copy artifact files now default into `NETLOOM_OUT_DIR` with generated JSON filenames when `--save-source`, `--save-payload`, or `--save-plan` are not provided explicitly
 
 ## 1.7.5 - 2026-03-18
 

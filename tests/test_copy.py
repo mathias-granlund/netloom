@@ -1,3 +1,4 @@
+import json
 import types
 
 import pytest
@@ -613,6 +614,116 @@ def test_handle_copy_command_console_masks_secrets_by_default(
     out = capsys.readouterr().out
     assert "abc123" not in out
     assert '"radius_secret": ""' in out
+
+
+def test_handle_copy_command_saves_default_artifacts_to_response_dir(
+    monkeypatch, tmp_path
+):
+    catalog = _catalog()
+    source_cp = _SourceCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "switch-a",
+                "ip_address": "10.0.0.1",
+                "radius_secret": "abc123",
+            }
+        ],
+    )
+    target_cp = _TargetCP(catalog, {})
+
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["dev", "prod"])
+    monkeypatch.setattr(
+        copymod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+    def build_client(settings, *, mask_secrets=True):
+        return source_cp if settings.server == "dev" else target_cp
+
+    settings = _make_settings(tmp_path, "prod")
+    report = copymod.handle_copy_command(
+        {
+            "module": "copy",
+            "copy_module": "policyelements",
+            "copy_service": "network-device",
+            "from": "dev",
+            "to": "prod",
+            "all": True,
+            "dry_run": True,
+        },
+        settings=settings,
+        plugin=_plugin(build_client, catalog),
+    )
+
+    base_dir = settings.paths.response_dir
+    source_path = base_dir / "policyelements_network_device_dev_to_prod_source.json"
+    payload_path = base_dir / "policyelements_network_device_dev_to_prod_payload.json"
+    plan_path = base_dir / "policyelements_network_device_dev_to_prod_plan.json"
+
+    assert report["artifacts"]["source"] == str(source_path)
+    assert report["artifacts"]["payload"] == str(payload_path)
+    assert report["artifacts"]["plan"] == str(plan_path)
+    assert json.loads(source_path.read_text(encoding="utf-8"))[0]["name"] == "switch-a"
+    assert json.loads(payload_path.read_text(encoding="utf-8"))[0]["name"] == "switch-a"
+    assert json.loads(plan_path.read_text(encoding="utf-8"))[0]["action"] == "create"
+
+
+def test_handle_copy_command_honors_explicit_artifact_paths(monkeypatch, tmp_path):
+    catalog = _catalog()
+    source_cp = _SourceCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "switch-a",
+                "ip_address": "10.0.0.1",
+                "radius_secret": "abc123",
+            }
+        ],
+    )
+    target_cp = _TargetCP(catalog, {})
+
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["dev", "prod"])
+    monkeypatch.setattr(
+        copymod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+    def build_client(settings, *, mask_secrets=True):
+        return source_cp if settings.server == "dev" else target_cp
+
+    custom_dir = tmp_path / "artifacts"
+    source_path = custom_dir / "source.json"
+    payload_path = custom_dir / "payload.json"
+    plan_path = custom_dir / "plan.json"
+
+    report = copymod.handle_copy_command(
+        {
+            "module": "copy",
+            "copy_module": "policyelements",
+            "copy_service": "network-device",
+            "from": "dev",
+            "to": "prod",
+            "all": True,
+            "dry_run": True,
+            "save_source": str(source_path),
+            "save_payload": str(payload_path),
+            "save_plan": str(plan_path),
+        },
+        settings=_make_settings(tmp_path, "prod"),
+        plugin=_plugin(build_client, catalog),
+    )
+
+    assert report["artifacts"]["source"] == str(source_path)
+    assert report["artifacts"]["payload"] == str(payload_path)
+    assert report["artifacts"]["plan"] == str(plan_path)
+    assert source_path.exists()
+    assert payload_path.exists()
+    assert plan_path.exists()
 
 
 def test_handle_copy_command_rejects_missing_selector(monkeypatch, tmp_path):

@@ -137,6 +137,7 @@ def test_render_help_includes_copy_builtin():
     assert "--from=SOURCE_PROFILE" in text
     assert "--on-conflict=fail|skip|update|replace" in text
     assert "copied across all matching paged results" in text
+    assert "NETLOOM_OUT_DIR/<generated>_source.json" in text
 
 
 def test_render_help_includes_copy_as_service_action():

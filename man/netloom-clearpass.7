@@ -272,15 +272,24 @@ Choose what to do when a matching object already exists.
 
 .TP
 .BI --save-source= FILE
-Write the fetched source objects to a file.
+Write the fetched source objects to a file. When omitted, the copy workflow
+still saves them under
+.BR NETLOOM_OUT_DIR
+using a generated filename.
 
 .TP
 .BI --save-payload= FILE
-Write the normalized write payloads to a file.
+Write the normalized write payloads to a file. When omitted, the copy workflow
+still saves them under
+.BR NETLOOM_OUT_DIR
+using a generated filename.
 
 .TP
 .BI --save-plan= FILE
-Write the planned operations to a file.
+Write the planned operations to a file. When omitted, the copy workflow still
+saves them under
+.BR NETLOOM_OUT_DIR
+using a generated filename.
 
 The plugin also normalizes payloads before replaying them so ClearPass response
 metadata and response-only fields are not sent back as write input.

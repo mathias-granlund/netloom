@@ -50,9 +50,9 @@ def render_copy_action_help(module: str, service: str) -> str:
         "    - --decrypt\n"
         "  artifacts:\n"
         "    - --out=PATH\n"
-        "    - --save-source=PATH\n"
-        "    - --save-payload=PATH\n"
-        "    - --save-plan=PATH"
+        "    - --save-source=PATH  (default: NETLOOM_OUT_DIR/<generated>_source.json)\n"
+        "    - --save-payload=PATH (default: NETLOOM_OUT_DIR/<generated>_payload.json)\n"
+        "    - --save-plan=PATH    (default: NETLOOM_OUT_DIR/<generated>_plan.json)"
     )
 
 
@@ -235,9 +235,9 @@ def render_copy_builtin_help(header: str, usage: str) -> str:
         + "  --decrypt\n\n"
         + "Artifacts:\n"
         + "  --out=PATH\n"
-        + "  --save-source=PATH\n"
-        + "  --save-payload=PATH\n"
-        + "  --save-plan=PATH\n"
+        + "  --save-source=PATH  (default: NETLOOM_OUT_DIR/<generated>_source.json)\n"
+        + "  --save-payload=PATH (default: NETLOOM_OUT_DIR/<generated>_payload.json)\n"
+        + "  --save-plan=PATH    (default: NETLOOM_OUT_DIR/<generated>_plan.json)\n"
     )
 
 
