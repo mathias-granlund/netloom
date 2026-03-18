@@ -43,11 +43,25 @@ Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
 ## Planned features
 
-- add a GUI
-- version control support
+The roadmap is focused on improving the core CLI first, then expanding
+automation workflows, and finally adding broader user-experience features.
+
+### Phase 1: Discovery and comparison
+
+- update the cache based on the api-client privileges via `netloom apioperations privileges get` so users only see relevant and available endpoints and actions
+- add a `netloom <module> <service> diff --from=X --to=Y` action to compare config between `<profiles>` within a `<service>`
+- make cache identity and metadata profile-aware so privilege-filtered caches stay isolated and easier to reason about
+
+### Phase 2: Safe multi-service workflows
+
 - implement `netloom <module> copy --from=X --to=Y` to copy all config from all `<services>` within a `<module>`
-- add a `netloom <module> <service> diff --from=X ---to=Y` action to compare config between `<profiles>` within a `<service>`
-- update the cache based on the api-client privileges via `netloom apioperations privileges get` so we only show the user relevant and available endpoints and actions
+- add structured copy and diff plans with stable JSON output for automation and review
+- add validation and dry-run helpers to verify whether objects and payloads are safe to apply before changes are made
+
+### Phase 3: Change tracking and UX expansion
+
+- add version control support for exported configs, plans, and environment comparisons
+- add a GUI on top of the stabilized CLI workflows
 
 ## Installation
 
