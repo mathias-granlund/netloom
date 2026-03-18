@@ -29,6 +29,8 @@ copying configuration between environments.
 
 Version: **1.7.6**
 
+Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
+
 ## Highlights
 
 - shared modular runtime under `netloom/`
@@ -229,11 +231,6 @@ nested expressions.
 | `--encrypt=enable/disable` | Mask or show secret fields |
 | `--decrypt` | Shortcut for showing secrets |
 
-For `copy`, the source objects, normalized payloads, and execution plan are now
-also written by default under `NETLOOM_OUT_DIR` with generated JSON filenames.
-You can still override each artifact path explicitly with
-`--save-source=FILE`, `--save-payload=FILE`, and `--save-plan=FILE`.
-
 ## Discovery and cache
 
 The active plugin discovers modules and services at runtime. The current
@@ -285,7 +282,7 @@ These can be overridden with:
 Run once per session:
 
 ```bash
-source /path/to/scripts/netloom-completion.bash
+source /path/to/netloom/scripts/netloom-completion.bash
 ```
 
 Permanent completion setup:
