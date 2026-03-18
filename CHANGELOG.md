@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.5 - 2026-03-18
+
+### Changed
+- added shorthand filter syntax for common cases such as `--filter=name:equals:TEST` while keeping full JSON filter expressions available for advanced usage
+- list-style help output now replaces the imported ClearPass filter documentation dump with a compact CLI-focused filter guide
+- updated README guidance and examples to reflect the shorthand filter workflow
+
 ## 1.7.4 - 2026-03-18
 
 ### Changed

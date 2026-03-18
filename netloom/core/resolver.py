@@ -1,11 +1,37 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from netloom.core.config import RESERVED_ARGS, Settings
 from netloom.io.files import load_payload_file
 
 _LIST_QUERY_PARAMS = {"filter", "sort", "offset", "limit", "calculate_count"}
+_FILTER_OPERATOR_ALIASES = {
+    "$eq": "$eq",
+    "eq": "$eq",
+    "equals": "$eq",
+    "$ne": "$ne",
+    "ne": "$ne",
+    "not-equals": "$ne",
+    "$contains": "$contains",
+    "contains": "$contains",
+    "$in": "$in",
+    "in": "$in",
+    "$nin": "$nin",
+    "nin": "$nin",
+    "not-in": "$nin",
+    "$gt": "$gt",
+    "gt": "$gt",
+    "$gte": "$gte",
+    "gte": "$gte",
+    "$lt": "$lt",
+    "lt": "$lt",
+    "$lte": "$lte",
+    "lte": "$lte",
+    "$exists": "$exists",
+    "exists": "$exists",
+}
 
 _TEXT_CONTENT_MARKERS = (
     "json",
@@ -34,6 +60,95 @@ _CONTENT_TYPE_EXTENSIONS = {
 
 def _normalize_content_type(value: str | None) -> str:
     return (value or "").split(";", 1)[0].strip().lower()
+
+
+def _looks_like_json_filter(raw: str) -> bool:
+    stripped = raw.lstrip()
+    return stripped.startswith("{") or stripped.startswith("[")
+
+
+def _coerce_filter_scalar(raw: str):
+    stripped = raw.strip()
+    if stripped == "":
+        return ""
+
+    lowered = stripped.lower()
+    if lowered in {"true", "false", "null"}:
+        return json.loads(lowered)
+
+    try:
+        if stripped[0] in {'"', "["} or stripped[0].isdigit() or stripped[0] == "-":
+            return json.loads(stripped)
+    except (IndexError, json.JSONDecodeError):
+        return stripped
+
+    return stripped
+
+
+def normalize_filter_value(raw):
+    if not isinstance(raw, str):
+        return raw
+
+    stripped = raw.strip()
+    if stripped == "" or _looks_like_json_filter(stripped):
+        return raw
+
+    parts = stripped.split(":", 2)
+    if len(parts) != 3:
+        raise ValueError(
+            "Unsupported --filter syntax. Use JSON like "
+            "--filter='{\"key\":{\"$eq\":\"value\"}}' or shorthand like "
+            "--filter=key:equals:value."
+        )
+
+    field, operator_raw, value_raw = (part.strip() for part in parts)
+    if not field or not operator_raw:
+        raise ValueError(
+            "Shorthand --filter requires field, operator, and value in the form "
+            "--filter=key:operator:value."
+        )
+
+    operator = _FILTER_OPERATOR_ALIASES.get(operator_raw.lower())
+    if operator is None:
+        supported = ", ".join(
+            [
+                "equals",
+                "not-equals",
+                "contains",
+                "in",
+                "not-in",
+                "gt",
+                "gte",
+                "lt",
+                "lte",
+                "exists",
+            ]
+        )
+        raise ValueError(
+            f"Unsupported filter operator '{operator_raw}'. "
+            f"Supported shorthand operators: {supported}"
+        )
+
+    if operator in {"$in", "$nin"}:
+        value = [
+            _coerce_filter_scalar(part)
+            for part in value_raw.split(",")
+            if part.strip() != ""
+        ]
+        if not value:
+            raise ValueError(
+                f"Filter operator '{operator_raw}' requires at least one value."
+            )
+    else:
+        value = _coerce_filter_scalar(value_raw)
+
+    if operator == "$exists":
+        if not isinstance(value, bool):
+            raise ValueError(
+                "Filter operator 'exists' requires a boolean value: true or false."
+            )
+
+    return json.dumps({field: {operator: value}}, ensure_ascii=False)
 
 
 def _is_binary_content_type(content_type: str | None) -> bool:
@@ -231,7 +346,7 @@ def query_params_for_action(cp, api_catalog, args: dict, action: str) -> dict:
         if "sort" in allowed:
             params["sort"] = args.get("sort")
         if "filter" in allowed and args.get("filter") is not None:
-            params["filter"] = args["filter"]
+            params["filter"] = normalize_filter_value(args["filter"])
         if "calculate_count" in allowed and args.get("calculate_count") is not None:
             raw_value = args["calculate_count"]
             if isinstance(raw_value, str):

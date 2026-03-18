@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -156,6 +157,99 @@ def test_list_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
     }
     assert calls["logged"]["thing"]["count"] == 1
     assert calls["logged"]["filename"].endswith("endpoint_list.json")
+
+
+def test_query_params_for_action_normalizes_filter_shorthand_eq(api_catalog):
+    class CP:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+    params = commands.query_params_for_action(
+        CP(),
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "list",
+            "filter": "name:equals:TEST",
+        },
+        "list",
+    )
+
+    assert json.loads(params["filter"]) == {"name": {"$eq": "TEST"}}
+
+
+def test_query_params_for_action_normalizes_filter_shorthand_with_colons(api_catalog):
+    class CP:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+    params = commands.query_params_for_action(
+        CP(),
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "list",
+            "filter": "url:equals:https://example.com/a:b",
+        },
+        "list",
+    )
+
+    assert json.loads(params["filter"]) == {
+        "url": {"$eq": "https://example.com/a:b"}
+    }
+
+
+def test_query_params_for_action_normalizes_filter_shorthand_in_and_exists(api_catalog):
+    class CP:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+    in_params = commands.query_params_for_action(
+        CP(),
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "list",
+            "filter": "id:in:1,2,3",
+        },
+        "list",
+    )
+    exists_params = commands.query_params_for_action(
+        CP(),
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "list",
+            "filter": "enabled:exists:true",
+        },
+        "list",
+    )
+
+    assert json.loads(in_params["filter"]) == {"id": {"$in": [1, 2, 3]}}
+    assert json.loads(exists_params["filter"]) == {"enabled": {"$exists": True}}
+
+
+def test_query_params_for_action_rejects_invalid_filter_shorthand(api_catalog):
+    class CP:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+    with pytest.raises(ValueError, match="Unsupported --filter syntax"):
+        commands.query_params_for_action(
+            CP(),
+            api_catalog,
+            {
+                "module": "identities",
+                "service": "endpoint",
+                "action": "list",
+                "filter": "name:equals",
+            },
+            "list",
+        )
 
 
 def test_list_handler_fetches_all_pages(monkeypatch, api_catalog, settings):

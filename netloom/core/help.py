@@ -56,6 +56,27 @@ def render_copy_action_help(module: str, service: str) -> str:
     )
 
 
+def _is_filter_reference_note(note: str) -> bool:
+    text = note.lower()
+    return (
+        "more about json filter expressions" in text
+        or "a filter is specified as a json object" in text
+    )
+
+
+def _filter_help_lines() -> list[str]:
+    return [
+        "  filter:",
+        "    shorthand: --filter=name:equals:TEST",
+        '    json: --filter=\'{"name":{"$contains":"TEST"}}\'',
+        (
+            "    operators: equals, not-equals, contains, in, not-in, gt, "
+            "gte, lt, lte, exists"
+        ),
+        "    use full JSON for advanced expressions like $and, $or, and regex",
+    ]
+
+
 def render_action_block(title: str, action_def: dict) -> str:
     lines = [f"{title}:"]
     summary = action_def.get("summary")
@@ -66,10 +87,19 @@ def render_action_block(title: str, action_def: dict) -> str:
     if paths:
         lines.append("  paths:")
         lines.extend(f"    - {path}" for path in paths)
+    params = action_def.get("params") or []
     notes = action_def.get("notes") or []
-    if notes:
+    filter_supported = "filter" in params
+    visible_notes = [
+        note
+        for note in notes
+        if not (filter_supported and _is_filter_reference_note(str(note)))
+    ]
+    if filter_supported:
+        lines.extend(_filter_help_lines())
+    if visible_notes:
         lines.append("  notes:")
-        for note in notes:
+        for note in visible_notes:
             note_lines = [line for line in str(note).splitlines() if line.strip()]
             if not note_lines:
                 continue
@@ -91,10 +121,15 @@ def render_action_block(title: str, action_def: dict) -> str:
         lines.append("  body required:")
         lines.extend(f"    - {name}" for name in body_required)
     body_fields = action_def.get("body_fields") or []
-    params = action_def.get("params") or []
     if params and not body_fields:
-        lines.append("  params:")
-        lines.extend(f"    - {param}" for param in params)
+        visible_params = [
+            param
+            for param in params
+            if not (filter_supported and param == "filter")
+        ]
+        if visible_params:
+            lines.append("  params:")
+            lines.extend(f"    - {param}" for param in visible_params)
     if body_fields:
         lines.append("  body fields:")
         for field in body_fields:

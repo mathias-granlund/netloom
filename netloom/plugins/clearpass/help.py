@@ -8,12 +8,12 @@ def build_help_context() -> dict[str, list[str]]:
             "netloom cache update",
             "netloom server use dev",
             "netloom identities endpoint list --limit=10",
+            "netloom identities endpoint list --filter=name:equals:TEST",
             "netloom policyelements network-device get --id=1337 --console",
             (
                 "netloom policyelements network-device copy "
                 "--from=dev --to=prod --all --dry-run"
-            )
-            ,
+            ),
         ],
         "common_options": [
             (
@@ -24,7 +24,7 @@ def build_help_context() -> dict[str, list[str]]:
             "--data-format=JSON|CSV|RAW         Output format (default: json).",
             "--csv-fieldnames=A,B,C             Fields and order for CSV output.",
             (
-                "--filter=JSON                      Server-side filter applied "
+                "--filter=JSON|FIELD:OP:VALUE       Server-side filter applied "
                 "across all matching pages."
             ),
             (
@@ -40,10 +40,13 @@ def build_help_context() -> dict[str, list[str]]:
             "--encrypt=enable|disable           Mask or show secret fields.",
         ],
         "notes": [
-            "Filter syntax: --filter='{\"key\":{\"operator\":\"value\"}}'",
             (
-                "Filter operators: $eq, $in, $nin, $contains, $ne, $gt, $gte, "
-                "$lt, $lte, $regex, $exists, $and, $or, $not"
+                "Filter syntax: --filter='{\"key\":{\"$eq\":\"value\"}}' or "
+                "--filter=key:equals:value"
+            ),
+            (
+                "Shorthand operators: equals, not-equals, contains, in, not-in, "
+                "gt, gte, lt, lte, exists"
             ),
         ],
     }

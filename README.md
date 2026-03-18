@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.7.4-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.5-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.7.4**
+Version: **1.7.5**
 
 ## Highlights
 
@@ -142,6 +142,7 @@ netloom load clearpass
 netloom server use dev
 netloom cache update
 netloom identities endpoint list --limit=10
+netloom identities endpoint list --filter=name:equals:TEST
 netloom policyelements network-device get --id=1337 --console
 netloom policyelements network-device update --id=1337 --description="Core switch"
 netloom policyelements network-device copy --from=dev --to=prod --filter='{"description":{"$contains":"Core switch"}}' --dry-run
@@ -158,10 +159,35 @@ netloom identities endpoint list --token-file=./token.json
 > `--api-token`, `--token-file`, and especially `--decrypt` together with
 > `--console` can expose sensitive data in shell history or terminal output.
 
-When `--filter=` is used, the following operators and syntax are available:
+When `--filter=` is used, both shorthand and full JSON syntax are available:
 
 > [!NOTE]
-> Filter expressions are passed as JSON strings, so shell quoting matters.
+> JSON filter expressions are passed as strings, so shell quoting matters.
+
+Simple shorthand for common filters:
+
+```bash
+--filter=name:equals:TEST
+--filter=name:contains:guest
+--filter=id:in:1,2,3
+--filter=enabled:exists:true
+```
+
+Supported shorthand operators:
+
+- `equals`
+- `not-equals`
+- `contains`
+- `in`
+- `not-in`
+- `gt`
+- `gte`
+- `lt`
+- `lte`
+- `exists`
+
+Use full JSON for advanced cases such as `$and`, `$or`, `$not`, regex, or
+nested expressions.
 
 ```bash
   Key is equal to 'value'                  '{"key":{"$eq":"value"}}'
@@ -190,7 +216,7 @@ When `--filter=` is used, the following operators and syntax are available:
 | `--limit=N` | Page size for list/get --all requests |
 | `--offset=N` | Pagination offset |
 | `--sort=+-field` | Sort results |
-| `--filter=JSON` | Server-side filter applied across all fetched pages |
+| `--filter=JSON\|FIELD:OP:VALUE` | Server-side filter applied across all fetched pages |
 | `--calculate-count=true/false` | Request total count |
 | `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
 | `--file=FILE` | Bulk import JSON/CSV |

@@ -1,37 +1,28 @@
-# netloom v1.7.4
+# netloom v1.7.5
 
-This release moves plugin-specific profile files into plugin-scoped config
-directories under `~/.config/netloom/plugins/<plugin>/`.
+This release makes filtering easier to use in day-to-day CLI work and trims
+the verbose imported filter notes from dynamic terminal help.
 
 ## Highlights
 
-- plugin-specific `profiles.env` now lives at
-  `~/.config/netloom/plugins/<plugin>/profiles.env`
-- plugin-specific `credentials.env` now lives at
-  `~/.config/netloom/plugins/<plugin>/credentials.env`
-- `netloom load <plugin>` now manages the global active plugin marker in
-  `~/.config/netloom/config.env`
-- `netloom server use <profile>` now updates the active profile inside the
-  selected plugin directory
+- added shorthand filter support such as
+  `--filter=name:equals:TEST`
+- kept full JSON filters for advanced automation and compound expressions
+- replaced the large ClearPass filter note dump in CLI action help with a
+  compact operator and example summary
+- updated README and help examples to show the new filter shorthand
 
-## Example layout
-
-```text
-~/.config/netloom/config.env
-~/.config/netloom/plugins/clearpass/profiles.env
-~/.config/netloom/plugins/clearpass/credentials.env
-```
-
-## Recommended setup
+## Examples
 
 ```bash
-netloom load clearpass
-netloom cache update
-netloom server use dev
+netloom identities endpoint list --filter=name:equals:TEST
+netloom identities endpoint list --filter=id:in:1,2,3
+netloom identities endpoint list --filter='{"$and":[{"name":{"$contains":"TEST"}},{"status":{"$eq":"Known"}}]}'
 ```
 
-Then place your profile files in:
+## Notes
 
-```text
-~/.config/netloom/plugins/clearpass/
-```
+- shorthand operators: `equals`, `not-equals`, `contains`, `in`, `not-in`,
+  `gt`, `gte`, `lt`, `lte`, `exists`
+- full JSON remains the recommended path for complex filters like `$and`,
+  `$or`, `$not`, and regex

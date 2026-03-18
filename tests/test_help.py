@@ -1,6 +1,7 @@
 import types
 
 import netloom.cli.help as helpmod
+from netloom.plugins.clearpass.help import build_help_context
 
 
 def test_render_action_block_includes_dynamic_body_metadata():
@@ -77,6 +78,34 @@ def test_render_action_block_indents_multiline_notes():
     assert "    - Line one" in text
     assert "      Line two" in text
     assert "      Line three" in text
+
+
+def test_render_action_block_replaces_verbose_filter_notes_with_compact_help():
+    text = helpmod.render_action_block(
+        "list",
+        {
+            "method": "GET",
+            "paths": ["/api/example"],
+            "params": ["filter", "limit", "offset"],
+            "notes": [
+                (
+                    "Get a list of objects.\n"
+                    "More about JSON filter expressions\n"
+                    "A filter is specified as a JSON object, where the properties "
+                    "of the object specify the type of query to be performed."
+                )
+            ],
+        },
+    )
+
+    assert "  filter:" in text
+    assert "shorthand: --filter=name:equals:TEST" in text
+    assert "--filter='{\"name\":{\"$contains\":\"TEST\"}}'" in text
+    assert "More about JSON filter expressions" not in text
+    assert "A filter is specified as a JSON object" not in text
+    assert "    - limit" in text
+    assert "    - offset" in text
+    assert "    - filter" not in text
 
 
 def test_render_help_includes_server_builtin(monkeypatch):
@@ -205,6 +234,15 @@ def test_render_help_uses_plugin_specific_examples():
     assert "netloom load clearpass" in text
     assert "netloom identities endpoint list --limit=10" in text
     assert "Plugin-specific note" in text
+
+
+def test_clearpass_help_mentions_filter_shorthand():
+    plugin = types.SimpleNamespace(help_context=build_help_context)
+
+    text = helpmod.render_help({}, {}, version="1.7.5", plugin=plugin)
+
+    assert "--filter=JSON|FIELD:OP:VALUE" in text
+    assert "--filter=key:equals:value" in text
 
 
 def test_render_help_defaults_to_generic_examples_without_plugin():
