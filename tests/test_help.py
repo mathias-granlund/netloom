@@ -1,3 +1,5 @@
+import types
+
 import netloom.cli.help as helpmod
 
 
@@ -155,19 +157,66 @@ def test_render_help_for_copy_action():
 
 
 def test_render_help_mentions_filter_paging_behavior():
-    text = helpmod.render_help({}, {}, version="1.6.0")
+    plugin = types.SimpleNamespace(
+        help_context=lambda: {
+            "notes": [
+                "list/get --all keep paging until all matching rows are fetched.",
+                "When --filter is used with list/get --all, netloom fetches every "
+                "matching page, not just the first 1000 results.",
+            ]
+        }
+    )
+    text = helpmod.render_help({}, {}, version="1.6.0", plugin=plugin)
 
     assert "list/get --all keep paging until all matching rows are fetched" in text
     assert "fetches every matching page, not just the first 1000 results" in text
 
 
 def test_render_help_mentions_token_and_copy_syntax():
-    text = helpmod.render_help({}, {}, version="1.7.1")
+    plugin = types.SimpleNamespace(
+        help_context=lambda: {
+            "common_options": [
+                "--api-token=TOKEN                  Use an existing bearer token.",
+                "--token-file=PATH                  Load a bearer token from a file.",
+            ]
+        }
+    )
+    text = helpmod.render_help({}, {}, version="1.7.1", plugin=plugin)
 
     assert "netloom <module> <service> copy --from=SOURCE --to=TARGET" in text
     assert "netloom copy <module> <service> --from=SOURCE --to=TARGET" in text
     assert "--api-token=TOKEN" in text
     assert "--token-file=PATH" in text
+
+
+def test_render_help_uses_plugin_specific_examples():
+    plugin = types.SimpleNamespace(
+        help_context=lambda: {
+            "examples": [
+                "netloom load clearpass",
+                "netloom identities endpoint list --limit=10",
+            ],
+            "notes": ["Plugin-specific note"],
+        }
+    )
+
+    text = helpmod.render_help({}, {}, version="1.7.2", plugin=plugin)
+
+    assert "netloom load clearpass" in text
+    assert "netloom identities endpoint list --limit=10" in text
+    assert "Plugin-specific note" in text
+
+
+def test_render_help_defaults_to_generic_examples_without_plugin():
+    text = helpmod.render_help({}, {}, version="1.7.2")
+
+    assert "Examples:" not in text
+    assert "Common options:" not in text
+    assert "Common flags:" not in text
+    assert "Notes:" not in text
+    assert "Usage:" in text
+    assert "Available modules:" in text
+    assert "No API catalog cache found." not in text
 
 
 def test_render_help_includes_ascii_banner():

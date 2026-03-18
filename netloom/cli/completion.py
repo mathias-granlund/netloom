@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from netloom.cli.help import service_cli_actions
 from netloom.core.config import list_profiles
+from netloom.core.help import service_cli_actions
 from netloom.core.plugin import list_plugins
 
 

@@ -17,7 +17,7 @@ DEFAULT_TIMEOUT = 15
 DEFAULT_FORMAT = "json"
 DEFAULT_HTTPS_PREFIX = "https://"
 DEFAULT_LOG_LEVEL = "INFO"
-DEFAULT_PLUGIN = "clearpass"
+DEFAULT_PLUGIN = None
 PROFILE_SCOPED_ENV_KEYS = (
     "NETLOOM_SERVER",
     "NETLOOM_HTTPS_PREFIX",
@@ -127,8 +127,10 @@ def profiles_env_path(
     plugin: str | None = None,
     *,
     config_values: Mapping[str, str] | None = None,
-) -> Path:
+) -> Path | None:
     plugin_name = resolve_active_plugin(config_values) if plugin is None else plugin
+    if plugin_name is None:
+        return None
     normalized = _normalize_plugin_name(plugin_name)
     return plugins_config_dir() / normalized / PROFILES_FILE_NAME
 
@@ -137,8 +139,10 @@ def credentials_env_path(
     plugin: str | None = None,
     *,
     config_values: Mapping[str, str] | None = None,
-) -> Path:
+) -> Path | None:
     plugin_name = resolve_active_plugin(config_values) if plugin is None else plugin
+    if plugin_name is None:
+        return None
     normalized = _normalize_plugin_name(plugin_name)
     return plugins_config_dir() / normalized / CREDENTIALS_FILE_NAME
 
@@ -158,6 +162,12 @@ def _normalize_plugin_name(name: str) -> str:
             "Plugin names may contain only letters, digits, hyphens, and underscores."
         )
     return normalized
+
+
+def _plugin_is_unset(value: str | None) -> bool:
+    if value is None:
+        return True
+    return value.strip().lower() in {"", "none", "unset"}
 
 
 def _profile_suffix(profile: str) -> str:
@@ -236,10 +246,17 @@ def _write_env_value(path: Path, key: str, value: str) -> None:
 def _load_config_values(plugin: str | None = None) -> dict[str, str]:
     global_values = _load_global_config_values()
     values = dict(global_values)
-    profiles_path = profiles_env_path(plugin, config_values=global_values)
-    credentials_path = credentials_env_path(plugin, config_values=global_values)
-    values.update(_read_env_file(profiles_path))
-    values.update(_read_env_file(credentials_path))
+    effective_plugin = (
+        resolve_active_plugin(global_values) if plugin is None else plugin
+    )
+    profiles_path = profiles_env_path(effective_plugin, config_values=global_values)
+    credentials_path = credentials_env_path(
+        effective_plugin, config_values=global_values
+    )
+    if profiles_path is not None:
+        values.update(_read_env_file(profiles_path))
+    if credentials_path is not None:
+        values.update(_read_env_file(credentials_path))
     return values
 
 
@@ -319,8 +336,8 @@ class ProfileState:
     active_profile: str | None
     active_plugin: str | None
     available_profiles: list[str]
-    profiles_path: Path
-    credentials_path: Path
+    profiles_path: Path | None
+    credentials_path: Path | None
     server: str | None = None
     has_client_id: bool = False
     has_client_secret: bool = False
@@ -333,7 +350,7 @@ def describe_profile_state() -> ProfileState:
     active_plugin = resolve_active_plugin(global_values)
     values = _load_config_values(active_plugin)
     active_profile = _resolve_active_profile(values)
-    available_profiles = list_profiles(values)
+    available_profiles = list_profiles(values) if active_plugin else []
     profile_servers = {
         profile: _scoped_file_value("NETLOOM_SERVER", profile, values)
         for profile in available_profiles
@@ -367,6 +384,11 @@ def set_active_profile(profile: str) -> Path:
     if not normalized:
         raise ValueError("Profile name must not be empty.")
     active_plugin = resolve_active_plugin(_load_global_config_values())
+    if active_plugin is None:
+        raise ValueError(
+            "No active plugin selected. Use `netloom load <plugin>` before "
+            "selecting a profile."
+        )
     values = _load_config_values(active_plugin)
     available_profiles = list_profiles(values)
     if normalized not in available_profiles and not _profile_has_scoped_values(
@@ -383,8 +405,10 @@ def set_active_profile(profile: str) -> Path:
     return target
 
 
-def set_active_plugin(plugin: str) -> Path:
-    normalized = _normalize_plugin_name(plugin)
+def set_active_plugin(plugin: str | None) -> Path:
+    normalized = (
+        "none" if _plugin_is_unset(plugin) else _normalize_plugin_name(str(plugin))
+    )
     target = config_env_path()
     _write_env_value(target, ACTIVE_PLUGIN_ENV, normalized)
     return target
@@ -400,9 +424,9 @@ def resolve_active_plugin(
     raw = os.getenv(ACTIVE_PLUGIN_ENV)
     if raw is None:
         raw = values.get(ACTIVE_PLUGIN_ENV)
-    if raw and raw.strip():
-        return _normalize_plugin_name(raw)
-    return DEFAULT_PLUGIN
+    if _plugin_is_unset(raw):
+        return DEFAULT_PLUGIN
+    return _normalize_plugin_name(str(raw))
 
 
 @dataclass(frozen=True)
@@ -506,7 +530,7 @@ def default_paths(
 
 
 def _build_settings_from_values(
-    values: Mapping[str, str], *, active_profile: str | None, active_plugin: str
+    values: Mapping[str, str], *, active_profile: str | None, active_plugin: str | None
 ) -> Settings:
     paths = default_paths(values, active_profile=active_profile).ensure()
 

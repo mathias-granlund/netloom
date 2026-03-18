@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.3 - 2026-03-18
+
+### Changed
+- split shared help rendering into a thinner `netloom.cli.help` orchestrator and a generic `netloom.core.help` formatter layer
+- moved ClearPass-specific help examples, options, flags, and notes fully behind the plugin help context
+- trimmed the no-plugin `netloom --help` path so it only shows the shared banner, version, usage, and available built-in modules
+- kept shared help exports stable and restored copy syntax guidance in the generic usage block
+
 ## 1.7.2 - 2026-03-18
 
 ### Changed

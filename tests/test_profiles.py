@@ -99,6 +99,17 @@ def test_load_settings_uses_active_profile_files(monkeypatch, tmp_path):
     assert settings.client_secret == "prod-secret"
 
 
+def test_load_settings_without_active_plugin(monkeypatch, tmp_path):
+    _configure_runtime(monkeypatch, tmp_path)
+
+    settings = load_settings()
+
+    assert settings.plugin is None
+    assert settings.active_profile is None
+    assert settings.profiles_path is None
+    assert settings.credentials_path is None
+
+
 def test_load_settings_prefers_process_environment(monkeypatch, tmp_path):
     config_dir = _configure_runtime(monkeypatch, tmp_path)
     _write_profiles(config_dir)
@@ -167,6 +178,16 @@ def test_set_active_plugin_writes_global_config(monkeypatch, tmp_path):
 
     assert target == config_dir / "config.env"
     assert "NETLOOM_ACTIVE_PLUGIN=clearpass" in target.read_text(encoding="utf-8")
+
+
+def test_set_active_plugin_can_clear_selection(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+
+    target = config.set_active_plugin(None)
+
+    assert target == config_dir / "config.env"
+    assert "NETLOOM_ACTIVE_PLUGIN=none" in target.read_text(encoding="utf-8")
+    assert config.resolve_active_plugin() is None
 
 
 def test_hyphenated_profile_names_round_trip(monkeypatch, tmp_path):

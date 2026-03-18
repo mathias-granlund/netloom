@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from dataclasses import replace
+from dataclasses import is_dataclass, replace
 
 import urllib3
 
@@ -25,15 +25,38 @@ def print_help(
     plugin=None,
     settings: Settings | None = None,
 ) -> None:
-    selected_plugin = plugin or get_plugin(None, settings=settings or load_settings())
-    catalog = selected_plugin.load_cached_catalog(settings=settings)
-    print(render_help(catalog, args or {}, version=get_version()))
+    selected_plugin = plugin
+    if selected_plugin is None:
+        try:
+            selected_plugin = get_plugin(None, settings=settings or load_settings())
+        except ValueError:
+            selected_plugin = None
+    catalog = (
+        selected_plugin.load_cached_catalog(settings=settings)
+        if selected_plugin is not None
+        else None
+    )
+    print(
+        render_help(
+            catalog,
+            args or {},
+            version=get_version(),
+            plugin=selected_plugin,
+        )
+    )
 
 
 def complete(words: list[str], settings: Settings | None = None) -> None:
     active_settings = settings or load_settings()
-    plugin = get_plugin(None, settings=active_settings)
-    catalog = plugin.load_cached_catalog(settings=active_settings)
+    try:
+        plugin = get_plugin(None, settings=active_settings)
+    except ValueError:
+        plugin = None
+    catalog = (
+        plugin.load_cached_catalog(settings=active_settings)
+        if plugin is not None
+        else None
+    )
     print_completions(words, catalog)
 
 
@@ -42,7 +65,12 @@ def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
     token_file = (
         args.get("token_file") or args.get("api_token_file") or settings.api_token_file
     )
-    return replace(settings, api_token=api_token, api_token_file=token_file)
+    if is_dataclass(settings):
+        return replace(settings, api_token=api_token, api_token_file=token_file)
+
+    values = dict(vars(settings))
+    values.update({"api_token": api_token, "api_token_file": token_file})
+    return type(settings)(**values)
 
 
 def main() -> None:
@@ -100,7 +128,12 @@ def main() -> None:
         )
         return
 
-    plugin = get_plugin(None, settings=active_settings)
+    try:
+        plugin = get_plugin(None, settings=active_settings)
+    except ValueError as exc:
+        print_help(args, settings=active_settings)
+        print(f"\n{exc}")
+        return
 
     if args.get("module") == "cache":
         service = args.get("service")

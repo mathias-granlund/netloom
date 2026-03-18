@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 from netloom.core.config import ProfileState, describe_profile_state, set_active_profile
+from netloom.core.help import format_path_or_hint
 
 
 def _format_profile_list(state: ProfileState) -> str:
     if not state.available_profiles:
         return (
             "No server profiles found.\n"
-            f"Expected profile definitions in {state.profiles_path} and "
-            f"{state.credentials_path}."
+            "Expected profile definitions in "
+            f"{format_path_or_hint(state.profiles_path)} and "
+            f"{format_path_or_hint(state.credentials_path)}."
         )
 
     lines = ["Configured server profiles:"]
@@ -33,8 +35,8 @@ def _format_profile_show(state: ProfileState) -> str:
         f"Server: {state.server or '<unset>'}",
         f"Client ID: {'configured' if state.has_client_id else 'missing'}",
         f"Client secret: {'configured' if state.has_client_secret else 'missing'}",
-        f"Profiles file: {state.profiles_path}",
-        f"Credentials file: {state.credentials_path}",
+        f"Profiles file: {format_path_or_hint(state.profiles_path)}",
+        f"Credentials file: {format_path_or_hint(state.credentials_path)}",
     ]
     return "\n".join(lines)
 

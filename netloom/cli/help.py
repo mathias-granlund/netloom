@@ -1,122 +1,61 @@
 from __future__ import annotations
 
-import json
-
 from netloom.core.config import credentials_env_path, list_profiles, profiles_env_path
+from netloom.core.help import (
+    NETLOOM_BANNER,
+    render_action_block,
+    render_cache_help,
+    render_catalog_help,
+    render_copy_builtin_help,
+    render_load_help,
+    render_server_help,
+    service_cli_actions,
+)
 from netloom.core.plugin import list_plugins
 
-CLI_ACTION_ORDER = ["list", "get", "add", "delete", "update", "replace", "copy"]
-NETLOOM_BANNER = r"""
- _   _      _   _
-| \ | | ___| |_| | ___   ___  _ __ ___
-|  \| |/ _ \ __| |/ _ \ / _ \| '_ ` _ \
-| |\  |  __/ |_| | (_) | (_) | | | | | |
-|_| \_|\___|\__|_|\___/ \___/|_| |_| |_|
-""".strip("\n")
+__all__ = ["render_action_block", "render_help", "service_cli_actions"]
 
 
-def service_cli_actions(service_entry: dict) -> list[str]:
-    actions = service_entry.get("actions") or {}
-    cli_actions: list[str] = []
-    if "list" in actions:
-        cli_actions.append("list")
-    if "get" in actions:
-        cli_actions.append("get")
-    for action in CLI_ACTION_ORDER[2:]:
-        if action == "copy":
-            cli_actions.append("copy")
-        elif action in actions:
-            cli_actions.append(action)
-    return cli_actions
+def _plugin_help_context(plugin=None) -> dict:
+    provider = getattr(plugin, "help_context", None)
+    if callable(provider):
+        return provider() or {}
+    return {}
 
 
-def render_copy_action_help(module: str, service: str) -> str:
-    return (
-        f"copy ({module} {service}):\n"
-        "  usage: netloom <module> <service> copy --from=SOURCE_PROFILE "
-        "--to=TARGET_PROFILE [options]\n"
-        "  legacy alias: netloom copy <module> <service> --from=SOURCE_PROFILE "
-        "--to=TARGET_PROFILE [options]\n"
-        "  selectors:\n"
-        "    - --id=VALUE\n"
-        "    - --name=VALUE\n"
-        "    - --filter=JSON\n"
-        "    - --all\n"
-        "  behavior:\n"
-        "    - --on-conflict=fail|skip|update|replace\n"
-        "    - --match-by=auto|name|id\n"
-        "    - --dry-run\n"
-        "    - --continue-on-error\n"
-        "    - --decrypt\n"
-        "  artifacts:\n"
-        "    - --out=PATH\n"
-        "    - --save-source=PATH\n"
-        "    - --save-payload=PATH\n"
-        "    - --save-plan=PATH"
-    )
+def _with_indent(lines: list[str], prefix: str = "  ") -> list[str]:
+    return [line if line.startswith(prefix) else f"{prefix}{line}" for line in lines]
 
 
-def render_action_block(title: str, action_def: dict) -> str:
-    lines = [f"{title}:"]
-    summary = action_def.get("summary")
-    if summary:
-        lines.append(f"  summary: {summary}")
-    lines.append(f"  method: {action_def.get('method', '<unknown>')}")
-    paths = action_def.get("paths") or []
-    if paths:
-        lines.append("  paths:")
-        lines.extend(f"    - {path}" for path in paths)
-    notes = action_def.get("notes") or []
-    if notes:
-        lines.append("  notes:")
-        for note in notes:
-            note_lines = [line for line in str(note).splitlines() if line.strip()]
-            if not note_lines:
-                continue
-            lines.append(f"    - {note_lines[0]}")
-            lines.extend(f"      {line}" for line in note_lines[1:])
-    response_codes = action_def.get("response_codes") or []
-    if response_codes:
-        lines.append("  response codes:")
-        lines.extend(f"    - {code}" for code in response_codes)
-    response_types = action_def.get("response_content_types") or []
-    if response_types:
-        lines.append("  response content types:")
-        lines.extend(f"    - {content_type}" for content_type in response_types)
-    body_description = action_def.get("body_description")
-    if body_description:
-        lines.append(f"  body: {body_description}")
-    body_required = action_def.get("body_required") or []
-    if body_required:
-        lines.append("  body required:")
-        lines.extend(f"    - {name}" for name in body_required)
-    body_fields = action_def.get("body_fields") or []
-    params = action_def.get("params") or []
-    if params and not body_fields:
-        lines.append("  params:")
-        lines.extend(f"    - {param}" for param in params)
-    if body_fields:
-        lines.append("  body fields:")
-        for field in body_fields:
-            if not isinstance(field, dict):
-                continue
-            requirement = "required" if field.get("required") else "optional"
-            field_type = field.get("type") or "object"
-            description = field.get("description")
-            line = f"    - {field.get('name')}: {field_type} ({requirement})"
-            if description:
-                line += f" - {description}"
-            lines.append(line)
-    body_example = action_def.get("body_example")
-    if body_example not in (None, {}, []):
-        lines.append("  body example:")
-        lines.extend(
-            f"    {line}"
-            for line in json.dumps(
-                body_example, indent=2, ensure_ascii=False
-            ).splitlines()
-        )
-    return "\n".join(lines)
+def _render_usage(plugin=None) -> str:
+    plugin_help = _plugin_help_context(plugin)
+    usage_lines = [
+        "Usage:",
+        "  netloom load [list | show | <plugin>]",
+        "  netloom server [list | show | use <profile>]",
+        "  netloom cache [clear | update]",
+        "  netloom <module> <service> <action> [options] [flags]",
+        "  netloom <module> <service> copy --from=SOURCE --to=TARGET "
+        "[options] [flags]",
+        "  netloom copy <module> <service> --from=SOURCE --to=TARGET "
+        "[options] [flags]",
+        "  netloom [--help | ?]",
+        "  netloom --version",
+    ]
+    examples = plugin_help.get("examples") or []
+    option_lines = _with_indent(plugin_help.get("common_options") or [])
+    flag_lines = _with_indent(plugin_help.get("common_flags") or [])
+    note_lines = _with_indent(plugin_help.get("notes") or [])
+
+    if examples:
+        usage_lines.extend(["", "Examples:", *[f"  {line}" for line in examples]])
+    if option_lines:
+        usage_lines.extend(["", "Common options:", *option_lines])
+    if flag_lines:
+        usage_lines.extend(["", "Common flags:", *flag_lines])
+    if note_lines:
+        usage_lines.extend(["", "Notes:", *note_lines])
+    return "\n".join(usage_lines) + "\n"
 
 
 def render_help(
@@ -124,230 +63,37 @@ def render_help(
     args: dict | None = None,
     *,
     version: str = "0.0.0",
+    plugin=None,
 ) -> str:
     args = args or {}
     module = args.get("module")
-    service = args.get("service")
-    action = args.get("action")
-
     header = f"{NETLOOM_BANNER}\nnetloom v{version}\n"
-    usage = (
-        "Usage:\n"
-        "  netloom load [list | show | <plugin>]\n"
-        "  netloom server [list | show | use <profile>]\n"
-        "  netloom cache [clear | update]\n"
-        "  netloom <module> <service> <action> [options] [flags]\n"
-        "  netloom <module> <service> copy --from=SOURCE --to=TARGET "
-        "[options] [flags]\n"
-        "  netloom copy <module> <service> --from=SOURCE --to=TARGET "
-        "[options] [flags]\n"
-        "  netloom [--help | ?]\n"
-        "  netloom --version\n"
-        "\nExamples:\n"
-        "  netloom load clearpass\n"
-        "  netloom cache update\n"
-        "  netloom server use dev\n"
-        "  netloom identities endpoint list --limit=10\n"
-        "  netloom policyelements network-device get --id=1337 --console\n"
-        "  netloom policyelements network-device copy "
-        "--from=dev --to=prod --all --dry-run\n"
-        "\nCommon options:\n"
-        "  --file=PATH                        Path to JSON/CSV bulk payload input.\n"
-        "  --out=PATH                         Override the output file path.\n"
-        "  --data-format=JSON|CSV|RAW         Output format (default: json).\n"
-        "  --csv-fieldnames=A,B,C             Fields and order for CSV output.\n"
-        "  --filter=JSON                      Server-side filter applied across all "
-        "matching pages.\n"
-        "  --limit=N                          Page size for list/get --all/copy "
-        "requests.\n"
-        "  --offset=N                         Pagination offset for collection "
-        "reads.\n"
-        "  --sort=+field|-field               Sort results when the endpoint "
-        "supports it.\n"
-        "  --calculate-count=true|false       Request total count metadata.\n"
-        "  --log-level=LEVEL                  Select log level (default: info).\n"
-        "  --api-token=TOKEN                  Use an existing bearer token.\n"
-        "  --token-file=PATH                  Load a bearer token from a file.\n"
-        "  --encrypt=enable|disable           Mask or show secret fields.\n\n"
-        "Common flags:\n"
-        "  --help                             Print help message (same as -h and ?).\n"
-        "  --console                          Also print output to terminal.\n"
-        "  --decrypt                          Include secrets in output.\n\n"
-        "Notes:\n"
-        "  Action 'list' is the same as 'get --all'.\n"
-        "  list/get --all keep paging until all matching rows are fetched.\n"
-        "  When --filter is used with list/get --all, netloom fetches every "
-        "matching page, not just the first 1000 results.\n"
-        "  Filter syntax: --filter='{\"key\":{\"$contains\":\"value\"}}'\n"
-        "  Filter operators: $eq, $in, $nin, $contains, $ne, $gt, $gte, $lt, "
-        "$lte, $regex, $exists, $and, $or, $not\n"
-    )
+    usage = _render_usage(plugin)
 
     if module == "cache":
-        return (
-            header
-            + usage
-            + "\nBuilt-in module: cache\n"
-            + "Commands:\n"
-            + "  netloom cache clear\n"
-            + "  netloom cache update"
-        )
+        return render_cache_help(header, usage)
 
     if module == "server":
-        profiles = list_profiles()
-        profile_lines = (
-            "\n".join(f"  - {profile}" for profile in profiles)
-            if profiles
-            else "  <none found>"
-        )
-        return (
-            header
-            + usage
-            + "\nBuilt-in module: server\n"
-            + "Commands:\n"
-            + "  netloom server list\n"
-            + "  netloom server show\n"
-            + "  netloom server use <profile>\n\n"
-            + f"Profiles file: {profiles_env_path()}\n"
-            + f"Credentials file: {credentials_env_path()}\n"
-            + "Configured profiles:\n"
-            + profile_lines
+        return render_server_help(
+            header,
+            usage,
+            profiles=list_profiles(),
+            profiles_path=profiles_env_path(),
+            credentials_path=credentials_env_path(),
         )
 
     if module == "load":
-        plugin_lines = "\n".join(f"  - {name}" for name in list_plugins())
-        return (
-            header
-            + usage
-            + "\nBuilt-in module: load\n"
-            + "Commands:\n"
-            + "  netloom load list\n"
-            + "  netloom load show\n"
-            + "  netloom load <plugin>\n\n"
-            + "Available plugins:\n"
-            + plugin_lines
-        )
+        return render_load_help(header, usage, list_plugins())
 
     if module == "copy":
-        return (
-            header
-            + usage
-            + "\nBuilt-in module: copy\n"
-            + "Usage:\n"
-            + "  netloom copy <module> <service> --from=SOURCE_PROFILE "
-            "--to=TARGET_PROFILE [options]\n"
-            + "  netloom <module> <service> copy --from=SOURCE_PROFILE "
-            "--to=TARGET_PROFILE [options]\n\n"
-            + "Selectors:\n"
-            + "  --id=VALUE\n"
-            + "  --name=VALUE\n"
-            + "  --filter=JSON  (copied across all matching paged results)\n"
-            + "  --all\n\n"
-            + "Behavior:\n"
-            + "  --on-conflict=fail|skip|update|replace\n"
-            + "  --match-by=auto|name|id\n"
-            + "  --dry-run\n"
-            + "  --continue-on-error\n"
-            + "  --decrypt\n\n"
-            + "Artifacts:\n"
-            + "  --out=PATH\n"
-            + "  --save-source=PATH\n"
-            + "  --save-payload=PATH\n"
-            + "  --save-plan=PATH\n"
-        )
+        return render_copy_builtin_help(header, usage)
 
-    modules = (api_catalog or {}).get("modules") or {}
-    if not modules:
-        builtin_modules = "\n".join(["  - cache", "  - copy", "  - load", "  - server"])
-        return (
-            header
-            + usage
-            + "\nAvailable modules:\n"
-            + builtin_modules
-            + "\nNo API catalog cache found.\n"
-            + "Run `netloom cache update` to build the cache from the active plugin."
-        )
-
-    if not module:
-        available_modules = "\n".join(
-            [
-                "  - cache",
-                "  - copy",
-                "  - load",
-                "  - server",
-                *[f"  - {name}" for name in sorted(modules.keys())],
-            ]
-        )
-        return header + usage + "\nAvailable modules:\n" + available_modules
-
-    if module not in modules:
-        available = ", ".join(
-            ["cache", "copy", "load", "server", *sorted(modules.keys())]
-        )
-        return header + f"Unknown module '{module}'. Available modules: {available}"
-
-    services = modules[module]
-    if not service:
-        available_services = "\n".join(
-            f"  - {name}" for name in sorted(services.keys())
-        )
-        return (
-            header
-            + usage
-            + f"\nModule: {module}\nAvailable services:\n{available_services}"
-        )
-
-    if service not in services:
-        available = ", ".join(sorted(services.keys()))
-        return (
-            header
-            + f"Unknown service '{service}' under module '{module}'. "
-            + f"Available services: {available}"
-        )
-
-    service_entry = services[service]
-    cli_actions = service_cli_actions(service_entry)
-    action_map = service_entry.get("actions") or {}
-
-    if not action:
-        return (
-            header
-            + usage
-            + f"\nModule: {module}\n"
-            + f"Service: {service}\n"
-            + "Available actions: "
-            + ", ".join(cli_actions)
-        )
-
-    valid_actions = set(cli_actions)
-    if "list" in action_map:
-        valid_actions.add("list")
-
-    if action not in valid_actions:
-        shown_actions = list(cli_actions)
-        if "list" in action_map:
-            shown_actions.append("list")
-        return (
-            header
-            + f"Unknown action '{action}' for {module} {service}.\n"
-            + f"Available actions: {', '.join(shown_actions)}"
-        )
-
-    blocks: list[str] = []
-    if action == "copy":
-        blocks.append(render_copy_action_help(module, service))
-    elif action == "get":
-        if "list" in action_map:
-            blocks.append(
-                render_action_block("list (used by `get --all`)", action_map["list"])
-            )
-        if "get" in action_map:
-            blocks.append(render_action_block("get", action_map["get"]))
-    elif action == "list":
-        blocks.append(
-            render_action_block("list (alias for `get --all`)", action_map["list"])
-        )
-    else:
-        blocks.append(render_action_block(action, action_map[action]))
-
-    return "\n\n".join(blocks)
+    return render_catalog_help(
+        header,
+        usage,
+        api_catalog=api_catalog,
+        module=module,
+        service=args.get("service"),
+        action=args.get("action"),
+        has_plugin=plugin is not None,
+    )

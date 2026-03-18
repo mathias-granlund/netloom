@@ -10,6 +10,7 @@ from netloom.plugins.clearpass.copy_hooks import (
     preflight_error_for_payload,
     restore_secret_fields,
 )
+from netloom.plugins.clearpass.help import build_help_context
 
 
 def build_client(settings: Settings, *, mask_secrets: bool = True) -> ClearPassClient:
@@ -58,4 +59,5 @@ PLUGIN = PluginDefinition(
     normalize_copy_payload=normalize_copy_payload,
     restore_secret_fields=restore_secret_fields,
     preflight_error_for_payload=preflight_error_for_payload,
+    help_context=build_help_context,
 )

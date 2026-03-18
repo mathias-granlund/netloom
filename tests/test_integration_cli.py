@@ -232,6 +232,32 @@ def test_main_complete_mode_outputs_and_exits(monkeypatch, capsys, tmp_path):
     assert "identities" in out
 
 
+def test_main_complete_mode_without_plugin_still_outputs_builtins(
+    monkeypatch, capsys, tmp_path
+):
+    settings = make_settings(tmp_path)
+    settings = types.SimpleNamespace(**{**settings.__dict__, "plugin": None})
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda *a, **k: (_ for _ in ()).throw(
+            AssertionError("should not build logger")
+        ),
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(ValueError("no plugin")),
+    )
+
+    monkeypatch.setattr(sys, "argv", ["netloom", "--_complete", "--_cur="])
+    main.main()
+    out = capsys.readouterr().out
+    assert "load" in out
+    assert "server" in out
+
+
 def test_main_uses_direct_api_token_without_login(monkeypatch, tmp_path):
     calls = {}
     mgr = FakeLogMgr()
@@ -287,6 +313,35 @@ def test_main_uses_direct_api_token_without_login(monkeypatch, tmp_path):
     main.main()
 
     assert calls["action"]["token"] == "CLI-TOKEN"
+
+
+def test_main_plugin_backed_command_without_plugin_prints_message(
+    monkeypatch, capsys, tmp_path
+):
+    mgr = FakeLogMgr()
+    settings = make_settings(tmp_path)
+    settings = types.SimpleNamespace(**{**settings.__dict__, "plugin": None})
+    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    message = (
+        "No active plugin selected. Use `netloom load <plugin>` before running "
+        "plugin-backed commands."
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(ValueError(message)),
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["netloom", "identities", "endpoint", "list"],
+    )
+    main.main()
+
+    out = capsys.readouterr().out
+    assert "No active plugin selected." in out
 
 
 def test_main_copy_invokes_copy_handler(monkeypatch, tmp_path):

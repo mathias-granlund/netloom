@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.7.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.3-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.7.2**
+Version: **1.7.3**
 
 ## Highlights
 
@@ -342,6 +342,7 @@ plugin-specific folders under `netloom/plugins/`.
     |   `-- server.py
     |-- core/
     |   |-- config.py
+    |   |-- help.py
     |   |-- pagination.py
     |   |-- plugin.py
     |   `-- resolver.py
@@ -358,6 +359,7 @@ plugin-specific folders under `netloom/plugins/`.
             |-- catalog.py
             |-- client.py
             |-- copy_hooks.py
+            |-- help.py
             `-- plugin.py
 ```
 
