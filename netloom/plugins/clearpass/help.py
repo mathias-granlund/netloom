@@ -31,11 +31,6 @@ def build_help_context() -> dict[str, list[str]]:
                 "--limit=N                          Page size for list/get "
                 "--all/copy requests."
             ),
-            "--offset=N                         Pagination offset for collection reads.",
-            (
-                "--sort=+field|-field               Sort results when the endpoint "
-                "supports it."
-            ),
             (
                 "--calculate-count=true|false       Request total count metadata."
             ),

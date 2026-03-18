@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.4 - 2026-03-18
+
+### Changed
+- replaced the flat plugin `profiles.env` and `credentials.env` files with a more scalable layout under `profiles/<profile>.env` and `credentials/<profile>.env`
+- added plugin-level `defaults.env` fallback support so shared settings can be defined once and overridden only where needed per profile
+- updated configuration examples and README guidance to reflect the new per-profile directory structure
+
 ## 1.7.3 - 2026-03-18
 
 ### Changed

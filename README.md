@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.7.3-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.4-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.7.3**
+Version: **1.7.4**
 
 ## Highlights
 
@@ -62,9 +62,10 @@ man netloom
 
 ## First run
 
-> [!IMPORTANT]
+> [!NOTE]
 > Load a plugin and build the API cache before expecting context-aware help,
 > completion, or live module/service discovery to work well.
+> This creates the active plugin marker at ~/.config/netloom/config.env
 
 ```bash
 netloom load clearpass
@@ -73,26 +74,22 @@ netloom server use dev
 netloom identities endpoint list --limit=10
 ```
 
-This creates the active plugin marker at:
-
-```text
-~/.config/netloom/config.env
-```
-
 ## Configuration
 
 > [!TIP]
-> Use plugin-scoped profile files under `~/.config/netloom/plugins/<plugin>/`
-> for normal day-to-day work and reserve direct environment variables for
-> one-off overrides in the current shell.
+> Example templates are included as [defaults.env.example](defaults.env.example),
+> [profiles.env.example](profiles.env.example), and
+> [credentials.env.example](credentials.env.example). Copy them into the plugin
+> directory ~/.config/netloom/plugins/\<plugin\>/
 
 The runtime separates global plugin selection from plugin-specific profile
 settings:
 
 ```text
 ~/.config/netloom/config.env
-~/.config/netloom/plugins/<plugin>/profiles.env
-~/.config/netloom/plugins/<plugin>/credentials.env
+~/.config/netloom/plugins/<plugin>/defaults.env
+~/.config/netloom/plugins/<plugin>/profiles/<profile>.env
+~/.config/netloom/plugins/<plugin>/credentials/<profile>.env
 ```
 
 `config.env` usually only needs the active plugin and is normally managed with:
@@ -101,61 +98,30 @@ settings:
 netloom load clearpass
 ```
 
-Required per-profile connection settings in `profiles.env`:
+`defaults.env` holds the active profile and any plugin-wide fallback values:
 
 ```bash
-NETLOOM_SERVER_<PROFILE>="clearpass.example.com:443"
-```
-
-Required per-profile credentials in `credentials.env`:
-
-```bash
-NETLOOM_CLIENT_ID_<PROFILE>="your-client-id"
-NETLOOM_CLIENT_SECRET_<PROFILE>="your-client-secret"
-```
-
-Optional direct environment overrides:
-
-```bash
+NETLOOM_ACTIVE_PROFILE="prod"
 NETLOOM_VERIFY_SSL="true"
 NETLOOM_TIMEOUT="30"
-NETLOOM_LOG_LEVEL="INFO"
-NETLOOM_ENCRYPT_SECRETS="true"
-NETLOOM_API_TOKEN="optional-access-token"
-NETLOOM_API_TOKEN_FILE="/path/to/token.json"
 ```
 
-Example profile configuration:
-
-`~/.config/netloom/plugins/clearpass/profiles.env`
+Required per-profile connection settings in `profiles/<profile>.env`:
 
 ```bash
-NETLOOM_ACTIVE_PROFILE=prod
-NETLOOM_SERVER_PROD="clearpass-prod.example.com:443"
-NETLOOM_SERVER_DEV="clearpass-dev.example.com:443"
-NETLOOM_VERIFY_SSL_PROD=true
-NETLOOM_VERIFY_SSL_DEV=false
+NETLOOM_SERVER="clearpass.example.com:443"
 ```
 
-`~/.config/netloom/plugins/clearpass/credentials.env`
+Required per-profile credentials in `credentials/<profile>.env`:
 
 ```bash
-NETLOOM_CLIENT_ID_PROD="prod-client-id"
-NETLOOM_CLIENT_SECRET_PROD="prod-client-secret"
-NETLOOM_CLIENT_ID_DEV="dev-client-id"
-NETLOOM_CLIENT_SECRET_DEV="dev-client-secret"
+NETLOOM_CLIENT_ID="your-client-id"
+NETLOOM_CLIENT_SECRET="your-client-secret"
 ```
-
-Direct environment variables still override profile files when they are set in
-the current shell.
 
 > [!IMPORTANT]
-> `NETLOOM_*` values exported in your shell override the active profile for that
-> shell session.
-
-Example templates are included as [profiles.env.example](profiles.env.example)
-and [credentials.env.example](credentials.env.example). Copy them into the
-plugin directory for the active plugin.
+> Direct `NETLOOM_*` environment variables still override profile files when
+> they are set in the current shell session.
 
 ## CLI syntax
 
@@ -165,7 +131,6 @@ plugin directory for the active plugin.
   netloom cache [clear | update]
   netloom <module> <service> <action> [options] [flags]
   netloom <module> <service> copy --from=SOURCE --to=TARGET [options] [flags]
-  netloom copy <module> <service> --from=SOURCE --to=TARGET [options] [flags]
   netloom [--help | ?]
   netloom --version
 ```
@@ -174,12 +139,12 @@ Examples:
 
 ```bash
 netloom load clearpass
-netloom cache update
 netloom server use dev
+netloom cache update
 netloom identities endpoint list --limit=10
 netloom policyelements network-device get --id=1337 --console
 netloom policyelements network-device update --id=1337 --description="Core switch"
-netloom policyelements network-device copy --from=dev --to=prod --filter='{"name":{"$contains":"VLAN10"}}' --dry-run
+netloom policyelements network-device copy --from=dev --to=prod --filter='{"description":{"$contains":"Core switch"}}' --dry-run
 ```
 
 Command-line token overrides are supported:
@@ -224,7 +189,7 @@ When `--filter=` is used, the following operators and syntax are available:
 | `--console` | Print API response to terminal |
 | `--limit=N` | Page size for list/get --all requests |
 | `--offset=N` | Pagination offset |
-| `--sort=+field` | Sort results |
+| `--sort=+-field` | Sort results |
 | `--filter=JSON` | Server-side filter applied across all fetched pages |
 | `--calculate-count=true/false` | Request total count |
 | `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
@@ -291,12 +256,12 @@ Run once per session:
 source /path/to/your/repo/scripts/netloom-completion.bash
 ```
 
-Permanent Bash setup:
+Permanent completion setup:
 
 ```bash
 mkdir -p ~/.bash_completion.d
 
-cp /path/to/your/repo/scripts/netloom-completion.bash ~/.bash_completion.d
+cp /path/to/your/repo/netloom-main/scripts/netloom-completion.bash ~/.bash_completion.d
 
 cat >> ~/.bashrc <<'EOF'
 if [ -d "$HOME/.bash_completion.d" ]; then
@@ -319,6 +284,7 @@ plugin-specific folders under `netloom/plugins/`.
 |-- RELEASING.md
 |-- RELEASE_NOTES.md
 |-- pyproject.toml
+|-- defaults.env.example
 |-- profiles.env.example
 |-- credentials.env.example
 |-- examples/

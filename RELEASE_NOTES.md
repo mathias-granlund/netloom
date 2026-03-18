@@ -1,4 +1,4 @@
-# netloom v1.7.3
+# netloom v1.7.4
 
 This release moves plugin-specific profile files into plugin-scoped config
 directories under `~/.config/netloom/plugins/<plugin>/`.
