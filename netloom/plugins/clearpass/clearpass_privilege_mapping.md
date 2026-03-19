@@ -67,14 +67,14 @@ the effective runtime privilege list, but the direct list probe still returned
 
 | Operator profile privilege key | Module | Service | Current status |
 | --- | --- | --- | --- |
-| `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
-| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
-| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
-| `engine_object_acl` | `globalserverconfiguration` | `operator-profile` | accepted, even combo probes still `403` |
-| `admin` | `globalserverconfiguration` | `operator-profile` | accepted, even combo probes still `403` |
-| `cppm_radius_dict` | `policyelements` | `radius-dictionary` | accepted, all tested probes still hit `500` |
-| `pass_index` | `policyelements` | `radius-dictionary` | accepted, combo probe still hit `500` |
-| `pass_config` | `policyelements` | `radius-dictionary` | accepted, combo probe still hit `500` |
+| `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
+| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
+| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
+| `engine_object_acl` | `globalserverconfiguration` | `operator-profile` | accepted, but list/get stay `403` even with stronger API combos |
+| `admin` | `globalserverconfiguration` | `operator-profile` | accepted, but list/get stay `403` even with stronger API combos |
+| `cppm_radius_dict` | `policyelements` | `radius-dictionary` | accepted, but list hits `500` even for admin |
+| `pass_index` | `policyelements` | `radius-dictionary` | accepted, combo probe still hits `500` |
+| `pass_config` | `policyelements` | `radius-dictionary` | accepted, combo probe still hits `500` |
 
 ## Combo Rules
 
@@ -86,6 +86,17 @@ matches.
 | --- | --- | --- |
 | `identities` | `device` | `mac` and `guest_users` |
 | `policyelements` | `auth-source` | `auth_config` and `cppm_config` |
+
+## Remaining Unresolved Services
+
+These are the only services still not promoted into enforced cache mappings after
+the current live discovery rounds:
+
+| Module | Service | Current blocker |
+| --- | --- | --- |
+| `globalserverconfiguration` | `messaging-setup` | endpoint returns `404` even for admin |
+| `globalserverconfiguration` | `operator-profile` | still `403` for list and direct get probes despite stronger accepted privilege combos |
+| `policyelements` | `radius-dictionary` | list endpoint returns `500` even for admin |
 
 ## Baseline Effective Privileges
 
@@ -107,3 +118,15 @@ The discovery API client baseline produced these runtime privileges:
 - The ClearPass documentation catalog remained broadly visible even for the
   restricted discovery profile, so endpoint probing was required to verify the
   real service mapping.
+
+## Follow-up Note
+
+The next logical step for `v1.8.2` is to use the filtered cache more strictly
+in the normal user experience, so `netloom cache update` and the resulting
+module/service/action visibility line up with what the active API client can
+actually access.
+
+A useful fallback may still be worth keeping available for troubleshooting:
+allowing an explicit opt-in to build or inspect the full unfiltered catalog when
+someone needs to compare discovery output, investigate vendor doc changes, or
+debug an incomplete mapping.
