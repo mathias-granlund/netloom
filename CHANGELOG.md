@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.1 - 2026-03-19
+
+### Added
+- added a reusable ClearPass privilege discovery runner under `netloom.plugins.clearpass.privilege_discovery` for future live mapping rounds
+- expanded the checked-in ClearPass mapping table with additional verified services and documented the still-accepted-but-unverified candidates separately
+
+### Changed
+- expanded the built-in ClearPass privilege rule set substantially so `netloom cache update` can filter more inaccessible services from the cached catalog
+- moved the ClearPass privilege mapping document into the plugin folder so the verification notes now live with the ClearPass implementation
+- ignored temporary discovery caches and JSON reports so repeated mapping passes do not clutter the working tree
+
 ## 1.8.0 - 2026-03-19
 
 ### Added

@@ -1,32 +1,34 @@
-# netloom v1.8.0
+# netloom v1.8.1
 
-This release makes the ClearPass cache privilege-aware. `netloom cache update`
-now reads the active API client's effective privileges from
-`/api/oauth/privileges`, normalizes the access prefixes returned by ClearPass,
-and filters verified services directly in the cached catalog.
+This release expands the verified ClearPass privilege mapping table and ships a
+reusable in-plugin discovery runner so the mapping can keep growing safely over
+time. With the current verified rule set, the same minimal discovery profile
+now filters 30 mapped services from the ClearPass catalog cache.
 
 ## Highlights
 
-- `netloom cache update` now integrates ClearPass privilege filtering directly
-  into the normal catalog build instead of relying on a separate discovery
-  command
-- added verified live mappings for `endpoint`, `local-user`, `network-device`,
-  `network-device-group`, and `admin-privilege`
-- cache metadata now records the effective privileges seen during the build and
-  which mapped services were filtered out
-- documented the initial verified ClearPass mapping table for follow-up
-  expansion in the next patch release
+- expanded the verified live mapping set across additional
+  `globalserverconfiguration`, `identities`, `localserverconfiguration`,
+  `logs`, and `policyelements` services
+- refined several earlier broad mappings down to more specific effective
+  runtime privilege keys such as `api_clients`, `guest_users`,
+  `cppm_licenses`, and `cppm_radius_dyn_autz_template`
+- moved the ClearPass mapping notes into the plugin folder and added the
+  reusable `python -m netloom.plugins.clearpass.privilege_discovery` workflow
+- kept a short list of accepted-but-not-yet-verified privileges documented for
+  the next mapping rounds
 
 ## Examples
 
 ```bash
 netloom server use discovery
 netloom cache update
-netloom identities endpoint list --limit=10
+python -m netloom.plugins.clearpass.privilege_discovery --limit=10
 ```
 
 ## Notes
 
-- only services with verified mappings are filtered automatically in `1.8.0`
-- unmapped services are still preserved in the cache until more live mappings
-  are confirmed
+- only verified mappings are enforced automatically, so some unmapped services
+  are still preserved conservatively in the cache
+- the remaining unresolved services are concentrated in a much smaller set of
+  harder cases and can now be targeted with the in-plugin discovery runner

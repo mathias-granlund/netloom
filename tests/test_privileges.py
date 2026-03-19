@@ -107,8 +107,30 @@ def test_normalize_effective_privileges_tracks_prefix_access_levels():
 def test_service_privilege_rule_index_includes_verified_live_mappings():
     rules = service_privilege_rule_index()
 
+    assert rules[("enforcementprofile", "enforcement-profile")].privileges == (
+        "cppm_enforcement_profile",
+    )
+    assert rules[("globalserverconfiguration", "application-license")].privileges == (
+        "cppm_licenses",
+    )
+    assert rules[("globalserverconfiguration", "admin-user")].privileges == (
+        "cppm_admin_users",
+    )
+    assert rules[("identities", "api-client")].privileges == ("api_clients",)
     assert rules[("identities", "endpoint")].privileges == ("cppm_endpoints",)
+    assert rules[("identities", "guest")].privileges == ("guest_users",)
+    assert rules[("localserverconfiguration", "server")].privileges == ("platform",)
     assert rules[("identities", "local-user")].privileges == ("cppm_local_users",)
+    assert rules[("logs", "system-event")].privileges == ("cppm_system_events",)
+    assert rules[("policyelements", "application-dictionary")].privileges == (
+        "cppm_application_dict",
+    )
     assert rules[("policyelements", "network-device")].privileges == (
         "cppm_network_devices",
+    )
+    assert rules[
+        ("policyelements", "radius-dynamic-authorization-template")
+    ].privileges == ("cppm_radius_dyn_autz_template",)
+    assert rules[("policyelements", "role-mapping")].privileges == (
+        "cppm_role_mapping",
     )

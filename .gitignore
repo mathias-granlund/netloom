@@ -9,6 +9,11 @@ build/
 .venv/
 .pytest_cache/
 .pytest_tmp/
+/.nl_discovery*/
+/privilege_discovery_*.json
+/clearpass_privilege_discovery*.json
+/clearpass_privilege_candidates_*.json
+pytest-cache-files-*/
 .hypothesis/
 .ruff_cache/
 .backup/

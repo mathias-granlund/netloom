@@ -81,14 +81,114 @@ class ServicePrivilegeRule:
 
 SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ServicePrivilegeRule(
+        module="enforcementprofile",
+        service="enforcement-profile",
+        privileges=("cppm_enforcement_profile",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="admin-privilege",
+        privileges=("cppm_admin_privileges",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="admin-user",
+        privileges=("cppm_admin_users",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="application-license",
+        privileges=("cppm_licenses",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="attribute",
+        privileges=("cppm_attributes",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="clearpass-portal",
+        privileges=("cppm_clearpass_portal",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="data-filter",
+        privileges=("cppm_data_filters",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="file-backup-server",
+        privileges=("cppm_file_backup_server",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="policy-manager-zones",
+        privileges=("cppm_server_policy_manager_zones",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="snmp-trap-receiver",
+        privileges=("cppm_snmp_trap_receivers",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
+        service="api-client",
+        privileges=("api_clients",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
+        service="deny-listed-users",
+        privileges=("cppm_deny_listed_users",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
+        service="guest",
+        privileges=("guest_users",),
+    ),
+    ServicePrivilegeRule(
         module="identities",
         service="endpoint",
         privileges=("cppm_endpoints",),
     ),
     ServicePrivilegeRule(
         module="identities",
+        service="external-account",
+        privileges=("cppm_external_account",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
         service="local-user",
         privileges=("cppm_local_users",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
+        service="static-host-list",
+        privileges=("cppm_static_host_list",),
+    ),
+    ServicePrivilegeRule(
+        module="localserverconfiguration",
+        service="server",
+        privileges=("platform",),
+    ),
+    ServicePrivilegeRule(
+        module="logs",
+        service="system-event",
+        privileges=("cppm_system_events",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="application-dictionary",
+        privileges=("cppm_application_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="auth-method",
+        privileges=("cppm_auth_methods",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="enforcement-policy",
+        privileges=("cppm_enforcement_policy",),
     ),
     ServicePrivilegeRule(
         module="policyelements",
@@ -101,9 +201,39 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         privileges=("cppm_network_device_groups",),
     ),
     ServicePrivilegeRule(
-        module="globalserverconfiguration",
-        service="admin-privilege",
-        privileges=("cppm_admin_privileges",),
+        module="policyelements",
+        service="posture-policy",
+        privileges=("cppm_posture_policy",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="proxy-target",
+        privileges=("cppm_network_proxy_targets",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dynamic-authorization-template",
+        privileges=("cppm_radius_dyn_autz_template",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="role",
+        privileges=("cppm_roles",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="role-mapping",
+        privileges=("cppm_role_mapping",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="tacacs-service-dictionary",
+        privileges=("cppm_tacacs_service_dict",),
     ),
 )
 
