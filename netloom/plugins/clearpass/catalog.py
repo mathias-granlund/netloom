@@ -11,6 +11,10 @@ from pathlib import Path
 from typing import Any
 
 from netloom.core.config import Settings, load_settings
+from netloom.plugins.clearpass.privileges import (
+    normalize_effective_privileges,
+    service_privilege_rule_index,
+)
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +26,7 @@ OAUTH_ENDPOINTS: dict[str, str] = {
 
 _PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
 _LIST_QUERY_PARAMS = ("filter", "sort", "offset", "limit", "calculate_count")
+_ACCESS_RANK = {"allowed": 1, "read-only": 2, "full": 3}
 
 
 @dataclass(frozen=True)
@@ -525,6 +530,109 @@ def _count_services(modules: dict[str, dict[str, Any]]) -> int:
     return sum(len(services or {}) for services in modules.values())
 
 
+def _best_access_level(values: list[str]) -> str | None:
+    normalized = [value for value in values if value in _ACCESS_RANK]
+    if not normalized:
+        return None
+    return max(normalized, key=lambda value: _ACCESS_RANK[value])
+
+
+def _filter_actions_for_access(
+    actions: dict[str, Any], access_level: str
+) -> dict[str, Any]:
+    if access_level == "full":
+        return dict(actions)
+    allowed_actions = {"list", "get"}
+    return {
+        action_name: action_def
+        for action_name, action_def in actions.items()
+        if action_name in allowed_actions
+    }
+
+
+def _filter_catalog_by_effective_privileges(
+    catalog: dict[str, Any], effective_privileges: list[dict[str, str]]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    modules = catalog.get("modules") or {}
+    rules = service_privilege_rule_index()
+    effective_access: dict[str, str] = {}
+    for item in effective_privileges:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("name")
+        access = item.get("access")
+        if not isinstance(name, str) or not isinstance(access, str):
+            continue
+        current = effective_access.get(name)
+        best = _best_access_level([access, current] if current else [access])
+        if best is not None:
+            effective_access[name] = best
+
+    if not effective_access:
+        return dict(modules), {
+            "effective_privileges": effective_privileges,
+            "mapping_rule_count": len(rules),
+            "filtered_service_count": 0,
+            "filtered_services": [],
+            "preserved_unmapped_service_count": _count_services(modules),
+            "filter_applied": False,
+        }
+
+    filtered_modules: dict[str, dict[str, Any]] = {}
+    filtered_services: list[dict[str, Any]] = []
+    preserved_unmapped_services: list[dict[str, Any]] = []
+
+    for module_name, services in modules.items():
+        if not isinstance(services, dict):
+            continue
+        next_services: dict[str, Any] = {}
+        for service_name, service_entry in services.items():
+            if not isinstance(service_entry, dict):
+                continue
+            rule = rules.get((module_name, service_name))
+            if rule is None:
+                next_services[service_name] = service_entry
+                preserved_unmapped_services.append(
+                    {"module": module_name, "service": service_name}
+                )
+                continue
+
+            matched_levels = [
+                effective_access[name]
+                for name in rule.privileges
+                if name in effective_access
+            ]
+            access_level = _best_access_level(matched_levels)
+            if access_level is None:
+                filtered_services.append({"module": module_name, "service": service_name})
+                continue
+
+            actions = service_entry.get("actions") or {}
+            filtered_actions = _filter_actions_for_access(actions, access_level)
+            if not filtered_actions:
+                filtered_services.append({"module": module_name, "service": service_name})
+                continue
+
+            next_entry = dict(service_entry)
+            next_entry["actions"] = filtered_actions
+            next_entry["required_privileges"] = list(rule.privileges)
+            next_entry["granted_access"] = access_level
+            next_services[service_name] = next_entry
+
+        if next_services:
+            filtered_modules[module_name] = next_services
+
+    metadata = {
+        "effective_privileges": effective_privileges,
+        "mapping_rule_count": len(rules),
+        "filtered_service_count": len(filtered_services),
+        "filtered_services": filtered_services,
+        "preserved_unmapped_service_count": len(preserved_unmapped_services),
+        "filter_applied": True,
+    }
+    return filtered_modules, metadata
+
+
 def _format_name_list(items: list[str], *, limit: int = 60) -> str:
     if not items:
         return "<none>"
@@ -577,7 +685,7 @@ class ApiEndpointCache:
 
         if (
             isinstance(data, dict)
-            and data.get("version") in {2, 3}
+            and data.get("version") in {2, 3, 4}
             and isinstance(data.get("modules"), dict)
         ):
             return data
@@ -616,6 +724,22 @@ class ApiEndpointCache:
             log.debug("[api_catalog] parse %s failed: %s", path, exc)
             return None
         return parsed if isinstance(parsed, dict) else None
+
+    def _load_effective_privileges(self) -> list[dict[str, str]]:
+        try:
+            response = self.cp.request(
+                OAUTH_ENDPOINTS,
+                "GET",
+                "oauth-privileges",
+                token=self.token,
+            )
+        except Exception as exc:
+            log.warning("[api_catalog] could not fetch effective privileges: %s", exc)
+            return []
+        if not isinstance(response, dict):
+            return []
+        privileges = response.get("privileges") or []
+        return normalize_effective_privileges(privileges)
 
     def _merge_action(
         self,
@@ -878,6 +1002,7 @@ class ApiEndpointCache:
     def _build_catalog_from_clearpass(self) -> dict[str, Any]:
         api_docs_text = self._raw_get_text("/api-docs")
         module_doc_paths = _extract_modules_from_api_docs(api_docs_text)
+        effective_privileges = self._load_effective_privileges()
 
         log.info("Discovered %d modules from /api-docs", len(module_doc_paths))
         discovered_modules = [
@@ -952,14 +1077,27 @@ class ApiEndpointCache:
 
             self._log_module_services(cli_module, module_services)
 
+        filtered_modules, privilege_metadata = _filter_catalog_by_effective_privileges(
+            {"modules": modules}, effective_privileges
+        )
+        if privilege_metadata.get("filter_applied"):
+            log.info(
+                "Applied privilege filter using %d effective privileges; filtered %d mapped services.",
+                len(effective_privileges),
+                privilege_metadata.get("filtered_service_count", 0),
+            )
+        else:
+            log.info("Privilege filter not applied; using unfiltered catalog.")
+
         catalog: dict[str, Any] = {
-            "version": 3,
+            "version": 4,
             "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "server": getattr(self.cp, "server", None),
-            "modules": modules,
+            "modules": filtered_modules,
+            "privilege_filter": privilege_metadata,
         }
-        log.info("Total modules in cache: %d", len(modules))
-        log.info("Total services in cache: %d", _count_services(modules))
+        log.info("Total modules in cache: %d", len(filtered_modules))
+        log.info("Total services in cache: %d", _count_services(filtered_modules))
         return catalog
 
 
@@ -993,7 +1131,7 @@ def load_cached_catalog(settings: Settings | None = None) -> dict[str, Any] | No
 
     if (
         isinstance(data, dict)
-        and data.get("version") in {2, 3}
+        and data.get("version") in {2, 3, 4}
         and isinstance(data.get("modules"), dict)
     ):
         return data

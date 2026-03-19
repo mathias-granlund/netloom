@@ -1,5 +1,8 @@
 from netloom.core.config import AppPaths, Settings
-from netloom.plugins.clearpass.catalog import ApiEndpointCache
+from netloom.plugins.clearpass.catalog import (
+    ApiEndpointCache,
+    _filter_catalog_by_effective_privileges,
+)
 
 
 class FakeCP:
@@ -124,3 +127,53 @@ def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
             'Field is equal to "value" | {"fieldName":"value"}'
         )
     ]
+
+
+def test_filter_catalog_by_effective_privileges_filters_known_services():
+    catalog = {
+        "modules": {
+            "identities": {
+                "endpoint": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "get": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                },
+                "local-user": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                },
+            },
+            "policyelements": {
+                "network-device": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                }
+            },
+        }
+    }
+
+    filtered, metadata = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {"name": "cppm_endpoints", "access": "full", "raw": "cppm_endpoints"},
+            {
+                "name": "cppm_local_users",
+                "access": "read-only",
+                "raw": "#cppm_local_users",
+            },
+        ],
+    )
+
+    assert "endpoint" in filtered["identities"]
+    assert "add" in filtered["identities"]["endpoint"]["actions"]
+    assert "local-user" in filtered["identities"]
+    assert "add" not in filtered["identities"]["local-user"]["actions"]
+    assert "network-device" not in filtered.get("policyelements", {})
+    assert metadata["filter_applied"] is True
+    assert metadata["filtered_service_count"] == 1

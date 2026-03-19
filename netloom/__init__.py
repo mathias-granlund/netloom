@@ -26,4 +26,4 @@ def get_version() -> str:
             return installed_version
         except PackageNotFoundError:
             continue
-    return source_version or "1.7.6"
+    return source_version or "1.8.0"

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0 - 2026-03-19
+
+### Added
+- added built-in ClearPass privilege mapping data and a checked-in verification summary for the services that have been confirmed live so far
+- added regression coverage for runtime privilege normalization and privilege-aware catalog filtering
+
+### Changed
+- `netloom cache update` for the ClearPass plugin now reads `/api/oauth/privileges`, normalizes `#` and `?` access prefixes, and filters mapped services directly into the cached catalog
+- the ClearPass API catalog cache format is now version `4` and stores privilege-filter metadata alongside the generated modules and services
+- the temporary standalone privilege-discovery command surface has been removed now that the verified mapping logic is integrated into the normal cache build path
+
 ## 1.7.6 - 2026-03-18
 
 ### Added

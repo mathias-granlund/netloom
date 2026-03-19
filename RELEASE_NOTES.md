@@ -1,31 +1,32 @@
-# netloom v1.7.6
+# netloom v1.8.0
 
-This release splits the static manual into a shared `netloom(1)` reference and
-a dedicated `netloom-clearpass(7)` plugin guide so the ClearPass workflow can be
-documented in much more depth without overloading the main CLI manual.
+This release makes the ClearPass cache privilege-aware. `netloom cache update`
+now reads the active API client's effective privileges from
+`/api/oauth/privileges`, normalizes the access prefixes returned by ClearPass,
+and filters verified services directly in the cached catalog.
 
 ## Highlights
 
-- added a new `netloom-clearpass(7)` manual with ClearPass-specific
-  configuration, auth, discovery, filtering, copy, and example guidance
-- trimmed `netloom(1)` back to the shared CLI surface: plugin selection,
-  profiles, cache, global options, output behavior, and shared paths
-- updated `netloom-install-manpage` so it installs both manuals into the
-  correct man sections
-- copy source, payload, and plan artifacts now default into `NETLOOM_OUT_DIR`
-  with generated JSON filenames unless you override them explicitly
+- `netloom cache update` now integrates ClearPass privilege filtering directly
+  into the normal catalog build instead of relying on a separate discovery
+  command
+- added verified live mappings for `endpoint`, `local-user`, `network-device`,
+  `network-device-group`, and `admin-privilege`
+- cache metadata now records the effective privileges seen during the build and
+  which mapped services were filtered out
+- documented the initial verified ClearPass mapping table for follow-up
+  expansion in the next patch release
 
 ## Examples
 
 ```bash
-netloom-install-manpage
-man netloom
-man netloom-clearpass
+netloom server use discovery
+netloom cache update
+netloom identities endpoint list --limit=10
 ```
 
 ## Notes
 
-- `netloom(1)` remains the right place for the shared command model and
-  built-in commands
-- plugin-specific depth should now move into plugin manuals as more plugins are
-  added
+- only services with verified mappings are filtered automatically in `1.8.0`
+- unmapped services are still preserved in the cache until more live mappings
+  are confirmed

@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.7.6-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.8.0-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.7.6**
+Version: **1.8.0**
 
 Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
@@ -48,7 +48,6 @@ automation workflows, and finally adding broader user-experience features.
 
 ### Phase 1: Discovery and comparison
 
-- update the cache based on the api-client privileges via `netloom apioperations privileges get` so users only see relevant and available endpoints and actions
 - add a `netloom <module> <service> diff --from=X --to=Y` action to compare config between `<profiles>` within a `<service>`
 - make cache identity and metadata profile-aware so privilege-filtered caches stay isolated and easier to reason about
 
@@ -266,6 +265,10 @@ The generated cache stores actions as:
 ```text
 module -> service -> action -> {method, paths, params, response metadata, body hints}
 ```
+
+For ClearPass, `netloom cache update` also checks `/api/oauth/privileges` and
+filters services with verified privilege mappings so the cache better matches
+what the active API client can actually use.
 
 Refresh the cache:
 
