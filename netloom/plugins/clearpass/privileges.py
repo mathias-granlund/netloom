@@ -76,6 +76,7 @@ class ServicePrivilegeRule:
     module: str
     service: str
     privileges: tuple[str, ...]
+    match: str = "any"
     source: str = "verified"
 
 
@@ -142,6 +143,12 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="identities",
+        service="device",
+        privileges=("mac", "guest_users"),
+        match="all",
+    ),
+    ServicePrivilegeRule(
+        module="identities",
         service="guest",
         privileges=("guest_users",),
     ),
@@ -179,6 +186,12 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="policyelements",
         service="application-dictionary",
         privileges=("cppm_application_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="auth-source",
+        privileges=("auth_config", "cppm_config"),
+        match="all",
     ),
     ServicePrivilegeRule(
         module="policyelements",

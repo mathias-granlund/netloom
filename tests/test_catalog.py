@@ -177,3 +177,36 @@ def test_filter_catalog_by_effective_privileges_filters_known_services():
     assert "network-device" not in filtered.get("policyelements", {})
     assert metadata["filter_applied"] is True
     assert metadata["filtered_service_count"] == 1
+
+
+def test_filter_catalog_by_effective_privileges_supports_all_of_rules():
+    catalog = {
+        "modules": {
+            "identities": {
+                "device": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                }
+            }
+        }
+    }
+
+    filtered_missing, _ = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {"name": "mac", "access": "full", "raw": "mac"},
+        ],
+    )
+    assert "device" not in filtered_missing.get("identities", {})
+
+    filtered_present, _ = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {"name": "mac", "access": "full", "raw": "mac"},
+            {"name": "guest_users", "access": "full", "raw": "guest_users"},
+        ],
+    )
+    assert "device" in filtered_present["identities"]
+    assert filtered_present["identities"]["device"]["privilege_match"] == "all"

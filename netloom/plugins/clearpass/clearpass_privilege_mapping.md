@@ -36,6 +36,7 @@ Useful flags for future mapping rounds:
 | `cppm_server_policy_manager_zones` | `cppm_server_policy_manager_zones` | `globalserverconfiguration` | `policy-manager-zones` | `list` |
 | `cppm_snmp_trap_receivers` | `cppm_snmp_trap_receivers` | `globalserverconfiguration` | `snmp-trap-receiver` | `list` |
 | `api_clients` | `api_clients` | `identities` | `api-client` | `list` |
+| `mac` + `guest_users` | `mac` + `guest_users` | `identities` | `device` | `list` |
 | `cppm_deny_listed_users` | `cppm_deny_listed_users` | `identities` | `deny-listed-users` | `list` |
 | `cppm_endpoints` | `cppm_endpoints` | `identities` | `endpoint` | `list` |
 | `cppm_external_account` | `cppm_external_account` | `identities` | `external-account` | `list` |
@@ -45,6 +46,7 @@ Useful flags for future mapping rounds:
 | `platform` | `platform` | `localserverconfiguration` | `server` | `list` |
 | `cppm_system_events` | `cppm_system_events` | `logs` | `system-event` | `list` |
 | `cppm_application_dict` | `cppm_application_dict` | `policyelements` | `application-dictionary` | `list` |
+| `auth_config` + `cppm_config` | `auth_config` + `cppm_config` | `policyelements` | `auth-source` | `list` |
 | `cppm_auth_methods` | `cppm_auth_methods` | `policyelements` | `auth-method` | `list` |
 | `cppm_enforcement_policy` | `cppm_enforcement_policy` | `policyelements` | `enforcement-policy` | `list` |
 | `cppm_network_devices` | `cppm_network_devices` | `policyelements` | `network-device` | `list` |
@@ -68,12 +70,22 @@ the effective runtime privilege list, but the direct list probe still returned
 | `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
 | `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
 | `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, list probe still `403` |
-| `engine_object_acl` | `globalserverconfiguration` | `operator-profile` | accepted, list probe still `403` |
-| `admin` | `globalserverconfiguration` | `operator-profile` | accepted, list probe still `403` |
-| `mac` | `identities` | `device` | accepted, list probe still `403` |
-| `mac_list` | `identities` | `device` | accepted, list probe still `403` |
-| `auth_config` | `policyelements` | `auth-source` | accepted, list probe still `403` |
-| `cppm_radius_dict` | `policyelements` | `radius-dictionary` | accepted, probe hit `500` under test |
+| `engine_object_acl` | `globalserverconfiguration` | `operator-profile` | accepted, even combo probes still `403` |
+| `admin` | `globalserverconfiguration` | `operator-profile` | accepted, even combo probes still `403` |
+| `cppm_radius_dict` | `policyelements` | `radius-dictionary` | accepted, all tested probes still hit `500` |
+| `pass_index` | `policyelements` | `radius-dictionary` | accepted, combo probe still hit `500` |
+| `pass_config` | `policyelements` | `radius-dictionary` | accepted, combo probe still hit `500` |
+
+## Combo Rules
+
+Some services need more than one effective runtime privilege at the same time.
+Those are enforced in the cache as `all-of` rules instead of normal single-key
+matches.
+
+| Module | Service | Required effective privileges |
+| --- | --- | --- |
+| `identities` | `device` | `mac` and `guest_users` |
+| `policyelements` | `auth-source` | `auth_config` and `cppm_config` |
 
 ## Baseline Effective Privileges
 

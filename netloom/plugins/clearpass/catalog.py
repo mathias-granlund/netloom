@@ -537,6 +537,13 @@ def _best_access_level(values: list[str]) -> str | None:
     return max(normalized, key=lambda value: _ACCESS_RANK[value])
 
 
+def _lowest_access_level(values: list[str]) -> str | None:
+    normalized = [value for value in values if value in _ACCESS_RANK]
+    if not normalized:
+        return None
+    return min(normalized, key=lambda value: _ACCESS_RANK[value])
+
+
 def _filter_actions_for_access(
     actions: dict[str, Any], access_level: str
 ) -> dict[str, Any]:
@@ -597,12 +604,21 @@ def _filter_catalog_by_effective_privileges(
                 )
                 continue
 
-            matched_levels = [
-                effective_access[name]
-                for name in rule.privileges
-                if name in effective_access
-            ]
-            access_level = _best_access_level(matched_levels)
+            if getattr(rule, "match", "any") == "all":
+                if not all(name in effective_access for name in rule.privileges):
+                    filtered_services.append(
+                        {"module": module_name, "service": service_name}
+                    )
+                    continue
+                matched_levels = [effective_access[name] for name in rule.privileges]
+                access_level = _lowest_access_level(matched_levels)
+            else:
+                matched_levels = [
+                    effective_access[name]
+                    for name in rule.privileges
+                    if name in effective_access
+                ]
+                access_level = _best_access_level(matched_levels)
             if access_level is None:
                 filtered_services.append({"module": module_name, "service": service_name})
                 continue
@@ -616,6 +632,7 @@ def _filter_catalog_by_effective_privileges(
             next_entry = dict(service_entry)
             next_entry["actions"] = filtered_actions
             next_entry["required_privileges"] = list(rule.privileges)
+            next_entry["privilege_match"] = getattr(rule, "match", "any")
             next_entry["granted_access"] = access_level
             next_services[service_name] = next_entry
 

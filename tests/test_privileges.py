@@ -117,6 +117,8 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
         "cppm_admin_users",
     )
     assert rules[("identities", "api-client")].privileges == ("api_clients",)
+    assert rules[("identities", "device")].privileges == ("mac", "guest_users")
+    assert rules[("identities", "device")].match == "all"
     assert rules[("identities", "endpoint")].privileges == ("cppm_endpoints",)
     assert rules[("identities", "guest")].privileges == ("guest_users",)
     assert rules[("localserverconfiguration", "server")].privileges == ("platform",)
@@ -125,6 +127,11 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("policyelements", "application-dictionary")].privileges == (
         "cppm_application_dict",
     )
+    assert rules[("policyelements", "auth-source")].privileges == (
+        "auth_config",
+        "cppm_config",
+    )
+    assert rules[("policyelements", "auth-source")].match == "all"
     assert rules[("policyelements", "network-device")].privileges == (
         "cppm_network_devices",
     )

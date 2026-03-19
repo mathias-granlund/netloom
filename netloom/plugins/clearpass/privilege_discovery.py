@@ -89,19 +89,35 @@ def _candidate_keys(module_name: str, service_name: str) -> list[str]:
     return ordered
 
 
-def _load_candidate_overrides(path: str | None) -> dict[str, list[str]]:
+def _load_candidate_overrides(
+    path: str | None,
+) -> dict[str, list[str] | list[list[str]]]:
     if not path:
         return {}
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         raise ValueError("Candidate override file must contain a JSON object.")
-    out: dict[str, list[str]] = {}
+    out: dict[str, list[str] | list[list[str]]] = {}
     for key, value in raw.items():
         if not isinstance(key, str) or not isinstance(value, list):
             continue
-        candidates = [item for item in value if isinstance(item, str) and item.strip()]
-        if candidates:
-            out[key] = candidates
+        combo_candidates: list[list[str]] = []
+        string_candidates: list[str] = []
+        for item in value:
+            if isinstance(item, str) and item.strip():
+                string_candidates.append(item)
+            elif isinstance(item, list):
+                combo = [
+                    part
+                    for part in item
+                    if isinstance(part, str) and part.strip()
+                ]
+                if combo:
+                    combo_candidates.append(combo)
+        if combo_candidates:
+            out[key] = combo_candidates
+        elif string_candidates:
+            out[key] = string_candidates
     return out
 
 
@@ -116,6 +132,35 @@ def _merge_candidate_keys(*candidate_groups: list[str]) -> list[str]:
             seen.add(normalized)
             ordered.append(normalized)
     return ordered
+
+
+def _normalize_candidate_specs(
+    override_value: list[str] | list[list[str]] | None,
+    default_candidates: list[str],
+) -> list[list[str]]:
+    specs: list[list[str]] = []
+    seen: set[tuple[str, ...]] = set()
+
+    def add_spec(values: list[str]) -> None:
+        normalized = [value.strip() for value in values if value.strip()]
+        if not normalized:
+            return
+        key = tuple(normalized)
+        if key in seen:
+            return
+        seen.add(key)
+        specs.append(normalized)
+
+    if isinstance(override_value, list):
+        if override_value and all(isinstance(item, list) for item in override_value):
+            for item in override_value:
+                add_spec([part for part in item if isinstance(part, str)])
+        else:
+            add_spec([item for item in override_value if isinstance(item, str)])
+
+    for candidate in default_candidates:
+        add_spec([candidate])
+    return specs
 
 
 def _operator_profile_path(name: str) -> str:
@@ -382,30 +427,39 @@ def main(argv: list[str] | None = None) -> int:
         for index, (module_name, service_name) in enumerate(target_services, start=1):
             service_key = f"{module_name}/{service_name}"
             baseline_probe = baseline_access[service_key]
-            override_candidates = candidate_overrides.get(service_key, [])
-            wildcard_candidates = candidate_overrides.get(f"{module_name}/*", [])
-            candidate_keys = _merge_candidate_keys(
+            override_candidates = candidate_overrides.get(service_key)
+            wildcard_candidates = candidate_overrides.get(f"{module_name}/*")
+            default_candidates = _default_service_candidates(module_name, service_name)
+            if (
+                isinstance(wildcard_candidates, list)
+                and wildcard_candidates
+                and all(isinstance(item, str) for item in wildcard_candidates)
+            ):
+                default_candidates = _merge_candidate_keys(
+                    wildcard_candidates,
+                    default_candidates,
+                )
+            candidate_specs = _normalize_candidate_specs(
                 override_candidates,
-                wildcard_candidates,
-                _default_service_candidates(module_name, service_name),
+                default_candidates,
             )
             service_result: dict[str, Any] = {
                 "module": module_name,
                 "service": service_name,
                 "baseline_probe": baseline_probe,
-                "candidate_keys": candidate_keys,
+                "candidate_specs": candidate_specs,
                 "attempts": [],
                 "verified": None,
             }
 
-            for candidate_key in candidate_keys:
-                attempt: dict[str, Any] = {"candidate_key": candidate_key}
+            for candidate_spec in candidate_specs:
+                attempt: dict[str, Any] = {"candidate_keys": candidate_spec}
                 try:
                     _update_operator_profile(
                         admin_cp,
                         admin_token,
                         baseline_profile,
-                        baseline_privileges + [candidate_key],
+                        baseline_privileges + candidate_spec,
                     )
                 except requests.HTTPError as exc:
                     response = exc.response
@@ -434,7 +488,7 @@ def main(argv: list[str] | None = None) -> int:
                     and probe.get("status") == "ok"
                 ):
                     service_result["verified"] = {
-                        "privilege": candidate_key,
+                        "privileges": candidate_spec,
                         "module": module_name,
                         "service": service_name,
                         "probe_action": probe.get("action"),
@@ -444,7 +498,7 @@ def main(argv: list[str] | None = None) -> int:
             results.append(service_result)
             print(
                 f"[{index}/{len(target_services)}] {service_key} -> "
-                f"{service_result['verified']['privilege'] if service_result['verified'] else 'no verified mapping'}"
+                f"{'+'.join(service_result['verified']['privileges']) if service_result['verified'] else 'no verified mapping'}"
             )
     finally:
         _update_operator_profile(
