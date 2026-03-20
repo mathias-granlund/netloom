@@ -6,7 +6,7 @@
   <title>netloom</title>
   <meta
     name="description"
-    content="netloom is a spec-driven network API CLI with first-class Aruba ClearPass support."
+    content="netloom is a spec-driven network API CLI for discovery, filtering, export, copy workflows, and profile-aware operations."
   >
   <style>
     :root {
@@ -54,15 +54,15 @@
     .shell {
       width: min(1100px, calc(100% - 2rem));
       margin: 0 auto;
-      padding: 1.25rem 0 3rem;
+      padding: 1rem 0 2rem;
     }
 
     .hero {
       display: grid;
       grid-template-columns: 1.3fr 0.9fr;
-      gap: 1.25rem;
+      gap: 1rem;
       align-items: stretch;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
     }
 
     .card {
@@ -74,7 +74,7 @@
     }
 
     .hero-copy {
-      padding: 2.2rem;
+      padding: 1.8rem;
     }
 
     .eyebrow {
@@ -105,17 +105,17 @@
 
     .lead {
       margin: 1rem 0 0;
-      max-width: 44rem;
+      max-width: 38rem;
       color: var(--ink-soft);
-      font-size: 1.08rem;
-      line-height: 1.65;
+      font-size: 1.02rem;
+      line-height: 1.58;
     }
 
     .cta-row {
       display: flex;
       flex-wrap: wrap;
       gap: 0.8rem;
-      margin-top: 1.4rem;
+      margin-top: 1.1rem;
     }
 
     .button {
@@ -147,7 +147,7 @@
     }
 
     .terminal {
-      padding: 1.1rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       background:
@@ -183,26 +183,26 @@
     pre {
       margin: 0;
       font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-      font-size: 0.92rem;
-      line-height: 1.75;
+      font-size: 0.88rem;
+      line-height: 1.62;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.25rem;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
     .panel {
-      padding: 1.35rem;
+      padding: 1.15rem 1.2rem;
     }
 
     .panel h2 {
-      font-size: 1.55rem;
-      margin-bottom: 0.8rem;
+      font-size: 1.4rem;
+      margin-bottom: 0.7rem;
     }
 
     .panel p,
@@ -212,13 +212,13 @@
     }
 
     .panel ul {
-      margin: 0.7rem 0 0;
+      margin: 0.55rem 0 0;
       padding-left: 1.1rem;
     }
 
     .code {
-      margin-top: 0.8rem;
-      padding: 0.9rem 1rem;
+      margin-top: 0.7rem;
+      padding: 0.8rem 0.9rem;
       border-radius: 16px;
       background: rgba(20, 20, 20, 0.95);
       color: #f5e7c9;
@@ -231,11 +231,11 @@
     }
 
     .footer {
-      margin-top: 1.25rem;
-      padding: 1.25rem 1.4rem;
+      margin-top: 1rem;
+      padding: 1rem 1.2rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem 1.25rem;
+      gap: 0.6rem 1rem;
       align-items: center;
       justify-content: space-between;
     }
@@ -268,18 +268,17 @@
   <main class="shell">
     <section class="hero">
       <article class="card hero-copy">
-        <span class="eyebrow">Spec-Driven Network CLI</span>
+        <span class="eyebrow">Weave your network APIs into one CLI</span>
         <h1>netloom</h1>
         <p class="lead">
-          A modular network API CLI for operators and automation engineers.
-          `netloom` discovers vendor APIs, keeps the command surface consistent,
-          and now supports access-aware ClearPass catalog visibility so users
-          only see what their API client can actually use.
+          A network API CLI for discovering endpoints, inspecting available
+          actions, exporting data, replaying payloads, and copying
+          configuration between environments without hand-rolling scripts for
+          every step.
         </p>
         <div class="cta-row">
           <a class="button primary" href="https://github.com/mathias-granlund/netloom">View on GitHub</a>
           <a class="button secondary" href="https://pypi.org/project/netloom-tool/">View on PyPI</a>
-          <a class="button secondary" href="https://netloom.se">Project Home</a>
         </div>
       </article>
 
@@ -289,53 +288,69 @@
           <span class="dot"></span>
           <span class="dot"></span>
         </div>
-        <pre>$ pip install netloom-tool
-$ netloom load clearpass
-$ netloom server use discovery
-$ netloom cache update
-$ netloom ?
-
-Visible modules:
-  - apioperations
-  - identities
-
-$ netloom --catalog-view=full ?
-
-Full vendor catalog:
-  - apioperations
-  - globalserverconfiguration
-  - policyelements
-  - ...</pre>
+        <pre>
+ _   _      _   _
+| \ | | ___| |_| | ___   ___  _ __ ___
+|  \| |/ _ \ __| |/ _ \ / _ \| '_ ` _ \
+| |\  |  __/ |_| | (_) | (_) | | | | | |
+|_| \_|\___|\__|_|\___/ \___/|_| |_| |_|
+Usage:
+  netloom load [list | show | &lt;plugin&gt;]
+  netloom server [list | show | use &lt;profile&gt;]
+  netloom cache [clear | update]
+  netloom &lt;module&gt; &lt;service&gt; &lt;action&gt; [options] [flags]
+  netloom &lt;module&gt; &lt;service&gt; copy --from=SOURCE --to=TARGET [options] [flags]
+  netloom [--help | ?]
+  netloom --version
+</pre>
       </aside>
     </section>
 
     <section class="grid">
       <article class="card panel">
-        <h2>What It Does</h2>
+        <h2>What Netloom Handles</h2>
         <p>
-          `netloom` turns vendor API documentation into a usable CLI with
-          discovery, help, filtering, copying, and profile-aware workflows.
+          <code>netloom</code> turns vendor API structure into a usable command
+          surface so day-to-day operations feel predictable instead of vendor
+          specific.
         </p>
         <ul>
-          <li>Dynamic module, service, and action discovery</li>
-          <li>ClearPass-first plugin model</li>
-          <li>Context-aware help and shell completion</li>
-          <li>JSON, CSV, and raw output support</li>
+          <li>Discover modules, services, and actions from the available API catalog</li>
+          <li>Use profile-aware workflows for lab, staging, and production targets</li>
+          <li>Export responses as JSON, CSV, or raw files for reuse and automation</li>
+          <li>Replay payloads for add, update, replace, delete, and copy flows</li>
+          <li>Use contextual help, completion, cached discovery, and dry-run planning from the CLI</li>
         </ul>
+        <div class="code"><pre>
+netloom identities endpoint ?
+netloom policyelements role copy --all --from=lab --to=prod --dry-run
+
+Dry run
+Source profile: lab
+Target profile: prod
+Service: policyelements role
+Selected: 28
+Created: 6
+Updated: 20
+Replaced: 0
+Skipped: 2
+Failed: 0</pre></div>
       </article>
 
       <article class="card panel">
-        <h2>Why v1.8.2 Matters</h2>
+        <h2>Start Here</h2>
         <p>
-          The ClearPass cache now keeps two views at once: a strict default
-          visible catalog for day-to-day use and an explicit full catalog view
-          for troubleshooting and vendor-doc comparisons.
+          Install the package, load the plugin, choose a profile, refresh the
+          cache, and explore directly from the terminal.
         </p>
-        <div class="code"><code>netloom --catalog-view=full ?</code></div>
-      </article>
-
-      <article class="card panel">
-        <h2>Quick Links</h2>
+        <div class="code"><pre>pip install netloom-tool
+netloom load clearpass
+netloom server use prod
+netloom cache update
+netloom ?</pre></div>
+        <p>
+          Keep reading:
+        </p>
         <ul>
           <li><a href="https://github.com/mathias-granlund/netloom/blob/main/README.md">README</a></li>
           <li><a href="https://github.com/mathias-granlund/netloom/blob/main/CHANGELOG.md">Changelog</a></li>
@@ -347,9 +362,8 @@ Full vendor catalog:
 
     <footer class="card footer">
       <small>
-        `netloom` is distributed as the Python package <strong>netloom-tool</strong>.
-        GitHub Pages is serving this page directly from the repository root via
-        the static Pages workflow.
+        <code>netloom</code> is distributed as the Python package
+        <strong>netloom-tool</strong>.
       </small>
       <nav class="link-row" aria-label="Project links">
         <a href="https://github.com/mathias-granlund/netloom">GitHub</a>
