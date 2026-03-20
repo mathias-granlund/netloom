@@ -32,7 +32,9 @@ netloom-install-manpage --print-path
 
 1. Update versioned files as needed.
 2. Commit the release changes.
-3. Create and push the release tag:
+3. Push commits normally as often as you like. GitHub Actions will stay idle on
+   ordinary branch pushes.
+4. Create and push the release tag only when you want GitHub Actions to run:
 
 ```bash
 git push
@@ -46,6 +48,10 @@ On a pushed `v*` tag, GitHub Actions will:
 3. validate metadata with `twine check`
 4. smoke-test the installed wheel
 5. publish `dist/*` to PyPI using Trusted Publishing
+6. deploy the static Pages workflow
+
+You can also trigger either workflow manually from the GitHub Actions tab with
+`workflow_dispatch`.
 
 ## Notes
 
