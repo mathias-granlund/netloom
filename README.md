@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.9.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.9.1-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.9.0**
+Version: **1.9.1**
 
 Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
@@ -48,12 +48,13 @@ automation workflows, and finally adding broader user-experience features.
 
 ClearPass privilege-aware cache filtering, the default visible/full catalog
 split, and the first service-level comparison workflow are now in place through
-`v1.9.0`. The next step is to keep expanding mapping coverage and build on the
+`v1.9.1`. The next step is to keep expanding mapping coverage and build on the
 new comparison foundation for safer multi-service workflows.
 
 ### Phase 1: Access-aware discovery and comparison
 
 - keep refining the `netloom <module> <service> diff --from=X --to=Y` workflow, especially report quality and normalization coverage
+- add a `--show-all` or `--max-items=N` option so diff console output can expand beyond the default summary cap when needed
 - continue refining the visible catalog so action-level exposure matches the active API client as closely as verified mappings allow
 - continue expanding the verified ClearPass privilege mapping table as Aruba adds or changes endpoints and privilege keys
 
@@ -227,24 +228,33 @@ nested expressions.
 
 ## Global options
 
+Value options:
+
 | Option | Description |
 |---|---|
-| `--log-level=LEVEL` | Set logging level |
-| `--console` | Print API response to terminal |
-| `--limit=N` | Page size for list/get --all requests |
-| `--offset=N` | Pagination offset |
-| `--sort=+-field` | Sort results |
-| `--filter=JSON\|FIELD:OP:VALUE` | Server-side filter applied across all fetched pages |
-| `--calculate-count=true/false` | Request total count |
-| `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
-| `--file=FILE` | Bulk import JSON/CSV |
-| `--out=FILE` | Override output file |
 | `--api-token=TOKEN` | Use an existing bearer token instead of logging in |
-| `--token-file=FILE` | Load a bearer token from JSON or plain text |
-| `--help` | Context-aware help |
-| `--version` | Show version |
+| `--calculate-count=true/false` | Request total count |
+| `--catalog-view=visible\|full` | Use the filtered catalog or the full discovered catalog |
+| `--csv-fieldnames=a,b,c` | Fields and order for CSV output |
+| `--data-format=FORMAT` | Set output format (`json`, `csv`, or `raw`) |
 | `--encrypt=enable/disable` | Mask or show secret fields |
+| `--file=FILE` | Bulk import JSON/CSV |
+| `--filter=JSON\|FIELD:OP:VALUE` | Server-side filter applied across all fetched pages |
+| `--limit=N` | Page size for list/get --all requests |
+| `--log-level=LEVEL` | Set logging level |
+| `--offset=N` | Pagination offset |
+| `--out=FILE` | Override output file |
+| `--sort=+-field` | Sort results |
+| `--token-file=FILE` | Load a bearer token from JSON or plain text |
+
+Flags:
+
+| Flag | Description |
+|---|---|
+| `--console` | Print API response to terminal |
 | `--decrypt` | Shortcut for showing secrets |
+| `--help` or `?` | Context-aware help |
+| `--version` | Show version |
 
 ## Discovery and cache
 

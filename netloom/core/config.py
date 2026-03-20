@@ -67,6 +67,8 @@ RESERVED_ARGS = {
     "log_level",
     "all",
     "filter",
+    "fields",
+    "ignore_fields",
     "sort",
     "offset",
     "limit",

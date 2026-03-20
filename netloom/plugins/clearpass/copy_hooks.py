@@ -10,6 +10,7 @@ _SECRET_PAYLOAD_FIELDS = ("radius_secret", "tacacs_secret")
 _NETWORK_DEVICE_SNMP_FIELDS = ("snmp_read", "snmp_write")
 _DIFF_IGNORE_FIELDS = {
     "id",
+    "uuid",
     "_links",
     "links",
     "link",
@@ -21,10 +22,26 @@ _DIFF_IGNORE_FIELDS = {
     "last_updated",
     "last_modified",
     "modified",
+    "modified_by",
+    "updated_by",
+    "created_by",
+    "revision",
+    "_revision",
+    "revision_id",
     "etag",
     "_etag",
     "change_of_authorization",
 }
+_MASKED_SECRET_VALUES = {"", "********", "******", "*****", "<hidden>", "<masked>"}
+
+
+def _is_masked_secret_placeholder(key: str, value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    key_text = str(key).lower()
+    if "secret" not in key_text and "password" not in key_text:
+        return False
+    return value.strip().lower() in _MASKED_SECRET_VALUES
 
 
 def restore_secret_fields(result, payload, *, mask_secrets: bool):
@@ -63,13 +80,20 @@ def normalize_diff_item(module: str, service: str, item: Any) -> Any:
     if isinstance(item, Mapping):
         normalized: dict[str, Any] = {}
         for key, value in item.items():
-            if key in _DIFF_IGNORE_FIELDS or key in SECRET_FIELDS:
+            key_text = str(key)
+            if key_text in _DIFF_IGNORE_FIELDS or key_text in SECRET_FIELDS:
                 continue
-            normalized[str(key)] = normalize_diff_item("", "", value)
+            if _is_masked_secret_placeholder(key_text, value):
+                continue
+            child = normalize_diff_item("", "", value)
+            if child in (None, {}, []):
+                continue
+            normalized[key_text] = child
         return normalized
 
     if isinstance(item, list):
-        return [normalize_diff_item("", "", value) for value in item]
+        normalized_items = [normalize_diff_item("", "", value) for value in item]
+        return [value for value in normalized_items if value not in (None, {}, [])]
 
     return item
 

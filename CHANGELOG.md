@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.1 - 2026-03-20
+
+### Changed
+- refined the service-level `diff` workflow with nested `changed_fields` paths, richer before/after JSON detail, explicit ambiguous-match reporting, and new `--fields` / `--ignore-fields` comparison filters
+- improved ClearPass diff normalization so more response-only metadata, masked secret placeholders, and empty noise are ignored before comparison
+- tightened the `diff` action help text so only real flags are listed as options and the reporting behavior is explained more clearly
+
 ## 1.9.0 - 2026-03-20
 
 ### Added

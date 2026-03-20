@@ -2,6 +2,7 @@ import json
 import re
 import types
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 import requests
@@ -9,6 +10,9 @@ import requests
 import netloom.cli.copy as copymod
 import netloom.cli.diff as diffmod
 from netloom.core.config import AppPaths, Settings
+from netloom.plugins.clearpass.copy_hooks import (
+    normalize_diff_item as normalize_clearpass,
+)
 
 
 def _make_settings(tmp_path, profile: str):
@@ -120,9 +124,30 @@ class _CollectionCP:
         raise requests.HTTPError("item not found", response=response)
 
 
-def test_handle_diff_command_all_is_symmetric_and_normalized(
-    monkeypatch, tmp_path, capsys
-):
+def _setup_profiles(monkeypatch, tmp_path):
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
+    monkeypatch.setattr(
+        diffmod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+
+def _build_client_for(source_cp, target_cp):
+    def build_client(settings, *, mask_secrets=True):
+        del mask_secrets
+        return source_cp if settings.server == "lab" else target_cp
+
+    return build_client
+
+
+def _temp_root_dir() -> Path:
+    path = Path(".tmp_diff_tests") / uuid4().hex
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def test_handle_diff_command_all_is_symmetric_and_normalized(monkeypatch, capsys):
     catalog = _catalog()
     source_cp = _CollectionCP(
         catalog,
@@ -141,18 +166,9 @@ def test_handle_diff_command_all_is_symmetric_and_normalized(
         ],
     )
 
-    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
-    monkeypatch.setattr(
-        diffmod,
-        "load_settings_for_profile",
-        lambda profile: _make_settings(tmp_path, profile),
-    )
-
-    def build_client(settings, *, mask_secrets=True):
-        del mask_secrets
-        return source_cp if settings.server == "lab" else target_cp
-
-    settings = _make_settings(tmp_path, "prod")
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    settings = _make_settings(temp_root, "prod")
     report = diffmod.handle_diff_command(
         {
             "module": "policyelements",
@@ -163,7 +179,7 @@ def test_handle_diff_command_all_is_symmetric_and_normalized(
             "all": True,
         },
         settings=settings,
-        plugin=_plugin(build_client, catalog),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
     )
 
     assert report["summary"] == {
@@ -172,18 +188,24 @@ def test_handle_diff_command_all_is_symmetric_and_normalized(
         "only_in_target": 1,
         "different": 1,
         "same": 1,
+        "ambiguous_match": 0,
     }
+    assert report["field_filters"] == {"fields": [], "ignore_fields": []}
+
     different = next(item for item in report["items"] if item["status"] == "different")
     assert different["label"] == "gamma"
     assert different["changed_fields"] == ["description"]
-    assert different["source"]["description"] == "old"
-    assert different["target"]["description"] == "new"
+    assert different["changed_values"]["description"] == {
+        "source": "old",
+        "target": "new",
+    }
     same = next(item for item in report["items"] if item["status"] == "same")
     assert same["label"] == "alpha"
 
     out = capsys.readouterr().out
-    assert "Only in target: 1" in out
-    assert "Differences:" in out
+    assert "Different:" in out
+    assert 'description: "old" -> "new"' in out
+    assert "Ambiguous matches: 0" in out
 
     report_path = Path(report["artifacts"]["report"])
     assert report_path.parent == settings.paths.response_dir
@@ -195,22 +217,13 @@ def test_handle_diff_command_all_is_symmetric_and_normalized(
     assert saved["summary"]["different"] == 1
 
 
-def test_handle_diff_command_name_is_source_scoped(monkeypatch, tmp_path):
+def test_handle_diff_command_name_is_source_scoped(monkeypatch):
     catalog = _catalog()
     source_cp = _CollectionCP(catalog, [{"id": 2, "name": "beta", "description": "x"}])
     target_cp = _CollectionCP(catalog, [{"id": 6, "name": "delta", "description": "y"}])
 
-    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
-    monkeypatch.setattr(
-        diffmod,
-        "load_settings_for_profile",
-        lambda profile: _make_settings(tmp_path, profile),
-    )
-
-    def build_client(settings, *, mask_secrets=True):
-        del mask_secrets
-        return source_cp if settings.server == "lab" else target_cp
-
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
     report = diffmod.handle_diff_command(
         {
             "module": "policyelements",
@@ -220,18 +233,23 @@ def test_handle_diff_command_name_is_source_scoped(monkeypatch, tmp_path):
             "to": "prod",
             "name": "beta",
         },
-        settings=_make_settings(tmp_path, "prod"),
-        plugin=_plugin(build_client, catalog),
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
     )
 
-    assert report["summary"]["only_in_source"] == 1
-    assert report["summary"]["only_in_target"] == 0
+    assert report["summary"] == {
+        "compared": 0,
+        "only_in_source": 1,
+        "only_in_target": 0,
+        "different": 0,
+        "same": 0,
+        "ambiguous_match": 0,
+    }
     assert report["items"][0]["status"] == "only_in_source"
+    assert "no target object matched" in report["items"][0]["match_reason"]
 
 
-def test_handle_diff_command_filter_is_symmetric_with_filtered_target(
-    monkeypatch, tmp_path
-):
+def test_handle_diff_command_filter_is_symmetric_with_filtered_target(monkeypatch):
     catalog = _catalog()
     source_cp = _CollectionCP(
         catalog,
@@ -248,17 +266,8 @@ def test_handle_diff_command_filter_is_symmetric_with_filtered_target(
         ],
     )
 
-    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
-    monkeypatch.setattr(
-        diffmod,
-        "load_settings_for_profile",
-        lambda profile: _make_settings(tmp_path, profile),
-    )
-
-    def build_client(settings, *, mask_secrets=True):
-        del mask_secrets
-        return source_cp if settings.server == "lab" else target_cp
-
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
     report = diffmod.handle_diff_command(
         {
             "module": "policyelements",
@@ -268,8 +277,8 @@ def test_handle_diff_command_filter_is_symmetric_with_filtered_target(
             "to": "prod",
             "filter": json.dumps({"name": "Guest"}),
         },
-        settings=_make_settings(tmp_path, "prod"),
-        plugin=_plugin(build_client, catalog),
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
     )
 
     assert report["summary"] == {
@@ -278,10 +287,11 @@ def test_handle_diff_command_filter_is_symmetric_with_filtered_target(
         "only_in_target": 0,
         "different": 0,
         "same": 1,
+        "ambiguous_match": 0,
     }
 
 
-def test_handle_diff_command_match_by_id_uses_id_resolution(monkeypatch, tmp_path):
+def test_handle_diff_command_match_by_id_uses_id_resolution(monkeypatch):
     catalog = _catalog()
     source_cp = _CollectionCP(
         catalog, [{"id": 7, "name": "old-name", "description": "x"}]
@@ -290,17 +300,8 @@ def test_handle_diff_command_match_by_id_uses_id_resolution(monkeypatch, tmp_pat
         catalog, [{"id": 7, "name": "new-name", "description": "x"}]
     )
 
-    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
-    monkeypatch.setattr(
-        diffmod,
-        "load_settings_for_profile",
-        lambda profile: _make_settings(tmp_path, profile),
-    )
-
-    def build_client(settings, *, mask_secrets=True):
-        del mask_secrets
-        return source_cp if settings.server == "lab" else target_cp
-
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
     report = diffmod.handle_diff_command(
         {
             "module": "policyelements",
@@ -311,8 +312,8 @@ def test_handle_diff_command_match_by_id_uses_id_resolution(monkeypatch, tmp_pat
             "id": "7",
             "match_by": "id",
         },
-        settings=_make_settings(tmp_path, "prod"),
-        plugin=_plugin(build_client, catalog),
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
     )
 
     assert report["summary"]["different"] == 1
@@ -320,14 +321,190 @@ def test_handle_diff_command_match_by_id_uses_id_resolution(monkeypatch, tmp_pat
     assert report["items"][0]["changed_fields"] == ["name"]
 
 
-def test_handle_diff_command_rejects_missing_selector(monkeypatch, tmp_path):
-    monkeypatch.setattr(copymod, "list_profiles", lambda: ["lab", "prod"])
-    monkeypatch.setattr(
-        diffmod,
-        "load_settings_for_profile",
-        lambda profile: _make_settings(tmp_path, profile),
+def test_handle_diff_command_reports_nested_paths_and_field_filters(
+    monkeypatch, capsys
+):
+    catalog = _catalog()
+    source_cp = _CollectionCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "alpha",
+                "description": "same",
+                "attributes": {"role": "guest", "meta": {"weight": 1}},
+            }
+        ],
+    )
+    target_cp = _CollectionCP(
+        catalog,
+        [
+            {
+                "id": 9,
+                "name": "alpha",
+                "description": "same",
+                "attributes": {"role": "staff", "meta": {"weight": 99}},
+            }
+        ],
     )
 
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    report = diffmod.handle_diff_command(
+        {
+            "module": "policyelements",
+            "service": "role",
+            "action": "diff",
+            "from": "lab",
+            "to": "prod",
+            "name": "alpha",
+            "fields": "attributes.role,attributes.meta.weight",
+            "ignore_fields": "attributes.meta.weight",
+        },
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
+    )
+
+    item = report["items"][0]
+    assert item["status"] == "different"
+    assert item["changed_fields"] == ["attributes.role"]
+    assert item["changed_values"]["attributes.role"] == {
+        "source": "guest",
+        "target": "staff",
+    }
+    assert report["field_filters"] == {
+        "fields": ["attributes.role", "attributes.meta.weight"],
+        "ignore_fields": ["attributes.meta.weight"],
+    }
+
+    out = capsys.readouterr().out
+    assert 'attributes.role: "guest" -> "staff"' in out
+    assert "attributes.meta.weight" not in out
+
+
+def test_handle_diff_command_reports_ambiguous_target_matches(monkeypatch, capsys):
+    catalog = _catalog()
+    source_cp = _CollectionCP(catalog, [{"id": 1, "name": "alpha", "description": "x"}])
+    target_cp = _CollectionCP(
+        catalog,
+        [
+            {"id": 9, "name": "alpha", "description": "x"},
+            {"id": 10, "name": "alpha", "description": "y"},
+        ],
+    )
+
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    report = diffmod.handle_diff_command(
+        {
+            "module": "policyelements",
+            "service": "role",
+            "action": "diff",
+            "from": "lab",
+            "to": "prod",
+            "name": "alpha",
+        },
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
+    )
+
+    assert report["summary"]["ambiguous_match"] == 1
+    item = report["items"][0]
+    assert item["status"] == "ambiguous_match"
+    assert item["target_candidate_count"] == 2
+    assert item["target_candidates"][0]["label"] == "alpha"
+
+    out = capsys.readouterr().out
+    assert "Ambiguous matches:" in out
+    assert "multiple target objects matched by name" in out
+
+
+def test_handle_diff_command_reports_symmetric_ambiguity(monkeypatch):
+    catalog = _catalog()
+    source_cp = _CollectionCP(catalog, [{"id": 1, "name": "alpha", "description": "x"}])
+    target_cp = _CollectionCP(
+        catalog,
+        [
+            {"id": 9, "name": "alpha", "description": "x"},
+            {"id": 10, "name": "alpha", "description": "y"},
+        ],
+    )
+
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    report = diffmod.handle_diff_command(
+        {
+            "module": "policyelements",
+            "service": "role",
+            "action": "diff",
+            "from": "lab",
+            "to": "prod",
+            "all": True,
+        },
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
+    )
+
+    assert report["summary"] == {
+        "compared": 0,
+        "only_in_source": 0,
+        "only_in_target": 0,
+        "different": 0,
+        "same": 0,
+        "ambiguous_match": 1,
+    }
+    assert report["items"][0]["status"] == "ambiguous_match"
+    assert report["items"][0]["match_reason"] == (
+        "multiple target objects share name 'alpha'"
+    )
+
+
+def test_handle_diff_command_rejects_invalid_field_list(monkeypatch):
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    with pytest.raises(ValueError, match="must not include empty field paths"):
+        diffmod.handle_diff_command(
+            {
+                "module": "policyelements",
+                "service": "role",
+                "action": "diff",
+                "from": "lab",
+                "to": "prod",
+                "all": True,
+                "fields": "name,,description",
+            },
+            settings=_make_settings(temp_root, "prod"),
+            plugin=types.SimpleNamespace(),
+        )
+
+
+def test_clearpass_normalize_diff_item_drops_empty_and_masked_noise():
+    normalized = normalize_clearpass(
+        "policyelements",
+        "network-device",
+        {
+            "id": 99,
+            "name": "core-switch",
+            "description": "core",
+            "updated_at": "2026-03-20",
+            "radius_secret": "top-secret",
+            "shared_secret": "********",
+            "metadata": {},
+            "groups": [],
+            "attributes": {"note": "keep"},
+        },
+    )
+
+    assert normalized == {
+        "name": "core-switch",
+        "description": "core",
+        "attributes": {"note": "keep"},
+    }
+
+
+def test_handle_diff_command_rejects_missing_selector(monkeypatch):
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
     with pytest.raises(ValueError, match="Use exactly one selector"):
         diffmod.handle_diff_command(
             {
@@ -337,6 +514,6 @@ def test_handle_diff_command_rejects_missing_selector(monkeypatch, tmp_path):
                 "from": "lab",
                 "to": "prod",
             },
-            settings=_make_settings(tmp_path, "prod"),
+            settings=_make_settings(temp_root, "prod"),
             plugin=types.SimpleNamespace(),
         )

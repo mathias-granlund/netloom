@@ -1,37 +1,36 @@
-# netloom v1.9.0
+# netloom v1.9.1
 
-This release adds the first read-only service comparison workflow with
-`netloom <module> <service> diff --from=SOURCE --to=TARGET`. It is designed as
-the companion to `copy`: same selector model, same match behavior, but focused
-on showing what differs before any change is applied.
+This release refines the new service-level `diff` workflow so it is easier to
+trust and easier to read in day-to-day operator use. The main focus is better
+field-level visibility, less noisy comparison input, and clearer reporting when
+matching gets ambiguous.
 
 ## Highlights
 
-- added a service-level `diff` action for comparing one service between two
-  named profiles
-- broad selectors like `--all` and `--filter` now produce symmetric reports
-  with `same`, `different`, `only_in_source`, and `only_in_target`
-- narrow selectors like `--id` and `--name` stay source-scoped for targeted
-  checks
-- each diff run writes a timestamped JSON report under `NETLOOM_OUT_DIR`
-  unless `--out` is set explicitly
-- providers can now normalize objects before comparison so response-only noise
-  does not create false diffs
+- `diff` now reports nested `changed_fields` paths where possible instead of
+  only top-level keys
+- added `--fields=...` and `--ignore-fields=...` so comparisons can be focused
+  on the parts of an object that actually matter
+- console summaries now show before/after values for changed fields instead of
+  only listing object names
+- ambiguous target matches are now reported explicitly instead of being picked
+  silently
+- ClearPass diff normalization now ignores more response-only metadata, masked
+  secret placeholders, and empty noise fields before comparison
 
 ## Examples
 
 ```bash
 netloom policyelements role diff --from=lab --to=prod --all
-netloom policyelements role diff --from=lab --to=prod --name=Guest
-netloom policyelements role diff --from=lab --to=prod --filter=name:contains:GUEST
+netloom policyelements role diff --from=lab --to=prod --name=Guest --fields=description,attributes.role
+netloom policyelements role diff --from=lab --to=prod --all --ignore-fields=updated_at,id
 ```
 
 ## Notes
 
-- `diff` is available as a service action only; there is no built-in
+- `diff` is still available as a service action only; there is no built-in
   `netloom diff ...` alias
-- `copy` keeps its existing behavior and now shares selector and match helpers
-  with `diff`
-- ClearPass applies conservative diff normalization to ignore ids, links,
-  timestamps, and similar response metadata where that would otherwise create
-  false positives
+- the console view still caps long sections for readability; a follow-up
+  roadmap item is to add `--show-all` or `--max-items=N` for expanded terminal
+  output
+- existing `copy` behavior is unchanged

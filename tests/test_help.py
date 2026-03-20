@@ -210,6 +210,15 @@ def test_render_help_for_diff_action():
 
     assert "usage: netloom <module> <service> diff" in text
     assert "--match-by=auto|name|id" in text
+    assert "--fields=path1,path2" in text
+    assert "--ignore-fields=path1,path2" in text
+    assert "  notes:" in text
+    assert (
+        "broad selectors report: same, different, only_in_source, only_in_target"
+        in text
+    )
+    assert "changed_fields uses nested dotted paths when possible" in text
+    assert "ambiguous matches are reported explicitly" in text
     assert "only_in_source" in text
 
 
