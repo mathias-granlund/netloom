@@ -53,16 +53,15 @@ new comparison foundation for safer multi-service workflows.
 
 ### Phase 1: Access-aware discovery and comparison
 
-- complete the first `netloom <module> <service> diff --from=X --to=Y` workflow and keep refining report quality and normalization coverage
+- keep refining the `netloom <module> <service> diff --from=X --to=Y` workflow, especially report quality and normalization coverage
 - continue refining the visible catalog so action-level exposure matches the active API client as closely as verified mappings allow
-- keep the explicit opt-in full catalog view for troubleshooting, vendor doc comparison, and mapping validation
 - continue expanding the verified ClearPass privilege mapping table as Aruba adds or changes endpoints and privilege keys
 
 ### Phase 2: Safe multi-service workflows
 
 - implement `netloom <module> copy --from=X --to=Y` to copy all config from all `<services>` within a `<module>`
 - extend structured copy and diff plans with broader automation and review workflows across multiple services
-- add validation and dry-run helpers to verify whether objects and payloads are safe to apply before changes are made
+- extend validation and dry-run helpers beyond the current service-level copy workflow so more write actions can be previewed safely
 
 ### Phase 3: Change tracking and UX expansion
 
@@ -123,24 +122,10 @@ settings:
 ~/.config/netloom/plugins/<plugin>/credentials/<profile>.env
 ```
 
-`config.env` usually only needs the active plugin and is normally managed with:
-
-```bash
-netloom load clearpass
-```
-
-`defaults.env` holds the active profile and any plugin-wide fallback values:
-
-```bash
-NETLOOM_ACTIVE_PROFILE="prod"
-NETLOOM_VERIFY_SSL="true"
-NETLOOM_TIMEOUT="30"
-```
-
 Required per-profile connection settings in `profiles/<profile>.env`:
 
 ```bash
-NETLOOM_SERVER="clearpass.example.com:443"
+NETLOOM_SERVER="server.example.com:443"
 ```
 
 Required per-profile credentials in `credentials/<profile>.env`:
