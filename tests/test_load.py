@@ -21,9 +21,7 @@ def test_handle_load_rejects_config_only_plugin(monkeypatch, capsys):
     monkeypatch.setattr(loadmod, "list_plugins", lambda: ["arubacentral", "clearpass"])
     monkeypatch.setattr(loadmod, "has_runtime_plugin", lambda name: False)
 
-    handled = loadmod.handle_load_command(
-        {"module": "load", "service": "arubacentral"}
-    )
+    handled = loadmod.handle_load_command({"module": "load", "service": "arubacentral"})
 
     assert handled is True
     out = capsys.readouterr().out

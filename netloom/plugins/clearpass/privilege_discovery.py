@@ -108,9 +108,7 @@ def _load_candidate_overrides(
                 string_candidates.append(item)
             elif isinstance(item, list):
                 combo = [
-                    part
-                    for part in item
-                    if isinstance(part, str) and part.strip()
+                    part for part in item if isinstance(part, str) and part.strip()
                 ]
                 if combo:
                     combo_candidates.append(combo)
@@ -486,10 +484,7 @@ def main(argv: list[str] | None = None) -> int:
                 attempt["probe"] = probe
                 service_result["attempts"].append(attempt)
 
-                if (
-                    baseline_probe.get("status") != "ok"
-                    and probe.get("status") == "ok"
-                ):
+                if baseline_probe.get("status") != "ok" and probe.get("status") == "ok":
                     service_result["verified"] = {
                         "privileges": candidate_spec,
                         "module": module_name,
@@ -501,13 +496,9 @@ def main(argv: list[str] | None = None) -> int:
             results.append(service_result)
             verified = service_result["verified"]
             verified_text = (
-                "+".join(verified["privileges"])
-                if verified
-                else "no verified mapping"
+                "+".join(verified["privileges"]) if verified else "no verified mapping"
             )
-            print(
-                f"[{index}/{len(target_services)}] {service_key} -> {verified_text}"
-            )
+            print(f"[{index}/{len(target_services)}] {service_key} -> {verified_text}")
     finally:
         _update_operator_profile(
             admin_cp, admin_token, baseline_profile, baseline_privileges
@@ -517,8 +508,7 @@ def main(argv: list[str] | None = None) -> int:
         "operator_profile_name": args.operator_profile_name,
         "modules": modules,
         "services": sorted(
-            f"{module}/{service}"
-            for module, service in (explicit_services or set())
+            f"{module}/{service}" for module, service in (explicit_services or set())
         ),
         "baseline_privileges": baseline_privileges,
         "baseline_effective_privileges": baseline_effective,

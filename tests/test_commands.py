@@ -196,9 +196,7 @@ def test_query_params_for_action_normalizes_filter_shorthand_with_colons(api_cat
         "list",
     )
 
-    assert json.loads(params["filter"]) == {
-        "url": {"$eq": "https://example.com/a:b"}
-    }
+    assert json.loads(params["filter"]) == {"url": {"$eq": "https://example.com/a:b"}}
 
 
 def test_query_params_for_action_normalizes_filter_shorthand_in_and_exists(api_catalog):

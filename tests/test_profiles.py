@@ -351,8 +351,7 @@ def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):
     assert "Server: prod.clearpass.example:443" in out
     assert (
         "Profiles file: "
-        f"{config_dir / 'plugins' / 'clearpass' / 'profiles' / 'prod.env'}"
-        in out
+        f"{config_dir / 'plugins' / 'clearpass' / 'profiles' / 'prod.env'}" in out
     )
     assert (
         "Credentials file: "

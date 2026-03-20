@@ -124,9 +124,7 @@ def render_action_block(title: str, action_def: dict) -> str:
     body_fields = action_def.get("body_fields") or []
     if params and not body_fields:
         visible_params = [
-            param
-            for param in params
-            if not (filter_supported and param == "filter")
+            param for param in params if not (filter_supported and param == "filter")
         ]
         if visible_params:
             lines.append("  params:")
@@ -266,9 +264,10 @@ def render_catalog_help(
 
     if not module:
         available_modules = "\n".join(
-            [*[f"  - {name}" for name in BUILTIN_MODULES], *[
-                f"  - {name}" for name in sorted(modules.keys())
-            ]]
+            [
+                *[f"  - {name}" for name in BUILTIN_MODULES],
+                *[f"  - {name}" for name in sorted(modules.keys())],
+            ]
         )
         return header + usage + "\nAvailable modules:\n" + available_modules
 

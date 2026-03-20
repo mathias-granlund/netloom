@@ -35,10 +35,8 @@ def _render_usage(plugin=None) -> str:
         "  netloom server [list | show | use <profile>]",
         "  netloom cache [clear | update]",
         "  netloom <module> <service> <action> [options] [flags]",
-        "  netloom <module> <service> copy --from=SOURCE --to=TARGET "
-        "[options] [flags]",
-        "  netloom copy <module> <service> --from=SOURCE --to=TARGET "
-        "[options] [flags]",
+        "  netloom <module> <service> copy --from=SOURCE --to=TARGET [options] [flags]",
+        "  netloom copy <module> <service> --from=SOURCE --to=TARGET [options] [flags]",
         "  netloom [--help | ?]",
         "  netloom --version",
     ]

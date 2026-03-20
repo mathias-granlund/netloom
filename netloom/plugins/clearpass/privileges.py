@@ -539,7 +539,4 @@ def normalize_effective_privileges(values: Any) -> list[dict[str, str]]:
 
 
 def service_privilege_rule_index() -> dict[tuple[str, str], ServicePrivilegeRule]:
-    return {
-        (rule.module, rule.service): rule
-        for rule in SERVICE_PRIVILEGE_RULES
-    }
+    return {(rule.module, rule.service): rule for rule in SERVICE_PRIVILEGE_RULES}

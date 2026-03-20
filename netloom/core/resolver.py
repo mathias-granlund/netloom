@@ -97,7 +97,7 @@ def normalize_filter_value(raw):
     if len(parts) != 3:
         raise ValueError(
             "Unsupported --filter syntax. Use JSON like "
-            "--filter='{\"key\":{\"$eq\":\"value\"}}' or shorthand like "
+            '--filter=\'{"key":{"$eq":"value"}}\' or shorthand like '
             "--filter=key:equals:value."
         )
 

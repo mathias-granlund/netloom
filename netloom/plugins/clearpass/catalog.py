@@ -610,9 +610,7 @@ def _visible_catalog_modules(
                 continue
             next_entry = dict(service_entry)
             next_entry["catalog_visibility"] = (
-                "verified"
-                if next_entry.get("required_privileges")
-                else "baseline"
+                "verified" if next_entry.get("required_privileges") else "baseline"
             )
             next_services[service_name] = next_entry
         if next_services:

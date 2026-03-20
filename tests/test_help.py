@@ -100,7 +100,7 @@ def test_render_action_block_replaces_verbose_filter_notes_with_compact_help():
 
     assert "  filter:" in text
     assert "shorthand: --filter=name:equals:TEST" in text
-    assert "--filter='{\"name\":{\"$contains\":\"TEST\"}}'" in text
+    assert '--filter=\'{"name":{"$contains":"TEST"}}\'' in text
     assert "More about JSON filter expressions" not in text
     assert "A filter is specified as a JSON object" not in text
     assert "    - limit" in text
