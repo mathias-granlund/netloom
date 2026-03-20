@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 
 from netloom.core.config import RESERVED_ARGS, Settings
@@ -181,6 +182,10 @@ def _extension_for_content_type(content_type: str | None) -> str | None:
     return _CONTENT_TYPE_EXTENSIONS.get(_normalize_content_type(content_type))
 
 
+def _timestamp_token() -> str:
+    return datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+
+
 def resolve_out_path(
     args: dict,
     service: str,
@@ -201,6 +206,7 @@ def resolve_out_path(
             return str(settings.paths.response_dir / Path(str(filename)).name)
 
     base = service.replace("-", "_")
+    stem = f"{base}_{action}_{_timestamp_token()}"
     extension = data_format
     if data_format == "raw":
         content_type = None
@@ -210,7 +216,7 @@ def resolve_out_path(
             action_types = action_response_content_types(action_def)
             content_type = action_types[0] if action_types else None
         extension = _extension_for_content_type(content_type) or "bin"
-    return str(settings.paths.response_dir / f"{base}_{action}.{extension}")
+    return str(settings.paths.response_dir / f"{stem}.{extension}")
 
 
 def csv_fieldnames_from_args(args: dict, settings: Settings) -> list[str] | None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 
 APP_NAME = "netloom"
@@ -574,6 +575,15 @@ def default_paths(
     )
 
 
+def _default_log_file(
+    paths: AppPaths,
+    *,
+    now: datetime | None = None,
+) -> Path:
+    timestamp = (now or datetime.now()).strftime("%Y%m%d-%H%M%S-%f")
+    return paths.app_log_dir / f"{APP_NAME}-{timestamp}.log"
+
+
 def _build_settings_from_values(
     values: Mapping[str, str], *, active_profile: str | None, active_plugin: str | None
 ) -> Settings:
@@ -582,7 +592,7 @@ def _build_settings_from_values(
     log_file_raw = _resolve_value(
         "NETLOOM_LOG_FILE", values, active_profile=active_profile
     )
-    log_file = Path(log_file_raw) if log_file_raw else paths.app_log_dir / "netloom.log"
+    log_file = Path(log_file_raw) if log_file_raw else _default_log_file(paths)
     log_to_file = _bool_value(
         _resolve_value("NETLOOM_LOG_TO_FILE", values, active_profile=active_profile),
         False,

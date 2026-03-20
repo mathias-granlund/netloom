@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.3 - 2026-03-20
+
+### Changed
+- default runtime log filenames under `NETLOOM_APP_LOG_DIR` now include a timestamp so separate `netloom` command runs do not reuse the same log file
+- auto-generated response files under `NETLOOM_OUT_DIR` now include a timestamp so repeated commands do not overwrite default `list/get/write/copy` artifacts
+- explicit `NETLOOM_LOG_FILE` overrides still keep their configured filename unchanged
+
 ## 1.8.2 - 2026-03-20
 
 ### Added

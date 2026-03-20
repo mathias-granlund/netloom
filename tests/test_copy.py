@@ -1,5 +1,7 @@
 import json
+import re
 import types
+from pathlib import Path
 
 import pytest
 import requests
@@ -659,13 +661,25 @@ def test_handle_copy_command_saves_default_artifacts_to_response_dir(
     )
 
     base_dir = settings.paths.response_dir
-    source_path = base_dir / "policyelements_network_device_dev_to_prod_source.json"
-    payload_path = base_dir / "policyelements_network_device_dev_to_prod_payload.json"
-    plan_path = base_dir / "policyelements_network_device_dev_to_prod_plan.json"
+    source_path = Path(report["artifacts"]["source"])
+    payload_path = Path(report["artifacts"]["payload"])
+    plan_path = Path(report["artifacts"]["plan"])
 
-    assert report["artifacts"]["source"] == str(source_path)
-    assert report["artifacts"]["payload"] == str(payload_path)
-    assert report["artifacts"]["plan"] == str(plan_path)
+    assert source_path.parent == base_dir
+    assert payload_path.parent == base_dir
+    assert plan_path.parent == base_dir
+    assert re.fullmatch(
+        r"policyelements_network_device_dev_to_prod_\d{8}-\d{6}-\d{6}_source\.json",
+        source_path.name,
+    )
+    assert re.fullmatch(
+        r"policyelements_network_device_dev_to_prod_\d{8}-\d{6}-\d{6}_payload\.json",
+        payload_path.name,
+    )
+    assert re.fullmatch(
+        r"policyelements_network_device_dev_to_prod_\d{8}-\d{6}-\d{6}_plan\.json",
+        plan_path.name,
+    )
     assert json.loads(source_path.read_text(encoding="utf-8"))[0]["name"] == "switch-a"
     assert json.loads(payload_path.read_text(encoding="utf-8"))[0]["name"] == "switch-a"
     assert json.loads(plan_path.read_text(encoding="utf-8"))[0]["action"] == "create"

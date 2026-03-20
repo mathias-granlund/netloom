@@ -1,4 +1,6 @@
+import re
 import sys
+from pathlib import Path
 
 import netloom.cli.main as main
 from netloom.core import config
@@ -234,6 +236,59 @@ def test_load_settings_uses_out_dir_from_profile_files(monkeypatch, tmp_path):
     settings = load_settings()
 
     assert settings.paths.response_dir == home_dir / "custom-responses"
+
+
+def test_load_settings_uses_timestamped_default_log_file(monkeypatch, tmp_path):
+    _configure_runtime(monkeypatch, tmp_path)
+
+    settings = load_settings()
+
+    assert settings.log_file is not None
+    assert settings.log_file.parent == tmp_path / "state" / "logs"
+    assert re.fullmatch(
+        r"netloom-\d{8}-\d{6}-\d{6}\.log",
+        settings.log_file.name,
+    )
+    assert settings.log_to_file is False
+
+
+def test_load_settings_preserves_explicit_log_file(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_global_config(config_dir)
+    plugin_dir = _plugin_dir(config_dir)
+    plugin_dir.mkdir(parents=True, exist_ok=True)
+    _profiles_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _credentials_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _defaults_path(config_dir).write_text(
+        "\n".join(
+            [
+                "NETLOOM_ACTIVE_PROFILE=prod",
+                "NETLOOM_LOG_TO_FILE=true",
+                "NETLOOM_LOG_FILE=custom-logs/session.log",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _profile_path(config_dir, "prod").write_text(
+        "NETLOOM_SERVER=prod.clearpass.example:443\n",
+        encoding="utf-8",
+    )
+    _credential_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_CLIENT_ID=prod-client",
+                "NETLOOM_CLIENT_SECRET=prod-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+
+    assert settings.log_file == Path("custom-logs/session.log")
+    assert settings.log_to_file is True
 
 
 def test_list_profiles_and_set_active_profile(monkeypatch, tmp_path):

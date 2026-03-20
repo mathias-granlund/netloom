@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.8.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.8.3-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.8.2**
+Version: **1.8.3**
 
 Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
@@ -47,7 +47,7 @@ The roadmap is focused on improving the core CLI first, then expanding
 automation workflows, and finally adding broader user-experience features.
 
 ClearPass privilege-aware cache filtering and the default visible/full catalog
-split are now in place through `v1.8.2`. The next step is to keep expanding
+split are now in place through `v1.8.3`. The next step is to keep expanding
 mapping coverage and tighten action-level visibility where that can be verified
 safely.
 

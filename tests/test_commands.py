@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -77,7 +78,12 @@ def test_resolve_out_path_default_uses_response_dir_and_normalizes_service(setti
     out = commands.resolve_out_path(
         args, "network-device", "list", "json", settings=settings
     )
-    assert out == str(Path(settings.paths.response_dir) / "network_device_list.json")
+    path = Path(out)
+    assert path.parent == settings.paths.response_dir
+    assert re.fullmatch(
+        r"network_device_list_\d{8}-\d{6}-\d{6}\.json",
+        path.name,
+    )
 
 
 def test_payload_from_args_strips_reserved():
@@ -156,7 +162,10 @@ def test_list_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
         "calculate_count": "true",
     }
     assert calls["logged"]["thing"]["count"] == 1
-    assert calls["logged"]["filename"].endswith("endpoint_list.json")
+    assert re.search(
+        r"endpoint_list_\d{8}-\d{6}-\d{6}\.json$",
+        calls["logged"]["filename"],
+    )
 
 
 def test_query_params_for_action_normalizes_filter_shorthand_eq(api_catalog):
@@ -345,7 +354,10 @@ def test_get_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
     )
     assert logged["call"]["params"] == {"name": "bob"}
     assert logged["thing"]["id"] == 2
-    assert logged["filename"].endswith("endpoint_get.json")
+    assert re.search(
+        r"endpoint_get_\d{8}-\d{6}-\d{6}\.json$",
+        logged["filename"],
+    )
 
 
 def test_get_handler_all_fetches_all_pages_without_count(
@@ -485,7 +497,10 @@ def test_delete_handler_calls_delete(monkeypatch, api_catalog, settings):
     )
     assert logged["delete_call"]["params"] == {"id": "123"}
     assert logged["thing"]["deleted"] == "123"
-    assert logged["filename"].endswith("endpoint_delete.json")
+    assert re.search(
+        r"endpoint_delete_\d{8}-\d{6}-\d{6}\.json$",
+        logged["filename"],
+    )
 
 
 def test_add_handler_builds_payload_from_args(monkeypatch, api_catalog, settings):

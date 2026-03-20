@@ -1,36 +1,34 @@
-# netloom v1.8.2
+# netloom v1.8.3
 
-This release turns the ClearPass privilege-aware cache work into the default
-CLI experience. The cache now retains the full discovered vendor catalog, but
-normal help, completion, and command discovery use a stricter visible view so
-the active API client only sees modules and services that are verified or kept
-as baseline-visible.
+This release makes the default generated files from normal CLI runs unique by
+adding timestamps to their filenames. That covers the optional application log
+file under `NETLOOM_APP_LOG_DIR` and the auto-generated response and copy
+artifact files under `NETLOOM_OUT_DIR`.
 
 ## Highlights
 
-- the ClearPass cache now stores both a default visible catalog and the full
-  discovered catalog in the same cache file
-- help, completion, and normal catalog-backed command discovery now use the
-  visible catalog by default
-- `--catalog-view=full` provides an explicit troubleshooting and validation
-  path when you need to inspect the retained unfiltered vendor catalog
-- the minimal `discovery` profile now validates the intended UX shift cleanly:
-  the default module list collapses to only the access-aware visible modules,
-  while the full catalog remains available on demand
+- default runtime log files now use a timestamped filename, which keeps each
+  command run in its own log file by default when file logging is enabled
+- auto-generated response files now use timestamped filenames instead of fixed
+  names like `<service>_<action>.json`, so repeated commands no longer
+  overwrite the previous saved output
+- explicit `NETLOOM_LOG_FILE` overrides still win, so pinned log paths keep
+  working exactly as configured
+- the change does not alter explicit user-provided output paths
 
 ## Examples
 
 ```bash
-netloom server use discovery
-netloom cache update
-netloom ?
-netloom --catalog-view=full ?
+netloom policyelements role list
+ls ~/.local/state/netloom/responses/
+
+export NETLOOM_LOG_TO_FILE=true
+netloom server show
+ls ~/.local/state/netloom/logs/
 ```
 
 ## Notes
 
-- the full retained catalog is still important for troubleshooting, vendor doc
-  comparison, and future mapping expansion, so it remains available by opt-in
-- further `v1.8.x` work can now focus on expanding verified mappings and, where
-  appropriate, tightening action-level visibility inside already-visible
-  services
+- if you already set `NETLOOM_LOG_FILE`, nothing changes for that workflow
+- if you already set `--out`, `--save-source`, `--save-payload`, or `--save-plan`,
+  those explicit paths still win unchanged

@@ -8,7 +8,7 @@ import requests
 
 from netloom.core.config import Settings, list_profiles, load_settings_for_profile
 from netloom.core.pagination import fetch_all_list_results
-from netloom.core.resolver import query_params_for_action
+from netloom.core.resolver import _timestamp_token, query_params_for_action
 from netloom.io.output import sanitize_secrets, should_mask_secrets, write_value_to_file
 
 VALID_CONFLICT_MODES = {"fail", "skip", "update", "replace"}
@@ -38,9 +38,12 @@ def _default_artifact_path(
     source_profile: str,
     target_profile: str,
     artifact: str,
+    *,
+    timestamp: str | None = None,
 ) -> str:
     stem = _artifact_stem(module, service, source_profile, target_profile)
-    return str(Path(settings.paths.response_dir) / f"{stem}_{artifact}.json")
+    token = timestamp or _timestamp_token()
+    return str(Path(settings.paths.response_dir) / f"{stem}_{token}_{artifact}.json")
 
 
 def _extract_items(value: Any) -> list[dict[str, Any]]:
@@ -309,6 +312,7 @@ def handle_copy_command(
     match_by = str(args.get("match_by", "auto"))
     dry_run = bool(args.get("dry_run"))
     continue_on_error = bool(args.get("continue_on_error"))
+    artifact_timestamp = _timestamp_token()
 
     source_settings = load_settings_for_profile(source_profile)
     target_settings = load_settings_for_profile(target_profile)
@@ -533,6 +537,7 @@ def handle_copy_command(
         source_profile,
         target_profile,
         "source",
+        timestamp=artifact_timestamp,
     )
     write_value_to_file(
         source_items,
@@ -549,6 +554,7 @@ def handle_copy_command(
             source_profile,
             target_profile,
             "payload",
+            timestamp=artifact_timestamp,
         )
     )
     write_value_to_file(
@@ -565,6 +571,7 @@ def handle_copy_command(
         source_profile,
         target_profile,
         "plan",
+        timestamp=artifact_timestamp,
     )
     write_value_to_file(
         plan_items,
