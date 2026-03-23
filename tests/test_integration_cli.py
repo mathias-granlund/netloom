@@ -445,19 +445,12 @@ def test_main_diff_invokes_diff_handler(monkeypatch, tmp_path):
     assert calls["kwargs"]["settings"] == settings
 
 
-def test_main_legacy_copy_alias_still_invokes_copy_handler(monkeypatch, tmp_path):
-    calls = {}
+def test_main_legacy_copy_alias_prints_default_help(monkeypatch, capsys, tmp_path):
     mgr = FakeLogMgr()
     settings = make_settings(tmp_path)
-    plugin = _plugin_with_catalog({"modules": {}})
     monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
-    monkeypatch.setattr(
-        main,
-        "handle_copy_command",
-        lambda args, **kwargs: calls.update({"args": args, "kwargs": kwargs}),
-    )
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.setattr(main, "print_help", lambda args=None, **kwargs: print("Usage:\n  netloom ..."))
 
     monkeypatch.setattr(
         sys,
@@ -474,6 +467,6 @@ def test_main_legacy_copy_alias_still_invokes_copy_handler(monkeypatch, tmp_path
 
     main.main()
 
-    assert calls["args"]["module"] == "copy"
-    assert calls["args"]["copy_module"] == "policyelements"
-    assert calls["args"]["copy_service"] == "network-device"
+    out = capsys.readouterr().out
+    assert "Usage:" in out
+    assert "Legacy command removed" not in out

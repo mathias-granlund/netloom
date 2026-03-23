@@ -35,7 +35,7 @@ Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
 - shared modular runtime under `netloom/`
 - plugin-specific code under `netloom/plugins/<plugin>/`
-- built-in `load`, `server`, `cache`, `copy`, and `diff` workflows
+- built-in `load`, `server`, and `cache` commands plus service-level `copy` and `diff` workflows
 - profile-aware configuration through `~/.config/netloom/plugins/<plugin>/`
 - dynamic API discovery from live vendor documentation
 - structured JSON, CSV, and raw output
@@ -47,15 +47,14 @@ The roadmap is focused on improving the core CLI first, then expanding
 automation workflows, and finally adding broader user-experience features.
 
 ClearPass privilege-aware cache filtering, the default visible/full catalog
-split, and the first service-level comparison workflow are now in place through
-`v1.9.2`. The next step is to keep expanding mapping coverage and build on the
-new comparison foundation for safer multi-service workflows.
+split, and the Phase 1 comparison foundation are now in place through
+`v1.9.2`. The next active focus is Phase 2 safe multi-service workflows.
 
-### Phase 1: Access-aware discovery and comparison
+### Phase 1: Completed
 
-- keep refining the `netloom <module> <service> diff --from=X --to=Y` workflow, especially report quality and normalization coverage
-- continue refining the visible catalog so action-level exposure matches the active API client as closely as verified mappings allow
-- continue expanding the verified ClearPass privilege mapping table as Aruba adds or changes endpoints and privilege keys
+- access-aware visible/full catalog behavior is in place
+- service-level `diff` is in place with filtering, normalization, ambiguity reporting, and expanded console output
+- ClearPass privilege-aware discovery is integrated into the current CLI flow
 
 ### Phase 2: Safe multi-service workflows
 

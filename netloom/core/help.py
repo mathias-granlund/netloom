@@ -12,7 +12,7 @@ NETLOOM_BANNER = r"""
 |_| \_|\___|\__|_|\___/ \___/|_| |_| |_|
 """.strip("\n")
 PLUGIN_SELECTION_HINT = "<select a plugin with `netloom load <plugin>`>"
-BUILTIN_MODULES = ["cache", "copy", "load", "server"]
+BUILTIN_MODULES = ["cache", "load", "server"]
 
 
 def service_cli_actions(service_entry: dict) -> list[str]:
@@ -34,8 +34,6 @@ def render_copy_action_help(module: str, service: str) -> str:
     return (
         f"copy ({module} {service}):\n"
         "  usage: netloom <module> <service> copy --from=SOURCE_PROFILE "
-        "--to=TARGET_PROFILE [options]\n"
-        "  legacy alias: netloom copy <module> <service> --from=SOURCE_PROFILE "
         "--to=TARGET_PROFILE [options]\n"
         "  selectors:\n"
         "    - --id=VALUE\n"
@@ -238,35 +236,6 @@ def render_load_help(header: str, usage: str, plugins: list[str]) -> str:
     )
 
 
-def render_copy_builtin_help(header: str, usage: str) -> str:
-    return (
-        header
-        + usage
-        + "\nBuilt-in module: copy\n"
-        + "Usage:\n"
-        + "  netloom copy <module> <service> --from=SOURCE_PROFILE "
-        "--to=TARGET_PROFILE [options]\n"
-        + "  netloom <module> <service> copy --from=SOURCE_PROFILE "
-        "--to=TARGET_PROFILE [options]\n\n"
-        + "Selectors:\n"
-        + "  --id=VALUE\n"
-        + "  --name=VALUE\n"
-        + "  --filter=JSON  (copied across all matching paged results)\n"
-        + "  --all\n\n"
-        + "Behavior:\n"
-        + "  --on-conflict=fail|skip|update|replace\n"
-        + "  --match-by=auto|name|id\n"
-        + "  --dry-run\n"
-        + "  --continue-on-error\n"
-        + "  --decrypt\n\n"
-        + "Artifacts:\n"
-        + "  --out=PATH\n"
-        + "  --save-source=PATH  (default: NETLOOM_OUT_DIR/<generated>_source.json)\n"
-        + "  --save-payload=PATH (default: NETLOOM_OUT_DIR/<generated>_payload.json)\n"
-        + "  --save-plan=PATH    (default: NETLOOM_OUT_DIR/<generated>_plan.json)\n"
-    )
-
-
 def render_catalog_help(
     header: str,
     usage: str,
@@ -300,7 +269,7 @@ def render_catalog_help(
 
     if module not in modules:
         available = ", ".join([*BUILTIN_MODULES, *sorted(modules.keys())])
-        return header + f"Unknown module '{module}'. Available modules: {available}"
+        return header + f"Unknown module '{module}'\nAvailable modules: {available}"
 
     services = modules[module]
     if not service:

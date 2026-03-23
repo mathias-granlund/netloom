@@ -8,6 +8,8 @@
 ### Changed
 - updated `diff` help text, README examples, and ClearPass manpages to document the new console expansion options
 - aligned checked-in release metadata and manpage version headers for the `1.9.2` release
+- removed the legacy top-level `netloom copy <module> <service> ...` alias in favor of the service-level `netloom <module> <service> copy ...` form
+- updated help, completion, and roadmap text to reflect Phase 1 closure and the next Phase 2 focus
 
 ## 1.9.1 - 2026-03-20
 
@@ -112,7 +114,7 @@
 
 ### Changed
 - `copy` can now be used as a normal action with `netloom <module> <service> copy ...`, which lines it up with the rest of the command model
-- the legacy `netloom copy <module> <service> ...` form is still accepted as a compatibility alias for this release
+- the old top-level `netloom copy <module> <service> ...` form remained available temporarily during the `1.7.1` migration period
 - help text, completion, and tests now treat `copy` as a first-class action on services
 
 ## 1.7.0 - 2026-03-16
@@ -186,7 +188,7 @@
 ## 1.5.0 - 2026-03-13
 
 ### Added
-- built-in `netloom copy <module> <service> --from=SOURCE --to=TARGET` workflow for copying resources between ClearPass profiles without shell-chaining separate export and import commands
+- introduced an initial top-level `netloom copy <module> <service> --from=SOURCE --to=TARGET` workflow for copying resources between ClearPass profiles without shell-chaining separate export and import commands
 - copy workflow support for `--dry-run`, `--match-by=auto|name|id`, `--on-conflict=fail|skip|update|replace`, and optional report artifacts via `--save-source`, `--save-payload`, and `--save-plan`
 - parser, help text, completion, and integration coverage for the new `copy` built-in command
 

@@ -67,7 +67,7 @@ def test_complete_outputs_modules(capsys, monkeypatch):
     main.complete(["--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "identities" in out
-    assert "copy" in out
+    assert "copy" not in out
 
 
 def test_complete_honors_full_catalog_view_flag(capsys, monkeypatch):
@@ -126,14 +126,6 @@ def test_complete_outputs_server_profiles_for_use(capsys, monkeypatch):
     out = capsys.readouterr().out.strip().splitlines()
     assert "dev" in out
     assert "prod" in out
-
-
-def test_complete_outputs_services_for_copy_module(capsys, monkeypatch):
-    plugin = _catalog_plugin(TEST_CATALOG)
-    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
-    main.complete(["copy", "identities"], settings=_settings())
-    out = capsys.readouterr().out.strip().splitlines()
-    assert "endpoint" in out
 
 
 def test_complete_load_builtin_does_not_touch_plugin_or_settings(capsys, monkeypatch):

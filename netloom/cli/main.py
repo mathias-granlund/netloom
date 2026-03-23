@@ -192,6 +192,10 @@ def main() -> None:
         print_help({}, settings=active_settings)
         return
 
+    if args.get("module") == "copy":
+        print_help({}, settings=active_settings)
+        return
+
     if args.get("module") == "server":
         if handle_server_command(args):
             return
@@ -239,10 +243,6 @@ def main() -> None:
             )
             return
         print_help({"module": "cache"}, plugin=plugin, settings=active_settings)
-        return
-
-    if args.get("module") == "copy":
-        handle_copy_command(args, settings=active_settings, plugin=plugin)
         return
 
     module = args.get("module")

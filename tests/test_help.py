@@ -126,18 +126,15 @@ def test_render_help_without_catalog_lists_builtin_modules():
 
     assert "Available modules:" in text
     assert "  - cache" in text
-    assert "  - copy" in text
     assert "  - server" in text
 
 
-def test_render_help_includes_copy_builtin():
+def test_render_help_for_legacy_copy_command():
     text = helpmod.render_help({}, {"module": "copy"}, version="1.6.0")
 
-    assert "Built-in module: copy" in text
-    assert "--from=SOURCE_PROFILE" in text
-    assert "--on-conflict=fail|skip|update|replace" in text
-    assert "copied across all matching paged results" in text
-    assert "NETLOOM_OUT_DIR/<generated>_source.json" in text
+    assert "Usage:" in text
+    assert "netloom <module> <service> copy --from=SOURCE --to=TARGET" in text
+    assert "Legacy command removed:" not in text
 
 
 def test_render_help_includes_copy_as_service_action():
@@ -184,7 +181,7 @@ def test_render_help_for_copy_action():
     )
 
     assert "usage: netloom <module> <service> copy" in text
-    assert "legacy alias: netloom copy <module> <service>" in text
+    assert "legacy alias" not in text
 
 
 def test_render_help_for_diff_action():
@@ -260,7 +257,7 @@ def test_render_help_mentions_token_and_copy_syntax():
     text = helpmod.render_help({}, {}, version="1.7.1", plugin=plugin)
 
     assert "netloom <module> <service> copy --from=SOURCE --to=TARGET" in text
-    assert "netloom copy <module> <service> --from=SOURCE --to=TARGET" in text
+    assert "netloom copy <module> <service> --from=SOURCE --to=TARGET" not in text
     assert "--api-token=TOKEN" in text
     assert "--token-file=PATH" in text
 

@@ -6,7 +6,6 @@ from netloom.core.help import (
     render_action_block,
     render_cache_help,
     render_catalog_help,
-    render_copy_builtin_help,
     render_load_help,
     render_server_help,
     service_cli_actions,
@@ -36,7 +35,6 @@ def _render_usage(plugin=None) -> str:
         "  netloom cache [clear | update]",
         "  netloom <module> <service> <action> [options] [flags]",
         "  netloom <module> <service> copy --from=SOURCE --to=TARGET [options] [flags]",
-        "  netloom copy <module> <service> --from=SOURCE --to=TARGET [options] [flags]",
         "  netloom [--help | ?]",
         "  netloom --version",
     ]
@@ -91,9 +89,6 @@ def render_help(
 
     if module == "load":
         return render_load_help(header, usage, list_plugins())
-
-    if module == "copy":
-        return render_copy_builtin_help(header, usage)
 
     return render_catalog_help(
         header,
