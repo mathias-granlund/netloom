@@ -262,6 +262,27 @@ def _format_preview(value: Any, *, limit: int = 120) -> str:
     return f"{text[: limit - 3]}..."
 
 
+def _parse_max_items(raw: Any) -> int | None:
+    if raw in (None, ""):
+        return None
+    try:
+        value = int(str(raw).strip())
+    except (TypeError, ValueError) as exc:
+        raise ValueError("--max-items must be a positive integer") from exc
+    if value < 1:
+        raise ValueError("--max-items must be a positive integer")
+    return value
+
+
+def _console_limits(args: dict[str, Any]) -> tuple[int | None, int | None]:
+    if args.get("show_all"):
+        return None, None
+    max_items = _parse_max_items(args.get("max_items"))
+    if max_items is None:
+        return _DEFAULT_DETAIL_LIMIT, _DEFAULT_VALUE_LIMIT
+    return max_items, max_items
+
+
 def _match_key(
     item: dict[str, Any],
     match_mode: str,
@@ -451,28 +472,47 @@ def _diff_entry(
     return entry
 
 
-def _print_item_list(title: str, items: list[dict[str, Any]]) -> None:
+def _print_item_list(
+    title: str,
+    items: list[dict[str, Any]],
+    *,
+    item_limit: int | None,
+) -> None:
     if not items:
         return
     print(title)
-    hidden = max(len(items) - _DEFAULT_DETAIL_LIMIT, 0)
-    for item in items[:_DEFAULT_DETAIL_LIMIT]:
+    visible_items = items if item_limit is None else items[:item_limit]
+    hidden = 0 if item_limit is None else max(len(items) - item_limit, 0)
+    for item in visible_items:
         print(f"- {item['label']}")
     if hidden:
         print(f"  ... {hidden} more")
 
 
-def _print_differences(items: list[dict[str, Any]]) -> None:
+def _print_differences(
+    items: list[dict[str, Any]],
+    *,
+    item_limit: int | None,
+    value_limit: int | None,
+) -> None:
     if not items:
         return
     print("Different:")
-    hidden_items = max(len(items) - _DEFAULT_DETAIL_LIMIT, 0)
-    for item in items[:_DEFAULT_DETAIL_LIMIT]:
+    visible_items = items if item_limit is None else items[:item_limit]
+    hidden_items = 0 if item_limit is None else max(len(items) - item_limit, 0)
+    for item in visible_items:
         print(f"- {item['label']}")
         changed_values = item.get("changed_values") or {}
         changed_paths = list(item.get("changed_fields") or [])
-        hidden_values = max(len(changed_paths) - _DEFAULT_VALUE_LIMIT, 0)
-        for path in changed_paths[:_DEFAULT_VALUE_LIMIT]:
+        visible_paths = (
+            changed_paths if value_limit is None else changed_paths[:value_limit]
+        )
+        hidden_values = (
+            0
+            if value_limit is None
+            else max(len(changed_paths) - value_limit, 0)
+        )
+        for path in visible_paths:
             values = changed_values.get(path) or {}
             print(
                 f"  {path}: {_format_preview(values.get('source'))} -> "
@@ -484,12 +524,17 @@ def _print_differences(items: list[dict[str, Any]]) -> None:
         print(f"  ... {hidden_items} more changed items")
 
 
-def _print_ambiguous(items: list[dict[str, Any]]) -> None:
+def _print_ambiguous(
+    items: list[dict[str, Any]],
+    *,
+    item_limit: int | None,
+) -> None:
     if not items:
         return
     print("Ambiguous matches:")
-    hidden = max(len(items) - _DEFAULT_DETAIL_LIMIT, 0)
-    for item in items[:_DEFAULT_DETAIL_LIMIT]:
+    visible_items = items if item_limit is None else items[:item_limit]
+    hidden = 0 if item_limit is None else max(len(items) - item_limit, 0)
+    for item in visible_items:
         print(f"- {item['label']}")
         reason = item.get("match_reason")
         if reason:
@@ -504,7 +549,12 @@ def _print_ambiguous(items: list[dict[str, Any]]) -> None:
         print(f"  ... {hidden} more")
 
 
-def _emit_diff_summary(report: dict[str, Any]) -> None:
+def _emit_diff_summary(
+    report: dict[str, Any],
+    *,
+    item_limit: int | None,
+    value_limit: int | None,
+) -> None:
     summary = report["summary"]
     print("Diff completed")
     print(f"Source profile: {report['source_profile']}")
@@ -519,18 +569,23 @@ def _emit_diff_summary(report: dict[str, Any]) -> None:
     print(f"Ambiguous matches: {summary['ambiguous_match']}")
 
     _print_differences(
-        [item for item in report["items"] if item["status"] == "different"]
+        [item for item in report["items"] if item["status"] == "different"],
+        item_limit=item_limit,
+        value_limit=value_limit,
     )
     _print_item_list(
         "Only in source:",
         [item for item in report["items"] if item["status"] == "only_in_source"],
+        item_limit=item_limit,
     )
     _print_item_list(
         "Only in target:",
         [item for item in report["items"] if item["status"] == "only_in_target"],
+        item_limit=item_limit,
     )
     _print_ambiguous(
-        [item for item in report["items"] if item["status"] == "ambiguous_match"]
+        [item for item in report["items"] if item["status"] == "ambiguous_match"],
+        item_limit=item_limit,
     )
     print(f"Report: {report['artifacts']['report']}")
 
@@ -557,6 +612,7 @@ def handle_diff_command(
     ignore_paths = _parse_field_paths(
         args.get("ignore_fields"), flag_name="--ignore-fields"
     )
+    item_limit, value_limit = _console_limits(args)
 
     source_settings = load_settings_for_profile(source_profile)
     target_settings = load_settings_for_profile(target_profile)
@@ -896,7 +952,7 @@ def handle_diff_command(
         data_format="json",
         mask_secrets=mask_secrets,
     )
-    _emit_diff_summary(report)
+    _emit_diff_summary(report, item_limit=item_limit, value_limit=value_limit)
     return report
 
 

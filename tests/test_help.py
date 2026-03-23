@@ -212,6 +212,8 @@ def test_render_help_for_diff_action():
     assert "--match-by=auto|name|id" in text
     assert "--fields=path1,path2" in text
     assert "--ignore-fields=path1,path2" in text
+    assert "--show-all" in text
+    assert "--max-items=N" in text
     assert "  notes:" in text
     assert (
         "broad selectors report: same, different, only_in_source, only_in_target"
@@ -219,6 +221,7 @@ def test_render_help_for_diff_action():
     )
     assert "changed_fields uses nested dotted paths when possible" in text
     assert "ambiguous matches are reported explicitly" in text
+    assert "use --show-all or --max-items=N to expand them" in text
     assert "only_in_source" in text
 
 

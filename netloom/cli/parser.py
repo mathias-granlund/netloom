@@ -16,6 +16,7 @@ def parse_cli(argv: list[str]) -> dict:
         "debug",
         "console",
         "all",
+        "show_all",
         "decrypt",
         "dry_run",
         "continue_on_error",

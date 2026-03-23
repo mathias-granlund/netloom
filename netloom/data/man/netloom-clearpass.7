@@ -1,4 +1,4 @@
-.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.1" "Miscellaneous Information Manual"
+.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.2" "Miscellaneous Information Manual"
 .SH NAME
 netloom-clearpass \- ClearPass plugin guide for netloom.
 
@@ -331,6 +331,16 @@ still saves it under
 .BR NETLOOM_OUT_DIR
 using a generated timestamped filename.
 
+.TP
+.B --show-all
+Disable the default console preview caps and print every listed diff item and
+changed field.
+
+.TP
+.BI --max-items= N
+Increase or reduce the console preview cap for listed diff items and changed
+fields. Must be a positive integer.
+
 Broad selectors such as
 .B --all
 and
@@ -347,6 +357,11 @@ and
 .B --name
 stay source-scoped and only report whether the selected source object matches a
 target object.
+By default the console view stays capped for readability; use
+.B --show-all
+or
+.B --max-items
+to expand it when reviewing large diffs interactively.
 
 .SH EXAMPLES
 List endpoints:

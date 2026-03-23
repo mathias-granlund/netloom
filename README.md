@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.9.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.9.2-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -27,7 +27,7 @@ copying configuration between environments.
 > already modular, so adding more plugins does not require changing the shared
 > command surface. More vendor support is planned for the future.
 
-Version: **1.9.1**
+Version: **1.9.2**
 
 Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
@@ -48,13 +48,12 @@ automation workflows, and finally adding broader user-experience features.
 
 ClearPass privilege-aware cache filtering, the default visible/full catalog
 split, and the first service-level comparison workflow are now in place through
-`v1.9.1`. The next step is to keep expanding mapping coverage and build on the
+`v1.9.2`. The next step is to keep expanding mapping coverage and build on the
 new comparison foundation for safer multi-service workflows.
 
 ### Phase 1: Access-aware discovery and comparison
 
 - keep refining the `netloom <module> <service> diff --from=X --to=Y` workflow, especially report quality and normalization coverage
-- add a `--show-all` or `--max-items=N` option so diff console output can expand beyond the default summary cap when needed
 - continue refining the visible catalog so action-level exposure matches the active API client as closely as verified mappings allow
 - continue expanding the verified ClearPass privilege mapping table as Aruba adds or changes endpoints and privilege keys
 
@@ -164,6 +163,7 @@ netloom identities endpoint list --filter=name:equals:TEST
 netloom policyelements network-device get --id=1337 --console
 netloom policyelements network-device update --id=1337 --description="Core switch"
 netloom policyelements network-device diff --from=dev --to=prod --name="Core switch"
+netloom policyelements network-device diff --from=dev --to=prod --all --max-items=25
 netloom policyelements network-device copy --from=dev --to=prod --filter='{"description":{"$contains":"Core switch"}}' --dry-run
 ```
 

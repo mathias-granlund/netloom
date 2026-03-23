@@ -382,6 +382,115 @@ def test_handle_diff_command_reports_nested_paths_and_field_filters(
     assert "attributes.meta.weight" not in out
 
 
+def test_handle_diff_command_max_items_limits_console_preview(monkeypatch, capsys):
+    catalog = _catalog()
+    source_cp = _CollectionCP(
+        catalog,
+        [
+            {"id": 1, "name": "alpha", "description": "old-a"},
+            {"id": 2, "name": "beta", "description": "old-b"},
+            {"id": 3, "name": "gamma", "description": "old-c"},
+        ],
+    )
+    target_cp = _CollectionCP(
+        catalog,
+        [
+            {"id": 11, "name": "alpha", "description": "new-a"},
+            {"id": 12, "name": "beta", "description": "new-b"},
+            {"id": 13, "name": "gamma", "description": "new-c"},
+        ],
+    )
+
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    report = diffmod.handle_diff_command(
+        {
+            "module": "policyelements",
+            "service": "role",
+            "action": "diff",
+            "from": "lab",
+            "to": "prod",
+            "all": True,
+            "max_items": "2",
+        },
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
+    )
+
+    assert report["summary"]["different"] == 3
+
+    out = capsys.readouterr().out
+    assert "- alpha" in out
+    assert "- beta" in out
+    assert "- gamma" not in out
+    assert "... 1 more changed items" in out
+
+
+def test_handle_diff_command_show_all_disables_console_truncation(monkeypatch, capsys):
+    catalog = _catalog()
+    source_cp = _CollectionCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "alpha",
+                "field1": "a",
+                "field2": "b",
+                "field3": "c",
+                "field4": "d",
+                "field5": "e",
+                "field6": "f",
+            },
+            {"id": 2, "name": "beta", "description": "old-b"},
+            {"id": 3, "name": "gamma", "description": "old-c"},
+        ],
+    )
+    target_cp = _CollectionCP(
+        catalog,
+        [
+            {
+                "id": 11,
+                "name": "alpha",
+                "field1": "A",
+                "field2": "B",
+                "field3": "C",
+                "field4": "D",
+                "field5": "E",
+                "field6": "F",
+            },
+            {"id": 12, "name": "beta", "description": "new-b"},
+            {"id": 13, "name": "gamma", "description": "new-c"},
+        ],
+    )
+
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    report = diffmod.handle_diff_command(
+        {
+            "module": "policyelements",
+            "service": "role",
+            "action": "diff",
+            "from": "lab",
+            "to": "prod",
+            "all": True,
+            "show_all": True,
+            "max_items": "1",
+        },
+        settings=_make_settings(temp_root, "prod"),
+        plugin=_plugin(_build_client_for(source_cp, target_cp), catalog),
+    )
+
+    assert report["summary"]["different"] == 3
+
+    out = capsys.readouterr().out
+    assert "- alpha" in out
+    assert "- beta" in out
+    assert "- gamma" in out
+    assert 'field6: "f" -> "F"' in out
+    assert "more changed items" not in out
+    assert "more changed fields" not in out
+
+
 def test_handle_diff_command_reports_ambiguous_target_matches(monkeypatch, capsys):
     catalog = _catalog()
     source_cp = _CollectionCP(catalog, [{"id": 1, "name": "alpha", "description": "x"}])
@@ -472,6 +581,25 @@ def test_handle_diff_command_rejects_invalid_field_list(monkeypatch):
                 "to": "prod",
                 "all": True,
                 "fields": "name,,description",
+            },
+            settings=_make_settings(temp_root, "prod"),
+            plugin=types.SimpleNamespace(),
+        )
+
+
+def test_handle_diff_command_rejects_invalid_max_items(monkeypatch):
+    temp_root = _temp_root_dir()
+    _setup_profiles(monkeypatch, temp_root)
+    with pytest.raises(ValueError, match="--max-items must be a positive integer"):
+        diffmod.handle_diff_command(
+            {
+                "module": "policyelements",
+                "service": "role",
+                "action": "diff",
+                "from": "lab",
+                "to": "prod",
+                "all": True,
+                "max_items": "0",
             },
             settings=_make_settings(temp_root, "prod"),
             plugin=types.SimpleNamespace(),

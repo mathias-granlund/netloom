@@ -233,6 +233,24 @@ def test_parse_cli_copy_command():
     assert args["dry_run"] is True
 
 
+def test_parse_cli_diff_console_expansion_flags():
+    argv = [
+        "netloom",
+        "policyelements",
+        "network-device",
+        "diff",
+        "--from=dev",
+        "--to=prod",
+        "--all",
+        "--show-all",
+        "--max-items=25",
+    ]
+    args = main.parse_cli(argv)
+    assert args["action"] == "diff"
+    assert args["show_all"] is True
+    assert args["max_items"] == "25"
+
+
 def test_parse_cli_legacy_copy_alias():
     argv = [
         "netloom",

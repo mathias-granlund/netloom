@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.2 - 2026-03-23
+
+### Added
+- added `--show-all` and `--max-items=N` to the service-level `diff` workflow so console previews can expand beyond the default summary cap
+
+### Changed
+- updated `diff` help text, README examples, and ClearPass manpages to document the new console expansion options
+- aligned checked-in release metadata and manpage version headers for the `1.9.2` release
+
 ## 1.9.1 - 2026-03-20
 
 ### Changed
