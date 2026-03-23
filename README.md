@@ -58,6 +58,7 @@ split, and the Phase 1 comparison foundation are now in place through
 
 ### Phase 2: Safe multi-service workflows
 
+- add secure runtime credential resolution via OS keychains, with `NETLOOM_CLIENT_SECRET_REF` and plaintext `NETLOOM_CLIENT_SECRET` fallback
 - implement `netloom <module> copy --from=X --to=Y` to copy all config from all `<services>` within a `<module>`
 - extend structured copy and diff plans with broader automation and review workflows across multiple services
 - extend validation and dry-run helpers beyond the current service-level copy workflow so more write actions can be previewed safely
