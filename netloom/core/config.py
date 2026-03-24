@@ -386,6 +386,7 @@ class ProfileState:
     profiles_path: Path | None
     credentials_path: Path | None
     server: str | None = None
+    client_id: str | None = None
     has_client_id: bool = False
     has_client_secret: bool = False
     has_client_secret_ref: bool = False
@@ -434,6 +435,7 @@ def describe_profile_state() -> ProfileState:
         profiles_path=profiles_env_path(active_plugin, profile=active_profile),
         credentials_path=credentials_env_path(active_plugin, profile=active_profile),
         server=server,
+        client_id=client_id,
         has_client_id=bool(client_id),
         has_client_secret=bool(client_secret),
         has_client_secret_ref=bool(client_secret_ref),

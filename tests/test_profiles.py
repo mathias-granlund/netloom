@@ -452,6 +452,7 @@ def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):
     assert "Active profile: prod" in out
     assert "Active plugin: clearpass" in out
     assert "Server: prod.clearpass.example:443" in out
+    assert "Client ID: prod-client" in out
     assert "Client secret: plaintext configured" in out
     assert (
         "Profiles file: "
@@ -499,5 +500,6 @@ def test_main_server_show_reports_keychain_secret_ref(monkeypatch, capsys, tmp_p
     main.main()
 
     out = capsys.readouterr().out
+    assert "Client ID: prod-client" in out
     assert "Client secret: keychain ref configured" in out
     assert "Client secret ref: prod/client-secret" in out

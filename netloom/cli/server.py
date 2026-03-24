@@ -33,7 +33,7 @@ def _format_profile_show(state: ProfileState) -> str:
         f"Active profile: {state.active_profile or '<unset>'}",
         f"Active plugin: {state.active_plugin or '<unset>'}",
         f"Server: {state.server or '<unset>'}",
-        f"Client ID: {'configured' if state.has_client_id else 'missing'}",
+        f"Client ID: {state.client_id or '<unset>'}",
         f"Client secret: {state.client_secret_status}",
         f"Profiles file: {format_path_or_hint(state.profiles_path)}",
         f"Credentials file: {format_path_or_hint(state.credentials_path)}",
