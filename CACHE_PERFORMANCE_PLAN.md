@@ -112,9 +112,7 @@ Current stderr format:
 Still missing:
 - timing for `netloom cache update`
 
-## Next Step
-
-The next optimization should be to bypass plugin loading for fast paths.
+## Next Steps
 
 ### Phase 1.5: Direct index loading for interactive paths
 
@@ -131,16 +129,78 @@ Planned next work:
 Expected result:
 - remove most of the current `get_plugin` timing cost from help/completion
 
-### Phase 1.6: Add timing for cache update
+Priority:
+- highest
 
-Also add timing instrumentation for:
-- `netloom cache update`
+### Phase 1.6: Late imports and late runtime setup
 
-That will let us measure:
-- network/discovery time
-- catalog build time
+Planned work:
+- delay heavier imports and runtime setup until after CLI parsing decides
+  whether the user only requested:
+  - `--version`
+  - `--help`
+  - shell completion
+  - other trivial built-in paths
+- avoid importing plugin/runtime-heavy modules earlier than necessary in
+  `netloom.cli.main`
+
+Why:
+- process startup and bootstrap still matter even after the cache/index win
+- this should help one-shot commands that do not need full runtime setup
+
+Priority:
+- high
+
+### Phase 1.7: Add timing for cache update
+
+Planned work:
+- add timing instrumentation for `netloom cache update`
+
+That should measure:
+- `/api-docs` fetch time
+- module listing fetch time
+- subdocument fetch time
+- catalog transform/build time
 - full cache write time
 - fast index write time
+
+Why:
+- we need real data before changing the catalog rebuild architecture
+
+Priority:
+- high
+
+### Phase 1.8: Validate shallow full-view projection
+
+Planned work:
+- evaluate whether `project_catalog_view(..., catalog_view=\"full\")` can reuse
+  `full_modules` directly instead of deep-copying it
+- only keep this optimization if downstream consumers treat the catalog as
+  read-only
+- add a regression test so this assumption stays explicit
+
+Why:
+- it is a small, low-risk optimization if the catalog stays immutable in
+  practice
+
+Priority:
+- medium
+
+### Phase 1.9: Parallelize catalog rebuild if timing confirms it
+
+Planned work:
+- after Phase 1.7 timing is in place, profile `netloom cache update` against a
+  real ClearPass server
+- if network latency dominates, parallelize module listing and/or subdocument
+  fetches with a small bounded worker pool
+
+Why:
+- catalog rebuild is currently very sequential
+- this is likely the biggest real-world win for `cache update`, but it should
+  be data-driven
+
+Priority:
+- medium, after timing confirms it is worthwhile
 
 ## Phase 2
 
@@ -156,5 +216,13 @@ Do not jump to `netloomd` yet.
 The current data suggests the next highest-ROI step is:
 - direct cached-index loading for help/completion
 - add timing for `cache update`
+- delay imports/runtime setup for trivial CLI paths
 
 Then measure again before deciding on a daemon.
+
+Recommended order:
+1. Phase 1.5
+2. Phase 1.7
+3. Phase 1.6
+4. Phase 1.8
+5. Phase 1.9
