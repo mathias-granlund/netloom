@@ -34,10 +34,12 @@ def _format_profile_show(state: ProfileState) -> str:
         f"Active plugin: {state.active_plugin or '<unset>'}",
         f"Server: {state.server or '<unset>'}",
         f"Client ID: {'configured' if state.has_client_id else 'missing'}",
-        f"Client secret: {'configured' if state.has_client_secret else 'missing'}",
+        f"Client secret: {state.client_secret_status}",
         f"Profiles file: {format_path_or_hint(state.profiles_path)}",
         f"Credentials file: {format_path_or_hint(state.credentials_path)}",
     ]
+    if state.client_secret_ref:
+        lines.insert(5, f"Client secret ref: {state.client_secret_ref}")
     return "\n".join(lines)
 
 

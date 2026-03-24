@@ -1,32 +1,38 @@
-# netloom v1.9.2
+# netloom v1.9.3
 
-This release builds on the recent service-level `diff` work by making large
-terminal reviews easier. The main focus is expanding console previews on demand
-without changing the JSON report format or the underlying comparison logic.
+This release adds secure runtime client-secret resolution through OS keychains
+without changing the existing ClearPass login flow or token shortcut behavior.
+The main focus is letting profiles reference secrets by key instead of keeping
+plaintext credentials in profile files.
 
 ## Highlights
 
-- added `--show-all` so `diff` can print every listed changed item and changed
-  field in the console when a full interactive review is needed
-- added `--max-items=N` so operators can raise or lower the console preview cap
-  without having to open the JSON artifact
-- updated action help, README examples, and ClearPass manpages so the new diff
-  display controls are documented consistently
-- aligned release metadata and checked-in manpage headers with version `1.9.2`
+- added `NETLOOM_CLIENT_SECRET_REF` so plugins can resolve client secrets from
+  the OS keychain using the fixed service namespace `netloom/<plugin>`
+- kept plaintext `NETLOOM_CLIENT_SECRET` as a supported fallback when keychain
+  lookup is unavailable or the referenced entry is missing
+- updated `netloom server show`, README guidance, example env files, and the
+  ClearPass manpage so keychain-backed and plaintext secret configuration are
+  documented clearly
+- aligned release metadata and checked-in manpage headers with version `1.9.3`
 
 ## Examples
 
 ```bash
-netloom policyelements role diff --from=lab --to=prod --all
-netloom policyelements role diff --from=lab --to=prod --all --max-items=25
-netloom policyelements role diff --from=lab --to=prod --all --show-all
-netloom policyelements role diff --from=lab --to=prod --name=Guest --fields=description,attributes.role
+python -m keyring set netloom/clearpass prod/client-secret
+
+# ~/.config/netloom/plugins/clearpass/credentials/prod.env
+NETLOOM_CLIENT_ID=prod-client-id
+NETLOOM_CLIENT_SECRET_REF=prod/client-secret
+
+netloom server show
+netloom cache update
 ```
 
 ## Notes
 
-- `diff` is still available as a service action only; there is no built-in
-  `netloom diff ...` alias
-- the default console view still caps long sections for readability unless
-  `--show-all` or `--max-items=N` is used
-- existing `copy` behavior is unchanged
+- `api_token` and `api_token_file` still take precedence over login-based
+  client-secret resolution
+- on WSL or other headless Linux environments, `keyring` may require a D-Bus
+  session plus `gnome-keyring` or another supported backend before secrets can
+  be stored or retrieved

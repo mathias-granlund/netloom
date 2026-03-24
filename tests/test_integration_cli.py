@@ -450,7 +450,11 @@ def test_main_legacy_copy_alias_prints_default_help(monkeypatch, capsys, tmp_pat
     settings = make_settings(tmp_path)
     monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
-    monkeypatch.setattr(main, "print_help", lambda args=None, **kwargs: print("Usage:\n  netloom ..."))
+    monkeypatch.setattr(
+        main,
+        "print_help",
+        lambda args=None, **kwargs: print("Usage:\n  netloom ..."),
+    )
 
     monkeypatch.setattr(
         sys,

@@ -32,6 +32,7 @@ def _configure_runtime(monkeypatch, tmp_path):
     monkeypatch.delenv("NETLOOM_SERVER", raising=False)
     monkeypatch.delenv("NETLOOM_CLIENT_ID", raising=False)
     monkeypatch.delenv("NETLOOM_CLIENT_SECRET", raising=False)
+    monkeypatch.delenv("NETLOOM_CLIENT_SECRET_REF", raising=False)
     monkeypatch.delenv("NETLOOM_ACTIVE_PROFILE", raising=False)
     monkeypatch.delenv("NETLOOM_ACTIVE_PLUGIN", raising=False)
     return config_dir
@@ -196,6 +197,53 @@ def test_load_settings_prefers_process_environment(monkeypatch, tmp_path):
     assert settings.server == "override.example:443"
     assert settings.client_id == "override-client"
     assert settings.client_secret == "prod-secret"
+
+
+def test_load_settings_applies_client_secret_ref_precedence(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_global_config(config_dir)
+    plugin_dir = _plugin_dir(config_dir)
+    plugin_dir.mkdir(parents=True, exist_ok=True)
+    _profiles_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _credentials_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _defaults_path(config_dir).write_text(
+        "\n".join(
+            [
+                "NETLOOM_ACTIVE_PROFILE=prod",
+                "NETLOOM_CLIENT_SECRET_REF=defaults/client-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _profile_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_SERVER=prod.clearpass.example:443",
+                "NETLOOM_CLIENT_SECRET_REF=profile/client-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _credential_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_CLIENT_ID=prod-client",
+                "NETLOOM_CLIENT_SECRET_REF=credentials/client-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+    assert settings.client_secret_ref == "credentials/client-secret"
+
+    monkeypatch.setenv("NETLOOM_CLIENT_SECRET_REF", "env/client-secret")
+
+    settings = load_settings()
+    assert settings.client_secret_ref == "env/client-secret"
 
 
 def test_load_settings_uses_out_dir_from_profile_files(monkeypatch, tmp_path):
@@ -404,6 +452,7 @@ def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):
     assert "Active profile: prod" in out
     assert "Active plugin: clearpass" in out
     assert "Server: prod.clearpass.example:443" in out
+    assert "Client secret: plaintext configured" in out
     assert (
         "Profiles file: "
         f"{config_dir / 'plugins' / 'clearpass' / 'profiles' / 'prod.env'}" in out
@@ -412,3 +461,43 @@ def test_main_server_show_prints_profile_status(monkeypatch, capsys, tmp_path):
         "Credentials file: "
         f"{config_dir / 'plugins' / 'clearpass' / 'credentials' / 'prod.env'}"
     ) in out
+
+
+def test_main_server_show_reports_keychain_secret_ref(monkeypatch, capsys, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_global_config(config_dir)
+    plugin_dir = _plugin_dir(config_dir)
+    plugin_dir.mkdir(parents=True, exist_ok=True)
+    _profiles_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _credentials_dir(config_dir).mkdir(parents=True, exist_ok=True)
+    _defaults_path(config_dir).write_text(
+        "NETLOOM_ACTIVE_PROFILE=prod\n",
+        encoding="utf-8",
+    )
+    _profile_path(config_dir, "prod").write_text(
+        "NETLOOM_SERVER=prod.clearpass.example:443\n",
+        encoding="utf-8",
+    )
+    _credential_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_CLIENT_ID=prod-client",
+                "NETLOOM_CLIENT_SECRET_REF=prod/client-secret",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda settings, root_name: _FakeLogMgr(),
+    )
+    monkeypatch.setattr(main, "load_settings", lambda: _make_settings(tmp_path))
+
+    monkeypatch.setattr(sys, "argv", ["netloom", "server", "show"])
+    main.main()
+
+    out = capsys.readouterr().out
+    assert "Client secret: keychain ref configured" in out
+    assert "Client secret ref: prod/client-secret" in out

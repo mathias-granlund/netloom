@@ -76,7 +76,8 @@ def render_diff_action_help(module: str, service: str) -> str:
         "    narrow selectors stay source-scoped\n"
         "    changed_fields uses nested dotted paths when possible\n"
         "    ambiguous matches are reported explicitly\n"
-        "    console previews are capped by default; use --show-all or --max-items=N to expand them\n"
+        "    console previews are capped by default; use --show-all or "
+        "--max-items=N to expand them\n"
         "  output:\n"
         "    - --out=PATH (default: NETLOOM_OUT_DIR/<generated>_diff.json)"
     )

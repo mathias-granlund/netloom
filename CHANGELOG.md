@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.3 - 2026-03-24
+
+### Added
+- added secure runtime client-secret resolution through OS keychains via `NETLOOM_CLIENT_SECRET_REF`, using the fixed service namespace `netloom/<plugin>`
+- added a shared secret loader and regression coverage for missing `keyring`, missing backend, missing keychain entry, and plaintext fallback behavior
+
+### Changed
+- ClearPass login now resolves client secrets lazily at runtime while keeping existing `api_token` and `api_token_file` bypass behavior unchanged
+- `netloom server show`, README guidance, example env files, and the ClearPass manpage now distinguish keychain-backed secrets from plaintext configuration and document WSL/headless Linux setup
+- aligned release metadata and checked-in manpage version headers for the `1.9.3` release
+
 ## 1.9.2 - 2026-03-23
 
 ### Added

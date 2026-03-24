@@ -287,6 +287,8 @@ def test_clearpass_help_mentions_filter_shorthand():
 
     assert "--filter=JSON|FIELD:OP:VALUE" in text
     assert "--filter=key:equals:value" in text
+    assert "NETLOOM_CLIENT_SECRET_REF=prod/client-secret" in text
+    assert "netloom/clearpass" in text
 
 
 def test_render_help_defaults_to_generic_examples_without_plugin():

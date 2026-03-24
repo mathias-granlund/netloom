@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
+from netloom.io.secrets import SecretLookupError, load_keychain_secret
+
 APP_NAME = "netloom"
 ACTIVE_PROFILE_ENV = "NETLOOM_ACTIVE_PROFILE"
 ACTIVE_PLUGIN_ENV = "NETLOOM_ACTIVE_PLUGIN"
@@ -37,6 +39,7 @@ PROFILE_SCOPED_ENV_KEYS = (
     "NETLOOM_GRANT_TYPE",
     "NETLOOM_CLIENT_ID",
     "NETLOOM_CLIENT_SECRET",
+    "NETLOOM_CLIENT_SECRET_REF",
     "NETLOOM_USERNAME",
     "NETLOOM_PASSWORD",
     "NETLOOM_CACHE_DIR",
@@ -385,8 +388,20 @@ class ProfileState:
     server: str | None = None
     has_client_id: bool = False
     has_client_secret: bool = False
+    has_client_secret_ref: bool = False
+    client_secret_ref: str | None = None
     profile_servers: dict[str, str | None] = field(default_factory=dict)
     profile_plugins: dict[str, str | None] = field(default_factory=dict)
+
+    @property
+    def client_secret_status(self) -> str:
+        if self.has_client_secret_ref and self.has_client_secret:
+            return "keychain ref configured (plaintext fallback configured)"
+        if self.has_client_secret_ref:
+            return "keychain ref configured"
+        if self.has_client_secret:
+            return "plaintext configured"
+        return "missing"
 
 
 def describe_profile_state() -> ProfileState:
@@ -404,9 +419,12 @@ def describe_profile_state() -> ProfileState:
     server = _resolve_value("NETLOOM_SERVER", values, active_profile=active_profile)
     client_id = _resolve_value(
         "NETLOOM_CLIENT_ID", values, active_profile=active_profile
-    )
+    ) or _resolve_value("NETLOOM_USERNAME", values, active_profile=active_profile)
     client_secret = _resolve_value(
         "NETLOOM_CLIENT_SECRET", values, active_profile=active_profile
+    ) or _resolve_value("NETLOOM_PASSWORD", values, active_profile=active_profile)
+    client_secret_ref = _resolve_value(
+        "NETLOOM_CLIENT_SECRET_REF", values, active_profile=active_profile
     )
 
     return ProfileState(
@@ -418,6 +436,8 @@ def describe_profile_state() -> ProfileState:
         server=server,
         has_client_id=bool(client_id),
         has_client_secret=bool(client_secret),
+        has_client_secret_ref=bool(client_secret_ref),
+        client_secret_ref=client_secret_ref,
         profile_servers=profile_servers,
         profile_plugins=profile_plugins,
     )
@@ -509,6 +529,7 @@ class Settings:
     grant_type: str = "client_credentials"
     client_id: str | None = None
     client_secret: str | None = None
+    client_secret_ref: str | None = None
     api_token: str | None = None
     api_token_file: Path | None = None
     active_profile: str | None = None
@@ -521,18 +542,50 @@ class Settings:
         missing: list[str] = []
         if not self.client_id:
             missing.append("NETLOOM_CLIENT_ID")
-        if not self.client_secret:
-            missing.append("NETLOOM_CLIENT_SECRET")
+        if not self.client_secret_ref and not self.client_secret:
+            missing.append("NETLOOM_CLIENT_SECRET_REF or NETLOOM_CLIENT_SECRET")
+
+        resolved_secret: str | None = None
+        resolution_error: str | None = None
+        if self.client_secret_ref or self.client_secret:
+            try:
+                resolved_secret = self.resolve_client_secret()
+            except ValueError as exc:
+                resolution_error = str(exc)
+
+        errors: list[str] = []
         if missing:
             missing_text = ", ".join(missing)
-            raise ValueError(
+            errors.append(
                 f"Missing required credentials in environment: {missing_text}"
             )
+        if resolution_error:
+            errors.append(resolution_error)
+        if errors:
+            raise ValueError("; ".join(errors))
+
         return {
             "grant_type": self.grant_type,
             "client_id": self.client_id,
-            "client_secret": self.client_secret,
+            "client_secret": resolved_secret or "",
         }
+
+    def resolve_client_secret(self) -> str:
+        if self.client_secret_ref:
+            try:
+                return load_keychain_secret(
+                    plugin=self.plugin, secret_ref=self.client_secret_ref
+                )
+            except SecretLookupError as exc:
+                if self.client_secret:
+                    return self.client_secret
+                raise ValueError(str(exc)) from exc
+        if self.client_secret:
+            return self.client_secret
+        raise ValueError(
+            "Missing required credentials in environment: "
+            "NETLOOM_CLIENT_SECRET_REF or NETLOOM_CLIENT_SECRET"
+        )
 
 
 def _resolve_path_override(
@@ -661,6 +714,9 @@ def _build_settings_from_values(
             "NETLOOM_CLIENT_SECRET", values, active_profile=active_profile
         )
         or _resolve_value("NETLOOM_PASSWORD", values, active_profile=active_profile),
+        client_secret_ref=_resolve_value(
+            "NETLOOM_CLIENT_SECRET_REF", values, active_profile=active_profile
+        ),
         api_token=_resolve_value(
             "NETLOOM_API_TOKEN", values, active_profile=active_profile
         )

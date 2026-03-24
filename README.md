@@ -8,7 +8,7 @@
 
 **Weave your network APIs into one CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.9.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.9.3-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -20,14 +20,13 @@ consistent command surface, and keeps the workflow centered around operational
 tasks like listing objects, replaying payloads, refreshing API caches, and
 copying configuration between environments.
 
-> [!NOTE]
-> The runtime is organized so shared CLI logic lives in `netloom/` and
-> vendor-specific behavior lives under `netloom/plugins/<plugin>/`.
-> ClearPass is currently the only bundled plugin. The CLI and repo layout are
-> already modular, so adding more plugins does not require changing the shared
-> command surface. More vendor support is planned for the future.
+The runtime is organized so shared CLI logic lives in `netloom/` and
+vendor-specific behavior lives under `netloom/plugins/<plugin>/`.
+ClearPass is currently the only bundled plugin. The CLI and repo layout are
+already modular, so adding more plugins does not require changing the shared
+command surface. More vendor support is planned for the future.
 
-Version: **1.9.2**
+Version: **1.9.3**
 
 Detailed changelog documented in [CHANGELOG.md](CHANGELOG.md).
 
@@ -47,8 +46,9 @@ The roadmap is focused on improving the core CLI first, then expanding
 automation workflows, and finally adding broader user-experience features.
 
 ClearPass privilege-aware cache filtering, the default visible/full catalog
-split, and the Phase 1 comparison foundation are now in place through
-`v1.9.2`. The next active focus is Phase 2 safe multi-service workflows.
+split, the Phase 1 comparison foundation, and secure keychain-backed runtime
+secret resolution are now in place through `v1.9.3`. The next active focus is
+Phase 2 safe multi-service workflows.
 
 ### Phase 1: Completed
 
@@ -58,7 +58,6 @@ split, and the Phase 1 comparison foundation are now in place through
 
 ### Phase 2: Safe multi-service workflows
 
-- add secure runtime credential resolution via OS keychains, with `NETLOOM_CLIENT_SECRET_REF` and plaintext `NETLOOM_CLIENT_SECRET` fallback
 - implement `netloom <module> copy --from=X --to=Y` to copy all config from all `<services>` within a `<module>`
 - extend structured copy and diff plans with broader automation and review workflows across multiple services
 - extend validation and dry-run helpers beyond the current service-level copy workflow so more write actions can be previewed safely
@@ -90,20 +89,6 @@ man netloom
 man netloom-clearpass
 ```
 
-## First run
-
-> [!NOTE]
-> Load a plugin and build the API cache before expecting context-aware help,
-> completion, or live module/service discovery to work well.
-> This creates the active plugin marker at ~/.config/netloom/config.env
-
-```bash
-netloom load clearpass
-netloom cache update
-netloom server use dev
-netloom identities endpoint list --limit=10
-```
-
 ## Configuration
 
 > [!TIP]
@@ -132,12 +117,129 @@ Required per-profile credentials in `credentials/<profile>.env`:
 
 ```bash
 NETLOOM_CLIENT_ID="your-client-id"
-NETLOOM_CLIENT_SECRET="your-client-secret"
+NETLOOM_CLIENT_SECRET_REF="<profile>/client-secret"
+# Optional plaintext fallback:
+# NETLOOM_CLIENT_SECRET="your-client-secret"
 ```
+
+For OS keychain-backed secrets, `netloom` looks up:
+
+- service: `netloom/<plugin>`
+- username/key: the value of `NETLOOM_CLIENT_SECRET_REF`
+
+ClearPass example:
+
+```bash
+python -m keyring set netloom/clearpass prod/client-secret
+```
+
+```bash
+NETLOOM_CLIENT_ID="your-client-id"
+NETLOOM_CLIENT_SECRET_REF="prod/client-secret"
+```
+
+Plaintext `NETLOOM_CLIENT_SECRET` is still supported as a fallback. The runtime
+uses this order when a login secret is needed:
+
+1. `NETLOOM_API_TOKEN`
+2. `NETLOOM_API_TOKEN_FILE`
+3. keychain-resolved `NETLOOM_CLIENT_SECRET_REF`
+4. plaintext `NETLOOM_CLIENT_SECRET`
+
+### Keyring setup
+
+`netloom` uses Python [`keyring`](https://keyring.readthedocs.io/en/latest/) for
+OS-backed secret lookup. If `NETLOOM_CLIENT_SECRET_REF` is configured but no
+usable backend is available, `netloom` will fall back to plaintext
+`NETLOOM_CLIENT_SECRET` only when that value is also configured.
+
+Basic steps:
+
+1. Install `keyring` in the same Python environment as `netloom`.
+2. Check which backend `keyring` sees:
+
+```bash
+python -m keyring diagnose
+python -m keyring --help
+```
+
+3. Store the secret:
+
+```bash
+python -m keyring set netloom/clearpass prod/client-secret
+```
+
+4. Verify it:
+
+```bash
+python -m keyring get netloom/clearpass prod/client-secret
+```
+
+Working WSL/headless Linux example:
+
+```bash
+sudo apt install -y gnome-keyring
+dbus-run-session -- bash
+echo 'choose-a-keyring-password' | gnome-keyring-daemon --unlock
+python -m keyring set netloom/clearpass prod/client-secret
+```
+
+Then configure the matching profile:
+
+```bash
+NETLOOM_CLIENT_ID="your-client-id"
+NETLOOM_CLIENT_SECRET_REF="prod/client-secret"
+```
+
+You can confirm the profile wiring with:
+
+```bash
+netloom server show
+```
+
+Expected status:
+
+```text
+Client secret: keychain ref configured
+Client secret ref: prod/client-secret
+```
+
+Official docs:
+
+- Install and basic usage:
+  [keyring docs](https://keyring.readthedocs.io/en/latest/)
+- Backend configuration and `keyringrc.cfg`:
+  [Configuring keyring](https://keyring.readthedocs.io/en/latest/#configuring)
+- Headless Linux setup:
+  [Using Keyring on headless Linux systems](https://keyring.readthedocs.io/en/latest/#using-keyring-on-headless-linux-systems)
+
+Platform notes:
+
+- macOS: `keyring` normally uses the built-in Keychain backend automatically.
+- Windows: `keyring` normally uses Windows Credential Locker automatically.
+- Linux desktop: `keyring` normally uses Secret Service or KWallet, depending on
+  the desktop environment and installed backend packages.
+- WSL or other headless Linux environments: this usually behaves like headless
+  Linux and may require installing `gnome-keyring`, starting a D-Bus session,
+  and unlocking the keyring daemon before storing or reading secrets, as
+  described in the official headless Linux docs above.
 
 > [!IMPORTANT]
 > Direct `NETLOOM_*` environment variables still override profile files when
 > they are set in the current shell session.
+
+## First run
+
+Load a plugin and build the API cache before expecting context-aware help,
+completion, or live module/service discovery to work.
+This creates the active plugin marker at ~/.config/netloom/config.env
+
+```bash
+netloom load clearpass
+netloom cache update
+netloom server use dev
+netloom identities endpoint list --limit=10
+```
 
 ## CLI syntax
 
@@ -337,65 +439,6 @@ if [ -d "$HOME/.bash_completion.d" ]; then
   done
 fi
 EOF
-```
-
-## Architecture
-
-The repository layout is now centered on a shared `netloom/` runtime and
-plugin-specific folders under `netloom/plugins/`.
-
-```text
-.
-|-- CHANGELOG.md
-|-- README.md
-|-- RELEASING.md
-|-- RELEASE_NOTES.md
-|-- pyproject.toml
-|-- defaults.env.example
-|-- profiles.env.example
-|-- credentials.env.example
-|-- examples/
-|-- man/
-|   |-- netloom.1
-|   `-- netloom-clearpass.7
-|-- scripts/
-|   `-- netloom-completion.bash
-|-- tests/
-`-- netloom/
-    |-- __init__.py
-    |-- __main__.py
-    |-- install_manpage.py
-    |-- cli/
-    |   |-- commands.py
-    |   |-- completion.py
-    |   |-- copy.py
-    |   |-- help.py
-    |   |-- load.py
-    |   |-- main.py
-    |   |-- parser.py
-    |   `-- server.py
-    |-- core/
-    |   |-- config.py
-    |   |-- help.py
-    |   |-- pagination.py
-    |   |-- plugin.py
-    |   `-- resolver.py
-    |-- io/
-    |   |-- files.py
-    |   `-- output.py
-    |-- logging/
-    |   `-- setup.py
-    |-- data/
-    |   `-- man/
-    |       |-- netloom.1
-    |       `-- netloom-clearpass.7
-    `-- plugins/
-        `-- clearpass/
-            |-- catalog.py
-            |-- client.py
-            |-- copy_hooks.py
-            |-- help.py
-            `-- plugin.py
 ```
 
 ## Development

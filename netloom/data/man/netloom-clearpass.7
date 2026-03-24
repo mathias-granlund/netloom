@@ -1,4 +1,4 @@
-.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.2" "Miscellaneous Information Manual"
+.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.3" "Miscellaneous Information Manual"
 .SH NAME
 netloom-clearpass \- ClearPass plugin guide for netloom.
 
@@ -64,7 +64,9 @@ Per-profile connection settings such as
 Per-profile secrets such as
 .B NETLOOM_CLIENT_ID
 and
-.BR NETLOOM_CLIENT_SECRET .
+.BR NETLOOM_CLIENT_SECRET ,
+or an OS keychain reference through
+.BR NETLOOM_CLIENT_SECRET_REF .
 
 A typical setup looks like:
 
@@ -86,8 +88,52 @@ Configured with environment variables such as:
 .EX
 NETLOOM_SERVER
 NETLOOM_CLIENT_ID
+NETLOOM_CLIENT_SECRET_REF
 NETLOOM_CLIENT_SECRET
 .EE
+.RE
+
+When
+.B NETLOOM_CLIENT_SECRET_REF
+is set, the runtime resolves the client secret from the OS keychain with:
+.RS
+.TP
+.B service
+netloom/clearpass
+.TP
+.B username
+the value of
+.BR NETLOOM_CLIENT_SECRET_REF .
+.RE
+
+A typical ClearPass setup can use:
+
+.PP
+.EX
+python -m keyring set netloom/clearpass prod/client-secret
+.EE
+
+.PP
+.EX
+NETLOOM_CLIENT_ID=prod-client-id
+NETLOOM_CLIENT_SECRET_REF=prod/client-secret
+.EE
+
+Plaintext
+.B NETLOOM_CLIENT_SECRET
+remains supported as a fallback. When a login secret is needed, the runtime
+checks:
+.RS
+.IP "1." 4
+.B NETLOOM_API_TOKEN
+.IP "2." 4
+.B NETLOOM_API_TOKEN_FILE
+.IP "3." 4
+keychain-resolved
+.B NETLOOM_CLIENT_SECRET_REF
+.IP "4." 4
+plaintext
+.BR NETLOOM_CLIENT_SECRET .
 .RE
 
 .TP
