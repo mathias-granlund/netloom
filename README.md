@@ -128,7 +128,8 @@ netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
 
 - Multi-service copy workflows
 - Extended validation and dry-run features
-- Version tracking for configs changes
+- Version tracking for config changes
+- Low-priority CLI semantics and naming cleanup
 - GUI on top of CLI
 
 ## Deeper Docs

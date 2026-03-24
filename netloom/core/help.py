@@ -3,7 +3,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-CLI_ACTION_ORDER = ["list", "get", "diff", "add", "delete", "update", "replace", "copy"]
+CLI_ACTION_ORDER = [
+    "list",
+    "get",
+    "add",
+    "update",
+    "replace",
+    "delete",
+    "diff",
+    "copy",
+]
 NETLOOM_BANNER = r"""
  _   _      _   _
 | \ | | ___| |_| | ___   ___  _ __ ___

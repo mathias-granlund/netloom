@@ -119,6 +119,9 @@ def test_render_help_includes_server_builtin(monkeypatch):
     assert "Configured profiles:" in text
     assert "  - dev" in text
     assert "  - prod" in text
+    assert "Examples:" not in text
+    assert "Common options:" not in text
+    assert "Common flags:" not in text
 
 
 def test_render_help_without_catalog_lists_builtin_modules():
@@ -133,7 +136,7 @@ def test_render_help_for_legacy_copy_command():
     text = helpmod.render_help({}, {"module": "copy"}, version="1.6.0")
 
     assert "Usage:" in text
-    assert "netloom <module> <service> copy --from=SOURCE --to=TARGET" in text
+    assert "netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET" in text
     assert "Legacy command removed:" not in text
 
 
@@ -157,6 +160,9 @@ def test_render_help_includes_copy_as_service_action():
     assert "Available actions:" in text
     assert "copy" in text
     assert "diff" in text
+    assert "Examples:" not in text
+    assert "Common options:" not in text
+    assert "Common flags:" not in text
 
 
 def test_render_help_for_copy_action():
@@ -234,15 +240,8 @@ def test_render_help_mentions_filter_paging_behavior():
     )
     text = helpmod.render_help({}, {}, version="1.6.0", plugin=plugin)
 
-    assert "list/get --all keep paging until all matching rows are fetched" in text
-    assert "fetches every matching page, not just the first 1000 results" in text
-
-
-def test_render_help_mentions_catalog_view_option():
-    text = helpmod.render_help({}, {}, version="1.8.2")
-
-    assert "Catalog options:" in text
-    assert "--catalog-view=visible|full" in text
+    assert "list/get --all keep paging until all matching rows are fetched" not in text
+    assert "fetches every matching page, not just the first 1000 results" not in text
 
 
 def test_render_help_mentions_token_and_copy_syntax():
@@ -256,7 +255,7 @@ def test_render_help_mentions_token_and_copy_syntax():
     )
     text = helpmod.render_help({}, {}, version="1.7.1", plugin=plugin)
 
-    assert "netloom <module> <service> copy --from=SOURCE --to=TARGET" in text
+    assert "netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET" in text
     assert "netloom copy <module> <service> --from=SOURCE --to=TARGET" not in text
     assert "--api-token=TOKEN" in text
     assert "--token-file=PATH" in text
@@ -277,7 +276,65 @@ def test_render_help_uses_plugin_specific_examples():
 
     assert "netloom load clearpass" in text
     assert "netloom identities endpoint list --limit=10" in text
-    assert "Plugin-specific note" in text
+    assert "Plugin-specific note" not in text
+
+
+def test_render_help_for_module_is_compact():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "list": {"method": "GET", "paths": ["/api/network-device"]}
+                        }
+                    }
+                }
+            }
+        },
+        {"module": "policyelements"},
+        version="1.9.5",
+    )
+
+    assert "Usage:" in text
+    assert "netloom policyelements <service> <action> [options] [flags]" in text
+    assert (
+        "netloom policyelements <service> {copy|diff} --from=SOURCE --to=TARGET "
+        "[options] [flags]"
+        in text
+    )
+    assert "Examples:" not in text
+    assert "Common options:" not in text
+    assert "Common flags:" not in text
+
+
+def test_render_help_for_service_is_compact():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "list": {"method": "GET", "paths": ["/api/network-device"]}
+                        }
+                    }
+                }
+            }
+        },
+        {"module": "policyelements", "service": "network-device"},
+        version="1.9.5",
+    )
+
+    assert "Usage:" in text
+    assert "netloom policyelements network-device <action> [options] [flags]" in text
+    assert (
+        "netloom policyelements network-device {copy|diff} --from=SOURCE --to=TARGET "
+        "[options] [flags]"
+        in text
+    )
+    assert "Examples:" not in text
+    assert "Common options:" not in text
+    assert "Common flags:" not in text
 
 
 def test_clearpass_help_mentions_filter_shorthand():
