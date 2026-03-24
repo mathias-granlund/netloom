@@ -228,6 +228,116 @@ def test_render_help_for_diff_action():
     assert "only_in_source" in text
 
 
+def test_render_help_for_get_action_is_compact():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "list": {
+                                "method": "GET",
+                                "paths": ["/api/network-device"],
+                                "params": [
+                                    "sort",
+                                    "offset",
+                                    "limit",
+                                    "calculate_count",
+                                    "filter",
+                                ],
+                                "response_codes": ["200 OK"],
+                            },
+                            "get": {
+                                "method": "GET",
+                                "paths": [
+                                    "/api/network-device/{id}",
+                                    "/api/network-device/name/{name}",
+                                ],
+                                "response_codes": ["200 OK"],
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "get",
+        },
+        version="1.9.5",
+    )
+
+    assert "get (policyelements network-device):" in text
+    assert (
+        "usage: netloom <module> <service> get [--id=VALUE | --name=VALUE | --all] "
+        "[options]" in text
+    )
+    assert "  selectors:" in text
+    assert "    - --id=VALUE" in text
+    assert "    - --name=VALUE" in text
+    assert "    - --all" in text
+    assert "    - --filter=JSON|FIELD:OP:VALUE" in text
+    assert "  options:" in text
+    assert "    - --sort=FIELD[:asc|desc]" in text
+    assert "    - --limit=N" in text
+    assert "    - --offset=N" in text
+    assert "    - --calculate-count=true|false" in text
+    assert "    - --console" in text
+    assert "    - --out=PATH" in text
+    assert "response codes:" not in text
+    assert "response content types:" not in text
+    assert "list (used by `get --all`)" not in text
+
+
+def test_render_help_for_list_action_is_compact():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "logs": {
+                    "system-event": {
+                        "actions": {
+                            "list": {
+                                "method": "GET",
+                                "paths": ["/api/system-event"],
+                                "params": [
+                                    "sort",
+                                    "offset",
+                                    "limit",
+                                    "calculate_count",
+                                    "filter",
+                                ],
+                                "response_codes": ["200 OK"],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "logs",
+            "service": "system-event",
+            "action": "list",
+        },
+        version="1.9.5",
+    )
+
+    assert "list (logs system-event):" in text
+    assert "usage: netloom <module> <service> list [options]" in text
+    assert "  selectors:" in text
+    assert "    - --filter=JSON|FIELD:OP:VALUE" in text
+    assert "  options:" in text
+    assert "    - --sort=FIELD[:asc|desc]" in text
+    assert "    - --limit=N" in text
+    assert "    - --offset=N" in text
+    assert "    - --calculate-count=true|false" in text
+    assert "    - --console" in text
+    assert "    - --out=PATH" in text
+    assert "response codes:" not in text
+    assert "response content types:" not in text
+    assert "alias for `get --all`" not in text
+
+
 def test_render_help_mentions_filter_paging_behavior():
     plugin = types.SimpleNamespace(
         help_context=lambda: {

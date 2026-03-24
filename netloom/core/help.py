@@ -92,6 +92,110 @@ def render_diff_action_help(module: str, service: str) -> str:
     )
 
 
+def _compact_param_flag(param: str) -> str:
+    mapping = {
+        "sort": "--sort=FIELD[:asc|desc]",
+        "offset": "--offset=N",
+        "limit": "--limit=N",
+        "calculate_count": "--calculate-count=true|false",
+    }
+    return mapping.get(param, f"--{param.replace('_', '-')}=VALUE")
+
+
+def _dedupe_lines(lines: list[str]) -> list[str]:
+    seen: set[str] = set()
+    deduped: list[str] = []
+    for line in lines:
+        if line in seen:
+            continue
+        seen.add(line)
+        deduped.append(line)
+    return deduped
+
+
+def _supports_path_token(paths: list[str], token: str) -> bool:
+    marker = "{" + token + "}"
+    return any(marker in path for path in paths)
+
+
+def render_list_action_help(module: str, service: str, action_def: dict) -> str:
+    params = action_def.get("params") or []
+    selectors: list[str] = []
+    options: list[str] = []
+
+    if "filter" in params:
+        selectors.append("--filter=JSON|FIELD:OP:VALUE")
+
+    for param in params:
+        if param == "filter":
+            continue
+        options.append(_compact_param_flag(param))
+
+    options.extend(["--console", "--out=PATH"])
+    options = _dedupe_lines(options)
+
+    lines = [
+        f"list ({module} {service}):",
+        "  usage: netloom <module> <service> list [options]",
+    ]
+    if selectors:
+        lines.append("  selectors:")
+        lines.extend(f"    - {selector}" for selector in selectors)
+    if options:
+        lines.append("  options:")
+        lines.extend(f"    - {option}" for option in options)
+    return "\n".join(lines)
+
+
+def render_get_action_help(module: str, service: str, service_entry: dict) -> str:
+    action_map = service_entry.get("actions") or {}
+    get_def = action_map.get("get") or {}
+    list_def = action_map.get("list") or {}
+    get_paths = get_def.get("paths") or []
+    list_params = list_def.get("params") or []
+
+    selector_usage: list[str] = []
+    selectors: list[str] = []
+    options: list[str] = []
+
+    if _supports_path_token(get_paths, "id"):
+        selector_usage.append("--id=VALUE")
+        selectors.append("--id=VALUE")
+    if _supports_path_token(get_paths, "name"):
+        selector_usage.append("--name=VALUE")
+        selectors.append("--name=VALUE")
+    if list_def:
+        selector_usage.append("--all")
+        selectors.append("--all")
+    if "filter" in list_params:
+        selectors.append("--filter=JSON|FIELD:OP:VALUE")
+
+    for param in list_params:
+        if param == "filter":
+            continue
+        options.append(_compact_param_flag(param))
+
+    options.extend(["--console", "--out=PATH"])
+    selectors = _dedupe_lines(selectors)
+    options = _dedupe_lines(options)
+
+    usage = "  usage: netloom <module> <service> get [options]"
+    if selector_usage:
+        usage = (
+            "  usage: netloom <module> <service> get "
+            f"[{' | '.join(selector_usage)}] [options]"
+        )
+
+    lines = [f"get ({module} {service}):", usage]
+    if selectors:
+        lines.append("  selectors:")
+        lines.extend(f"    - {selector}" for selector in selectors)
+    if options:
+        lines.append("  options:")
+        lines.extend(f"    - {option}" for option in options)
+    return "\n".join(lines)
+
+
 def _is_filter_reference_note(note: str) -> bool:
     text = note.lower()
     return (
@@ -334,16 +438,9 @@ def render_catalog_help(
     elif action == "diff":
         blocks.append(render_diff_action_help(module, service))
     elif action == "get":
-        if "list" in action_map:
-            blocks.append(
-                render_action_block("list (used by `get --all`)", action_map["list"])
-            )
-        if "get" in action_map:
-            blocks.append(render_action_block("get", action_map["get"]))
+        blocks.append(render_get_action_help(module, service, service_entry))
     elif action == "list":
-        blocks.append(
-            render_action_block("list (alias for `get --all`)", action_map["list"])
-        )
+        blocks.append(render_list_action_help(module, service, action_map["list"]))
     else:
         blocks.append(render_action_block(action, action_map[action]))
 
