@@ -6,7 +6,7 @@
   <title>netloom</title>
   <meta
     name="description"
-    content="netloom is a spec-driven network API CLI for discovery, filtering, export, copy workflows, and profile-aware operations."
+    content="netloom is a plugin-backed network API CLI with a shared command model, ClearPass support, profile-aware workflows, and quick-start documentation."
   >
   <style>
     :root {
@@ -205,6 +205,16 @@
       margin-bottom: 0.7rem;
     }
 
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 0.55rem;
+      color: var(--accent-strong);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .panel p,
     .panel li {
       color: var(--ink-soft);
@@ -228,6 +238,29 @@
     .code code {
       font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
       font-size: 0.92rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+
+    .chip {
+      padding: 0.42rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .stack {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
     .footer {
@@ -268,14 +301,13 @@
   <main class="shell">
     <section class="hero">
       <article class="card hero-copy">
-        <span class="eyebrow">Weave your network APIs into one CLI</span>
+        <span class="eyebrow">Weave your network APIs into one CLI </span>
         <h1>netloom</h1>
         <p class="lead">
-          A network API CLI for discovering endpoints, inspecting available
-          actions, exporting data, replaying payloads, and copying
-          configuration between environments without hand-rolling scripts for
-          every step.
+          A CLI for working with network APIs — easy, consistent, safe, and fast.
         </p>
+        <div class="badge-row" aria-label="Highlights">
+        </div>
         <div class="cta-row">
           <a class="button primary" href="https://github.com/mathias-granlund/netloom">View on GitHub</a>
           <a class="button secondary" href="https://pypi.org/project/netloom-tool/">View on PyPI</a>
@@ -304,57 +336,50 @@ Usage:
 </pre>
       </aside>
     </section>
-
-    <section class="grid">
+    <section class="grid" aria-label="Overview and install">
       <article class="card panel">
-        <h2>What Netloom Handles</h2>
+        <span class="section-kicker">About</span>
+        <h2>Overview</h2>
         <p>
-          <code>netloom</code> turns vendor API structure into a usable command
-          surface so day-to-day operations feel predictable instead of vendor
-          specific.
+          <code>netloom</code> is a tool for operators and automation engineers
+          to simplify day-to-day tasks.
+          <strong>HPE Aruba ClearPass</strong> is a bundled plugin and the CLI is
+          organized around operator-friendly workflows.
         </p>
         <ul>
-          <li>Discover modules, services, and actions from the available API catalog</li>
-          <li>Use profile-aware workflows for lab, staging, and production targets</li>
-          <li>Export responses as JSON, CSV, or raw files for reuse and automation</li>
-          <li>Replay payloads for add, update, replace, delete, and copy flows</li>
-          <li>Use contextual help, completion, cached discovery, and dry-run planning from the CLI</li>
+          <li>Shared command model for list, create, update, delete, diff, and copy operations</li>
+          <li>Workflows for development staging -> production deployment with dry-run planning</li>
+          <li>Cached discovery, context-aware help, and shell completion from the CLI</li>
+          <li>JSON, CSV, and raw output paths for reuse and automation</li>
         </ul>
-        <div class="code"><pre>
-netloom identities endpoint ?
-netloom policyelements role copy --all --from=lab --to=prod --dry-run
-
-Dry run
-Source profile: lab
-Target profile: prod
-Service: policyelements role
-Selected: 28
-Created: 6
-Updated: 20
-Replaced: 0
-Skipped: 2
-Failed: 0</pre></div>
       </article>
-
       <article class="card panel">
-        <h2>Start Here</h2>
+        <span class="section-kicker">Install</span>
+        <h2>Install And First Run</h2>
         <p>
           Install the package, load the plugin, choose a profile, refresh the
-          cache, and explore directly from the terminal.
+          cache, and explore directly from the terminal. The first
+          <code>cache update</code> enables richer help, completion, and live
+          module and service discovery.
         </p>
         <div class="code"><pre>pip install netloom-tool
 netloom load clearpass
-netloom server use prod
+netloom server use &lt;profile&gt;
 netloom cache update
-netloom ?</pre></div>
-        <p>
-          Keep reading:
-        </p>
+netloom identities endpoint list --limit=10</pre></div>
+      </article>
+    </section>
+
+    <section class="stack" aria-label="Documentation links">
+      <article class="card panel">
+        <span class="section-kicker">Documentation</span>
+        <h2>Read The Full Guides</h2>
         <ul>
           <li><a href="https://github.com/mathias-granlund/netloom/blob/main/README.md">README</a></li>
+          <li><a href="https://github.com/mathias-granlund/netloom/blob/main/man/netloom.md">Shared CLI Reference</a></li>
+          <li><a href="https://github.com/mathias-granlund/netloom/blob/main/man/netloom-clearpass.md">ClearPass Reference</a></li>
           <li><a href="https://github.com/mathias-granlund/netloom/blob/main/CHANGELOG.md">Changelog</a></li>
           <li><a href="https://github.com/mathias-granlund/netloom/blob/main/RELEASE_NOTES.md">Release Notes</a></li>
-          <li><a href="https://github.com/mathias-granlund/netloom/tree/main/netloom/plugins/clearpass">ClearPass Plugin</a></li>
         </ul>
       </article>
     </section>
