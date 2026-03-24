@@ -33,58 +33,78 @@ def _render_usage(
     service: str | None = None,
     action: str | None = None,
 ) -> str:
+    if module == "copy":
+        module = None
+
     if module == "cache":
-        return "\n".join(
-            [
-                "Usage:",
-                "  netloom cache [clear | update]",
-                "  netloom [--help | ?]",
-            ]
-        ) + "\n"
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom cache [clear | update]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
 
     if module == "server":
-        return "\n".join(
-            [
-                "Usage:",
-                "  netloom server [list | show | use <profile>]",
-                "  netloom [--help | ?]",
-            ]
-        ) + "\n"
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom server [list | show | use <profile>]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
 
     if module == "load":
-        return "\n".join(
-            [
-                "Usage:",
-                "  netloom load [list | show | <plugin>]",
-                "  netloom [--help | ?]",
-            ]
-        ) + "\n"
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom load [list | show | <plugin>]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
 
     if module and service and not action:
-        return "\n".join(
-            [
-                "Usage:",
-                f"  netloom {module} {service} <action> [options] [flags]",
-                (
-                    f"  netloom {module} {service} {{copy|diff}} --from=SOURCE --to=TARGET "
-                    "[options] [flags]"
-                ),
-                f"  netloom {module} {service} ?",
-            ]
-        ) + "\n"
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    f"  netloom {module} {service} <action> [options] [flags]",
+                    (
+                        f"  netloom {module} {service} "
+                        "{copy|diff} --from=SOURCE --to=TARGET "
+                        "[options] [flags]"
+                    ),
+                    f"  netloom {module} {service} ?",
+                ]
+            )
+            + "\n"
+        )
 
     if module and not service:
-        return "\n".join(
-            [
-                "Usage:",
-                f"  netloom {module} <service> <action> [options] [flags]",
-                (
-                    f"  netloom {module} <service> {{copy|diff}} --from=SOURCE --to=TARGET "
-                    "[options] [flags]"
-                ),
-                f"  netloom {module} <service> ?",
-            ]
-        ) + "\n"
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    f"  netloom {module} <service> <action> [options] [flags]",
+                    (
+                        f"  netloom {module} "
+                        "<service> {copy|diff} --from=SOURCE --to=TARGET "
+                        "[options] [flags]"
+                    ),
+                    f"  netloom {module} <service> ?",
+                ]
+            )
+            + "\n"
+        )
 
     plugin_help = _plugin_help_context(plugin)
     usage_lines = [

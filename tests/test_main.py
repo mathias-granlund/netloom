@@ -1,6 +1,8 @@
 import types
 from pathlib import Path
 
+import pytest
+
 import netloom.cli.completion as completion
 import netloom.cli.main as main
 from netloom.core.config import AppPaths, Settings
@@ -196,10 +198,52 @@ def test_parse_cli_catalog_view_flag():
     assert args["catalog_view"] == "full"
 
 
+def test_parse_cli_global_flags_before_dynamic_command():
+    argv = [
+        "netloom",
+        "--catalog-view=full",
+        "--log-level=debug",
+        "identities",
+        "endpoint",
+        "list",
+    ]
+    args = main.parse_cli(argv)
+    assert args["catalog_view"] == "full"
+    assert args["log_level"] == "debug"
+    assert args["module"] == "identities"
+    assert args["service"] == "endpoint"
+    assert args["action"] == "list"
+
+
 def test_parse_cli_decrypt_flag():
     argv = ["netloom", "policyelements", "network-device", "list", "--decrypt"]
     args = main.parse_cli(argv)
     assert args["decrypt"] is True
+
+
+def test_parse_cli_question_mark_sets_help_context():
+    argv = ["netloom", "identities", "endpoint", "?"]
+    args = main.parse_cli(argv)
+    assert args["module"] == "identities"
+    assert args["service"] == "endpoint"
+    assert args["help"] is True
+
+
+def test_parse_cli_server_builtin_uses_argparse_shape():
+    argv = ["netloom", "--log-level=debug", "server", "use", "prod"]
+    args = main.parse_cli(argv)
+    assert args["module"] == "server"
+    assert args["service"] == "use"
+    assert args["action"] == "prod"
+    assert args["log_level"] == "debug"
+
+
+def test_parse_cli_cache_builtin_accepts_global_flag():
+    argv = ["netloom", "--catalog-view=full", "cache", "update"]
+    args = main.parse_cli(argv)
+    assert args["module"] == "cache"
+    assert args["service"] == "update"
+    assert args["catalog_view"] == "full"
 
 
 def test_parse_cli_copy_command():
@@ -243,17 +287,17 @@ def test_parse_cli_diff_console_expansion_flags():
     assert args["max_items"] == "25"
 
 
-def test_parse_cli_legacy_copy_alias():
-    argv = [
-        "netloom",
-        "copy",
-        "policyelements",
-        "network-device",
-        "--from=dev",
-        "--to=prod",
-    ]
+def test_parse_cli_removed_legacy_copy_alias_is_not_special_cased():
+    argv = ["netloom", "copy", "policyelements", "network-device", "--from=dev"]
     args = main.parse_cli(argv)
     assert args["module"] == "copy"
-    assert args["copy_module"] == "policyelements"
-    assert args["copy_service"] == "network-device"
-    assert args["legacy_copy_syntax"] is True
+    assert args["service"] == "policyelements"
+    assert args["action"] == "network-device"
+    assert "copy_module" not in args
+    assert "legacy_copy_syntax" not in args
+
+
+def test_parse_cli_rejects_invalid_builtin_shape():
+    argv = ["netloom", "load", "clearpass", "extra"]
+    with pytest.raises(main.CliParseError, match="unrecognized arguments: extra"):
+        main.parse_cli(argv)

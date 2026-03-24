@@ -15,18 +15,29 @@ BOOLEAN_FLAGS = {
     "debug",
     "console",
     "all",
+    "show_all",
     "decrypt",
+    "dry_run",
+    "continue_on_error",
     "help",
 }
+BUILTIN_MODULES = {"cache", "load", "server"}
+RESTRICTED_VALUE_FLAGS = {"catalog_view"}
 
 SAFE_VALUE_ALPHABET = string.ascii_letters + string.digits + "_-.:/="
 POSITIONAL_ALPHABET = string.ascii_letters + string.digits + "._/"
 
 flag_keys = st.from_regex(r"[a-z][a-z0-9_-]{0,11}", fullmatch=True).filter(
-    lambda key: key not in BOOLEAN_FLAGS and not key.startswith("_")
+    lambda key: (
+        key not in BOOLEAN_FLAGS
+        and key not in RESTRICTED_VALUE_FLAGS
+        and not key.startswith("_")
+    )
 )
 flag_values = st.text(alphabet=SAFE_VALUE_ALPHABET, min_size=0, max_size=20)
-positionals = st.from_regex(r"[A-Za-z0-9][A-Za-z0-9._/]{0,15}", fullmatch=True)
+positionals = st.from_regex(r"[A-Za-z0-9][A-Za-z0-9._/]{0,15}", fullmatch=True).filter(
+    lambda value: value not in BUILTIN_MODULES
+)
 
 leaf_values = st.one_of(
     st.none(),

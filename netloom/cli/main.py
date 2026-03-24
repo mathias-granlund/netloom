@@ -12,7 +12,7 @@ from netloom.cli.copy import handle_copy_command
 from netloom.cli.diff import handle_diff_command
 from netloom.cli.help import render_help
 from netloom.cli.load import handle_load_command
-from netloom.cli.parser import parse_cli
+from netloom.cli.parser import CliParseError, parse_cli
 from netloom.cli.server import handle_server_command
 from netloom.core.config import Settings, load_settings
 from netloom.core.plugin import get_plugin
@@ -168,7 +168,15 @@ def main() -> None:
     log_mgr = configure_logging(settings, root_name="netloom")
     log = log_mgr.get_logger(__name__)
 
-    args = parse_cli(sys.argv)
+    try:
+        args = parse_cli(sys.argv)
+    except CliParseError as exc:
+        print_help(exc.context, settings=settings)
+        message = str(exc).strip()
+        if message:
+            print(f"\n{message}")
+        return
+
     active_settings = settings_with_cli_overrides(settings, args)
 
     log_level = args.get("log_level")
@@ -189,10 +197,6 @@ def main() -> None:
         return
 
     if not args.get("module"):
-        print_help({}, settings=active_settings)
-        return
-
-    if args.get("module") == "copy":
         print_help({}, settings=active_settings)
         return
 

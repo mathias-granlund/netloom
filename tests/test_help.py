@@ -137,7 +137,7 @@ def test_render_help_for_legacy_copy_command():
 
     assert "Usage:" in text
     assert "netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET" in text
-    assert "Legacy command removed:" not in text
+    assert "netloom copy <service> <action> [options] [flags]" not in text
 
 
 def test_render_help_includes_copy_as_service_action():
@@ -300,8 +300,7 @@ def test_render_help_for_module_is_compact():
     assert "netloom policyelements <service> <action> [options] [flags]" in text
     assert (
         "netloom policyelements <service> {copy|diff} --from=SOURCE --to=TARGET "
-        "[options] [flags]"
-        in text
+        "[options] [flags]" in text
     )
     assert "Examples:" not in text
     assert "Common options:" not in text
@@ -329,8 +328,7 @@ def test_render_help_for_service_is_compact():
     assert "netloom policyelements network-device <action> [options] [flags]" in text
     assert (
         "netloom policyelements network-device {copy|diff} --from=SOURCE --to=TARGET "
-        "[options] [flags]"
-        in text
+        "[options] [flags]" in text
     )
     assert "Examples:" not in text
     assert "Common options:" not in text
@@ -343,9 +341,9 @@ def test_clearpass_help_mentions_filter_shorthand():
     text = helpmod.render_help({}, {}, version="1.7.6", plugin=plugin)
 
     assert "--filter=JSON|FIELD:OP:VALUE" in text
-    assert "--filter=key:equals:value" in text
-    assert "NETLOOM_CLIENT_SECRET_REF=prod/client-secret" in text
-    assert "netloom/clearpass" in text
+    assert "netloom identities endpoint list --filter=name:equals:TEST" in text
+    assert "Notes:" not in text
+    assert "NETLOOM_CLIENT_SECRET_REF=prod/client-secret" not in text
 
 
 def test_render_help_defaults_to_generic_examples_without_plugin():

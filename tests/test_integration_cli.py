@@ -210,6 +210,25 @@ def test_main_unknown_action_prints_help_and_message(monkeypatch, capsys, tmp_pa
     assert "Unknown command:" in out
 
 
+def test_main_parse_error_prints_help_and_message(monkeypatch, capsys, tmp_path):
+    mgr = FakeLogMgr()
+    settings = make_settings(tmp_path)
+    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(
+        main,
+        "print_help",
+        lambda args=None, **kwargs: print("Usage:\n  netloom ..."),
+    )
+
+    monkeypatch.setattr(sys, "argv", ["netloom", "load", "clearpass", "extra"])
+    main.main()
+
+    out = capsys.readouterr().out
+    assert "Usage:" in out
+    assert "unrecognized arguments: extra" in out
+
+
 def test_main_complete_mode_outputs_and_exits(monkeypatch, capsys, tmp_path):
     settings = make_settings(tmp_path)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
@@ -445,9 +464,12 @@ def test_main_diff_invokes_diff_handler(monkeypatch, tmp_path):
     assert calls["kwargs"]["settings"] == settings
 
 
-def test_main_legacy_copy_alias_prints_default_help(monkeypatch, capsys, tmp_path):
+def test_main_removed_legacy_copy_alias_is_treated_as_unknown_command(
+    monkeypatch, capsys, tmp_path
+):
     mgr = FakeLogMgr()
     settings = make_settings(tmp_path)
+    plugin = _plugin_with_catalog({"modules": {}})
     monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
     monkeypatch.setattr(
@@ -455,6 +477,7 @@ def test_main_legacy_copy_alias_prints_default_help(monkeypatch, capsys, tmp_pat
         "print_help",
         lambda args=None, **kwargs: print("Usage:\n  netloom ..."),
     )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
 
     monkeypatch.setattr(
         sys,
@@ -473,4 +496,4 @@ def test_main_legacy_copy_alias_prints_default_help(monkeypatch, capsys, tmp_pat
 
     out = capsys.readouterr().out
     assert "Usage:" in out
-    assert "Legacy command removed" not in out
+    assert "Unknown command: copy policyelements network-device" in out
