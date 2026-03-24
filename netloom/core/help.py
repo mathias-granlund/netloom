@@ -94,7 +94,7 @@ def render_diff_action_help(module: str, service: str) -> str:
 
 def _compact_param_flag(param: str) -> str:
     mapping = {
-        "sort": "--sort=FIELD[:asc|desc]",
+        "sort": "--sort=+FIELD|-FIELD",
         "offset": "--offset=N",
         "limit": "--limit=N",
         "calculate_count": "--calculate-count=true|false",
@@ -116,6 +116,38 @@ def _dedupe_lines(lines: list[str]) -> list[str]:
 def _supports_path_token(paths: list[str], token: str) -> bool:
     marker = "{" + token + "}"
     return any(marker in path for path in paths)
+
+
+def _selector_flags_from_paths(paths: list[str]) -> list[str]:
+    selectors: list[str] = []
+    if _supports_path_token(paths, "id"):
+        selectors.append("--id=VALUE")
+    if _supports_path_token(paths, "name"):
+        selectors.append("--name=VALUE")
+    return selectors
+
+
+def _body_field_names(action_def: dict) -> tuple[list[str], list[str]]:
+    body_fields = action_def.get("body_fields") or []
+    required_names = list(action_def.get("body_required") or [])
+    optional_names: list[str] = []
+
+    for field in body_fields:
+        if not isinstance(field, dict):
+            continue
+        name = field.get("name")
+        if not name:
+            continue
+        if field.get("required"):
+            required_names.append(str(name))
+        else:
+            optional_names.append(str(name))
+
+    required_names = _dedupe_lines(required_names)
+    optional_names = [
+        name for name in _dedupe_lines(optional_names) if name not in required_names
+    ]
+    return required_names, optional_names
 
 
 def render_list_action_help(module: str, service: str, action_def: dict) -> str:
@@ -193,6 +225,59 @@ def render_get_action_help(module: str, service: str, service_entry: dict) -> st
     if options:
         lines.append("  options:")
         lines.extend(f"    - {option}" for option in options)
+    return "\n".join(lines)
+
+
+def render_write_action_help(
+    module: str, service: str, action: str, action_def: dict
+) -> str:
+    paths = action_def.get("paths") or []
+    selectors = _selector_flags_from_paths(paths)
+    required_fields, optional_fields = _body_field_names(action_def)
+
+    options = ["--file=PATH", "--console", "--out=PATH"]
+    usage = (
+        f"  usage: netloom <module> <service> {action} "
+        "[--file=PATH | field=value ...] [options]"
+    )
+
+    if selectors:
+        usage = (
+            f"  usage: netloom <module> <service> {action} "
+            f"[{' | '.join(selectors)}] [--file=PATH | field=value ...] [options]"
+        )
+
+    lines = [f"{action} ({module} {service}):", usage]
+    if selectors:
+        lines.append("  selectors:")
+        lines.extend(f"    - {selector}" for selector in selectors)
+    if required_fields:
+        lines.append("  required fields:")
+        lines.extend(f"    - {field}" for field in required_fields)
+    if optional_fields:
+        lines.append("  optional fields:")
+        lines.extend(f"    - {field}" for field in optional_fields)
+    lines.append("  options:")
+    lines.extend(f"    - {option}" for option in options)
+    return "\n".join(lines)
+
+
+def render_delete_action_help(module: str, service: str, action_def: dict) -> str:
+    paths = action_def.get("paths") or []
+    selectors = _selector_flags_from_paths(paths)
+    usage = "  usage: netloom <module> <service> delete [options]"
+    if selectors:
+        usage = (
+            "  usage: netloom <module> <service> delete "
+            f"[{' | '.join(selectors)}] [options]"
+        )
+
+    lines = [f"delete ({module} {service}):", usage]
+    if selectors:
+        lines.append("  selectors:")
+        lines.extend(f"    - {selector}" for selector in selectors)
+    lines.append("  options:")
+    lines.extend(["    - --console", "    - --out=PATH"])
     return "\n".join(lines)
 
 
@@ -441,6 +526,12 @@ def render_catalog_help(
         blocks.append(render_get_action_help(module, service, service_entry))
     elif action == "list":
         blocks.append(render_list_action_help(module, service, action_map["list"]))
+    elif action in {"add", "update", "replace"}:
+        blocks.append(
+            render_write_action_help(module, service, action, action_map[action])
+        )
+    elif action == "delete":
+        blocks.append(render_delete_action_help(module, service, action_map["delete"]))
     else:
         blocks.append(render_action_block(action, action_map[action]))
 

@@ -1,25 +1,29 @@
-# netloom v1.9.5
+# netloom v1.9.6
 
-This release keeps package metadata aligned while updating the GitHub Actions
-workflows for the upcoming Node 24 transition on hosted runners.
+This release focuses on making the CLI help output easier to scan, especially
+for dynamic actions discovered from the API catalog.
 
 ## Highlights
 
-- updated the package workflow to action versions aligned with the Node 24
-  migration path on GitHub-hosted runners
-- updated the Pages workflow checkout step to the Node 24-ready checkout action
-- aligned package metadata, release notes, README badge, and checked-in manpage
-  headers with version `1.9.5`
+- migrated the CLI to a hybrid parser model with `argparse` handling stable
+  built-ins and shared global flags while keeping dynamic plugin actions
+  flexible
+- simplified top-level, module, and service `--help` output and removed the
+  remaining legacy top-level `copy` parser special-casing
+- redesigned `list`, `get`, `add`, `update`, `replace`, and `delete` action
+  help into a more compact, operator-focused format that still highlights
+  selectors and required fields
 
 ## Examples
 
 ```bash
-gh workflow run package.yml
-gh run watch
+netloom policyelements network-device get ?
+netloom policyelements network-device add ?
+netloom logs system-event list ?
 ```
 
 ## Notes
 
-- the Node.js 20 warning from `checkout` and `setup-python` should no longer
-  apply to the upgraded workflow actions
 - installable man pages still come from `netloom/data/man/`
+- dynamic plugin command flags continue to be parsed permissively after the
+  stable outer CLI layer

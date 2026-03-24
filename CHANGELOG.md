@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.6 - 2026-03-24
+
+### Changed
+- migrated CLI parsing to a hybrid model with `argparse` handling stable built-ins and shared global flags while the dynamic plugin command surface remains custom
+- removed the remaining parser special-casing for the old top-level `netloom copy <module> <service> ...` alias
+- simplified top-level, module, and service help output so it is smaller and more context-focused
+- redesigned `list`, `get`, `add`, `update`, `replace`, and `delete` action help into compact task-oriented layouts that emphasize selectors, required fields, and common options
+- updated the compact sort hint to show the actual `--sort=+FIELD|-FIELD` form
+
 ## 1.9.5 - 2026-03-24
 
 ### Changed

@@ -279,7 +279,7 @@ def test_render_help_for_get_action_is_compact():
     assert "    - --all" in text
     assert "    - --filter=JSON|FIELD:OP:VALUE" in text
     assert "  options:" in text
-    assert "    - --sort=FIELD[:asc|desc]" in text
+    assert "    - --sort=+FIELD|-FIELD" in text
     assert "    - --limit=N" in text
     assert "    - --offset=N" in text
     assert "    - --calculate-count=true|false" in text
@@ -327,7 +327,7 @@ def test_render_help_for_list_action_is_compact():
     assert "  selectors:" in text
     assert "    - --filter=JSON|FIELD:OP:VALUE" in text
     assert "  options:" in text
-    assert "    - --sort=FIELD[:asc|desc]" in text
+    assert "    - --sort=+FIELD|-FIELD" in text
     assert "    - --limit=N" in text
     assert "    - --offset=N" in text
     assert "    - --calculate-count=true|false" in text
@@ -336,6 +336,197 @@ def test_render_help_for_list_action_is_compact():
     assert "response codes:" not in text
     assert "response content types:" not in text
     assert "alias for `get --all`" not in text
+
+
+def test_render_help_for_add_action_is_compact_and_shows_required_fields():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "add": {
+                                "method": "POST",
+                                "paths": ["/api/network-device"],
+                                "body_required": ["name", "ip_address"],
+                                "body_fields": [
+                                    {"name": "name", "required": True},
+                                    {"name": "ip_address", "required": True},
+                                    {"name": "description", "required": False},
+                                    {"name": "radius_secret", "required": False},
+                                ],
+                                "response_codes": ["201 Created"],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "add",
+        },
+        version="1.9.5",
+    )
+
+    assert "add (policyelements network-device):" in text
+    assert (
+        "usage: netloom <module> <service> add [--file=PATH | field=value ...] "
+        "[options]" in text
+    )
+    assert "  required fields:" in text
+    assert "    - name" in text
+    assert "    - ip_address" in text
+    assert "  optional fields:" in text
+    assert "    - description" in text
+    assert "    - radius_secret" in text
+    assert "  options:" in text
+    assert "    - --file=PATH" in text
+    assert "    - --console" in text
+    assert "    - --out=PATH" in text
+    assert "response codes:" not in text
+    assert "body example:" not in text
+
+
+def test_render_help_for_update_action_is_compact_and_shows_selectors():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "update": {
+                                "method": "PATCH",
+                                "paths": [
+                                    "/api/network-device/{id}",
+                                    "/api/network-device/name/{name}",
+                                ],
+                                "body_fields": [
+                                    {"name": "description", "required": False},
+                                    {"name": "name", "required": False},
+                                    {"name": "ip_address", "required": False},
+                                ],
+                                "response_codes": ["200 OK"],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "update",
+        },
+        version="1.9.5",
+    )
+
+    assert "update (policyelements network-device):" in text
+    assert (
+        "usage: netloom <module> <service> update [--id=VALUE | --name=VALUE] "
+        "[--file=PATH | field=value ...] [options]" in text
+    )
+    assert "  selectors:" in text
+    assert "    - --id=VALUE" in text
+    assert "    - --name=VALUE" in text
+    assert "  optional fields:" in text
+    assert "    - description" in text
+    assert "    - name" in text
+    assert "    - ip_address" in text
+    assert "response codes:" not in text
+    assert "body example:" not in text
+
+
+def test_render_help_for_replace_action_is_compact_and_shows_required_fields():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "replace": {
+                                "method": "PUT",
+                                "paths": [
+                                    "/api/network-device/{id}",
+                                    "/api/network-device/name/{name}",
+                                ],
+                                "body_required": ["name", "ip_address"],
+                                "body_fields": [
+                                    {"name": "name", "required": True},
+                                    {"name": "ip_address", "required": True},
+                                    {"name": "description", "required": False},
+                                ],
+                                "response_codes": ["200 OK"],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "replace",
+        },
+        version="1.9.5",
+    )
+
+    assert "replace (policyelements network-device):" in text
+    assert (
+        "usage: netloom <module> <service> replace [--id=VALUE | --name=VALUE] "
+        "[--file=PATH | field=value ...] [options]" in text
+    )
+    assert "  required fields:" in text
+    assert "    - name" in text
+    assert "    - ip_address" in text
+    assert "  optional fields:" in text
+    assert "    - description" in text
+    assert "response codes:" not in text
+    assert "body example:" not in text
+
+
+def test_render_help_for_delete_action_is_compact_and_shows_selectors():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "policyelements": {
+                    "network-device": {
+                        "actions": {
+                            "delete": {
+                                "method": "DELETE",
+                                "paths": [
+                                    "/api/network-device/{id}",
+                                    "/api/network-device/name/{name}",
+                                ],
+                                "response_codes": ["204 No Content"],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "policyelements",
+            "service": "network-device",
+            "action": "delete",
+        },
+        version="1.9.5",
+    )
+
+    assert "delete (policyelements network-device):" in text
+    assert (
+        "usage: netloom <module> <service> delete [--id=VALUE | --name=VALUE] "
+        "[options]" in text
+    )
+    assert "  selectors:" in text
+    assert "    - --id=VALUE" in text
+    assert "    - --name=VALUE" in text
+    assert "  options:" in text
+    assert "    - --console" in text
+    assert "    - --out=PATH" in text
+    assert "response codes:" not in text
+    assert "response content types:" not in text
 
 
 def test_render_help_mentions_filter_paging_behavior():
