@@ -15,10 +15,10 @@ def test_load_keychain_secret_uses_plugin_service_namespace(monkeypatch):
             NoKeyringError=RuntimeError,
             KeyringError=RuntimeError,
         ),
-        get_password=lambda service, username: calls.update(
-            {"service": service, "username": username}
-        )
-        or "resolved-secret",
+        get_password=lambda service, username: (
+            calls.update({"service": service, "username": username})
+            or "resolved-secret"
+        ),
     )
     monkeypatch.setattr(secretsmod, "import_module", lambda name: fake_keyring)
 

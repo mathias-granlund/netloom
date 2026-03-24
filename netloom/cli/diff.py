@@ -508,9 +508,7 @@ def _print_differences(
             changed_paths if value_limit is None else changed_paths[:value_limit]
         )
         hidden_values = (
-            0
-            if value_limit is None
-            else max(len(changed_paths) - value_limit, 0)
+            0 if value_limit is None else max(len(changed_paths) - value_limit, 0)
         )
         for path in visible_paths:
             values = changed_values.get(path) or {}
