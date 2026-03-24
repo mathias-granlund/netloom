@@ -35,6 +35,7 @@ def _render_usage(plugin=None) -> str:
         "  netloom cache [clear | update]",
         "  netloom <module> <service> <action> [options] [flags]",
         "  netloom <module> <service> copy --from=SOURCE --to=TARGET [options] [flags]",
+        "  netloom <module> <service> diff --from=SOURCE --to=TARGET [options] [flags]",
         "  netloom [--help | ?]",
         "  netloom --version",
     ]
