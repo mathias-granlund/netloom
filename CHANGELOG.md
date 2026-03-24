@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.5 - 2026-03-24
+
+### Changed
+- updated the package workflow from `actions/checkout@v4` to `@v5`, `actions/setup-python@v5` to `@v6`, and artifact transfer steps to `@v6` for the Node 24 transition path
+- updated the Pages workflow checkout step from `actions/checkout@v4` to `@v5`
+- aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.5` release
+
 ## 1.9.4 - 2026-03-24
 
 ### Changed
