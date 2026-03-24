@@ -1,10 +1,11 @@
 include LICENSE
 include README.md
 include CHANGELOG.md
+include defaults.env.example
 include profiles.env.example
 include credentials.env.example
-include man/netloom.1
-include man/netloom-clearpass.7
+include man/netloom.md
+include man/netloom-clearpass.md
 include scripts/netloom-completion.bash
 recursive-include netloom/data/man *.1
 recursive-include netloom/data/man *.7

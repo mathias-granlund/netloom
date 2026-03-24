@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.4 - 2026-03-24
+
+### Changed
+- rewrote the README into a shorter quick-start guide focused on overview, install, minimal configuration, first run, practical examples, and links to deeper docs
+- moved the repository documentation split toward a single manpage source of truth under `netloom/data/man/`, while turning the top-level `man/` directory into GitHub-friendly Markdown references
+- restored detailed shell completion and `--filter=` guidance in the shared and ClearPass manpage references
+- aligned release metadata and checked-in manpage version headers for the `1.9.4` release
+
 ## 1.9.3 - 2026-03-24
 
 ### Added

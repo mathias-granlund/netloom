@@ -1,6 +1,6 @@
-.TH NETLOOM 1 "March 2026" "netloom 1.9.3" "User Commands"
+.TH NETLOOM 1 "March 2026" "netloom 1.9.4" "User Commands"
 .SH NAME
-netloom \- spec-driven network API CLI with plugin-backed providers.
+netloom \- shared command-line interface for plugin-backed network APIs.
 
 .SH SYNOPSIS
 .B netloom
@@ -28,26 +28,27 @@ netloom \- spec-driven network API CLI with plugin-backed providers.
 
 .SH DESCRIPTION
 .B netloom
-provides a shared command-line interface for plugin-backed network API clients.
+provides a common CLI surface for vendor-specific network API plugins.
 
-The stable command surface covers plugin selection, profile switching, API cache
-management, output handling, and shared request options. The exact modules,
-services, actions, and request metadata available under
+The shared runtime handles plugin selection, profile switching, cache
+management, output formatting, logging, and generic request options. The exact
+modules, services, actions, and request fields available under
 .BR "netloom <module> <service> <action>" ,
-however, depend on the active plugin and the API documentation it discovers.
+however, come from the active plugin and whatever API documentation that plugin
+discovers from the selected server.
 
-This manual documents the shared CLI behavior. Plugin-specific behavior should
-live in separate manuals. The bundled ClearPass plugin is documented in
+This manual is the shared reference. Provider-specific behavior belongs in
+plugin manuals such as
 .BR netloom-clearpass (7).
 
 .SH BUILT-IN COMMANDS
 .TP
 .B netloom load <plugin>
-Persist the active plugin selection used by later plugin-backed commands.
+Persist the active plugin used by later plugin-backed commands.
 
 .TP
 .B netloom load list
-Show installed or configured plugins.
+List installed or configured plugins.
 
 .TP
 .B netloom load show
@@ -55,11 +56,11 @@ Show the currently selected plugin.
 
 .TP
 .B netloom server list
-Show configured profiles for the active plugin.
+List configured profiles for the active plugin.
 
 .TP
 .B netloom server show
-Show the current profile and related config file locations.
+Show the current profile and the config files that affect it.
 
 .TP
 .B netloom server use <profile>
@@ -71,10 +72,10 @@ Refresh the local API catalog for the active plugin.
 
 .TP
 .B netloom cache clear
-Remove the local API catalog cache for the active plugin.
+Remove the cached API catalog for the active plugin.
 
 .SH COMMAND MODEL
-The general plugin-backed command form is:
+The general plugin-backed form is:
 
 .PP
 .EX
@@ -85,11 +86,15 @@ Common action names include:
 
 .TP
 .B list
-List collection resources. Often equivalent to \fBget --all\fR.
+List a collection. Often equivalent to
+.B get --all
+when the plugin exposes both.
 
 .TP
 .B get
-Retrieve one resource or, with \fB--all\fR, a collection.
+Retrieve one resource or, with
+.BR --all ,
+a collection.
 
 .TP
 .B add
@@ -105,7 +110,7 @@ Replace an existing resource.
 
 .TP
 .B delete
-Delete a resource.
+Delete an existing resource.
 
 .TP
 .B copy
@@ -117,12 +122,12 @@ active plugin.
 Compare matching resources between two profiles when supported by the active
 plugin.
 
-The available modules, services, actions, and request details are discovered
-dynamically and may vary by plugin, server version, and enabled API surface.
+Modules, services, actions, selectors, and request metadata are discovered
+dynamically and may differ by plugin, server version, and enabled API surface.
 
 .SH PLUGINS
 Plugins provide vendor-specific authentication, discovery, payload handling,
-and documentation while reusing the shared
+normalization, and documentation while reusing the shared
 .B netloom
 runtime.
 
@@ -133,15 +138,19 @@ At least one plugin must be selected before running plugin-backed commands:
 netloom load clearpass
 .EE
 
-The bundled plugin manuals are the right place for provider-specific workflows,
-quirks, and examples. See
-.BR netloom-clearpass (7)
-for the current built-in provider guide.
+For provider-specific examples, cache behavior, and authentication details, use
+the relevant plugin manual in addition to dynamic help.
 
 .SH GLOBAL OPTIONS
 .TP
 .BI --log-level= LEVEL
-Set log level. Typical values: debug, info, warning, error, critical.
+Set the runtime log level. Typical values are
+.BR debug ,
+.BR info ,
+.BR warning ,
+.BR error ,
+and
+.BR critical .
 
 .TP
 .B --console
@@ -149,35 +158,44 @@ Also print response output to the terminal.
 
 .TP
 .BI --out= FILE
-Write output to a specific file.
+Write output to an explicit file instead of using a generated default path.
 
 .TP
 .BI --data-format= FORMAT
-Set output format. Supported values: json, csv, raw.
+Choose output format. Supported values are
+.BR json ,
+.BR csv ,
+and
+.BR raw .
 
 .TP
 .BI --csv-fieldnames= FIELDS
-Comma-separated field list for CSV output ordering.
+Comma-separated field order for CSV output.
 
 .TP
 .BI --file= FILE
-Load request payload from JSON or CSV for bulk or write actions.
+Load JSON or CSV input for write or bulk-style actions.
 
 .TP
 .BI --api-token= TOKEN
-Use an existing bearer token instead of logging in.
+Use an existing bearer token instead of logging in through the plugin.
 
 .TP
 .BI --token-file= FILE
-Load a bearer token from file.
+Read a bearer token from a file.
+
+.TP
+.BI --catalog-view= visible|full
+Choose whether help, completion, and action discovery use the default visible
+catalog or the full retained discovered catalog.
 
 .TP
 .BI --limit= N
-Set list page size when supported by the endpoint.
+Set page size when supported by the endpoint.
 
 .TP
 .BI --offset= N
-Set list offset when supported by the endpoint.
+Set a collection offset when supported by the endpoint.
 
 .TP
 .BI --sort= FIELD
@@ -185,11 +203,11 @@ Set server-side sort when supported by the endpoint.
 
 .TP
 .BI --filter= JSON|FIELD:OP:VALUE
-Set server-side filter expression when supported by the endpoint.
+Set a server-side filter when supported by the endpoint.
 
 .TP
 .BI --calculate-count= true|false
-Request total count when supported by the endpoint.
+Request a total-count style response when supported by the endpoint.
 
 .TP
 .BI --encrypt= enable|disable
@@ -197,20 +215,110 @@ Control masking of secret values in saved or logged output.
 
 .TP
 .B --decrypt
-Disable secret masking in output.
+Disable output masking and show secrets in output.
 
 .TP
 .BR --help ", " ?
-Show help.
+Show context-aware help.
 
 .TP
 .B --version
 Show version.
 
+.SH FILTER EXPRESSIONS
+When a plugin supports server-side filtering,
+.B netloom
+accepts either shorthand expressions or raw JSON expressions.
+
+Shorthand syntax uses:
+
+.PP
+.EX
+FIELD:OP:VALUE
+.EE
+
+Common operators include:
+
+.PP
+.EX
+equals
+not-equals
+contains
+in
+not-in
+gt
+gte
+lt
+lte
+exists
+.EE
+
+Common shorthand examples:
+
+.PP
+.EX
+--filter=name:equals:TEST
+--filter=name:contains:guest
+--filter=id:in:1,2,3
+--filter=enabled:exists:true
+.EE
+
+Equivalent JSON patterns commonly include:
+
+.PP
+.EX
+{"key":{"$eq":"value"}}
+{"key":{"$ne":"value"}}
+{"key":{"$contains":"value"}}
+{"key":{"$in":["value1","value2"]}}
+{"key":{"$nin":["value1","value2"]}}
+{"key":{"$gt":"value"}}
+{"key":{"$gte":"value"}}
+{"key":{"$lt":"value"}}
+{"key":{"$lte":"value"}}
+{"key":{"$regex":"regex"}}
+{"key":{"$exists":true}}
+{"key":{"$exists":false}}
+{"$and":[filter1,filter2]}
+{"$or":[filter1,filter2]}
+{"$not":{filter}}
+.EE
+
+For advanced cases, pass raw JSON such as:
+
+.PP
+.EX
+--filter='{"name":{"$contains":"guest"}}'
+--filter='{"$and":[{"status":{"$eq":"Known"}},{"enabled":{"$exists":true}}]}'
+.EE
+
+Shell quoting matters because JSON expressions are passed as strings.
+
+.SH CATALOG VIEWS
+Some plugins retain more discovered metadata than they expose by default.
+When that happens,
+.B --catalog-view=visible
+shows the normal operator-facing subset, while
+.B --catalog-view=full
+shows the full retained discovery data.
+
+This affects dynamic help, completion, and command validation rather than just
+presentation.
+
+Typical troubleshooting flow:
+
+.PP
+.EX
+netloom --catalog-view=full ?
+netloom --catalog-view=full <module> <service> ?
+.EE
+
 .SH OUTPUT
 By default,
 .B netloom
-writes responses to files under its state and output directories.
+writes response files under its state and output directories. Default generated
+filenames include timestamps so repeated commands do not overwrite earlier
+artifacts.
 
 Supported output formats are:
 
@@ -224,12 +332,11 @@ CSV output for list-style data.
 
 .TP
 .B raw
-Raw text or binary output, used especially for export and download style
-endpoints.
+Raw text or binary output, commonly used for export and download endpoints.
 
 For binary responses,
 .B netloom
-may automatically choose raw output and use the filename provided by the
+may automatically select raw output and preserve the filename provided by the
 server.
 
 .SH ENVIRONMENT
@@ -263,19 +370,19 @@ Mask secret values by default.
 
 .TP
 .B NETLOOM_CACHE_DIR
-Override cache directory.
+Override the cache directory.
 
 .TP
 .B NETLOOM_STATE_DIR
-Override state directory.
+Override the state directory.
 
 .TP
 .B NETLOOM_OUT_DIR
-Override response output directory.
+Override the response output directory.
 
 .TP
 .B NETLOOM_APP_LOG_DIR
-Override application log directory.
+Override the application log directory.
 
 .TP
 .B NETLOOM_CONFIG_DIR
@@ -294,11 +401,11 @@ Plugin-specific configuration root.
 
 .TP
 .B ~/.cache/netloom/
-Default cache directory on Linux when XDG defaults are used.
+Default cache directory on Linux when XDG-style defaults are used.
 
 .TP
 .B ~/.local/state/netloom/
-Default state directory on Linux when XDG defaults are used.
+Default state directory on Linux when XDG-style defaults are used.
 
 .TP
 .B ~/.local/state/netloom/responses/
@@ -307,6 +414,68 @@ Default response output directory.
 .TP
 .B ~/.local/state/netloom/logs/
 Default log directory.
+
+.SH COMPLETION AND HELP
+Completion quality depends on the local API catalog. If module or service names
+look incomplete, refresh the cache:
+
+.PP
+.EX
+netloom cache update
+.EE
+
+Dynamic help is available at several levels:
+
+.PP
+.EX
+netloom ?
+netloom <module> <service> ?
+netloom <module> <service> <action> ?
+.EE
+
+.SH BASH COMPLETION
+The repository includes a Bash completion script at:
+
+.PP
+.EX
+scripts/netloom-completion.bash
+.EE
+
+Run it once for the current shell session:
+
+.PP
+.EX
+source /path/to/netloom/scripts/netloom-completion.bash
+.EE
+
+One simple persistent setup is:
+
+.PP
+.EX
+mkdir -p ~/.bash_completion.d
+cp /path/to/netloom/scripts/netloom-completion.bash ~/.bash_completion.d
+.EE
+
+Then load files from that directory in
+.B ~/.bashrc
+or the equivalent shell startup file:
+
+.PP
+.EX
+if [ -d "$HOME/.bash_completion.d" ]; then
+  for f in "$HOME"/.bash_completion.d/*; do
+    [ -r "$f" ] && source "$f"
+  done
+fi
+.EE
+
+Completion quality depends on the local cache. If discovered modules or
+services look incomplete, run:
+
+.PP
+.EX
+netloom cache update
+.EE
 
 .SH EXAMPLES
 Select a plugin and refresh discovery metadata:
@@ -331,24 +500,18 @@ List resources through the active plugin:
 netloom identities endpoint list --limit=10
 .EE
 
+Inspect one object directly in the terminal:
+
+.PP
+.EX
+netloom policyelements network-device get --id=1001 --console
+.EE
+
 Use dynamic help for a discovered action:
 
 .PP
 .EX
 netloom policyelements network-device add ?
-.EE
-
-.SH NOTES
-This manual intentionally stays focused on the shared CLI behavior.
-
-For provider-specific guidance, examples, authentication details, cache notes,
-and copy workflows, read the relevant plugin manual in addition to the built-in
-dynamic help:
-
-.PP
-.EX
-netloom <module> <service> ?
-netloom <module> <service> <action> ?
 .EE
 
 .SH EXIT STATUS
