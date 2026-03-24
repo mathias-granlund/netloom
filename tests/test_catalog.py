@@ -1,8 +1,14 @@
+import json
+
 from netloom.core.config import AppPaths, Settings
 from netloom.plugins.clearpass.catalog import (
     ApiEndpointCache,
     _filter_catalog_by_effective_privileges,
     _visible_catalog_modules,
+    build_catalog_index,
+    clear_api_cache,
+    get_index_file_path,
+    load_cached_index,
     project_catalog_view,
 )
 
@@ -268,3 +274,128 @@ def test_project_catalog_view_can_switch_to_full_modules():
     assert projected["catalog_view"] == "full"
     assert "endpoint" in projected["modules"]["identities"]
     assert "guest" in projected["modules"]["identities"]
+
+
+def test_build_catalog_index_trims_heavy_action_metadata():
+    catalog = {
+        "version": 5,
+        "modules": {
+            "policyelements": {
+                "network-device": {
+                    "actions": {
+                        "add": {
+                            "method": "POST",
+                            "paths": ["/api/network-device"],
+                            "summary": "Create a network device",
+                            "response_codes": ["201 Created"],
+                            "response_content_types": ["application/json"],
+                            "body_required": ["name"],
+                            "body_fields": [
+                                {
+                                    "name": "name",
+                                    "required": True,
+                                    "type": "string",
+                                    "description": "Device name",
+                                },
+                                {
+                                    "name": "description",
+                                    "required": False,
+                                    "type": "string",
+                                },
+                            ],
+                            "body_example": {"name": "switch-a"},
+                        }
+                    }
+                }
+            }
+        },
+        "full_modules": {
+            "policyelements": {
+                "network-device": {
+                    "actions": {
+                        "add": {
+                            "method": "POST",
+                            "paths": ["/api/network-device"],
+                        }
+                    }
+                }
+            }
+        },
+    }
+
+    index = build_catalog_index(catalog)
+    action = index["modules"]["policyelements"]["network-device"]["actions"]["add"]
+
+    assert index["index_version"] == 1
+    assert "full_modules" in index
+    assert action["method"] == "POST"
+    assert action["paths"] == ["/api/network-device"]
+    assert action["body_required"] == ["name"]
+    assert action["body_fields"] == [
+        {"name": "name", "required": True},
+        {"name": "description"},
+    ]
+    assert "response_codes" not in action
+    assert "response_content_types" not in action
+    assert "body_example" not in action
+
+
+def test_load_cached_index_projects_full_modules(tmp_path):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    path = get_index_file_path(settings=settings)
+    path.write_text(
+        json.dumps(
+            {
+                "version": 5,
+                "index_version": 1,
+                "modules": {
+                    "identities": {"endpoint": {"actions": {"list": {"method": "GET"}}}}
+                },
+                "full_modules": {
+                    "identities": {
+                        "endpoint": {"actions": {"list": {"method": "GET"}}},
+                        "guest": {"actions": {"list": {"method": "GET"}}},
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    visible = load_cached_index(settings=settings)
+    full = load_cached_index(settings=settings, catalog_view="full")
+
+    assert "endpoint" in visible["modules"]["identities"]
+    assert "guest" not in visible["modules"]["identities"]
+    assert "guest" in full["modules"]["identities"]
+    assert full["catalog_view"] == "full"
+
+
+def test_clear_api_cache_removes_full_cache_and_index(tmp_path):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    cache = ApiEndpointCache(FakeCP(), token="tok", settings=settings)
+    cache.cache_path.write_text('{"version":5,"modules":{}}', encoding="utf-8")
+    cache.index_path.write_text(
+        '{"version":5,"index_version":1,"modules":{}}',
+        encoding="utf-8",
+    )
+
+    removed = clear_api_cache(settings=settings)
+
+    assert removed is True
+    assert cache.cache_path.exists() is False
+    assert cache.index_path.exists() is False

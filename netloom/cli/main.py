@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import os
 import sys
+import time
 from dataclasses import is_dataclass, replace
 
 import urllib3
@@ -14,10 +16,62 @@ from netloom.cli.help import render_help
 from netloom.cli.load import handle_load_command
 from netloom.cli.parser import CliParseError, parse_cli
 from netloom.cli.server import handle_server_command
-from netloom.core.config import Settings, load_settings
+from netloom.core.config import (
+    CLI_TIMING_ENV,
+    Settings,
+    load_settings,
+)
 from netloom.core.plugin import get_plugin
 from netloom.io.output import should_mask_secrets
 from netloom.logging.setup import LOG_LEVELS, configure_logging
+
+_COMPACT_HELP_ACTIONS = {
+    "copy",
+    "diff",
+    "list",
+    "get",
+    "add",
+    "update",
+    "replace",
+    "delete",
+}
+
+
+def _env_cli_timing_value() -> str | None:
+    return os.getenv(CLI_TIMING_ENV)
+
+
+class _CliProfiler:
+    def __init__(self, label: str, *, settings: Settings | None = None):
+        self.label = label
+        env_value = _env_cli_timing_value()
+        if env_value is not None:
+            self.enabled = env_value.strip().lower() not in {"", "0", "false", "no"}
+        else:
+            self.enabled = bool(getattr(settings, "cli_timing", False))
+        self.records: list[tuple[str, float]] = []
+        self._start = time.perf_counter()
+
+    def call(self, name: str, func, *args, **kwargs):
+        if not self.enabled:
+            return func(*args, **kwargs)
+        started = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            self.records.append((name, (time.perf_counter() - started) * 1000.0))
+
+    def emit(self) -> None:
+        if not self.enabled:
+            return
+        total_ms = (time.perf_counter() - self._start) * 1000.0
+        parts = [f"{name}={duration:.1f}ms" for name, duration in self.records]
+        summary = ", ".join(parts)
+        print(
+            f"[netloom timing] {self.label} total={total_ms:.1f}ms"
+            + (f" ({summary})" if summary else ""),
+            file=sys.stderr,
+        )
 
 
 def _catalog_view_from_args(args: dict | None) -> str:
@@ -52,13 +106,47 @@ def _load_catalog_for_cli(
     *,
     settings: Settings | None,
     catalog_view: str,
+    prefer_index: bool = False,
 ) -> dict | None:
+    if prefer_index:
+        loader = getattr(plugin, "load_cached_index", None)
+        if callable(loader):
+            try:
+                catalog = loader(settings=settings, catalog_view=catalog_view)
+            except TypeError as exc:
+                if "catalog_view" not in str(exc):
+                    raise
+                catalog = loader(settings=settings)
+            if catalog is not None:
+                return catalog
     try:
         return plugin.load_cached_catalog(settings=settings, catalog_view=catalog_view)
     except TypeError as exc:
         if "catalog_view" not in str(exc):
             raise
         return plugin.load_cached_catalog(settings=settings)
+
+
+def _catalog_has_action(
+    catalog: dict | None, module: str | None, service: str | None, action: str | None
+) -> bool:
+    if not all((isinstance(catalog, dict), module, service, action)):
+        return False
+    modules = catalog.get("modules") or {}
+    service_entry = (modules.get(module) or {}).get(service)
+    if not isinstance(service_entry, dict):
+        return False
+    actions = service_entry.get("actions") or {}
+    return action in actions
+
+
+def _help_prefers_index(args: dict | None) -> bool:
+    if not args:
+        return True
+    action = args.get("action")
+    if not action:
+        return True
+    return action in _COMPACT_HELP_ACTIONS
 
 
 def _get_catalog_for_cli(
@@ -95,51 +183,106 @@ def print_help(
     plugin=None,
     settings: Settings | None = None,
 ) -> None:
+    effective_settings = settings
+    if effective_settings is None and _env_cli_timing_value() is None:
+        try:
+            effective_settings = load_settings()
+        except Exception:
+            effective_settings = None
+    profiler = _CliProfiler("help", settings=effective_settings)
     selected_plugin = plugin
     if selected_plugin is None:
         try:
-            selected_plugin = get_plugin(None, settings=settings or load_settings())
+            selected_plugin = profiler.call(
+                "get_plugin",
+                get_plugin,
+                None,
+                settings=effective_settings
+                or profiler.call("load_settings", load_settings),
+            )
         except ValueError:
             selected_plugin = None
-    catalog_view = _catalog_view_from_args(args)
-    catalog = (
-        _load_catalog_for_cli(
+    selected_args = args or {}
+    catalog_view = _catalog_view_from_args(selected_args)
+    catalog = None
+    if selected_plugin is not None:
+        prefer_index = _help_prefers_index(selected_args)
+        catalog = profiler.call(
+            "load_cached_index" if prefer_index else "load_cached_catalog",
+            _load_catalog_for_cli,
             selected_plugin,
-            settings=settings,
+            settings=effective_settings,
             catalog_view=catalog_view,
+            prefer_index=prefer_index,
         )
-        if selected_plugin is not None
-        else None
+        action = selected_args.get("action")
+        if (
+            action
+            and action not in _COMPACT_HELP_ACTIONS
+            and _catalog_has_action(
+                catalog,
+                selected_args.get("module"),
+                selected_args.get("service"),
+                action,
+            )
+        ):
+            catalog = profiler.call(
+                "load_cached_catalog",
+                _load_catalog_for_cli,
+                selected_plugin,
+                settings=effective_settings,
+                catalog_view=catalog_view,
+                prefer_index=False,
+            )
+    text = profiler.call(
+        "render_help",
+        render_help,
+        catalog,
+        selected_args,
+        version=get_version(),
+        plugin=selected_plugin,
     )
-    print(
-        render_help(
-            catalog,
-            args or {},
-            version=get_version(),
-            plugin=selected_plugin,
-        )
-    )
+    print(text)
+    profiler.emit()
 
 
 def complete(words: list[str], settings: Settings | None = None) -> None:
+    effective_settings = settings
+    if effective_settings is None and _env_cli_timing_value() is None:
+        try:
+            effective_settings = load_settings()
+        except Exception:
+            effective_settings = None
+    profiler = _CliProfiler("complete", settings=effective_settings)
     catalog = None
     if _completion_needs_catalog(words):
-        active_settings = settings or load_settings()
+        active_settings = effective_settings or profiler.call(
+            "load_settings", load_settings
+        )
         try:
-            plugin = get_plugin(None, settings=active_settings)
+            plugin = profiler.call(
+                "get_plugin",
+                get_plugin,
+                None,
+                settings=active_settings,
+            )
         except ValueError:
             plugin = None
         catalog_view = _catalog_view_from_completion_words(words)
         catalog = (
-            _load_catalog_for_cli(
+            profiler.call(
+                "load_cached_index",
+                _load_catalog_for_cli,
                 plugin,
                 settings=active_settings,
                 catalog_view=catalog_view,
+                prefer_index=True,
             )
             if plugin is not None
             else None
         )
-    print_completions(words, catalog)
+    profiler.call("print_completions", print_completions, words, catalog)
+    profiler.emit()
 
 
 def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:

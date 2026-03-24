@@ -199,6 +199,19 @@ def test_load_settings_prefers_process_environment(monkeypatch, tmp_path):
     assert settings.client_secret == "prod-secret"
 
 
+def test_load_settings_reads_cli_timing_from_global_config(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_profiles(config_dir)
+    (config_dir / "config.env").write_text(
+        "NETLOOM_ACTIVE_PLUGIN=clearpass\nNETLOOM_CLI_TIMING=1\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+
+    assert settings.cli_timing is True
+
+
 def test_load_settings_applies_client_secret_ref_precedence(monkeypatch, tmp_path):
     config_dir = _configure_runtime(monkeypatch, tmp_path)
     _write_global_config(config_dir)

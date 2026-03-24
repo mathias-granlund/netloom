@@ -1,29 +1,29 @@
-# netloom v1.9.6
+# netloom v1.9.7
 
-This release focuses on making the CLI help output easier to scan, especially
-for dynamic actions discovered from the API catalog.
+This release focuses on interactive CLI performance work and the follow-up
+planning around completion and dynamic help latency.
 
 ## Highlights
 
-- migrated the CLI to a hybrid parser model with `argparse` handling stable
-  built-ins and shared global flags while keeping dynamic plugin actions
-  flexible
-- simplified top-level, module, and service `--help` output and removed the
-  remaining legacy top-level `copy` parser special-casing
-- redesigned `list`, `get`, `add`, `update`, `replace`, and `delete` action
-  help into a more compact, operator-focused format that still highlights
-  selectors and required fields
+- added a compact derived cache index so completion and compact help no longer
+  need the full API cache for normal interactive paths
+- added opt-in CLI timing output with `NETLOOM_CLI_TIMING=1`
+- documented the current cache-performance status and next optimization step in
+  `CACHE_PERFORMANCE_PLAN.md`
+- cleaned up the timing configuration so only `NETLOOM_CLI_TIMING` is supported
 
 ## Examples
 
 ```bash
-netloom policyelements network-device get ?
-netloom policyelements network-device add ?
-netloom logs system-event list ?
+NETLOOM_CLI_TIMING=1 netloom logs system-event ?
+NETLOOM_CLI_TIMING=1 netloom policyelements role list ?
+netloom cache update
 ```
 
 ## Notes
 
 - installable man pages still come from `netloom/data/man/`
-- dynamic plugin command flags continue to be parsed permissively after the
-  stable outer CLI layer
+- current timing data shows the remaining interactive bottleneck is plugin
+  loading, not cache parsing
+- `netloom cache update` itself is not timed yet; that is the next measurement
+  improvement

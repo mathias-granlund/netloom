@@ -19,6 +19,7 @@ class PluginDefinition:
     normalize_copy_payload: Callable[..., dict[str, Any]]
     restore_secret_fields: Callable[..., Any]
     preflight_error_for_payload: Callable[..., str | None]
+    load_cached_index: Callable[..., dict[str, Any] | None] | None = None
     help_context: Callable[[], dict[str, Any]] | None = None
     normalize_diff_item: Callable[..., Any] | None = None
 

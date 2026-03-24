@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.9.7 - 2026-03-24
+
+### Added
+- added `CACHE_PERFORMANCE_PLAN.md` in the project root to track the cache-performance work, current measurements, and next optimization step
+
+### Changed
+- compact cache/index Phase 1 is now documented as complete, with the next focus set to bypassing plugin loading for fast help/completion paths
+- CLI timing now uses only `NETLOOM_CLI_TIMING`
+- aligned package metadata, README badge, and release notes for the `1.9.7` release
+
 ## 1.9.6 - 2026-03-24
 
 ### Changed

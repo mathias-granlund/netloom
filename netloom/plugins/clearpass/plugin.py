@@ -56,6 +56,7 @@ PLUGIN = PluginDefinition(
     resolve_auth_token=resolve_auth_token,
     get_api_catalog=catalog.get_api_catalog,
     load_cached_catalog=catalog.load_cached_catalog,
+    load_cached_index=catalog.load_cached_index,
     clear_api_cache=catalog.clear_api_cache,
     normalize_copy_payload=normalize_copy_payload,
     restore_secret_fields=restore_secret_fields,

@@ -12,6 +12,7 @@ APP_NAME = "netloom"
 ACTIVE_PROFILE_ENV = "NETLOOM_ACTIVE_PROFILE"
 ACTIVE_PLUGIN_ENV = "NETLOOM_ACTIVE_PLUGIN"
 CONFIG_DIR_ENV = "NETLOOM_CONFIG_DIR"
+CLI_TIMING_ENV = "NETLOOM_CLI_TIMING"
 CONFIG_FILE_NAME = "config.env"
 PLUGINS_DIR_NAME = "plugins"
 DEFAULTS_FILE_NAME = "defaults.env"
@@ -46,6 +47,7 @@ PROFILE_SCOPED_ENV_KEYS = (
     "NETLOOM_STATE_DIR",
     "NETLOOM_OUT_DIR",
     "NETLOOM_APP_LOG_DIR",
+    CLI_TIMING_ENV,
 )
 SECRET_FIELDS = (
     "client_secret",
@@ -526,6 +528,7 @@ class Settings:
     default_format: str = DEFAULT_FORMAT
     default_csv_fieldnames: list[str] | None = None
     log_level: str = DEFAULT_LOG_LEVEL
+    cli_timing: bool = False
     log_file: Path | None = None
     log_to_file: bool = False
     grant_type: str = "client_credentials"
@@ -668,6 +671,10 @@ def _build_settings_from_values(
         "NETLOOM_API_TOKEN_FILE", values, active_profile=active_profile
     ) or _resolve_value("NETLOOM_TOKEN_FILE", values, active_profile=active_profile)
 
+    cli_timing_raw = _resolve_value(
+        CLI_TIMING_ENV, values, active_profile=active_profile
+    )
+
     return Settings(
         plugin=active_plugin,
         server=_resolve_value("NETLOOM_SERVER", values, active_profile=active_profile),
@@ -702,6 +709,7 @@ def _build_settings_from_values(
             _resolve_value("NETLOOM_LOG_LEVEL", values, active_profile=active_profile)
             or DEFAULT_LOG_LEVEL
         ).upper(),
+        cli_timing=_bool_value(cli_timing_raw, False),
         log_file=log_file,
         log_to_file=log_to_file,
         grant_type=_resolve_value(

@@ -29,6 +29,7 @@ _PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
 _LIST_QUERY_PARAMS = ("filter", "sort", "offset", "limit", "calculate_count")
 _ACCESS_RANK = {"allowed": 1, "read-only": 2, "full": 3}
 _CATALOG_VERSION = 5
+_CATALOG_INDEX_VERSION = 1
 _CATALOG_VIEW_VISIBLE = "visible"
 _CATALOG_VIEW_FULL = "full"
 _DEFAULT_VISIBLE_SERVICE_KEYS: set[tuple[str, str]] = {
@@ -42,6 +43,7 @@ _DEFAULT_VISIBLE_SERVICE_KEYS: set[tuple[str, str]] = {
 class EndpointCacheConfig:
     ttl_seconds: int = 24 * 3600
     cache_filename: str = "api_endpoints_cache.json"
+    index_filename: str = "api_endpoints_index.json"
 
 
 def _camel_to_kebab(name: str) -> str:
@@ -133,6 +135,10 @@ def _dedupe_keep_order(items: list[str]) -> list[str]:
     return out
 
 
+def _compact_json(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+
 def _normalize_param_name(name: str) -> str:
     return "id" if name == "id" or name.endswith("_id") else name
 
@@ -182,6 +188,82 @@ def _dedupe_texts(items: list[str]) -> list[str]:
     return _dedupe_keep_order(
         [item for item in (_clean_text(x) for x in items) if item]
     )
+
+
+def _trim_body_fields_for_index(
+    body_fields: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    trimmed: list[dict[str, Any]] = []
+    for field in body_fields:
+        if not isinstance(field, dict):
+            continue
+        name = field.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        next_field = {"name": name}
+        if field.get("required") is True:
+            next_field["required"] = True
+        trimmed.append(next_field)
+    return trimmed
+
+
+def _trim_action_for_index(action_def: dict[str, Any]) -> dict[str, Any]:
+    trimmed: dict[str, Any] = {}
+    for key in ("method", "paths", "params", "summary", "body_required"):
+        value = action_def.get(key)
+        if value not in (None, [], {}, ""):
+            trimmed[key] = copy.deepcopy(value)
+
+    body_fields = action_def.get("body_fields") or []
+    if body_fields:
+        trimmed["body_fields"] = _trim_body_fields_for_index(body_fields)
+
+    return trimmed
+
+
+def _trim_modules_for_index(modules: dict[str, Any]) -> dict[str, Any]:
+    trimmed_modules: dict[str, Any] = {}
+    for module_name, services in modules.items():
+        if not isinstance(services, dict):
+            continue
+        next_services: dict[str, Any] = {}
+        for service_name, service_entry in services.items():
+            if not isinstance(service_entry, dict):
+                continue
+            actions = service_entry.get("actions") or {}
+            if not isinstance(actions, dict):
+                continue
+            next_actions = {
+                action_name: _trim_action_for_index(action_def)
+                for action_name, action_def in actions.items()
+                if isinstance(action_def, dict)
+            }
+            if not next_actions:
+                continue
+            next_services[service_name] = {"actions": next_actions}
+        if next_services:
+            trimmed_modules[module_name] = next_services
+    return trimmed_modules
+
+
+def build_catalog_index(api_catalog: dict[str, Any]) -> dict[str, Any]:
+    index: dict[str, Any] = {
+        "version": api_catalog.get("version", _CATALOG_VERSION),
+        "index_version": _CATALOG_INDEX_VERSION,
+        "catalog_view": _normalize_catalog_view(api_catalog.get("catalog_view")),
+        "modules": _trim_modules_for_index(api_catalog.get("modules") or {}),
+    }
+
+    full_modules = api_catalog.get("full_modules")
+    if isinstance(full_modules, dict):
+        index["full_modules"] = _trim_modules_for_index(full_modules)
+
+    for key in ("filter_metadata", "visible_metadata"):
+        value = api_catalog.get(key)
+        if isinstance(value, dict):
+            index[key] = copy.deepcopy(value)
+
+    return index
 
 
 def _type_label_for_schema(schema: dict[str, Any]) -> str:
@@ -762,6 +844,7 @@ class ApiEndpointCache:
         self.cfg = cfg or EndpointCacheConfig()
         self.settings = settings or load_settings()
         self.cache_path = self.settings.paths.cache_dir / self.cfg.cache_filename
+        self.index_path = self.settings.paths.cache_dir / self.cfg.index_filename
         self.settings.paths.ensure()
 
     def get_catalog(self, *, force_refresh: bool = False) -> dict[str, Any]:
@@ -797,11 +880,15 @@ class ApiEndpointCache:
         return None
 
     def _save(self, api_catalog: dict[str, Any]) -> None:
-        tmp = self.cache_path.with_suffix(".tmp")
-        tmp.write_text(
-            json.dumps(api_catalog, indent=2, sort_keys=True), encoding="utf-8"
+        cache_tmp = self.cache_path.with_name(self.cache_path.name + ".tmp")
+        index_tmp = self.index_path.with_name(self.index_path.name + ".tmp")
+        cache_tmp.write_text(_compact_json(api_catalog), encoding="utf-8")
+        index_tmp.write_text(
+            _compact_json(build_catalog_index(api_catalog)),
+            encoding="utf-8",
         )
-        os.replace(tmp, self.cache_path)
+        os.replace(cache_tmp, self.cache_path)
+        os.replace(index_tmp, self.index_path)
 
     def _raw_get_text(self, path: str) -> str:
         url = f"{self.cp.https_prefix}{self.cp.server}{path}"
@@ -1243,6 +1330,13 @@ def get_cache_file_path(settings: Settings | None = None) -> Path:
     return active_settings.paths.cache_dir / cfg.cache_filename
 
 
+def get_index_file_path(settings: Settings | None = None) -> Path:
+    cfg = EndpointCacheConfig()
+    active_settings = settings or load_settings()
+    active_settings.paths.ensure()
+    return active_settings.paths.cache_dir / cfg.index_filename
+
+
 def load_cached_catalog(
     settings: Settings | None = None,
     *,
@@ -1265,10 +1359,38 @@ def load_cached_catalog(
     return None
 
 
-def clear_api_cache(settings: Settings | None = None) -> bool:
-    path = get_cache_file_path(settings=settings)
+def load_cached_index(
+    settings: Settings | None = None,
+    *,
+    catalog_view: str = _CATALOG_VIEW_VISIBLE,
+) -> dict[str, Any] | None:
+    path = get_index_file_path(settings=settings)
     try:
-        path.unlink()
-        return True
+        data = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
-        return False
+        return None
+    except Exception:
+        return None
+
+    if (
+        isinstance(data, dict)
+        and data.get("index_version") == _CATALOG_INDEX_VERSION
+        and data.get("version") in {2, 3, 4, 5}
+        and isinstance(data.get("modules"), dict)
+    ):
+        return project_catalog_view(data, catalog_view=catalog_view)
+    return None
+
+
+def clear_api_cache(settings: Settings | None = None) -> bool:
+    removed = False
+    for path in (
+        get_cache_file_path(settings=settings),
+        get_index_file_path(settings=settings),
+    ):
+        try:
+            path.unlink()
+            removed = True
+        except FileNotFoundError:
+            continue
+    return removed

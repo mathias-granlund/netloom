@@ -24,6 +24,7 @@ TEST_CATALOG = {
 
 def _catalog_plugin(catalog):
     return types.SimpleNamespace(
+        load_cached_index=lambda settings=None, catalog_view="visible": catalog,
         load_cached_catalog=lambda settings=None: catalog,
     )
 
@@ -120,6 +121,21 @@ def test_complete_outputs_actions_for_service(capsys, monkeypatch):
     assert "copy" in out
 
 
+def test_complete_prefers_cached_index(capsys, monkeypatch):
+    plugin = types.SimpleNamespace(
+        load_cached_index=lambda settings=None, catalog_view="visible": TEST_CATALOG,
+        load_cached_catalog=lambda settings=None, catalog_view="visible": (
+            _ for _ in ()
+        ).throw(AssertionError("should not load full cache")),
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+
+    main.complete(["--_cur="], settings=_settings())
+
+    out = capsys.readouterr().out.strip().splitlines()
+    assert "identities" in out
+
+
 def test_complete_outputs_server_profiles_for_use(capsys, monkeypatch):
     plugin = _catalog_plugin(TEST_CATALOG)
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
@@ -169,6 +185,48 @@ def test_complete_server_builtin_does_not_touch_plugin_or_settings(capsys, monke
 
     out = capsys.readouterr().out.strip().splitlines()
     assert "use" in out
+
+
+def test_print_help_prefers_cached_index_for_compact_help(monkeypatch, capsys):
+    plugin = types.SimpleNamespace(
+        load_cached_index=lambda settings=None, catalog_view="visible": TEST_CATALOG,
+        load_cached_catalog=lambda settings=None, catalog_view="visible": (
+            _ for _ in ()
+        ).throw(AssertionError("should not load full cache")),
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({"module": "identities"}, settings=_settings())
+
+    out = capsys.readouterr().out
+    assert "Module: identities" in out
+    assert "Available services:" in out
+
+
+def test_complete_emits_timing_when_enabled(capsys, monkeypatch):
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.setenv("NETLOOM_CLI_TIMING", "1")
+
+    main.complete(["--_cur="], settings=_settings())
+
+    captured = capsys.readouterr()
+    assert "identities" in captured.out
+    assert "[netloom timing] complete total=" in captured.err
+
+
+def test_complete_emits_timing_when_enabled_from_settings(capsys, monkeypatch):
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.delenv("NETLOOM_CLI_TIMING", raising=False)
+
+    settings = Settings(paths=_settings().paths, cli_timing=True)
+    main.complete(["--_cur="], settings=settings)
+
+    captured = capsys.readouterr()
+    assert "identities" in captured.out
+    assert "[netloom timing] complete total=" in captured.err
 
 
 def test_parse_cli_encrypt_disable_and_separator():
