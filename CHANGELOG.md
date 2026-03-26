@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.10 - 2026-03-26
+
+### Changed
+- completed Phase 1.7 by adding timing instrumentation for `netloom cache update`, including buckets for authentication, `/api-docs`, privileges, module listings, subdocuments, catalog build, and cache/index writes
+- added lightweight user-facing cache-update progress reporting so long refresh runs show visible forward movement instead of looking hung
+- confirmed from live timing data that cache rebuild is network-bound, with subdocument fetches dominating the total runtime
+- updated `CACHE_PERFORMANCE_PLAN.md` to mark Phase 1.7 complete, defer parallel rebuild work for now, and prefer progress UX over deeper rebuild optimization
+- aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.10` release
+
 ## 1.9.9 - 2026-03-26
 
 ### Changed
