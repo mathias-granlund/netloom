@@ -6,6 +6,8 @@
 - completed the completion-first Phase 1.5 follow-up by moving interactive cached catalog reads into a core lightweight loader that avoids plugin catalog imports on normal cached runs
 - routed completion and compact help through the new core cache loader while preserving plugin/runtime fallback behavior on cache misses
 - delayed more runtime setup for trivial help and version paths so interactive latency is now largely startup-bound instead of plugin-import-bound
+- reduced cached interactive help latency from roughly `155-195 ms` in the hot path to roughly `15-20 ms` total in measured live runs
+- reduced cached catalog load time for interactive help from roughly `143-189 ms` on the old plugin-import-heavy path to roughly `2.9-3.3 ms` with `load_core_cached_catalog`
 - updated `CACHE_PERFORMANCE_PLAN.md` with the new measured timings, completed Phase 1.5 status, and reordered next steps
 - aligned package metadata, README badge, release notes, and checked-in manpage version headers for the `1.9.8` release
 
