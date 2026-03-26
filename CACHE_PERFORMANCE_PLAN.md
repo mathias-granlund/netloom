@@ -17,7 +17,8 @@ Phase 1 is implemented:
 - completion prefers the fast index
 - compact help prefers the fast index
 - full-cache fallback behavior is still preserved
-- opt-in timing is available with `NETLOOM_CLI_TIMING=1`
+- opt-in help timing is available with `NETLOOM_CLI_TIMING=1`
+- opt-in completion timing is available with `NETLOOM_COMPLETION_TIMING=1`
 
 Phase 1.5 is now implemented for the main interactive bottleneck:
 - completion and compact help use a core-owned lightweight cache loader
@@ -67,6 +68,45 @@ lightweight core loader in place:
 - help rendering remains effectively free
 - the remaining interactive latency is now mostly process startup and other
   runtime setup outside catalog rendering
+
+After the first Phase 1.6 slices, the cached help/completion path no longer
+imports the plugin layer on normal runs, and the remaining work is now mostly
+import time inside the lightweight interactive modules themselves.
+
+Recent live timings after the current Phase 1.6 work:
+- help:
+  - `netloom apioperations ?`
+    - total `43.8 ms`
+    - `import_cache_layer=11.7 ms`
+    - `load_core_cached_catalog=4.7 ms`
+    - `import_help_layer=12.9 ms`
+  - `netloom globalserverconfiguration admin-user ?`
+    - total `43.1 ms`
+    - `import_cache_layer=13.2 ms`
+    - `load_core_cached_catalog=4.1 ms`
+    - `import_help_layer=13.1 ms`
+- completion:
+  - `netloom api<TAB>`
+    - total `33.1 ms`
+    - `import_cache_layer=14.2 ms`
+    - `load_core_cached_catalog=4.2 ms`
+    - `import_completion_layer=14.7 ms`
+  - `netloom glo<TAB>`
+    - total `26.2 ms`
+    - `import_cache_layer=11.6 ms`
+    - `load_core_cached_catalog=3.7 ms`
+    - `import_completion_layer=10.8 ms`
+  - `netloom glo... admi<TAB>`
+    - total `26.9 ms`
+    - `import_cache_layer=11.9 ms`
+    - `load_core_cached_catalog=3.9 ms`
+    - `import_completion_layer=10.9 ms`
+
+This means:
+- completion is now clearly faster than help, which matches the priority
+- cache loading itself is no longer the bottleneck
+- help/completion are now mostly import-startup-bound in the lightweight
+  interactive layers
 
 One current gap:
 - `netloom cache update` is not timed yet
@@ -161,10 +201,12 @@ Current timing coverage:
 - completion
 - dynamic help
 - core cache/index loading inside those paths
+- import cost inside the lightweight interactive cache/help/completion layers
 - render/candidate generation inside those paths
 
 Enabled with:
-- `NETLOOM_CLI_TIMING=1`
+- `NETLOOM_CLI_TIMING=1` for help
+- `NETLOOM_COMPLETION_TIMING=1` for shell completion
 
 Current stderr format:
 - `[netloom timing] ...`
@@ -176,7 +218,28 @@ Still missing:
 
 ### Phase 1.6: Late imports and late runtime setup
 
-Planned work:
+In progress.
+
+Implemented so far:
+- delayed more runtime setup in `netloom.cli.main`
+- moved normal cached help/completion away from plugin-layer imports
+- introduced lightweight interactive config helpers for plugin/path/profile
+  resolution
+- introduced lightweight interactive cache and compact help paths
+- separated completion timing from help timing so completion can be measured
+  without turning on help timing output
+- split timing buckets so import cost is measured separately from cache load
+  and render/candidate generation
+- added shared help primitives and parity tests so the fast path and the
+  general help path are less likely to drift apart
+
+Remaining work:
+- continue trimming import time inside the lightweight interactive help/cache
+  modules
+- keep measuring before doing deeper structural changes
+- add timing for `netloom cache update` before changing rebuild architecture
+
+Original scope:
 - delay heavier imports and runtime setup until after CLI parsing decides
   whether the user only requested:
   - `--version`
@@ -258,7 +321,8 @@ If Phase 1.6 still leaves completion/help too slow:
 Do not jump to `netloomd` yet.
 
 The current data suggests the next highest-ROI step is:
-- delay imports/runtime setup for trivial CLI paths
+- continue trimming import/runtime setup cost inside the lightweight
+  interactive help/completion layers
 - add timing for `cache update`
 - then measure again before deciding whether any deeper cache-path work is
   still needed

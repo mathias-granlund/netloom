@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from netloom.core.help_shared import (
@@ -9,25 +8,16 @@ from netloom.core.help_shared import (
     PLUGIN_SELECTION_HINT,
     service_cli_actions,
 )
+from netloom.core.interactive import (
+    credentials_env_path,
+    list_plugins,
+    list_profiles,
+    profiles_env_path,
+)
 
-__all__ = [
-    "BUILTIN_MODULES",
-    "NETLOOM_BANNER",
-    "PLUGIN_SELECTION_HINT",
-    "format_path_or_hint",
-    "render_action_block",
-    "render_cache_help",
-    "render_catalog_help",
-    "render_copy_action_help",
-    "render_delete_action_help",
-    "render_diff_action_help",
-    "render_get_action_help",
-    "render_list_action_help",
-    "render_load_help",
-    "render_server_help",
-    "render_write_action_help",
-    "service_cli_actions",
-]
+# This module is the fast-path help renderer used by cached interactive help.
+# Keep its user-visible output aligned with `netloom.cli.help.render_help`
+# for the cached compact-help cases, and rely on parity tests to catch drift.
 
 
 def render_copy_action_help(module: str, service: str) -> str:
@@ -272,102 +262,6 @@ def render_delete_action_help(module: str, service: str, action_def: dict) -> st
     return "\n".join(lines)
 
 
-def _is_filter_reference_note(note: str) -> bool:
-    text = note.lower()
-    return (
-        "more about json filter expressions" in text
-        or "a filter is specified as a json object" in text
-    )
-
-
-def _filter_help_lines() -> list[str]:
-    return [
-        "  filter:",
-        "    shorthand: --filter=name:equals:TEST",
-        '    json: --filter=\'{"name":{"$contains":"TEST"}}\'',
-        (
-            "    operators: equals, not-equals, contains, in, not-in, gt, "
-            "gte, lt, lte, exists"
-        ),
-        "    use full JSON for advanced expressions like $and, $or, and regex",
-    ]
-
-
-def render_action_block(title: str, action_def: dict) -> str:
-    lines = [f"{title}:"]
-    summary = action_def.get("summary")
-    if summary:
-        lines.append(f"  summary: {summary}")
-    lines.append(f"  method: {action_def.get('method', '<unknown>')}")
-    paths = action_def.get("paths") or []
-    if paths:
-        lines.append("  paths:")
-        lines.extend(f"    - {path}" for path in paths)
-    params = action_def.get("params") or []
-    notes = action_def.get("notes") or []
-    filter_supported = "filter" in params
-    visible_notes = [
-        note
-        for note in notes
-        if not (filter_supported and _is_filter_reference_note(str(note)))
-    ]
-    if filter_supported:
-        lines.extend(_filter_help_lines())
-    if visible_notes:
-        lines.append("  notes:")
-        for note in visible_notes:
-            note_lines = [line for line in str(note).splitlines() if line.strip()]
-            if not note_lines:
-                continue
-            lines.append(f"    - {note_lines[0]}")
-            lines.extend(f"      {line}" for line in note_lines[1:])
-    response_codes = action_def.get("response_codes") or []
-    if response_codes:
-        lines.append("  response codes:")
-        lines.extend(f"    - {code}" for code in response_codes)
-    response_types = action_def.get("response_content_types") or []
-    if response_types:
-        lines.append("  response content types:")
-        lines.extend(f"    - {content_type}" for content_type in response_types)
-    body_description = action_def.get("body_description")
-    if body_description:
-        lines.append(f"  body: {body_description}")
-    body_required = action_def.get("body_required") or []
-    if body_required:
-        lines.append("  body required:")
-        lines.extend(f"    - {name}" for name in body_required)
-    body_fields = action_def.get("body_fields") or []
-    if params and not body_fields:
-        visible_params = [
-            param for param in params if not (filter_supported and param == "filter")
-        ]
-        if visible_params:
-            lines.append("  params:")
-            lines.extend(f"    - {param}" for param in visible_params)
-    if body_fields:
-        lines.append("  body fields:")
-        for field in body_fields:
-            if not isinstance(field, dict):
-                continue
-            requirement = "required" if field.get("required") else "optional"
-            field_type = field.get("type") or "object"
-            description = field.get("description")
-            line = f"    - {field.get('name')}: {field_type} ({requirement})"
-            if description:
-                line += f" - {description}"
-            lines.append(line)
-    body_example = action_def.get("body_example")
-    if body_example not in (None, {}, []):
-        lines.append("  body example:")
-        lines.extend(
-            f"    {line}"
-            for line in json.dumps(
-                body_example, indent=2, ensure_ascii=False
-            ).splitlines()
-        )
-    return "\n".join(lines)
-
-
 def format_path_or_hint(path: Path | None) -> str:
     return str(path) if path is not None else PLUGIN_SELECTION_HINT
 
@@ -523,7 +417,145 @@ def render_catalog_help(
         )
     elif action == "delete":
         blocks.append(render_delete_action_help(module, service, action_map["delete"]))
-    else:
-        blocks.append(render_action_block(action, action_map[action]))
 
     return "\n\n".join(blocks)
+
+
+def _render_usage(
+    *,
+    module: str | None = None,
+    service: str | None = None,
+    action: str | None = None,
+) -> str:
+    if module == "copy":
+        module = None
+
+    if module == "cache":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom cache [clear | update]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
+    if module == "server":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom server [list | show | use <profile>]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
+    if module == "load":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom load [list | show | <plugin>]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
+    if module and service and not action:
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    f"  netloom {module} {service} <action> [options] [flags]",
+                    (
+                        f"  netloom {module} {service} "
+                        "{copy|diff} --from=SOURCE --to=TARGET "
+                        "[options] [flags]"
+                    ),
+                    f"  netloom {module} {service} ?",
+                ]
+            )
+            + "\n"
+        )
+
+    if module and not service:
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    f"  netloom {module} <service> <action> [options] [flags]",
+                    (
+                        f"  netloom {module} "
+                        "<service> {copy|diff} --from=SOURCE --to=TARGET "
+                        "[options] [flags]"
+                    ),
+                    f"  netloom {module} <service> ?",
+                ]
+            )
+            + "\n"
+        )
+
+    usage_lines = [
+        "Usage:",
+        "  netloom load [list | show | <plugin>]",
+        "  netloom server [list | show | use <profile>]",
+        "  netloom cache [clear | update]",
+        "  netloom <module> <service> <action> [options] [flags]",
+        (
+            "  netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET "
+            "[options] [flags]"
+        ),
+        "  netloom [--help | ?]",
+        "  netloom --version",
+    ]
+    return "\n".join(usage_lines) + "\n"
+
+
+def render_help(
+    api_catalog: dict | None = None,
+    args: dict | None = None,
+    *,
+    version: str = "0.0.0",
+    plugin=None,
+) -> str:
+    args = args or {}
+    module = args.get("module")
+    header = f"{NETLOOM_BANNER}\nnetloom v{version}\n"
+    usage = _render_usage(
+        module=module,
+        service=args.get("service"),
+        action=args.get("action"),
+    )
+
+    if module == "cache":
+        return render_cache_help(header, usage)
+
+    if module == "server":
+        return render_server_help(
+            header,
+            usage,
+            profiles=list_profiles(),
+            profiles_path=profiles_env_path(),
+            credentials_path=credentials_env_path(),
+        )
+
+    if module == "load":
+        return render_load_help(header, usage, list_plugins())
+
+    return render_catalog_help(
+        header,
+        usage,
+        api_catalog=api_catalog,
+        module=module,
+        service=args.get("service"),
+        action=args.get("action"),
+        has_plugin=plugin is not None,
+    )
+
+
+__all__ = ["render_help", "service_cli_actions"]

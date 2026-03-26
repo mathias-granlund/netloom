@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from netloom.core.config import credentials_env_path, list_profiles, profiles_env_path
 from netloom.core.help import (
     NETLOOM_BANNER,
     render_action_block,
@@ -10,9 +9,32 @@ from netloom.core.help import (
     render_server_help,
     service_cli_actions,
 )
-from netloom.core.plugin import list_plugins
 
 __all__ = ["render_action_block", "render_help", "service_cli_actions"]
+
+
+def credentials_env_path(*args, **kwargs):
+    from netloom.core.config import credentials_env_path as impl
+
+    return impl(*args, **kwargs)
+
+
+def list_profiles(*args, **kwargs):
+    from netloom.core.config import list_profiles as impl
+
+    return impl(*args, **kwargs)
+
+
+def profiles_env_path(*args, **kwargs):
+    from netloom.core.config import profiles_env_path as impl
+
+    return impl(*args, **kwargs)
+
+
+def list_plugins(*args, **kwargs):
+    from netloom.core.plugin import list_plugins as impl
+
+    return impl(*args, **kwargs)
 
 
 def _render_usage(

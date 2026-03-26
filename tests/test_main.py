@@ -1,3 +1,5 @@
+import builtins
+import importlib
 import types
 from pathlib import Path
 
@@ -148,6 +150,26 @@ def test_complete_uses_direct_cached_index_without_get_plugin(capsys, monkeypatc
         lambda *args, **kwargs: (_ for _ in ()).throw(
             AssertionError("should not load plugin")
         ),
+    )
+
+    main.complete(["--_cur="], settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out.strip().splitlines()
+    assert "identities" in out
+
+
+def test_complete_fast_path_does_not_import_plugin_layer(capsys, monkeypatch):
+    monkeypatch.setattr(main, "_import_cache_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_interactive_layer", lambda: None)
+    monkeypatch.setattr(
+        main,
+        "_import_plugin_layer",
+        lambda: (_ for _ in ()).throw(AssertionError("should not import plugin layer")),
+    )
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
     )
 
     main.complete(["--_cur="], settings=_settings(plugin="clearpass"))
@@ -311,6 +333,28 @@ def test_print_help_uses_direct_cached_index_without_get_plugin(monkeypatch, cap
     assert "Available services:" in out
 
 
+def test_print_help_fast_path_does_not_import_plugin_layer(monkeypatch, capsys):
+    monkeypatch.setattr(main, "_import_cache_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_interactive_layer", lambda: None)
+    monkeypatch.setattr(
+        main,
+        "_import_plugin_layer",
+        lambda: (_ for _ in ()).throw(AssertionError("should not import plugin layer")),
+    )
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({"module": "identities"}, settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out
+    assert "Module: identities" in out
+    assert "Available services:" in out
+
+
 def test_print_help_falls_back_to_get_plugin_when_direct_index_missing(
     monkeypatch, capsys
 ):
@@ -333,7 +377,7 @@ def test_print_help_falls_back_to_get_plugin_when_direct_index_missing(
 def test_complete_emits_timing_when_enabled(capsys, monkeypatch):
     plugin = _catalog_plugin(TEST_CATALOG)
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
-    monkeypatch.setenv("NETLOOM_CLI_TIMING", "1")
+    monkeypatch.setenv("NETLOOM_COMPLETION_TIMING", "1")
 
     main.complete(["--_cur="], settings=_settings())
 
@@ -342,17 +386,40 @@ def test_complete_emits_timing_when_enabled(capsys, monkeypatch):
     assert "[netloom timing] complete total=" in captured.err
 
 
-def test_complete_emits_timing_when_enabled_from_settings(capsys, monkeypatch):
+def test_complete_timing_splits_import_bucket_from_completion_work(capsys, monkeypatch):
+    monkeypatch.setattr(main, "_import_interactive_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_cache_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_completion_layer", lambda: None)
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setenv("NETLOOM_COMPLETION_TIMING", "1")
+
+    main.complete(["--_cur="], settings=_settings(plugin="clearpass"))
+
+    captured = capsys.readouterr()
+    assert "identities" in captured.out
+    assert "import_interactive_layer=" in captured.err
+    assert "import_cache_layer=" in captured.err
+    assert "load_core_cached_catalog=" in captured.err
+    assert "import_completion_layer=" in captured.err
+    assert "print_completions=" in captured.err
+
+
+def test_complete_does_not_emit_timing_from_help_settings_flag(capsys, monkeypatch):
     plugin = _catalog_plugin(TEST_CATALOG)
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     monkeypatch.delenv("NETLOOM_CLI_TIMING", raising=False)
+    monkeypatch.delenv("NETLOOM_COMPLETION_TIMING", raising=False)
 
     settings = Settings(paths=_settings().paths, cli_timing=True)
     main.complete(["--_cur="], settings=settings)
 
     captured = capsys.readouterr()
     assert "identities" in captured.out
-    assert "[netloom timing] complete total=" in captured.err
+    assert "[netloom timing] complete total=" not in captured.err
 
 
 def test_parse_cli_encrypt_disable_and_separator():
@@ -487,6 +554,31 @@ def test_parse_cli_rejects_invalid_builtin_shape():
         main.parse_cli(argv)
 
 
+def test_importing_main_does_not_eagerly_import_help_completion_or_plugin_layers(
+    monkeypatch,
+):
+    real_import = builtins.__import__
+    blocked = {
+        "netloom.cli.completion",
+        "netloom.core.compact_help",
+        "netloom.core.cache",
+        "netloom.core.interactive",
+        "netloom.core.interactive_cache",
+        "netloom.core.interactive_help",
+        "netloom.core.config",
+        "netloom.core.plugin",
+    }
+
+    def guarded_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name in blocked:
+            raise AssertionError(f"should not import {name}")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", guarded_import)
+
+    importlib.reload(main)
+
+
 def test_main_version_skips_settings_and_logging(monkeypatch, capsys):
     monkeypatch.setattr(
         main,
@@ -529,3 +621,29 @@ def test_main_help_skips_eager_settings_and_logging(monkeypatch, capsys):
     main.main()
 
     assert "Usage:" in capsys.readouterr().out
+
+
+def test_print_help_timing_splits_import_buckets_from_render_and_cache_work(
+    monkeypatch, capsys
+):
+    monkeypatch.setattr(main, "_import_interactive_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_cache_layer", lambda: None)
+    monkeypatch.setattr(main, "_import_help_layer", lambda: None)
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setattr(main, "render_help", lambda *args, **kwargs: "help text")
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.8")
+    monkeypatch.setenv("NETLOOM_CLI_TIMING", "1")
+
+    main.print_help({"module": "identities"}, settings=_settings(plugin="clearpass"))
+
+    captured = capsys.readouterr()
+    assert "help text" in captured.out
+    assert "import_interactive_layer=" in captured.err
+    assert "import_cache_layer=" in captured.err
+    assert "load_core_cached_catalog=" in captured.err
+    assert "import_help_layer=" in captured.err
+    assert "render_help=" in captured.err

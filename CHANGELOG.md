@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.9 - 2026-03-26
+
+### Changed
+- continued Phase 1.6 startup work by moving cached help and completion onto lighter interactive help/cache/config layers with separate timing buckets for import cost and actual work
+- added a dedicated `NETLOOM_COMPLETION_TIMING=1` switch so shell-completion profiling can be enabled without turning on help timing output
+- updated the Bash completion wrapper so real `<TAB>` completion can surface `[netloom timing]` lines while still suppressing unrelated stderr noise
+- reduced measured cached completion latency to roughly `26-33 ms`, with `load_core_cached_catalog` around `3.7-4.8 ms`
+- reduced measured cached help latency to roughly `43-44 ms`, with `load_core_cached_catalog` around `4.1-4.7 ms`
+- added lightweight-vs-full help parity tests and shared help primitives to reduce future drift risk between the fast path and the general runtime path
+- refreshed `CACHE_PERFORMANCE_PLAN.md`, release notes, and versioned metadata for the `1.9.9` release
+
 ## 1.9.8 - 2026-03-26
 
 ### Changed

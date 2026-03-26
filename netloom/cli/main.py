@@ -1,23 +1,20 @@
 from __future__ import annotations
 
+import importlib
 import os
 import sys
 import time
 from dataclasses import is_dataclass, replace
+from typing import TYPE_CHECKING
 
 from netloom import get_version
-from netloom.cli.completion import print_completions
-from netloom.cli.help import render_help
 from netloom.cli.parser import CliParseError, parse_cli
-from netloom.core.config import (
-    CLI_TIMING_ENV,
-    Settings,
-    load_settings,
-)
-from netloom.core.plugin import (
-    get_plugin,
-    load_cached_catalog_for_plugin,
-)
+
+if TYPE_CHECKING:
+    from netloom.core.config import Settings
+
+_CLI_TIMING_ENV = "NETLOOM_CLI_TIMING"
+_COMPLETION_TIMING_ENV = "NETLOOM_COMPLETION_TIMING"
 
 _COMPACT_HELP_ACTIONS = {
     "copy",
@@ -35,17 +32,89 @@ ACTIONS: dict[str, object] = {}
 
 
 def _env_cli_timing_value() -> str | None:
-    return os.getenv(CLI_TIMING_ENV)
+    return os.getenv(_CLI_TIMING_ENV)
+
+
+def _env_completion_timing_value() -> str | None:
+    return os.getenv(_COMPLETION_TIMING_ENV)
+
+
+def _import_completion_layer() -> None:
+    importlib.import_module("netloom.cli.completion")
+
+
+def _import_help_layer() -> None:
+    importlib.import_module("netloom.core.interactive_help")
+
+
+def _import_cache_layer() -> None:
+    importlib.import_module("netloom.core.interactive_cache")
+
+
+def _import_interactive_layer() -> None:
+    importlib.import_module("netloom.core.interactive")
+
+
+def _import_plugin_layer() -> None:
+    importlib.import_module("netloom.core.plugin")
+
+
+def print_completions(*args, **kwargs):
+    from netloom.cli.completion import print_completions as impl
+
+    return impl(*args, **kwargs)
+
+
+def render_help(*args, **kwargs):
+    from netloom.core.interactive_help import render_help as impl
+
+    return impl(*args, **kwargs)
+
+
+def load_interactive_settings():
+    from netloom.core.interactive import load_interactive_settings as impl
+
+    return impl()
+
+
+def load_settings() -> Settings:
+    from netloom.core.config import load_settings as impl
+
+    return impl()
+
+
+def get_plugin(*args, **kwargs):
+    from netloom.core.plugin import get_plugin as impl
+
+    return impl(*args, **kwargs)
+
+
+def load_cached_catalog_for_plugin(*args, **kwargs):
+    from netloom.core.interactive_cache import load_cached_interactive_catalog as impl
+
+    return impl(*args, **kwargs)
+
+
+def _needs_full_settings(settings) -> bool:
+    return settings is None or not hasattr(settings, "server")
 
 
 class _CliProfiler:
-    def __init__(self, label: str, *, settings: Settings | None = None):
+    def __init__(
+        self,
+        label: str,
+        *,
+        settings: Settings | None = None,
+        env_value: str | None = None,
+        allow_settings_fallback: bool = True,
+    ):
         self.label = label
-        env_value = _env_cli_timing_value()
         if env_value is not None:
             self.enabled = env_value.strip().lower() not in {"", "0", "false", "no"}
-        else:
+        elif allow_settings_fallback:
             self.enabled = bool(getattr(settings, "cli_timing", False))
+        else:
+            self.enabled = False
         self.records: list[tuple[str, float]] = []
         self._start = time.perf_counter()
 
@@ -238,10 +307,14 @@ def print_help(
     effective_settings = settings
     if effective_settings is None and _env_cli_timing_value() is None:
         try:
-            effective_settings = load_settings()
+            effective_settings = load_interactive_settings()
         except Exception:
             effective_settings = None
-    profiler = _CliProfiler("help", settings=effective_settings)
+    profiler = _CliProfiler(
+        "help",
+        settings=effective_settings,
+        env_value=_env_cli_timing_value(),
+    )
     selected_plugin = plugin
     selected_args = args or {}
     catalog_view = _catalog_view_from_args(selected_args)
@@ -251,8 +324,10 @@ def print_help(
     active_settings = effective_settings
     plugin_name = getattr(active_settings, "plugin", None) if active_settings else None
     if needs_catalog and selected_plugin is None:
+        profiler.call("import_interactive_layer", _import_interactive_layer)
+        profiler.call("import_cache_layer", _import_cache_layer)
         active_settings = active_settings or profiler.call(
-            "load_settings", load_settings
+            "load_interactive_settings", load_interactive_settings
         )
         plugin_name = getattr(active_settings, "plugin", None)
         catalog = profiler.call(
@@ -265,13 +340,15 @@ def print_help(
         )
         effective_settings = active_settings
     if needs_catalog and selected_plugin is None and catalog is None:
+        profiler.call("import_plugin_layer", _import_plugin_layer)
+        if _needs_full_settings(effective_settings):
+            effective_settings = profiler.call("load_settings", load_settings)
         try:
             selected_plugin = profiler.call(
                 "plugin_fallback_get_plugin",
                 get_plugin,
                 None,
-                settings=effective_settings
-                or profiler.call("load_settings", load_settings),
+                settings=effective_settings,
             )
         except ValueError:
             selected_plugin = None
@@ -306,6 +383,7 @@ def print_help(
                 catalog_view=catalog_view,
                 prefer_index=False,
             )
+    profiler.call("import_help_layer", _import_help_layer)
     text = profiler.call(
         "render_help",
         render_help,
@@ -320,16 +398,23 @@ def print_help(
 
 def complete(words: list[str], settings: Settings | None = None) -> None:
     effective_settings = settings
-    if effective_settings is None and _env_cli_timing_value() is None:
+    if effective_settings is None and _env_completion_timing_value() is None:
         try:
-            effective_settings = load_settings()
+            effective_settings = load_interactive_settings()
         except Exception:
             effective_settings = None
-    profiler = _CliProfiler("complete", settings=effective_settings)
+    profiler = _CliProfiler(
+        "complete",
+        settings=effective_settings,
+        env_value=_env_completion_timing_value(),
+        allow_settings_fallback=False,
+    )
     catalog = None
     if _completion_needs_catalog(words):
+        profiler.call("import_interactive_layer", _import_interactive_layer)
+        profiler.call("import_cache_layer", _import_cache_layer)
         active_settings = effective_settings or profiler.call(
-            "load_settings", load_settings
+            "load_interactive_settings", load_interactive_settings
         )
         plugin_name = getattr(active_settings, "plugin", None)
         catalog_view = _catalog_view_from_completion_words(words)
@@ -342,6 +427,9 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
             prefer_index=True,
         )
         if catalog is None:
+            profiler.call("import_plugin_layer", _import_plugin_layer)
+            if _needs_full_settings(active_settings):
+                active_settings = profiler.call("load_settings", load_settings)
             try:
                 plugin = profiler.call(
                     "plugin_fallback_get_plugin",
@@ -363,6 +451,7 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
                 if plugin is not None
                 else None
             )
+    profiler.call("import_completion_layer", _import_completion_layer)
     profiler.call("print_completions", print_completions, words, catalog)
     profiler.emit()
 

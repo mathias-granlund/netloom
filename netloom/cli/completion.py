@@ -1,8 +1,18 @@
 from __future__ import annotations
 
-from netloom.core.config import list_profiles
-from netloom.core.help import service_cli_actions
-from netloom.core.plugin import list_plugins
+from netloom.core.help_shared import service_cli_actions
+
+
+def list_profiles() -> list[str]:
+    from netloom.core.interactive import list_profiles as impl
+
+    return impl()
+
+
+def list_plugins() -> list[str]:
+    from netloom.core.interactive import list_plugins as impl
+
+    return impl()
 
 
 def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
