@@ -820,16 +820,6 @@ def _filter_catalog_by_effective_privileges(
     return filtered_modules, metadata
 
 
-def _format_name_list(items: list[str], *, limit: int = 60) -> str:
-    if not items:
-        return "<none>"
-    if len(items) <= limit:
-        return ", ".join(items)
-    shown = ", ".join(items[:limit])
-    remaining = len(items) - limit
-    return f"{shown}, ... (+{remaining} more)"
-
-
 class ApiEndpointCache:
     def __init__(
         self,
@@ -838,14 +828,37 @@ class ApiEndpointCache:
         token: str,
         cfg: EndpointCacheConfig | None = None,
         settings: Settings | None = None,
+        timing_sink=None,
+        progress_sink=None,
     ):
         self.cp = cp_client
         self.token = token
         self.cfg = cfg or EndpointCacheConfig()
         self.settings = settings or load_settings()
+        self.timing_sink = timing_sink
+        self.progress_sink = progress_sink
         self.cache_path = self.settings.paths.cache_dir / self.cfg.cache_filename
         self.index_path = self.settings.paths.cache_dir / self.cfg.index_filename
         self.settings.paths.ensure()
+
+    def _record_timing(self, name: str, started: float) -> None:
+        if self.timing_sink is None:
+            return
+        self.timing_sink(name, (time.perf_counter() - started) * 1000.0)
+
+    def _call_timed(self, name: str, func, *args, **kwargs):
+        if self.timing_sink is None:
+            return func(*args, **kwargs)
+        started = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            self._record_timing(name, started)
+
+    def _emit_progress(self, event: str, **data) -> None:
+        if self.progress_sink is None:
+            return
+        self.progress_sink(event, **data)
 
     def get_catalog(self, *, force_refresh: bool = False) -> dict[str, Any]:
         if not force_refresh:
@@ -882,13 +895,20 @@ class ApiEndpointCache:
     def _save(self, api_catalog: dict[str, Any]) -> None:
         cache_tmp = self.cache_path.with_name(self.cache_path.name + ".tmp")
         index_tmp = self.index_path.with_name(self.index_path.name + ".tmp")
+        self._emit_progress("write_full_cache")
+        started = time.perf_counter()
         cache_tmp.write_text(_compact_json(api_catalog), encoding="utf-8")
+        os.replace(cache_tmp, self.cache_path)
+        self._record_timing("write_full_cache", started)
+
+        self._emit_progress("write_fast_index")
+        started = time.perf_counter()
         index_tmp.write_text(
             _compact_json(build_catalog_index(api_catalog)),
             encoding="utf-8",
         )
-        os.replace(cache_tmp, self.cache_path)
         os.replace(index_tmp, self.index_path)
+        self._record_timing("write_fast_index", started)
 
     def _raw_get_text(self, path: str) -> str:
         url = f"{self.cp.https_prefix}{self.cp.server}{path}"
@@ -1177,50 +1197,54 @@ class ApiEndpointCache:
 
         return added > 0
 
-    def _log_module_services(
-        self, cli_module: str, module_services: dict[str, Any]
-    ) -> None:
-        service_names = sorted(module_services.keys())
-        if service_names:
-            log.debug(
-                "[api_catalog] Loaded module: %s with (%d) services -> %s",
-                cli_module,
-                len(service_names),
-                _format_name_list(service_names),
-            )
-        else:
-            log.info("[api_catalog] %s: 0 services", cli_module)
-
     def _build_catalog_from_clearpass(self) -> dict[str, Any]:
-        api_docs_text = self._raw_get_text("/api-docs")
+        self._emit_progress("fetch_api_docs")
+        api_docs_text = self._call_timed(
+            "fetch_api_docs",
+            self._raw_get_text,
+            "/api-docs",
+        )
         module_doc_paths = _extract_modules_from_api_docs(api_docs_text)
-        effective_privileges = self._load_effective_privileges()
+        self._emit_progress("fetch_effective_privileges")
+        effective_privileges = self._call_timed(
+            "fetch_effective_privileges",
+            self._load_effective_privileges,
+        )
 
         log.info("Discovered %d modules from /api-docs", len(module_doc_paths))
-        discovered_modules = [
-            _module_to_cli(path.rsplit("/", 1)[-1]) for path in module_doc_paths
-        ]
-        if discovered_modules:
-            log.debug(
-                "[api_catalog] modules: %s", _format_name_list(discovered_modules)
-            )
 
         modules: dict[str, dict[str, Any]] = {}
+        pending_subdocs: list[tuple[str, str, dict[str, Any], list[str]]] = []
 
-        for module_path in module_doc_paths:
+        total_modules = len(module_doc_paths)
+        for index, module_path in enumerate(module_doc_paths, start=1):
             module_name = module_path.rsplit("/", 1)[-1]
             cli_module = _module_to_cli(module_name)
             module_services = modules.setdefault(cli_module, {})
+            self._emit_progress(
+                "module_listing",
+                current=index,
+                total=total_modules,
+                module=cli_module,
+            )
 
             # ClearPass exposes both Apigility listings and Swagger subdocuments.
-            listing = self._load_json(f"/api/apigility/documentation/{module_name}")
+            listing = self._call_timed(
+                "fetch_module_listings",
+                self._load_json,
+                f"/api/apigility/documentation/{module_name}",
+            )
             if listing is None:
                 for alt in (
                     f"/api/apigility/documentation/{module_name}/swagger",
                     module_path,
                     f"{module_path}.json",
                 ):
-                    listing = self._load_json(alt)
+                    listing = self._call_timed(
+                        "fetch_module_listings",
+                        self._load_json,
+                        alt,
+                    )
                     if listing is not None:
                         break
 
@@ -1228,8 +1252,12 @@ class ApiEndpointCache:
                 log.warning("[api_catalog] %s: no JSON docs found", module_name)
                 continue
 
-            if self._process_apigility_services(module_services, listing):
-                self._log_module_services(cli_module, module_services)
+            if self._call_timed(
+                "build_catalog",
+                self._process_apigility_services,
+                module_services,
+                listing,
+            ):
                 continue
 
             listing_apis = listing.get("apis")
@@ -1242,6 +1270,7 @@ class ApiEndpointCache:
                 )
                 continue
 
+            sub_paths: list[str] = []
             for item in listing_apis:
                 if not isinstance(item, dict):
                     continue
@@ -1257,18 +1286,47 @@ class ApiEndpointCache:
                     sub_path = f"/api/apigility/documentation/{module_name}{path}"
                 else:
                     sub_path = f"/api/apigility/documentation/{module_name}/{path}"
+                sub_paths.append(sub_path)
 
-                subdoc = self._load_json(sub_path)
+            if sub_paths:
+                pending_subdocs.append(
+                    (cli_module, module_name, module_services, sub_paths)
+                )
+
+        total_subdocs = sum(len(sub_paths) for *_rest, sub_paths in pending_subdocs)
+        if total_subdocs:
+            self._emit_progress("subdocuments_start", total=total_subdocs)
+
+        completed_subdocs = 0
+        for cli_module, module_name, module_services, sub_paths in pending_subdocs:
+            for sub_path in sub_paths:
+                completed_subdocs += 1
+                self._emit_progress(
+                    "subdocument",
+                    current=completed_subdocs,
+                    total=total_subdocs,
+                    module=cli_module,
+                )
+                subdoc = self._call_timed(
+                    "fetch_subdocuments",
+                    self._load_json,
+                    sub_path,
+                )
                 if not subdoc:
                     continue
-                self._process_swagger_subdoc(module_services, subdoc)
+                self._call_timed(
+                    "build_catalog",
+                    self._process_swagger_subdoc,
+                    module_services,
+                    subdoc,
+                )
 
             if not module_services:
                 log.warning("[api_catalog] %s: no services were extracted", module_name)
                 continue
 
-            self._log_module_services(cli_module, module_services)
-
+        self._emit_progress("build_catalog")
+        started = time.perf_counter()
         filtered_modules, privilege_metadata = _filter_catalog_by_effective_privileges(
             {"modules": modules}, effective_privileges
         )
@@ -1306,6 +1364,7 @@ class ApiEndpointCache:
         log.info("Visible services in cache: %d", _count_services(visible_modules))
         log.info("Full modules retained in cache: %d", len(modules))
         log.info("Full services retained in cache: %d", _count_services(modules))
+        self._record_timing("build_catalog", started)
         return catalog
 
 
@@ -1316,10 +1375,16 @@ def get_api_catalog(
     force_refresh: bool = False,
     settings: Settings | None = None,
     catalog_view: str = _CATALOG_VIEW_VISIBLE,
+    timing_sink=None,
+    progress_sink=None,
 ) -> dict[str, Any]:
-    catalog = ApiEndpointCache(cp_client, token=token, settings=settings).get_catalog(
-        force_refresh=force_refresh
-    )
+    catalog = ApiEndpointCache(
+        cp_client,
+        token=token,
+        settings=settings,
+        timing_sink=timing_sink,
+        progress_sink=progress_sink,
+    ).get_catalog(force_refresh=force_refresh)
     return project_catalog_view(catalog, catalog_view=catalog_view) or {"modules": {}}
 
 

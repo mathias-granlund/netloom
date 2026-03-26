@@ -422,6 +422,26 @@ def test_complete_does_not_emit_timing_from_help_settings_flag(capsys, monkeypat
     assert "[netloom timing] complete total=" not in captured.err
 
 
+def test_get_catalog_for_cli_falls_back_when_plugin_timing_sink_is_unsupported():
+    plugin = types.SimpleNamespace(
+        get_api_catalog=lambda cp, *, token, force_refresh=False, settings=None, catalog_view="visible": {  # noqa: E501
+            "modules": {}
+        }
+    )
+
+    catalog = main._get_catalog_for_cli(
+        plugin,
+        object(),
+        token="token",
+        settings=_settings(),
+        force_refresh=True,
+        catalog_view="visible",
+        timing_sink=lambda *args: None,
+    )
+
+    assert catalog == {"modules": {}}
+
+
 def test_parse_cli_encrypt_disable_and_separator():
     argv = [
         "netloom",
@@ -647,3 +667,74 @@ def test_print_help_timing_splits_import_buckets_from_render_and_cache_work(
     assert "load_core_cached_catalog=" in captured.err
     assert "import_help_layer=" in captured.err
     assert "render_help=" in captured.err
+
+
+def test_main_cache_update_emits_timing_when_enabled(monkeypatch, capsys):
+    class _Log:
+        def info(self, *args, **kwargs):
+            return None
+
+        def error(self, *args, **kwargs):
+            return None
+
+    class _LogManager:
+        def get_logger(self, name):
+            return _Log()
+
+        def set_level(self, level):
+            return None
+
+    def _get_api_catalog(
+        cp,
+        *,
+        token,
+        force_refresh=False,
+        settings=None,
+        catalog_view="visible",
+        timing_sink=None,
+    ):
+        assert force_refresh is True
+        assert catalog_view == "full"
+        assert timing_sink is not None
+        timing_sink("fetch_api_docs", 4.0)
+        timing_sink("fetch_module_listings", 7.0)
+        timing_sink("fetch_subdocuments", 9.0)
+        timing_sink("build_catalog", 5.0)
+        timing_sink("write_full_cache", 2.0)
+        timing_sink("write_fast_index", 1.0)
+        return {"modules": {}}
+
+    plugin = types.SimpleNamespace(
+        build_client=lambda settings: object(),
+        resolve_auth_token=lambda cp, settings: "token",
+        get_api_catalog=_get_api_catalog,
+    )
+    monkeypatch.setattr(main, "load_settings", lambda: _settings(plugin="clearpass"))
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda *args, **kwargs: _LogManager(),
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.setattr(
+        main.sys,
+        "argv",
+        ["netloom", "--catalog-view=full", "cache", "update"],
+    )
+    monkeypatch.setenv("NETLOOM_CLI_TIMING", "1")
+
+    main.main()
+
+    captured = capsys.readouterr()
+    assert "[netloom progress] building client" in captured.err
+    assert "[netloom progress] authenticating" in captured.err
+    assert "[netloom progress] cache update complete" in captured.err
+    assert "[netloom timing] cache_update total=" in captured.err
+    assert "build_client=" in captured.err
+    assert "resolve_auth_token=" in captured.err
+    assert "fetch_api_docs=" in captured.err
+    assert "fetch_module_listings=" in captured.err
+    assert "fetch_subdocuments=" in captured.err
+    assert "build_catalog=" in captured.err
+    assert "write_full_cache=" in captured.err
+    assert "write_fast_index=" in captured.err

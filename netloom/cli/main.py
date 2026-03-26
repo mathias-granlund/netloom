@@ -118,6 +118,11 @@ class _CliProfiler:
         self.records: list[tuple[str, float]] = []
         self._start = time.perf_counter()
 
+    def add_record(self, name: str, duration_ms: float) -> None:
+        if not self.enabled:
+            return
+        self.records.append((name, duration_ms))
+
     def call(self, name: str, func, *args, **kwargs):
         if not self.enabled:
             return func(*args, **kwargs)
@@ -131,13 +136,81 @@ class _CliProfiler:
         if not self.enabled:
             return
         total_ms = (time.perf_counter() - self._start) * 1000.0
-        parts = [f"{name}={duration:.1f}ms" for name, duration in self.records]
+        aggregated: dict[str, float] = {}
+        for name, duration in self.records:
+            aggregated[name] = aggregated.get(name, 0.0) + duration
+        parts = [f"{name}={duration:.1f}ms" for name, duration in aggregated.items()]
         summary = ", ".join(parts)
         print(
             f"[netloom timing] {self.label} total={total_ms:.1f}ms"
             + (f" ({summary})" if summary else ""),
             file=sys.stderr,
         )
+
+
+class _CacheUpdateProgressReporter:
+    def __init__(self):
+        self._last_subdocument_count = 0
+
+    def _print(self, message: str) -> None:
+        print(f"[netloom progress] {message}", file=sys.stderr)
+
+    def _progress_text(self, current, total) -> str:
+        if not isinstance(current, int) or not isinstance(total, int) or total <= 0:
+            return f"{current}/{total}"
+        percent = round((current / total) * 100)
+        return f"{current}/{total} ({percent}%)"
+
+    def stage(self, message: str) -> None:
+        self._print(message)
+
+    def __call__(self, event: str, **data) -> None:
+        if event == "fetch_api_docs":
+            self._print("fetching /api-docs")
+            return
+        if event == "fetch_effective_privileges":
+            self._print("fetching effective privileges")
+            return
+        if event == "module_listing":
+            current = data.get("current")
+            total = data.get("total")
+            module = data.get("module")
+            self._print(
+                f"fetching module listing {self._progress_text(current, total)}: "
+                f"{module}"
+            )
+            return
+        if event == "subdocuments_start":
+            total = data.get("total")
+            self._print(f"fetching subdocuments: {self._progress_text(0, total)}")
+            self._last_subdocument_count = 0
+            return
+        if event == "subdocument":
+            current = int(data.get("current", 0))
+            total = int(data.get("total", 0))
+            module = data.get("module")
+            if (
+                total <= 10
+                or current in {1, total}
+                or current - self._last_subdocument_count >= 10
+            ):
+                self._print(
+                    f"fetching subdocuments: {self._progress_text(current, total)} "
+                    f"({module})"
+                )
+                self._last_subdocument_count = current
+            return
+        if event == "build_catalog":
+            self._print("building catalog")
+            return
+        if event == "write_full_cache":
+            self._print("writing full cache")
+            return
+        if event == "write_fast_index":
+            self._print("writing fast index")
+            return
+        if event == "done":
+            self._print("cache update complete")
 
 
 def _catalog_view_from_args(args: dict | None) -> str:
@@ -278,24 +351,35 @@ def _get_catalog_for_cli(
     settings: Settings | None,
     force_refresh: bool = False,
     catalog_view: str,
+    timing_sink=None,
+    progress_sink=None,
 ) -> dict:
-    try:
-        return plugin.get_api_catalog(
-            cp,
-            token=token,
-            force_refresh=force_refresh,
-            settings=settings,
-            catalog_view=catalog_view,
-        )
-    except TypeError as exc:
-        if "catalog_view" not in str(exc):
+    kwargs = {
+        "token": token,
+        "force_refresh": force_refresh,
+        "settings": settings,
+        "catalog_view": catalog_view,
+    }
+    if timing_sink is not None:
+        kwargs["timing_sink"] = timing_sink
+    if progress_sink is not None:
+        kwargs["progress_sink"] = progress_sink
+
+    while True:
+        try:
+            return plugin.get_api_catalog(cp, **kwargs)
+        except TypeError as exc:
+            message = str(exc)
+            if "progress_sink" in message and "progress_sink" in kwargs:
+                kwargs.pop("progress_sink", None)
+                continue
+            if "timing_sink" in message and "timing_sink" in kwargs:
+                kwargs.pop("timing_sink", None)
+                continue
+            if "catalog_view" in message and "catalog_view" in kwargs:
+                kwargs.pop("catalog_view", None)
+                continue
             raise
-        return plugin.get_api_catalog(
-            cp,
-            token=token,
-            force_refresh=force_refresh,
-            settings=settings,
-        )
 
 
 def print_help(
@@ -549,16 +633,35 @@ def main() -> None:
                 log.info("No API endpoint cache file found (already clear).")
             return
         if service == "update" and not args.get("action"):
-            cp = plugin.build_client(active_settings)
-            token = plugin.resolve_auth_token(cp, active_settings)
-            _get_catalog_for_cli(
-                plugin,
-                cp,
-                token=token,
-                force_refresh=True,
+            profiler = _CliProfiler(
+                "cache_update",
                 settings=active_settings,
-                catalog_view=_catalog_view_from_args(args),
+                env_value=_env_cli_timing_value(),
             )
+            progress = _CacheUpdateProgressReporter()
+            try:
+                progress.stage("building client")
+                cp = profiler.call("build_client", plugin.build_client, active_settings)
+                progress.stage("authenticating")
+                token = profiler.call(
+                    "resolve_auth_token",
+                    plugin.resolve_auth_token,
+                    cp,
+                    active_settings,
+                )
+                _get_catalog_for_cli(
+                    plugin,
+                    cp,
+                    token=token,
+                    force_refresh=True,
+                    settings=active_settings,
+                    catalog_view=_catalog_view_from_args(args),
+                    timing_sink=profiler.add_record,
+                    progress_sink=progress,
+                )
+            finally:
+                progress("done")
+                profiler.emit()
             return
         print_help({"module": "cache"}, plugin=plugin, settings=active_settings)
         return

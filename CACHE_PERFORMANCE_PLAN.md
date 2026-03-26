@@ -109,7 +109,8 @@ This means:
   interactive layers
 
 One current gap:
-- `netloom cache update` is not timed yet
+- `netloom cache update` now has timing, and the measured bottleneck is
+  subdocument fetch latency rather than local transform/write work
 
 ## Phase 1 Summary
 
@@ -212,7 +213,7 @@ Current stderr format:
 - `[netloom timing] ...`
 
 Still missing:
-- timing for `netloom cache update`
+- no major timing gap remains for the current cache/help/completion work
 
 ## Next Steps
 
@@ -260,22 +261,33 @@ Priority:
 
 ### Phase 1.7: Add timing for cache update
 
-Planned work:
-- add timing instrumentation for `netloom cache update`
+Done.
 
-That should measure:
-- `/api-docs` fetch time
-- module listing fetch time
-- subdocument fetch time
-- catalog transform/build time
-- full cache write time
-- fast index write time
+Implemented:
+- timing instrumentation for `netloom cache update`
+- top-level timing around client build and authentication
+- detailed timing buckets for:
+  - `/api-docs` fetch time
+  - effective-privileges fetch time
+  - module listing fetch time
+  - subdocument fetch time
+  - catalog transform/build time
+  - full cache write time
+  - fast index write time
 
-Why:
-- we need real data before changing the catalog rebuild architecture
+Measured result from a live run:
+- total `23.15 s`
+- `fetch_subdocuments=19.71 s`
+- `fetch_module_listings=2.24 s`
+- `build_catalog=0.33 s`
+- `write_full_cache=0.02 s`
+- `write_fast_index=0.01 s`
 
-Priority:
-- high
+Conclusion:
+- cache rebuild is clearly network-bound
+- local transform/write work is comparatively tiny
+- future rebuild-performance work should be justified by UX value, not by
+  assumptions about CPU or JSON overhead
 
 ### Phase 1.8: Validate shallow full-view projection
 
@@ -293,21 +305,38 @@ Why:
 Priority:
 - medium
 
-### Phase 1.9: Parallelize catalog rebuild if timing confirms it
+### Cache-update progress reporting
 
-Planned work:
-- after Phase 1.7 timing is in place, profile `netloom cache update` against a
-  real ClearPass server
-- if network latency dominates, parallelize module listing and/or subdocument
-  fetches with a small bounded worker pool
+Done.
+
+Implemented:
+- lightweight stderr progress reporting for `netloom cache update`
+- visible stage updates for:
+  - building client
+  - authentication
+  - `/api-docs`
+  - effective privileges
+  - module listings
+  - subdocument fetch progress
+  - catalog build
+  - full cache write
+  - fast index write
 
 Why:
-- catalog rebuild is currently very sequential
-- this is likely the biggest real-world win for `cache update`, but it should
-  be data-driven
+- the measured cache-update bottleneck is long-running network fetch time
+- user confidence and visibility matter more than shaving a few local
+  milliseconds off rebuild work
 
-Priority:
-- medium, after timing confirms it is worthwhile
+### Phase 1.9: Parallelize catalog rebuild if timing confirms it
+
+Deferred for now.
+
+Current recommendation:
+- do not parallelize cache rebuild yet
+- the timing data confirms that parallel fetches would be the main technical
+  optimization path if we revisit cache-update performance later
+- for now, progress reporting addresses the more immediate UX concern that the
+  command can otherwise look hung during long subdocument fetch phases
 
 ## Phase 2
 
@@ -323,16 +352,15 @@ Do not jump to `netloomd` yet.
 The current data suggests the next highest-ROI step is:
 - continue trimming import/runtime setup cost inside the lightweight
   interactive help/completion layers
-- add timing for `cache update`
-- then measure again before deciding whether any deeper cache-path work is
-  still needed
+- keep the new cache-update timing and progress reporting in place
+- revisit parallel cache rebuild work only if the `~23 s` live rebuild time
+  becomes a practical pain point in normal use
 
 The interactive cache-loading bottleneck has already been addressed in Phase
 1.5, and the remaining help/completion latency is now small enough that future
-work should be driven by measured startup cost.
+work should be driven by measured startup cost and user-perceived UX value.
 
 Recommended order:
 1. Phase 1.6
-2. Phase 1.7
-3. Phase 1.8
-4. Phase 1.9
+2. Phase 1.8
+3. revisit Phase 1.9 only if cache-update latency becomes worth optimizing
