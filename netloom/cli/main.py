@@ -5,25 +5,19 @@ import sys
 import time
 from dataclasses import is_dataclass, replace
 
-import urllib3
-
 from netloom import get_version
-from netloom.cli.commands import ACTIONS
 from netloom.cli.completion import print_completions
-from netloom.cli.copy import handle_copy_command
-from netloom.cli.diff import handle_diff_command
 from netloom.cli.help import render_help
-from netloom.cli.load import handle_load_command
 from netloom.cli.parser import CliParseError, parse_cli
-from netloom.cli.server import handle_server_command
 from netloom.core.config import (
     CLI_TIMING_ENV,
     Settings,
     load_settings,
 )
-from netloom.core.plugin import get_plugin
-from netloom.io.output import should_mask_secrets
-from netloom.logging.setup import LOG_LEVELS, configure_logging
+from netloom.core.plugin import (
+    get_plugin,
+    load_cached_catalog_for_plugin,
+)
 
 _COMPACT_HELP_ACTIONS = {
     "copy",
@@ -35,6 +29,9 @@ _COMPACT_HELP_ACTIONS = {
     "replace",
     "delete",
 }
+
+_HELP_PLUGIN_MARKER = object()
+ACTIONS: dict[str, object] = {}
 
 
 def _env_cli_timing_value() -> str | None:
@@ -149,6 +146,61 @@ def _help_prefers_index(args: dict | None) -> bool:
     return action in _COMPACT_HELP_ACTIONS
 
 
+def _help_needs_catalog(args: dict | None) -> bool:
+    module = (args or {}).get("module")
+    return module not in {"cache", "load", "server"}
+
+
+def _actions() -> dict[str, object]:
+    if not ACTIONS:
+        from netloom.cli.commands import ACTIONS as imported_actions
+
+        ACTIONS.update(imported_actions)
+    return ACTIONS
+
+
+def handle_copy_command(*args, **kwargs):
+    from netloom.cli.copy import handle_copy_command as impl
+
+    return impl(*args, **kwargs)
+
+
+def handle_diff_command(*args, **kwargs):
+    from netloom.cli.diff import handle_diff_command as impl
+
+    return impl(*args, **kwargs)
+
+
+def handle_load_command(*args, **kwargs):
+    from netloom.cli.load import handle_load_command as impl
+
+    return impl(*args, **kwargs)
+
+
+def handle_server_command(*args, **kwargs):
+    from netloom.cli.server import handle_server_command as impl
+
+    return impl(*args, **kwargs)
+
+
+def configure_logging(*args, **kwargs):
+    from netloom.logging.setup import configure_logging as impl
+
+    return impl(*args, **kwargs)
+
+
+def _log_levels() -> dict[str, int]:
+    from netloom.logging.setup import LOG_LEVELS
+
+    return LOG_LEVELS
+
+
+def should_mask_secrets(*args, **kwargs):
+    from netloom.io.output import should_mask_secrets as impl
+
+    return impl(*args, **kwargs)
+
+
 def _get_catalog_for_cli(
     plugin,
     cp,
@@ -191,10 +243,31 @@ def print_help(
             effective_settings = None
     profiler = _CliProfiler("help", settings=effective_settings)
     selected_plugin = plugin
-    if selected_plugin is None:
+    selected_args = args or {}
+    catalog_view = _catalog_view_from_args(selected_args)
+    catalog = None
+    needs_catalog = _help_needs_catalog(selected_args)
+    prefer_index = _help_prefers_index(selected_args)
+    active_settings = effective_settings
+    plugin_name = getattr(active_settings, "plugin", None) if active_settings else None
+    if needs_catalog and selected_plugin is None:
+        active_settings = active_settings or profiler.call(
+            "load_settings", load_settings
+        )
+        plugin_name = getattr(active_settings, "plugin", None)
+        catalog = profiler.call(
+            "load_core_cached_catalog",
+            load_cached_catalog_for_plugin,
+            plugin_name,
+            settings=active_settings,
+            catalog_view=catalog_view,
+            prefer_index=prefer_index,
+        )
+        effective_settings = active_settings
+    if needs_catalog and selected_plugin is None and catalog is None:
         try:
             selected_plugin = profiler.call(
-                "get_plugin",
+                "plugin_fallback_get_plugin",
                 get_plugin,
                 None,
                 settings=effective_settings
@@ -202,13 +275,12 @@ def print_help(
             )
         except ValueError:
             selected_plugin = None
-    selected_args = args or {}
-    catalog_view = _catalog_view_from_args(selected_args)
-    catalog = None
-    if selected_plugin is not None:
-        prefer_index = _help_prefers_index(selected_args)
+    render_plugin = selected_plugin
+    if render_plugin is None and plugin_name:
+        render_plugin = _HELP_PLUGIN_MARKER
+    if selected_plugin is not None and catalog is None:
         catalog = profiler.call(
-            "load_cached_index" if prefer_index else "load_cached_catalog",
+            "plugin_fallback_cached_catalog",
             _load_catalog_for_cli,
             selected_plugin,
             settings=effective_settings,
@@ -240,7 +312,7 @@ def print_help(
         catalog,
         selected_args,
         version=get_version(),
-        plugin=selected_plugin,
+        plugin=render_plugin,
     )
     print(text)
     profiler.emit()
@@ -259,28 +331,38 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
         active_settings = effective_settings or profiler.call(
             "load_settings", load_settings
         )
-        try:
-            plugin = profiler.call(
-                "get_plugin",
-                get_plugin,
-                None,
-                settings=active_settings,
-            )
-        except ValueError:
-            plugin = None
+        plugin_name = getattr(active_settings, "plugin", None)
         catalog_view = _catalog_view_from_completion_words(words)
-        catalog = (
-            profiler.call(
-                "load_cached_index",
-                _load_catalog_for_cli,
-                plugin,
-                settings=active_settings,
-                catalog_view=catalog_view,
-                prefer_index=True,
-            )
-            if plugin is not None
-            else None
+        catalog = profiler.call(
+            "load_core_cached_catalog",
+            load_cached_catalog_for_plugin,
+            plugin_name,
+            settings=active_settings,
+            catalog_view=catalog_view,
+            prefer_index=True,
         )
+        if catalog is None:
+            try:
+                plugin = profiler.call(
+                    "plugin_fallback_get_plugin",
+                    get_plugin,
+                    None,
+                    settings=active_settings,
+                )
+            except ValueError:
+                plugin = None
+            catalog = (
+                profiler.call(
+                    "plugin_fallback_cached_catalog",
+                    _load_catalog_for_cli,
+                    plugin,
+                    settings=active_settings,
+                    catalog_view=catalog_view,
+                    prefer_index=True,
+                )
+                if plugin is not None
+                else None
+            )
     profiler.call("print_completions", print_completions, words, catalog)
     profiler.emit()
 
@@ -304,43 +386,25 @@ def main() -> None:
         complete(words)
         return
 
-    settings = load_settings()
-    if not settings.verify_ssl:
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-    log_mgr = configure_logging(settings, root_name="netloom")
-    log = log_mgr.get_logger(__name__)
-
     try:
         args = parse_cli(sys.argv)
     except CliParseError as exc:
-        print_help(exc.context, settings=settings)
+        print_help(exc.context)
         message = str(exc).strip()
         if message:
             print(f"\n{message}")
         return
-
-    active_settings = settings_with_cli_overrides(settings, args)
-
-    log_level = args.get("log_level")
-    if log_level:
-        normalized = str(log_level).upper()
-        if normalized not in LOG_LEVELS:
-            valid = ", ".join(name.lower() for name in LOG_LEVELS)
-            log.error("Invalid log level: %s. Valid options are: %s", log_level, valid)
-            return
-        log_mgr.set_level(LOG_LEVELS[normalized])
 
     if args.get("version"):
         print(get_version())
         return
 
     if args.get("help"):
-        print_help(args, settings=active_settings)
+        print_help(args)
         return
 
     if not args.get("module"):
-        print_help({}, settings=active_settings)
+        print_help({})
         return
 
     if args.get("module") == "server":
@@ -348,7 +412,6 @@ def main() -> None:
             return
         print_help(
             {"module": "server", "service": args.get("service")},
-            settings=active_settings,
         )
         return
 
@@ -357,9 +420,28 @@ def main() -> None:
             return
         print_help(
             {"module": "load", "service": args.get("service")},
-            settings=active_settings,
         )
         return
+
+    settings = load_settings()
+    active_settings = settings_with_cli_overrides(settings, args)
+    if not active_settings.verify_ssl:
+        import urllib3
+
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    log_mgr = configure_logging(active_settings, root_name="netloom")
+    log = log_mgr.get_logger(__name__)
+
+    log_level = args.get("log_level")
+    if log_level:
+        levels = _log_levels()
+        normalized = str(log_level).upper()
+        if normalized not in levels:
+            valid = ", ".join(name.lower() for name in levels)
+            log.error("Invalid log level: %s. Valid options are: %s", log_level, valid)
+            return
+        log_mgr.set_level(levels[normalized])
 
     try:
         plugin = get_plugin(None, settings=active_settings)
@@ -408,7 +490,7 @@ def main() -> None:
         return
 
     try:
-        command = ACTIONS[action]
+        command = _actions()[action]
     except KeyError:
         print_help(args, plugin=plugin, settings=active_settings)
         print(f"\nUnknown command: {module} {service} {action}")
@@ -423,6 +505,7 @@ def main() -> None:
         active_settings.verify_ssl,
     )
     token = plugin.resolve_auth_token(cp, active_settings)
+    print(token)
     api_catalog = _get_catalog_for_cli(
         plugin,
         cp,

@@ -29,14 +29,14 @@ def _catalog_plugin(catalog):
     )
 
 
-def _settings():
+def _settings(*, plugin=None):
     paths = AppPaths(
         cache_dir=Path("cache"),
         state_dir=Path("state"),
         response_dir=Path("responses"),
         app_log_dir=Path("logs"),
     )
-    return Settings(paths=paths)
+    return Settings(plugin=plugin, paths=paths)
 
 
 def test_parse_cli_basic():
@@ -136,6 +136,43 @@ def test_complete_prefers_cached_index(capsys, monkeypatch):
     assert "identities" in out
 
 
+def test_complete_uses_direct_cached_index_without_get_plugin(capsys, monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not load plugin")
+        ),
+    )
+
+    main.complete(["--_cur="], settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out.strip().splitlines()
+    assert "identities" in out
+
+
+def test_complete_falls_back_to_get_plugin_when_direct_index_missing(
+    capsys, monkeypatch
+):
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: None,
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+
+    main.complete(["--_cur="], settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out.strip().splitlines()
+    assert "identities" in out
+
+
 def test_complete_outputs_server_profiles_for_use(capsys, monkeypatch):
     plugin = _catalog_plugin(TEST_CATALOG)
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
@@ -198,6 +235,95 @@ def test_print_help_prefers_cached_index_for_compact_help(monkeypatch, capsys):
     monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
 
     main.print_help({"module": "identities"}, settings=_settings())
+
+    out = capsys.readouterr().out
+    assert "Module: identities" in out
+    assert "Available services:" in out
+
+
+def test_print_help_server_builtin_does_not_touch_plugin_or_cache(monkeypatch, capsys):
+    monkeypatch.setattr(main, "render_help", lambda *args, **kwargs: "server help")
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not load cache")
+        ),
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not load plugin")
+        ),
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({"module": "server"}, settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out
+    assert "server help" in out
+
+
+def test_print_help_top_level_uses_direct_cached_index_without_get_plugin(
+    monkeypatch, capsys
+):
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not load plugin")
+        ),
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({}, settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out
+    assert "Available modules:" in out
+    assert "Examples:" not in out
+
+
+def test_print_help_uses_direct_cached_index_without_get_plugin(monkeypatch, capsys):
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not load plugin")
+        ),
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({"module": "identities"}, settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out
+    assert "Module: identities" in out
+    assert "Available services:" in out
+
+
+def test_print_help_falls_back_to_get_plugin_when_direct_index_missing(
+    monkeypatch, capsys
+):
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: None,
+    )
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.6")
+
+    main.print_help({"module": "identities"}, settings=_settings(plugin="clearpass"))
 
     out = capsys.readouterr().out
     assert "Module: identities" in out
@@ -359,3 +485,47 @@ def test_parse_cli_rejects_invalid_builtin_shape():
     argv = ["netloom", "load", "clearpass", "extra"]
     with pytest.raises(main.CliParseError, match="unrecognized arguments: extra"):
         main.parse_cli(argv)
+
+
+def test_main_version_skips_settings_and_logging(monkeypatch, capsys):
+    monkeypatch.setattr(
+        main,
+        "load_settings",
+        lambda: (_ for _ in ()).throw(AssertionError("should not load settings")),
+    )
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not configure logging")
+        ),
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "9.9.9")
+    monkeypatch.setattr(main.sys, "argv", ["netloom", "--version"])
+
+    main.main()
+
+    assert capsys.readouterr().out.strip() == "9.9.9"
+
+
+def test_main_help_skips_eager_settings_and_logging(monkeypatch, capsys):
+    monkeypatch.setattr(
+        main,
+        "load_settings",
+        lambda: (_ for _ in ()).throw(AssertionError("should not load settings")),
+    )
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("should not configure logging")
+        ),
+    )
+    monkeypatch.setattr(
+        main, "print_help", lambda args=None, **kwargs: print("Usage:\n  netloom ...")
+    )
+    monkeypatch.setattr(main.sys, "argv", ["netloom", "--help"])
+
+    main.main()
+
+    assert "Usage:" in capsys.readouterr().out

@@ -1,4 +1,4 @@
-.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.5" "Miscellaneous Information Manual"
+.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.9.8" "Miscellaneous Information Manual"
 .SH NAME
 netloom-clearpass \- ClearPass plugin reference for netloom.
 
@@ -292,6 +292,60 @@ Advanced JSON examples:
 .EE
 
 Shell quoting matters because JSON expressions are passed as strings.
+
+.SH COMMON OPTIONS
+The following common CLI options are especially relevant when working with the
+ClearPass plugin:
+
+.TP
+.BI --file= PATH
+Path to JSON/CSV bulk payload input.
+
+.TP
+.BI --out= PATH
+Override the output file path.
+
+.TP
+.BI --data-format= JSON|CSV|RAW
+Output format (default:
+.BR json ).
+
+.TP
+.BI --csv-fieldnames= A,B,C
+Fields and order for CSV output.
+
+.TP
+.BI --filter= JSON|FIELD:OP:VALUE
+Server-side filter applied across all matching pages.
+
+.TP
+.BI --limit= N
+Page size for list/get
+.B --all
+and
+.B copy
+requests.
+
+.TP
+.BI --calculate-count= true|false
+Request total count metadata.
+
+.TP
+.BI --log-level= LEVEL
+Select log level (default:
+.BR info ).
+
+.TP
+.BI --api-token= TOKEN
+Use an existing bearer token.
+
+.TP
+.BI --token-file= PATH
+Load a bearer token from a file.
+
+.TP
+.BI --encrypt= enable|disable
+Mask or show secret fields.
 
 .SH COPY WORKFLOW
 The ClearPass plugin supports copying resources between named profiles without

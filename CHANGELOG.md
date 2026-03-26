@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.8 - 2026-03-26
+
+### Changed
+- completed the completion-first Phase 1.5 follow-up by moving interactive cached catalog reads into a core lightweight loader that avoids plugin catalog imports on normal cached runs
+- routed completion and compact help through the new core cache loader while preserving plugin/runtime fallback behavior on cache misses
+- delayed more runtime setup for trivial help and version paths so interactive latency is now largely startup-bound instead of plugin-import-bound
+- updated `CACHE_PERFORMANCE_PLAN.md` with the new measured timings, completed Phase 1.5 status, and reordered next steps
+- aligned package metadata, README badge, release notes, and checked-in manpage version headers for the `1.9.8` release
+
 ## 1.9.7 - 2026-03-24
 
 ### Added

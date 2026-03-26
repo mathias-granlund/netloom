@@ -15,17 +15,6 @@ from netloom.core.plugin import list_plugins
 __all__ = ["render_action_block", "render_help", "service_cli_actions"]
 
 
-def _plugin_help_context(plugin=None) -> dict:
-    provider = getattr(plugin, "help_context", None)
-    if callable(provider):
-        return provider() or {}
-    return {}
-
-
-def _with_indent(lines: list[str], prefix: str = "  ") -> list[str]:
-    return [line if line.startswith(prefix) else f"{prefix}{line}" for line in lines]
-
-
 def _render_usage(
     plugin=None,
     *,
@@ -106,7 +95,6 @@ def _render_usage(
             + "\n"
         )
 
-    plugin_help = _plugin_help_context(plugin)
     usage_lines = [
         "Usage:",
         "  netloom load [list | show | <plugin>]",
@@ -120,16 +108,6 @@ def _render_usage(
         "  netloom [--help | ?]",
         "  netloom --version",
     ]
-    examples = plugin_help.get("examples") or []
-    option_lines = _with_indent(plugin_help.get("common_options") or [])
-    flag_lines = _with_indent(plugin_help.get("common_flags") or [])
-
-    if examples:
-        usage_lines.extend(["", "Examples:", *[f"  {line}" for line in examples]])
-    if option_lines:
-        usage_lines.extend(["", "Common options:", *option_lines])
-    if flag_lines:
-        usage_lines.extend(["", "Common flags:", *flag_lines])
     return "\n".join(usage_lines) + "\n"
 
 

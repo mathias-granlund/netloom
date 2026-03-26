@@ -19,21 +19,54 @@ Phase 1 is implemented:
 - full-cache fallback behavior is still preserved
 - opt-in timing is available with `NETLOOM_CLI_TIMING=1`
 
+Phase 1.5 is now implemented for the main interactive bottleneck:
+- completion and compact help use a core-owned lightweight cache loader
+- that loader reads `api_endpoints_index.json` directly from
+  `settings.paths.cache_dir`
+- the fast path no longer imports `netloom.plugins.clearpass.catalog`
+- fallback to plugin/runtime-backed behavior is still preserved when the cache
+  is missing, invalid, or insufficient
+
 Current cache artifacts:
 - full cache: `api_endpoints_cache.json`
 - fast index: `api_endpoints_index.json`
 
 ## What The Timing Data Shows
 
-Measured examples from live runs:
+Earlier measured examples from live runs:
 - help total around `182-210 ms`
 - `load_cached_index` around `4-5 ms`
 - `render_help` effectively `0 ms`
 - `get_plugin` around `166-190 ms`
 
-This means the fast index work is already helping. The remaining latency is
-not dominated by JSON parsing anymore. The next bottleneck is plugin/runtime
-bootstrap.
+That first round showed the fast index work was already helping, but
+plugin/runtime bootstrap was still dominating interactive latency.
+
+After the completion-first Phase 1.5 follow-up, recent live timings now look
+like this:
+- `netloom globalserverconfiguration admin-user ?`
+  - help total `15.7 ms`
+  - `load_core_cached_catalog=2.9 ms`
+- `netloom ?`
+  - help total `20.2 ms`
+  - `load_core_cached_catalog=3.3 ms`
+- `netloom policyelements network-device ?`
+  - help total `16.0 ms`
+  - `load_core_cached_catalog=2.9 ms`
+- `netloom policyelements network-device list ?`
+  - help total `16.4 ms`
+  - `load_core_cached_catalog=3.1 ms`
+- `netloom apioperations ?`
+  - help total `16.6 ms`
+  - `load_core_cached_catalog=2.9 ms`
+
+This confirms the real interactive bottleneck was not JSON parsing itself, but
+the old "direct" path still importing plugin catalog code. With the
+lightweight core loader in place:
+- cache/index loading is now back in the low single-digit millisecond range
+- help rendering remains effectively free
+- the remaining interactive latency is now mostly process startup and other
+  runtime setup outside catalog rendering
 
 One current gap:
 - `netloom cache update` is not timed yet
@@ -91,6 +124,33 @@ If the fast index is missing, stale, or unreadable:
 - fall back to the full cache
 - preserve current behavior
 
+### Phase 1.5: Completion-first lightweight cache loading
+
+Done.
+
+Implemented:
+- a core-owned, read-only interactive cache loader
+- direct reads of `api_endpoints_index.json` from `settings.paths.cache_dir`
+- support for visible and full catalog views
+- fallback to the full cache only when needed
+- fallback to plugin/runtime-backed behavior when cache-only data is
+  unavailable
+
+Used by:
+- shell completion
+- top-level help
+- module help
+- service help
+- compact action help
+
+Result:
+- interactive help/completion no longer pay plugin catalog import cost on
+  normal cached runs
+- real-world help timings dropped from roughly `155-195 ms` in the hot path to
+  roughly `15-20 ms` total
+- the main remaining interactive optimization target is startup/import/runtime
+  setup, not catalog loading
+
 ## Measurement
 
 ### 6. Opt-in timing instrumentation
@@ -100,7 +160,7 @@ Partially done.
 Current timing coverage:
 - completion
 - dynamic help
-- cache/index loading inside those paths
+- core cache/index loading inside those paths
 - render/candidate generation inside those paths
 
 Enabled with:
@@ -113,24 +173,6 @@ Still missing:
 - timing for `netloom cache update`
 
 ## Next Steps
-
-### Phase 1.5: Direct index loading for interactive paths
-
-Planned next work:
-- for completion and compact help, do not call `get_plugin()` when the cached
-  index is enough
-- load settings, resolve the active plugin name, and read the cached index
-  directly from disk
-- only fall back to `get_plugin()` when:
-  - the fast index is missing
-  - richer full-catalog data is required
-  - a real runtime command needs plugin behavior
-
-Expected result:
-- remove most of the current `get_plugin` timing cost from help/completion
-
-Priority:
-- highest
 
 ### Phase 1.6: Late imports and late runtime setup
 
@@ -145,11 +187,13 @@ Planned work:
   `netloom.cli.main`
 
 Why:
-- process startup and bootstrap still matter even after the cache/index win
+- process startup and bootstrap now dominate the remaining interactive latency
 - this should help one-shot commands that do not need full runtime setup
+- completion is the most latency-sensitive path and should remain the primary
+  optimization target here
 
 Priority:
-- high
+- highest
 
 ### Phase 1.7: Add timing for cache update
 
@@ -204,7 +248,7 @@ Priority:
 
 ## Phase 2
 
-If Phase 1.5 still leaves completion/help too slow:
+If Phase 1.6 still leaves completion/help too slow:
 - introduce `netloomd`
 - keep the catalog/index in RAM
 - let completion and help query the daemon instead of reparsing cache files
@@ -214,15 +258,17 @@ If Phase 1.5 still leaves completion/help too slow:
 Do not jump to `netloomd` yet.
 
 The current data suggests the next highest-ROI step is:
-- direct cached-index loading for help/completion
-- add timing for `cache update`
 - delay imports/runtime setup for trivial CLI paths
+- add timing for `cache update`
+- then measure again before deciding whether any deeper cache-path work is
+  still needed
 
-Then measure again before deciding on a daemon.
+The interactive cache-loading bottleneck has already been addressed in Phase
+1.5, and the remaining help/completion latency is now small enough that future
+work should be driven by measured startup cost.
 
 Recommended order:
-1. Phase 1.5
+1. Phase 1.6
 2. Phase 1.7
-3. Phase 1.6
-4. Phase 1.8
-5. Phase 1.9
+3. Phase 1.8
+4. Phase 1.9

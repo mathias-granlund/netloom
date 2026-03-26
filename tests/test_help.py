@@ -558,8 +558,8 @@ def test_render_help_mentions_token_and_copy_syntax():
 
     assert "netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET" in text
     assert "netloom copy <module> <service> --from=SOURCE --to=TARGET" not in text
-    assert "--api-token=TOKEN" in text
-    assert "--token-file=PATH" in text
+    assert "--api-token=TOKEN" not in text
+    assert "--token-file=PATH" not in text
 
 
 def test_render_help_uses_plugin_specific_examples():
@@ -575,8 +575,8 @@ def test_render_help_uses_plugin_specific_examples():
 
     text = helpmod.render_help({}, {}, version="1.7.2", plugin=plugin)
 
-    assert "netloom load clearpass" in text
-    assert "netloom identities endpoint list --limit=10" in text
+    assert "netloom load clearpass" not in text
+    assert "netloom identities endpoint list --limit=10" not in text
     assert "Plugin-specific note" not in text
 
 
@@ -641,8 +641,8 @@ def test_clearpass_help_mentions_filter_shorthand():
 
     text = helpmod.render_help({}, {}, version="1.7.6", plugin=plugin)
 
-    assert "--filter=JSON|FIELD:OP:VALUE" in text
-    assert "netloom identities endpoint list --filter=name:equals:TEST" in text
+    assert "--filter=JSON|FIELD:OP:VALUE" not in text
+    assert "netloom identities endpoint list --filter=name:equals:TEST" not in text
     assert "Notes:" not in text
     assert "NETLOOM_CLIENT_SECRET_REF=prod/client-secret" not in text
 
