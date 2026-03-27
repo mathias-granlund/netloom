@@ -1,31 +1,36 @@
-# netloom v1.9.10
+# netloom v1.9.11
 
-This release focuses on the cache-update UX and measurement side of the
-performance work by completing Phase 1.7 and making long `cache update`
-runs visibly progress instead of looking stalled.
+This release shifts the planning focus from interactive performance to
+ClearPass privilege coverage, while also promoting the latest verified live
+service mappings into the enforced rule set.
 
 ## Highlights
 
-- added detailed timing output for `netloom cache update` under
-  `NETLOOM_CLI_TIMING=1`
-- added lightweight `[netloom progress]` reporting during `cache update`
-- confirmed from real timing data that cache rebuild time is dominated by
-  subdocument fetches rather than local JSON build/write work
-- updated `CACHE_PERFORMANCE_PLAN.md` to mark Phase 1.7 complete and defer
-  parallel rebuild work unless the current rebuild time becomes a practical
-  pain point
+- renamed the old performance-only roadmap into `PLANNED_FEATURES.md` and
+  moved ClearPass privilege coverage to the top priority
+- added a current coverage summary for the retained full ClearPass catalog:
+  `35` verified mappings and `156` remaining unmapped retained services
+- verified and promoted `globalserverconfiguration/operator-profile ->
+  auth_profiles`
+- verified and promoted `policyelements/radius-dictionary ->
+  cppm_radius_dict`
+- improved the live discovery runner so it can fall back when
+  `/api/operator-profile/name/<name>` is not supported cleanly by the target
+  ClearPass server
+- added a reusable `CLEARPASS_PRIVILEGE_MAPPING_PROMPT.md` prompt for future
+  live mapping rounds
 
 ## Examples
 
 ```bash
-netloom cache update
-NETLOOM_CLI_TIMING=1 netloom cache update
+python -m netloom.plugins.clearpass.privilege_discovery --out=clearpass_privilege_discovery.json
+netloom --catalog-view=full globalserverconfiguration operator-profile list --limit=1 --console
 ```
 
 ## Notes
 
 - installable man pages still come from `netloom/data/man/`
-- current timing data for cache rebuild shows total runtime around `23 s`, with
-  subdocument fetches dominating the total time
-- progress reporting is enabled by default for `cache update`, while timing
-  stays opt-in behind `NETLOOM_CLI_TIMING=1`
+- `PLANNED_FEATURES.md` now tracks both the completed interactive performance
+  work and the remaining ClearPass privilege-mapping backlog
+- `globalserverconfiguration/messaging-setup` remains unpromoted because it
+  still returns `404` even for admin on the current ClearPass server

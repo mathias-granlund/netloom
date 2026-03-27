@@ -11,7 +11,11 @@ import requests
 import urllib3
 
 from netloom.core.config import load_settings_for_profile
-from netloom.plugins.clearpass.catalog import OAUTH_ENDPOINTS, ApiEndpointCache
+from netloom.plugins.clearpass.catalog import (
+    OAUTH_ENDPOINTS,
+    ApiEndpointCache,
+    project_catalog_view,
+)
 from netloom.plugins.clearpass.plugin import build_client, resolve_auth_token
 from netloom.plugins.clearpass.privileges import service_privilege_rule_index
 
@@ -165,8 +169,46 @@ def _operator_profile_path(name: str) -> str:
     return "/api/operator-profile/name/" + quote(name, safe="")
 
 
+def _operator_profile_item_path(profile: dict[str, Any]) -> str:
+    self_href = (((profile.get("_links") or {}).get("self") or {}).get("href")) or ""
+    if isinstance(self_href, str) and self_href:
+        if "/api/" in self_href:
+            return self_href.split("/api/", 1)[1].join(("/api/", ""))
+        return self_href
+
+    profile_id = profile.get("id")
+    if profile_id is not None:
+        return f"/api/operator-profile/{profile_id}"
+
+    name = profile.get("name")
+    if isinstance(name, str) and name:
+        return _operator_profile_path(name)
+
+    raise ValueError("Operator profile payload does not include a usable identity.")
+
+
 def _fetch_operator_profile(admin_cp, admin_token: str, name: str) -> dict[str, Any]:
-    return admin_cp.request_path("GET", _operator_profile_path(name), token=admin_token)
+    try:
+        return admin_cp.request_path(
+            "GET",
+            _operator_profile_path(name),
+            token=admin_token,
+        )
+    except requests.HTTPError as exc:
+        response = exc.response
+        if response is None or response.status_code != 404:
+            raise
+
+    listing = admin_cp.request_path(
+        "GET",
+        "/api/operator-profile?calculate_count=false&offset=0&limit=200&filter=%7B%7D",
+        token=admin_token,
+    )
+    items = ((listing.get("_embedded") or {}).get("items")) or []
+    for item in items:
+        if isinstance(item, dict) and item.get("name") == name:
+            return item
+    raise ValueError(f"Operator profile '{name}' was not found.")
 
 
 def _update_operator_profile(
@@ -177,7 +219,7 @@ def _update_operator_profile(
     payload["privileges"] = privileges
     return admin_cp.request_path(
         "PATCH",
-        _operator_profile_path(str(profile["name"])),
+        _operator_profile_item_path(profile),
         token=admin_token,
         json_body=payload,
     )
@@ -285,7 +327,8 @@ def _build_admin_catalog(admin_settings) -> dict[str, Any]:
         token=admin_token,
         settings=admin_settings,
     )
-    return cache.get_catalog(force_refresh=True)
+    catalog = cache.get_catalog(force_refresh=True)
+    return project_catalog_view(catalog, catalog_view="full") or {"modules": {}}
 
 
 def _iter_target_services(

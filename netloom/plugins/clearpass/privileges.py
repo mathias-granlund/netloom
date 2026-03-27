@@ -124,6 +124,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
+        service="operator-profile",
+        privileges=("auth_profiles",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
         service="policy-manager-zones",
         privileges=("cppm_server_policy_manager_zones",),
     ),
@@ -223,6 +228,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="policyelements",
         service="proxy-target",
         privileges=("cppm_network_proxy_targets",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dictionary",
+        privileges=("cppm_radius_dict",),
     ),
     ServicePrivilegeRule(
         module="policyelements",

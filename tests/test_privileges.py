@@ -117,6 +117,9 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("globalserverconfiguration", "admin-user")].privileges == (
         "cppm_admin_users",
     )
+    assert rules[("globalserverconfiguration", "operator-profile")].privileges == (
+        "auth_profiles",
+    )
     assert rules[("identities", "api-client")].privileges == ("api_clients",)
     assert rules[("identities", "device")].privileges == ("mac", "guest_users")
     assert rules[("identities", "device")].match == "all"
@@ -135,6 +138,9 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("policyelements", "auth-source")].match == "all"
     assert rules[("policyelements", "network-device")].privileges == (
         "cppm_network_devices",
+    )
+    assert rules[("policyelements", "radius-dictionary")].privileges == (
+        "cppm_radius_dict",
     )
     assert rules[
         ("policyelements", "radius-dynamic-authorization-template")

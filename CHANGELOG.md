@@ -1,12 +1,25 @@
 # Changelog
 
+## 1.9.11 - 2026-03-27
+
+### Added
+- added `CLEARPASS_PRIVILEGE_MAPPING_PROMPT.md` with a reusable prompt for future live ClearPass privilege-discovery rounds
+
+### Changed
+- renamed the old `CACHE_PERFORMANCE_PLAN.md` roadmap into `PLANNED_FEATURES.md` and broadened it into a general planning document
+- moved ClearPass privilege coverage to the top priority, including a current coverage summary and the grouped list of the remaining `156` unmapped retained services
+- verified and promoted `globalserverconfiguration/operator-profile -> auth_profiles`
+- verified and promoted `policyelements/radius-dictionary -> cppm_radius_dict`
+- hardened the ClearPass discovery runner so operator-profile lookup/update works even when the ClearPass server does not support the old name-based profile endpoint cleanly
+- aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.11` release
+
 ## 1.9.10 - 2026-03-26
 
 ### Changed
 - completed Phase 1.7 by adding timing instrumentation for `netloom cache update`, including buckets for authentication, `/api-docs`, privileges, module listings, subdocuments, catalog build, and cache/index writes
 - added lightweight user-facing cache-update progress reporting so long refresh runs show visible forward movement instead of looking hung
 - confirmed from live timing data that cache rebuild is network-bound, with subdocument fetches dominating the total runtime
-- updated `CACHE_PERFORMANCE_PLAN.md` to mark Phase 1.7 complete, defer parallel rebuild work for now, and prefer progress UX over deeper rebuild optimization
+- updated `PLANNED_FEATURES.md` to mark Phase 1.7 complete, defer parallel rebuild work for now, and prefer progress UX over deeper rebuild optimization
 - aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.10` release
 
 ## 1.9.9 - 2026-03-26
@@ -18,7 +31,7 @@
 - reduced measured cached completion latency to roughly `26-33 ms`, with `load_core_cached_catalog` around `3.7-4.8 ms`
 - reduced measured cached help latency to roughly `43-44 ms`, with `load_core_cached_catalog` around `4.1-4.7 ms`
 - added lightweight-vs-full help parity tests and shared help primitives to reduce future drift risk between the fast path and the general runtime path
-- refreshed `CACHE_PERFORMANCE_PLAN.md`, release notes, and versioned metadata for the `1.9.9` release
+- refreshed `PLANNED_FEATURES.md`, release notes, and versioned metadata for the `1.9.9` release
 
 ## 1.9.8 - 2026-03-26
 
@@ -28,13 +41,13 @@
 - delayed more runtime setup for trivial help and version paths so interactive latency is now largely startup-bound instead of plugin-import-bound
 - reduced cached interactive help latency from roughly `155-195 ms` in the hot path to roughly `15-20 ms` total in measured live runs
 - reduced cached catalog load time for interactive help from roughly `143-189 ms` on the old plugin-import-heavy path to roughly `2.9-3.3 ms` with `load_core_cached_catalog`
-- updated `CACHE_PERFORMANCE_PLAN.md` with the new measured timings, completed Phase 1.5 status, and reordered next steps
+- updated `PLANNED_FEATURES.md` with the new measured timings, completed Phase 1.5 status, and reordered next steps
 - aligned package metadata, README badge, release notes, and checked-in manpage version headers for the `1.9.8` release
 
 ## 1.9.7 - 2026-03-24
 
 ### Added
-- added `CACHE_PERFORMANCE_PLAN.md` in the project root to track the cache-performance work, current measurements, and next optimization step
+- added `PLANNED_FEATURES.md` in the project root to track the cache-performance work, current measurements, and next optimization step
 
 ### Changed
 - compact cache/index Phase 1 is now documented as complete, with the next focus set to bypassing plugin loading for fast help/completion paths

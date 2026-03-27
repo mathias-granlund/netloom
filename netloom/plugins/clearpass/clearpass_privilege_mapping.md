@@ -1,9 +1,8 @@
 ## Verified ClearPass Privilege Mappings
 
 These mappings were verified live against a dedicated discovery operator profile.
-The profile kept the baseline API privileges `api_docs`, `apigility`, and
-`cppm_endpoints`, then one extra privilege key was added at a time and the
-resulting endpoint probes were checked.
+The profile kept a minimal API baseline, then one extra privilege key was added
+at a time and the resulting endpoint probes were checked.
 
 ## Discovery Workflow
 
@@ -33,6 +32,7 @@ Useful flags for future mapping rounds:
 | `cppm_clearpass_portal` | `cppm_clearpass_portal` | `globalserverconfiguration` | `clearpass-portal` | `list` |
 | `cppm_data_filters` | `cppm_data_filters` | `globalserverconfiguration` | `data-filter` | `list` |
 | `cppm_file_backup_server` | `cppm_file_backup_server` | `globalserverconfiguration` | `file-backup-server` | `list` |
+| `auth_profiles` | `auth_profiles` | `globalserverconfiguration` | `operator-profile` | `list` |
 | `cppm_server_policy_manager_zones` | `cppm_server_policy_manager_zones` | `globalserverconfiguration` | `policy-manager-zones` | `list` |
 | `cppm_snmp_trap_receivers` | `cppm_snmp_trap_receivers` | `globalserverconfiguration` | `snmp-trap-receiver` | `list` |
 | `api_clients` | `api_clients` | `identities` | `api-client` | `list` |
@@ -52,6 +52,7 @@ Useful flags for future mapping rounds:
 | `cppm_network_devices` | `cppm_network_devices` | `policyelements` | `network-device` | `list` |
 | `cppm_network_device_groups` | `cppm_network_device_groups` | `policyelements` | `network-device-group` | `list` |
 | `cppm_network_proxy_targets` | `cppm_network_proxy_targets` | `policyelements` | `proxy-target` | `list` |
+| `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary` | `list` |
 | `cppm_radius_dyn_autz_template` | `cppm_radius_dyn_autz_template` | `policyelements` | `radius-dynamic-authorization-template` | `list` |
 | `cppm_posture_policy` | `cppm_posture_policy` | `policyelements` | `posture-policy` | `list` |
 | `cppm_role_mapping` | `cppm_role_mapping` | `policyelements` | `role-mapping` | `list` |
@@ -70,11 +71,6 @@ the effective runtime privilege list, but the direct list probe still returned
 | `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
 | `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
 | `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
-| `engine_object_acl` | `globalserverconfiguration` | `operator-profile` | accepted, but list/get stay `403` even with stronger API combos |
-| `admin` | `globalserverconfiguration` | `operator-profile` | accepted, but list/get stay `403` even with stronger API combos |
-| `cppm_radius_dict` | `policyelements` | `radius-dictionary` | accepted, but list hits `500` even for admin |
-| `pass_index` | `policyelements` | `radius-dictionary` | accepted, combo probe still hits `500` |
-| `pass_config` | `policyelements` | `radius-dictionary` | accepted, combo probe still hits `500` |
 
 ## Combo Rules
 
@@ -95,8 +91,6 @@ the current live discovery rounds:
 | Module | Service | Current blocker |
 | --- | --- | --- |
 | `globalserverconfiguration` | `messaging-setup` | endpoint returns `404` even for admin |
-| `globalserverconfiguration` | `operator-profile` | still `403` for list and direct get probes despite stronger accepted privilege combos |
-| `policyelements` | `radius-dictionary` | list endpoint returns `500` even for admin |
 
 ## Baseline Effective Privileges
 
@@ -105,10 +99,8 @@ The discovery API client baseline produced these runtime privileges:
 | Raw runtime privilege | Normalized name | Access |
 | --- | --- | --- |
 | `?api_index` | `api_index` | `allowed` |
-| `?cppm_config` | `cppm_config` | `allowed` |
 | `api_docs` | `api_docs` | `full` |
 | `apigility` | `apigility` | `full` |
-| `cppm_endpoints` | `cppm_endpoints` | `full` |
 
 ## Notes
 
