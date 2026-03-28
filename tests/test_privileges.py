@@ -114,17 +114,48 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("globalserverconfiguration", "application-license")].privileges == (
         "cppm_licenses",
     )
+    assert rules[
+        ("globalserverconfiguration", "application-license-summary")
+    ].privileges == ("cppm_licenses",)
     assert rules[("globalserverconfiguration", "admin-user")].privileges == (
         "cppm_admin_users",
     )
     assert rules[("globalserverconfiguration", "operator-profile")].privileges == (
         "auth_profiles",
     )
+    assert rules[("globalserverconfiguration", "parameters")].privileges == (
+        "cppm_config",
+    )
+    assert rules[("globalserverconfiguration", "password-policy")].privileges == (
+        "cppm_admin_user_pass_policy",
+    )
     assert rules[("identities", "api-client")].privileges == ("api_clients",)
     assert rules[("identities", "device")].privileges == ("mac", "guest_users")
     assert rules[("identities", "device")].match == "all"
     assert rules[("identities", "endpoint")].privileges == ("cppm_endpoints",)
     assert rules[("identities", "guest")].privileges == ("guest_users",)
+    assert rules[("insight", "alert")].privileges == ("insight_alert",)
+    assert rules[("insight", "report")].privileges == ("insight_report",)
+    assert rules[("integrations", "context-server-action")].privileges == (
+        "cppm_context_server_actions",
+    )
+    assert rules[("integrations", "device-insight")].privileges == (
+        "cppm_device_insight",
+    )
+    assert rules[("integrations", "endpoint-context-server")].privileges == (
+        "cppm_endpoint_context_server",
+    )
+    assert rules[("integrations", "event-sources")].privileges == (
+        "cppm_event_sources",
+    )
+    assert rules[("integrations", "instance")].privileges == ("extension_instance",)
+    assert rules[("integrations", "store")].privileges == ("extension_store",)
+    assert rules[("integrations", "syslog-export-filter")].privileges == (
+        "cppm_syslog_export_filter",
+    )
+    assert rules[("integrations", "syslog-target")].privileges == (
+        "cppm_syslog_target",
+    )
     assert rules[("localserverconfiguration", "server")].privileges == ("platform",)
     assert rules[("identities", "local-user")].privileges == ("cppm_local_users",)
     assert rules[("logs", "system-event")].privileges == ("cppm_system_events",)

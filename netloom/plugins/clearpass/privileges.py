@@ -104,6 +104,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
+        service="application-license-summary",
+        privileges=("cppm_licenses",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
         service="attribute",
         privileges=("cppm_attributes",),
     ),
@@ -126,6 +131,16 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="globalserverconfiguration",
         service="operator-profile",
         privileges=("auth_profiles",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="parameters",
+        privileges=("cppm_config",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="password-policy",
+        privileges=("cppm_admin_user_pass_policy",),
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
@@ -177,6 +192,56 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="identities",
         service="static-host-list",
         privileges=("cppm_static_host_list",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="alert",
+        privileges=("insight_alert",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="report",
+        privileges=("insight_report",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="context-server-action",
+        privileges=("cppm_context_server_actions",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="device-insight",
+        privileges=("cppm_device_insight",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="endpoint-context-server",
+        privileges=("cppm_endpoint_context_server",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="event-sources",
+        privileges=("cppm_event_sources",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="instance",
+        privileges=("extension_instance",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="store",
+        privileges=("extension_store",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="syslog-export-filter",
+        privileges=("cppm_syslog_export_filter",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
+        service="syslog-target",
+        privileges=("cppm_syslog_target",),
     ),
     ServicePrivilegeRule(
         module="localserverconfiguration",

@@ -248,12 +248,20 @@ def _effective_privileges(discovery_cp, discovery_token: str) -> list[dict[str, 
 
 def _probe_action_for_service(service_entry: dict[str, Any]) -> str | None:
     actions = service_entry.get("actions") or {}
-    return "list" if "list" in actions else None
+    for action_name in ("list", "get"):
+        action_def = actions.get(action_name)
+        if isinstance(action_def, dict) and _has_non_parameterized_action_path(
+            service_entry, action_name
+        ):
+            return action_name
+    return None
 
 
-def _has_non_parameterized_list_path(service_entry: dict[str, Any]) -> bool:
+def _has_non_parameterized_action_path(
+    service_entry: dict[str, Any], action_name: str
+) -> bool:
     actions = service_entry.get("actions") or {}
-    action_def = actions.get("list") or {}
+    action_def = actions.get(action_name) or {}
     for path in action_def.get("paths") or []:
         if "{" not in str(path):
             return True
@@ -354,8 +362,6 @@ def _iter_target_services(
             if not include_mapped and (module_name, service_name) in rules:
                 continue
             if _probe_action_for_service(service_entry) is None:
-                continue
-            if not _has_non_parameterized_list_path(service_entry):
                 continue
             services.append((module_name, service_name))
     return services

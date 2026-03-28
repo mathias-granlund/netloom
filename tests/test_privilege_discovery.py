@@ -2,7 +2,9 @@ import requests
 
 from netloom.plugins.clearpass.privilege_discovery import (
     _fetch_operator_profile,
+    _iter_target_services,
     _operator_profile_item_path,
+    _probe_action_for_service,
     _update_operator_profile,
 )
 
@@ -77,3 +79,50 @@ def test_update_operator_profile_prefers_item_identity_path():
         "apigility",
         "cppm_endpoints",
     ]
+
+
+def test_probe_action_for_service_falls_back_to_get_when_list_is_missing():
+    service_entry = {
+        "actions": {
+            "get": {
+                "paths": ["/api/application-license/summary"],
+                "params": None,
+            }
+        }
+    }
+
+    assert _probe_action_for_service(service_entry) == "get"
+
+
+def test_iter_target_services_includes_safe_get_only_services():
+    catalog = {
+        "modules": {
+            "globalserverconfiguration": {
+                "application-license-summary": {
+                    "actions": {
+                        "get": {
+                            "paths": ["/api/application-license/summary"],
+                            "params": None,
+                        }
+                    }
+                },
+                "attribute-name": {
+                    "actions": {
+                        "get": {
+                            "paths": ["/api/attribute/{entity_name}/name/{name}"],
+                            "params": None,
+                        }
+                    }
+                },
+            }
+        }
+    }
+
+    services = _iter_target_services(
+        catalog,
+        ("globalserverconfiguration",),
+        include_mapped=True,
+    )
+
+    assert ("globalserverconfiguration", "application-license-summary") in services
+    assert ("globalserverconfiguration", "attribute-name") not in services

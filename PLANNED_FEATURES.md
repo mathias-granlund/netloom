@@ -7,13 +7,13 @@
 Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
-- full retained services: `191`
-- services with verified privilege mappings: `35`
-- services without verified mappings: `156`
+- full retained services: `192`
+- services with verified privilege mappings: `48`
+- services without verified mappings: `144`
 
 Current measured coverage against the visible cache:
-- visible services in the current cache: `35`
-- visible services with explicit verified mappings: `34`
+- visible services in the current cache: `47`
+- visible services with explicit verified mappings: `46`
 - visible services without an explicit mapping: `1`
 - the only currently visible unmapped service is `apioperations/oauth`
 
@@ -21,6 +21,12 @@ Important status notes:
 - `globalserverconfiguration/operator-profile` is now verified with
   `auth_profiles`
 - `policyelements/radius-dictionary` is now verified with `cppm_radius_dict`
+- multiple `integrations/*` services are now verified, including
+  `context-server-action`, `device-insight`, `endpoint-context-server`,
+  `event-sources`, `instance`, `store`, `syslog-export-filter`, and
+  `syslog-target`
+- `insight/alert` and `insight/report` are now verified after Insight was
+  enabled on the ClearPass server
 - `globalserverconfiguration/messaging-setup` is still not promoted, but it
   currently returns `404` even for admin on this server, so it looks like an
   endpoint availability issue rather than a missing privilege mapping
@@ -107,14 +113,11 @@ Current unmapped retained services by module:
 - `voip-profile`
 - `voip-profile-name`
 
-#### `globalserverconfiguration` (`7`)
+#### `globalserverconfiguration` (`4`)
 - `all-privileges`
-- `application-license-summary`
 - `attribute-name`
 - `db-sync`
 - `messaging-setup`
-- `parameters`
-- `password-policy`
 
 #### `guestactions` (`4`)
 - `sms`
@@ -132,36 +135,26 @@ Current unmapped retained services by module:
 #### `identities` (`1`)
 - `deny-listed-users-user_id-mac_address`
 
-#### `insight` (`9`)
-- `alert`
+#### `insight` (`7`)
 - `alert-disable`
 - `alert-enable`
 - `alert-mute`
 - `alert-unmute`
-- `report`
 - `report-disable`
 - `report-enable`
 - `report-run`
 
-#### `integrations` (`19`)
+#### `integrations` (`11`)
 - `config`
-- `context-server-action`
 - `context-server-action-action-name`
-- `device-insight`
-- `endpoint-context-server`
 - `endpoint-context-server-server-name-trigger-poll`
 - `endpoint-context-server-trigger-poll`
-- `event-sources`
 - `ingress-event-dictionary`
-- `instance`
 - `log`
 - `reinstall`
 - `restart`
 - `start`
 - `stop`
-- `store`
-- `syslog-export-filter`
-- `syslog-target`
 - `upgrade`
 
 #### `localserverconfiguration` (`9`)
@@ -204,7 +197,8 @@ Current unmapped retained services by module:
 - `service-name-enable`
 - `service-reorder`
 
-#### `sessioncontrol` (`12`)
+#### `sessioncontrol` (`13`)
+- `active-session`
 - `disconnect`
 - `reauthorize`
 - `session`
