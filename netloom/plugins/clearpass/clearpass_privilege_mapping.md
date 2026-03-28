@@ -24,6 +24,9 @@ Useful flags for future mapping rounds:
 
 | Operator profile privilege key | Effective runtime privilege | Module | Service | Verified access |
 | --- | --- | --- | --- | --- |
+| `#mdps_view_certificate` | `mdps_view_certificate` | `certificateauthority` | `certificate` | `list` |
+| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `device` | `list` |
+| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `user` | `list` |
 | `cppm_enforcement_profile` | `cppm_enforcement_profile` | `enforcementprofile` | `enforcement-profile` | `list` |
 | `cppm_admin_privileges` | `cppm_admin_privileges` | `globalserverconfiguration` | `admin-privilege` | `list` |
 | `cppm_admin_users` | `cppm_admin_users` | `globalserverconfiguration` | `admin-user` | `list` |
@@ -52,12 +55,19 @@ Useful flags for future mapping rounds:
 | `cppm_device_insight` | `cppm_device_insight` | `integrations` | `device-insight` | `list` |
 | `cppm_endpoint_context_server` | `cppm_endpoint_context_server` | `integrations` | `endpoint-context-server` | `list` |
 | `cppm_event_sources` | `cppm_event_sources` | `integrations` | `event-sources` | `list` |
+| `cppm_ingress_event_dict` | `cppm_ingress_event_dict` | `integrations` | `ingress-event-dictionary` | `list` |
 | `extension_instance` | `extension_instance` | `integrations` | `instance` | `list` |
 | `extension_store` | `extension_store` | `integrations` | `store` | `list` |
 | `cppm_syslog_export_filter` | `cppm_syslog_export_filter` | `integrations` | `syslog-export-filter` | `list` |
 | `cppm_syslog_target` | `cppm_syslog_target` | `integrations` | `syslog-target` | `list` |
 | `platform` | `platform` | `localserverconfiguration` | `server` | `list` |
 | `cppm_system_events` | `cppm_system_events` | `logs` | `system-event` | `list` |
+| `cppm_cert_trust_list` | `cppm_cert_trust_list` | `platformcertificates` | `cert-trust-list` | `list` |
+| `cppm_cert_trust_list` | `cppm_cert_trust_list` | `platformcertificates` | `cert-trust-list-details` | `list` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `client-cert` | `list` |
+| `cppm_revocation_lists` | `cppm_revocation_lists` | `platformcertificates` | `revocation-list` | `list` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert` | `get` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `service-cert` | `list` |
 | `cppm_application_dict` | `cppm_application_dict` | `policyelements` | `application-dictionary` | `list` |
 | `auth_config` + `cppm_config` | `auth_config` + `cppm_config` | `policyelements` | `auth-source` | `list` |
 | `cppm_auth_methods` | `cppm_auth_methods` | `policyelements` | `auth-method` | `list` |
@@ -85,6 +95,21 @@ the effective runtime privilege list, but the direct list probe still returned
 | `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
 | `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
 
+## Discovered Onboard Runtime Keys
+
+These Onboard operator-profile privileges were confirmed live and their
+effective runtime keys were captured, but they have not yet been promoted into
+service-level cache rules because the remaining `certificateauthority` services
+do not currently expose safe non-parameterized `list` or `get` probes for the
+discovery runner.
+
+| UI privilege | Effective runtime privilege | Current note |
+| --- | --- | --- |
+| `Manage Certificate Authorities` | `mdps_ca` | internal key confirmed; no promotable service mapping yet |
+| `Create New CSR` | `mdps_create_csr` | internal key confirmed; no promotable service mapping yet |
+| `Issue Certificate` | `mdps_issue_certificate` | internal key confirmed; no promotable service mapping yet |
+| `Revoke Certificate` | `mdps_revoke_certificate` | internal key confirmed; no promotable service mapping yet |
+
 ## Combo Rules
 
 Some services need more than one effective runtime privilege at the same time.
@@ -104,6 +129,14 @@ the current live discovery rounds:
 | Module | Service | Current blocker |
 | --- | --- | --- |
 | `globalserverconfiguration` | `messaging-setup` | endpoint returns `404` even for admin |
+
+`certificateauthority/certificate` was promoted after enabling the read-only
+Onboard `View Certificate` privilege on the dedicated discovery profile. Its
+effective runtime privilege is `mdps_view_certificate`.
+
+`certificateauthority/device` and `certificateauthority/user` were promoted
+after enabling the Onboard `Manage Devices` privilege on the dedicated
+discovery profile. Its effective runtime privilege is `mdps_device_manage`.
 
 ## Baseline Effective Privileges
 

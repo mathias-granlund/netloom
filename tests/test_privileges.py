@@ -108,6 +108,13 @@ def test_normalize_effective_privileges_tracks_prefix_access_levels():
 def test_service_privilege_rule_index_includes_verified_live_mappings():
     rules = service_privilege_rule_index()
 
+    assert rules[("certificateauthority", "certificate")].privileges == (
+        "mdps_view_certificate",
+    )
+    assert rules[("certificateauthority", "device")].privileges == (
+        "mdps_device_manage",
+    )
+    assert rules[("certificateauthority", "user")].privileges == ("mdps_device_manage",)
     assert rules[("enforcementprofile", "enforcement-profile")].privileges == (
         "cppm_enforcement_profile",
     )
@@ -148,6 +155,9 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("integrations", "event-sources")].privileges == (
         "cppm_event_sources",
     )
+    assert rules[("integrations", "ingress-event-dictionary")].privileges == (
+        "cppm_ingress_event_dict",
+    )
     assert rules[("integrations", "instance")].privileges == ("extension_instance",)
     assert rules[("integrations", "store")].privileges == ("extension_store",)
     assert rules[("integrations", "syslog-export-filter")].privileges == (
@@ -159,6 +169,24 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("localserverconfiguration", "server")].privileges == ("platform",)
     assert rules[("identities", "local-user")].privileges == ("cppm_local_users",)
     assert rules[("logs", "system-event")].privileges == ("cppm_system_events",)
+    assert rules[("platformcertificates", "cert-trust-list")].privileges == (
+        "cppm_cert_trust_list",
+    )
+    assert rules[("platformcertificates", "cert-trust-list-details")].privileges == (
+        "cppm_cert_trust_list",
+    )
+    assert rules[("platformcertificates", "client-cert")].privileges == (
+        "cppm_certificates",
+    )
+    assert rules[("platformcertificates", "revocation-list")].privileges == (
+        "cppm_revocation_lists",
+    )
+    assert rules[("platformcertificates", "server-cert")].privileges == (
+        "cppm_certificates",
+    )
+    assert rules[("platformcertificates", "service-cert")].privileges == (
+        "cppm_certificates",
+    )
     assert rules[("policyelements", "application-dictionary")].privileges == (
         "cppm_application_dict",
     )

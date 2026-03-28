@@ -83,6 +83,21 @@ class ServicePrivilegeRule:
 
 SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ServicePrivilegeRule(
+        module="certificateauthority",
+        service="certificate",
+        privileges=("mdps_view_certificate",),
+    ),
+    ServicePrivilegeRule(
+        module="certificateauthority",
+        service="device",
+        privileges=("mdps_device_manage",),
+    ),
+    ServicePrivilegeRule(
+        module="certificateauthority",
+        service="user",
+        privileges=("mdps_device_manage",),
+    ),
+    ServicePrivilegeRule(
         module="enforcementprofile",
         service="enforcement-profile",
         privileges=("cppm_enforcement_profile",),
@@ -230,6 +245,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="integrations",
+        service="ingress-event-dictionary",
+        privileges=("cppm_ingress_event_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="integrations",
         service="store",
         privileges=("extension_store",),
     ),
@@ -252,6 +272,21 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="logs",
         service="system-event",
         privileges=("cppm_system_events",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="cert-trust-list",
+        privileges=("cppm_cert_trust_list",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="cert-trust-list-details",
+        privileges=("cppm_cert_trust_list",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="client-cert",
+        privileges=("cppm_certificates",),
     ),
     ServicePrivilegeRule(
         module="policyelements",
@@ -293,6 +328,21 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="policyelements",
         service="proxy-target",
         privileges=("cppm_network_proxy_targets",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="revocation-list",
+        privileges=("cppm_revocation_lists",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="server-cert",
+        privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="service-cert",
+        privileges=("cppm_certificates",),
     ),
     ServicePrivilegeRule(
         module="policyelements",

@@ -8,8 +8,8 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- services with verified privilege mappings: `48`
-- services without verified mappings: `144`
+- services with verified privilege mappings: `58`
+- services without verified mappings: `134`
 
 Current measured coverage against the visible cache:
 - visible services in the current cache: `47`
@@ -27,6 +27,19 @@ Important status notes:
   `syslog-target`
 - `insight/alert` and `insight/report` are now verified after Insight was
   enabled on the ClearPass server
+- several `platformcertificates/*` services are now verified, including
+  `cert-trust-list`, `cert-trust-list-details`, `client-cert`,
+  `revocation-list`, `server-cert`, and `service-cert`
+- `certificateauthority/certificate` is now verified with
+  `mdps_view_certificate`
+- `certificateauthority/device` and `certificateauthority/user` are now
+  verified with `mdps_device_manage`
+- additional Onboard internal keys are now documented for future
+  `certificateauthority` work:
+  `mdps_ca`, `mdps_create_csr`, `mdps_issue_certificate`,
+  and `mdps_revoke_certificate`
+- `integrations/ingress-event-dictionary` is now verified with
+  `cppm_ingress_event_dict`
 - `globalserverconfiguration/messaging-setup` is still not promoted, but it
   currently returns `404` even for admin on this server, so it looks like an
   endpoint availability issue rather than a missing privilege mapping
@@ -46,10 +59,8 @@ Current unmapped retained services by module:
 - `oauth`
 - `privileges`
 
-#### `certificateauthority` (`11`)
-- `certificate`
+#### `certificateauthority` (`8`)
 - `chain`
-- `device`
 - `export`
 - `import`
 - `new`
@@ -57,7 +68,6 @@ Current unmapped retained services by module:
 - `request`
 - `revoke`
 - `sign`
-- `user`
 
 #### `endpointvisibility` (`22`)
 - `device-fingerprint`
@@ -144,12 +154,11 @@ Current unmapped retained services by module:
 - `report-enable`
 - `report-run`
 
-#### `integrations` (`11`)
+#### `integrations` (`10`)
 - `config`
 - `context-server-action-action-name`
 - `endpoint-context-server-server-name-trigger-poll`
 - `endpoint-context-server-trigger-poll`
-- `ingress-event-dictionary`
 - `log`
 - `reinstall`
 - `restart`
@@ -173,18 +182,12 @@ Current unmapped retained services by module:
 - `endpoint-time-range`
 - `login-audit`
 
-#### `platformcertificates` (`11`)
+#### `platformcertificates` (`5`)
 - `cert-sign-request`
-- `cert-trust-list`
-- `cert-trust-list-details`
-- `client-cert`
-- `revocation-list`
 - `self-signed-cert`
-- `server-cert`
 - `server-cert-name`
 - `server-cert-name-disable`
 - `server-cert-name-enable`
-- `service-cert`
 
 #### `policyelements` (`9`)
 - `radius-dictionary-disable`
@@ -256,6 +259,9 @@ Measured outcomes:
 ### ClearPass privilege mapping
 
 Recently verified mappings include:
+- `certificateauthority/device -> mdps_device_manage`
+- `certificateauthority/user -> mdps_device_manage`
+- `certificateauthority/certificate -> mdps_view_certificate`
 - `globalserverconfiguration/operator-profile -> auth_profiles`
 - `policyelements/radius-dictionary -> cppm_radius_dict`
 
