@@ -1,0 +1,173 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "insight"
+  ],
+  "services": [
+    "insight/alert",
+    "insight/report"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_insight_integrations_round1.json",
+  "results": [
+    {
+      "module": "insight",
+      "service": "alert",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "cppm_alert"
+        ],
+        [
+          "cppm_alerts"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "insight_alert"
+        ],
+        "module": "insight",
+        "service": "alert",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "insight",
+      "service": "report",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_report"
+        ],
+        [
+          "cppm_report"
+        ],
+        [
+          "cppm_reports"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_report"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "insight_report"
+        ],
+        "module": "insight",
+        "service": "report",
+        "probe_action": "list"
+      }
+    }
+  ]
+}

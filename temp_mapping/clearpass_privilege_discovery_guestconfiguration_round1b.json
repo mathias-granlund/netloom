@@ -1,0 +1,594 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "guestconfiguration"
+  ],
+  "services": [
+    "guestconfiguration/authentication",
+    "guestconfiguration/guestmanager",
+    "guestconfiguration/pass",
+    "guestconfiguration/print",
+    "guestconfiguration/weblogin"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs",
+    "mdps_revoke_certificate"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?mdps_index",
+      "name": "mdps_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "mdps_revoke_certificate",
+      "name": "mdps_revoke_certificate",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_guestconfiguration_round1.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "guestconfiguration",
+      "service": "authentication",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_authentication"
+        ],
+        [
+          "guest_auth"
+        ],
+        [
+          "guest_authentication_methods"
+        ],
+        [
+          "guest_configuration"
+        ],
+        [
+          "guest_config"
+        ],
+        [
+          "guest_manager"
+        ],
+        [
+          "cppm_authentication"
+        ],
+        [
+          "cppm_authentications"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_authentication"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_authentication\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_auth"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_auth\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_authentication_methods"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_authentication_methods\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_configuration"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_configuration\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_config"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_config\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_manager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_manager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_authentication"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_authentication\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_authentications"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_authentications\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "guestmanager",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_manager"
+        ],
+        [
+          "guestmanagement"
+        ],
+        [
+          "guest_configuration"
+        ],
+        [
+          "guest_config"
+        ],
+        [
+          "guest_admin"
+        ],
+        [
+          "cppm_guestmanager"
+        ],
+        [
+          "cppm_guestmanagers"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_manager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_manager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guestmanagement"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guestmanagement\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_configuration"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_configuration\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_config"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_config\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_admin"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_admin\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_guestmanager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_guestmanager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_guestmanagers"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_guestmanagers\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "pass",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_pass_template"
+        ],
+        [
+          "guest_pass_templates"
+        ],
+        [
+          "pass_template"
+        ],
+        [
+          "pass_templates"
+        ],
+        [
+          "guest_templates"
+        ],
+        [
+          "guest_manager"
+        ],
+        [
+          "cppm_pass"
+        ],
+        [
+          "cppm_pas"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_pass_template"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_pass_template\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_pass_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_pass_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "pass_template"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?pass_index",
+              "name": "pass_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_revoke_certificate",
+              "name": "mdps_revoke_certificate",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018pass_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_manager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_manager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_pass"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pass\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_pas"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pas\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "print",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_print_template"
+        ],
+        [
+          "guest_print_templates"
+        ],
+        [
+          "print_template"
+        ],
+        [
+          "print_templates"
+        ],
+        [
+          "guest_templates"
+        ],
+        [
+          "guest_manager"
+        ],
+        [
+          "cppm_print"
+        ],
+        [
+          "cppm_prints"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_print_template"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_print_template\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_print_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_print_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "print_template"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018print_template\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "print_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018print_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_templates"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_templates\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_manager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_manager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_print"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_print\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_prints"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_prints\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "weblogin",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_weblogin"
+        ],
+        [
+          "guest_weblogins"
+        ],
+        [
+          "guest_web_login"
+        ],
+        [
+          "guest_web_logins"
+        ],
+        [
+          "web_login"
+        ],
+        [
+          "web_logins"
+        ],
+        [
+          "guest_manager"
+        ],
+        [
+          "cppm_weblogin"
+        ],
+        [
+          "cppm_weblogins"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_weblogin"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_weblogin\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_weblogins"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_weblogins\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_web_login"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_web_login\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_web_logins"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_web_logins\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "web_login"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018web_login\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "web_logins"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018web_logins\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "guest_manager"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018guest_manager\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_weblogin"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_weblogin\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_weblogins"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_weblogins\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

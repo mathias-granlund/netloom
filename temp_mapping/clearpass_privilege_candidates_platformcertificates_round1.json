@@ -1,0 +1,32 @@
+{
+  "platformcertificates/cert-trust-list": [
+    [
+      "cppm_cert_trust_list"
+    ]
+  ],
+  "platformcertificates/cert-trust-list-details": [
+    [
+      "cppm_cert_trust_list"
+    ]
+  ],
+  "platformcertificates/client-cert": [
+    [
+      "cppm_certificates"
+    ]
+  ],
+  "platformcertificates/revocation-list": [
+    [
+      "cppm_revocation_lists"
+    ]
+  ],
+  "platformcertificates/server-cert": [
+    [
+      "cppm_certificates"
+    ]
+  ],
+  "platformcertificates/service-cert": [
+    [
+      "cppm_certificates"
+    ]
+  ]
+}

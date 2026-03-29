@@ -1,0 +1,22 @@
+{
+  "service": "endpointvisibility/network-scan",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_keys": [
+    "cppm_networkscan"
+  ],
+  "baseline_probe": {
+    "status": "http-error",
+    "http_status": 403
+  },
+  "candidate_probe": {
+    "status": "ok",
+    "probe_action": "list"
+  },
+  "notes": [
+    "The user's manually enabled discovery profile exposed the internal key cppm_networkscan.",
+    "A clean replay against the stripped baseline verified that cppm_networkscan alone unlocks /api/config/network-scan."
+  ]
+}

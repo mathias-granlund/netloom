@@ -1,0 +1,3316 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "enforcementprofile",
+    "globalserverconfiguration",
+    "identities",
+    "localserverconfiguration",
+    "logs",
+    "policyelements"
+  ],
+  "services": [
+    "globalserverconfiguration/operator-profile"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs",
+    "auth_config",
+    "auth_ldap",
+    "user-logins",
+    "auth_profiles",
+    "platform_authentication",
+    "admin_content",
+    "admin_security",
+    "cppm_servers"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?auth_index",
+      "name": "auth_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?cppm_config",
+      "name": "cppm_config",
+      "access": "allowed"
+    },
+    {
+      "raw": "?platform",
+      "name": "platform",
+      "access": "allowed"
+    },
+    {
+      "raw": "admin_content",
+      "name": "admin_content",
+      "access": "full"
+    },
+    {
+      "raw": "admin_security",
+      "name": "admin_security",
+      "access": "full"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "auth_config",
+      "name": "auth_config",
+      "access": "full"
+    },
+    {
+      "raw": "auth_ldap",
+      "name": "auth_ldap",
+      "access": "full"
+    },
+    {
+      "raw": "auth_profiles",
+      "name": "auth_profiles",
+      "access": "full"
+    },
+    {
+      "raw": "cppm_servers",
+      "name": "cppm_servers",
+      "access": "full"
+    },
+    {
+      "raw": "platform_authentication",
+      "name": "platform_authentication",
+      "access": "full"
+    },
+    {
+      "raw": "user-logins",
+      "name": "user-logins",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_operator_profile_round2.json",
+  "results": [
+    {
+      "module": "globalserverconfiguration",
+      "service": "operator-profile",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "list",
+        "result_type": "dict"
+      },
+      "candidate_specs": [
+        [
+          "admin"
+        ],
+        [
+          "engine_object_acl"
+        ],
+        [
+          "cppm_config"
+        ],
+        [
+          "platform"
+        ],
+        [
+          "admin_content"
+        ],
+        [
+          "cppm_admin_users"
+        ],
+        [
+          "cppm_admin_privileges"
+        ],
+        [
+          "admin",
+          "cppm_config"
+        ],
+        [
+          "admin",
+          "admin_content"
+        ],
+        [
+          "admin",
+          "platform"
+        ],
+        [
+          "admin",
+          "cppm_admin_users"
+        ],
+        [
+          "admin",
+          "cppm_admin_privileges"
+        ],
+        [
+          "engine_object_acl",
+          "cppm_config"
+        ],
+        [
+          "engine_object_acl",
+          "admin_content"
+        ],
+        [
+          "engine_object_acl",
+          "cppm_admin_users"
+        ],
+        [
+          "engine_object_acl",
+          "cppm_admin_privileges"
+        ],
+        [
+          "admin",
+          "engine_object_acl",
+          "cppm_config"
+        ],
+        [
+          "admin",
+          "engine_object_acl",
+          "admin_content"
+        ],
+        [
+          "cppm_operator_profile"
+        ],
+        [
+          "cppm_operator_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "admin"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "engine_object_acl"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?admin",
+              "name": "admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_access_controls",
+              "name": "cppm_access_controls",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ad_domain",
+              "name": "cppm_ad_domain",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_application_dict",
+              "name": "cppm_application_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_attributes",
+              "name": "cppm_attributes",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_methods",
+              "name": "cppm_auth_methods",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_sources",
+              "name": "cppm_auth_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_clearpass_portal",
+              "name": "cppm_clearpass_portal",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cluster_wide_parameters",
+              "name": "cppm_cluster_wide_parameters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_config",
+              "name": "cppm_config",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_context_server_actions",
+              "name": "cppm_context_server_actions",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_data_filters",
+              "name": "cppm_data_filters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_deny_listed_users",
+              "name": "cppm_deny_listed_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_fingerprint",
+              "name": "cppm_device_fingerprint",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_insight",
+              "name": "cppm_device_insight",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_policy",
+              "name": "cppm_enforcement_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_event_sources",
+              "name": "cppm_event_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_external_account",
+              "name": "cppm_external_account",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_file_backup_server",
+              "name": "cppm_file_backup_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_fingerprints",
+              "name": "cppm_fingerprints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ingress_event_dict",
+              "name": "cppm_ingress_event_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_licenses",
+              "name": "cppm_licenses",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_login_audit",
+              "name": "cppm_login_audit",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_device_groups",
+              "name": "cppm_network_device_groups",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_devices",
+              "name": "cppm_network_devices",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_proxy_targets",
+              "name": "cppm_network_proxy_targets",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_networkscan",
+              "name": "cppm_networkscan",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy",
+              "name": "cppm_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy_manager_zones",
+              "name": "cppm_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_posture_policy",
+              "name": "cppm_posture_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_profiler_subnet_mapping",
+              "name": "cppm_profiler_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dict",
+              "name": "cppm_radius_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dyn_autz_template",
+              "name": "cppm_radius_dyn_autz_template",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_revocation_lists",
+              "name": "cppm_revocation_lists",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_role_mapping",
+              "name": "cppm_role_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_roles",
+              "name": "cppm_roles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_policy_manager_zones",
+              "name": "cppm_server_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_snmps",
+              "name": "cppm_server_snmps",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_control",
+              "name": "cppm_service_control",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_parameter",
+              "name": "cppm_service_parameter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_services",
+              "name": "cppm_services",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_action",
+              "name": "cppm_session_action",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_snmp_trap_receivers",
+              "name": "cppm_snmp_trap_receivers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_static_host_list",
+              "name": "cppm_static_host_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_export_filter",
+              "name": "cppm_syslog_export_filter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_target",
+              "name": "cppm_syslog_target",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_system_events",
+              "name": "cppm_system_events",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_tacacs_service_dict",
+              "name": "cppm_tacacs_service_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_windows_hotfix",
+              "name": "cppm_windows_hotfix",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            },
+            {
+              "raw": "insight_endpoints",
+              "name": "insight_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "platform"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_data_retention",
+              "name": "admin_data_retention",
+              "access": "full"
+            },
+            {
+              "raw": "admin_restore",
+              "name": "admin_restore",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "extension_config",
+              "name": "extension_config",
+              "access": "full"
+            },
+            {
+              "raw": "extension_control",
+              "name": "extension_control",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            },
+            {
+              "raw": "extension_logs",
+              "name": "extension_logs",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            },
+            {
+              "raw": "platform",
+              "name": "platform",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin_content"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018admin_content\\u2019 appears more than once\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_admin_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_admin_privileges"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "cppm_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_access_controls",
+              "name": "cppm_access_controls",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ad_domain",
+              "name": "cppm_ad_domain",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_application_dict",
+              "name": "cppm_application_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_attributes",
+              "name": "cppm_attributes",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_methods",
+              "name": "cppm_auth_methods",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_sources",
+              "name": "cppm_auth_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_clearpass_portal",
+              "name": "cppm_clearpass_portal",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cluster_wide_parameters",
+              "name": "cppm_cluster_wide_parameters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_config",
+              "name": "cppm_config",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_context_server_actions",
+              "name": "cppm_context_server_actions",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_data_filters",
+              "name": "cppm_data_filters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_deny_listed_users",
+              "name": "cppm_deny_listed_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_fingerprint",
+              "name": "cppm_device_fingerprint",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_insight",
+              "name": "cppm_device_insight",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_policy",
+              "name": "cppm_enforcement_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_event_sources",
+              "name": "cppm_event_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_external_account",
+              "name": "cppm_external_account",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_file_backup_server",
+              "name": "cppm_file_backup_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_fingerprints",
+              "name": "cppm_fingerprints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ingress_event_dict",
+              "name": "cppm_ingress_event_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_licenses",
+              "name": "cppm_licenses",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_login_audit",
+              "name": "cppm_login_audit",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_device_groups",
+              "name": "cppm_network_device_groups",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_devices",
+              "name": "cppm_network_devices",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_proxy_targets",
+              "name": "cppm_network_proxy_targets",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_networkscan",
+              "name": "cppm_networkscan",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy",
+              "name": "cppm_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy_manager_zones",
+              "name": "cppm_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_posture_policy",
+              "name": "cppm_posture_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_profiler_subnet_mapping",
+              "name": "cppm_profiler_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dict",
+              "name": "cppm_radius_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dyn_autz_template",
+              "name": "cppm_radius_dyn_autz_template",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_revocation_lists",
+              "name": "cppm_revocation_lists",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_role_mapping",
+              "name": "cppm_role_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_roles",
+              "name": "cppm_roles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_policy_manager_zones",
+              "name": "cppm_server_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_snmps",
+              "name": "cppm_server_snmps",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_control",
+              "name": "cppm_service_control",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_parameter",
+              "name": "cppm_service_parameter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_services",
+              "name": "cppm_services",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_action",
+              "name": "cppm_session_action",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_snmp_trap_receivers",
+              "name": "cppm_snmp_trap_receivers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_static_host_list",
+              "name": "cppm_static_host_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_export_filter",
+              "name": "cppm_syslog_export_filter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_target",
+              "name": "cppm_syslog_target",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_system_events",
+              "name": "cppm_system_events",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_tacacs_service_dict",
+              "name": "cppm_tacacs_service_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_windows_hotfix",
+              "name": "cppm_windows_hotfix",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            },
+            {
+              "raw": "insight_endpoints",
+              "name": "insight_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "admin_content"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018admin_content\\u2019 appears more than once\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "platform"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_data_retention",
+              "name": "admin_data_retention",
+              "access": "full"
+            },
+            {
+              "raw": "admin_restore",
+              "name": "admin_restore",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "extension_config",
+              "name": "extension_config",
+              "access": "full"
+            },
+            {
+              "raw": "extension_control",
+              "name": "extension_control",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            },
+            {
+              "raw": "extension_logs",
+              "name": "extension_logs",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            },
+            {
+              "raw": "platform",
+              "name": "platform",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "cppm_admin_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "cppm_admin_privileges"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "engine_object_acl",
+            "cppm_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?admin",
+              "name": "admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_access_controls",
+              "name": "cppm_access_controls",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ad_domain",
+              "name": "cppm_ad_domain",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_application_dict",
+              "name": "cppm_application_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_attributes",
+              "name": "cppm_attributes",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_methods",
+              "name": "cppm_auth_methods",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_sources",
+              "name": "cppm_auth_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_clearpass_portal",
+              "name": "cppm_clearpass_portal",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cluster_wide_parameters",
+              "name": "cppm_cluster_wide_parameters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_config",
+              "name": "cppm_config",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_context_server_actions",
+              "name": "cppm_context_server_actions",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_data_filters",
+              "name": "cppm_data_filters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_deny_listed_users",
+              "name": "cppm_deny_listed_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_fingerprint",
+              "name": "cppm_device_fingerprint",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_insight",
+              "name": "cppm_device_insight",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_policy",
+              "name": "cppm_enforcement_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_event_sources",
+              "name": "cppm_event_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_external_account",
+              "name": "cppm_external_account",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_file_backup_server",
+              "name": "cppm_file_backup_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_fingerprints",
+              "name": "cppm_fingerprints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ingress_event_dict",
+              "name": "cppm_ingress_event_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_licenses",
+              "name": "cppm_licenses",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_login_audit",
+              "name": "cppm_login_audit",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_device_groups",
+              "name": "cppm_network_device_groups",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_devices",
+              "name": "cppm_network_devices",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_proxy_targets",
+              "name": "cppm_network_proxy_targets",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_networkscan",
+              "name": "cppm_networkscan",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy",
+              "name": "cppm_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy_manager_zones",
+              "name": "cppm_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_posture_policy",
+              "name": "cppm_posture_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_profiler_subnet_mapping",
+              "name": "cppm_profiler_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dict",
+              "name": "cppm_radius_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dyn_autz_template",
+              "name": "cppm_radius_dyn_autz_template",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_revocation_lists",
+              "name": "cppm_revocation_lists",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_role_mapping",
+              "name": "cppm_role_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_roles",
+              "name": "cppm_roles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_policy_manager_zones",
+              "name": "cppm_server_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_snmps",
+              "name": "cppm_server_snmps",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_control",
+              "name": "cppm_service_control",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_parameter",
+              "name": "cppm_service_parameter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_services",
+              "name": "cppm_services",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_action",
+              "name": "cppm_session_action",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_snmp_trap_receivers",
+              "name": "cppm_snmp_trap_receivers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_static_host_list",
+              "name": "cppm_static_host_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_export_filter",
+              "name": "cppm_syslog_export_filter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_target",
+              "name": "cppm_syslog_target",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_system_events",
+              "name": "cppm_system_events",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_tacacs_service_dict",
+              "name": "cppm_tacacs_service_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_windows_hotfix",
+              "name": "cppm_windows_hotfix",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            },
+            {
+              "raw": "insight_endpoints",
+              "name": "insight_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "engine_object_acl",
+            "admin_content"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018admin_content\\u2019 appears more than once\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "engine_object_acl",
+            "cppm_admin_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?admin",
+              "name": "admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "engine_object_acl",
+            "cppm_admin_privileges"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?admin",
+              "name": "admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "engine_object_acl",
+            "cppm_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin",
+              "name": "admin",
+              "access": "full"
+            },
+            {
+              "raw": "admin_backup",
+              "name": "admin_backup",
+              "access": "full"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_access_controls",
+              "name": "cppm_access_controls",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ad_domain",
+              "name": "cppm_ad_domain",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_application_dict",
+              "name": "cppm_application_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_attributes",
+              "name": "cppm_attributes",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_methods",
+              "name": "cppm_auth_methods",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_auth_sources",
+              "name": "cppm_auth_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_clearpass_portal",
+              "name": "cppm_clearpass_portal",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cluster_wide_parameters",
+              "name": "cppm_cluster_wide_parameters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_config",
+              "name": "cppm_config",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_context_server_actions",
+              "name": "cppm_context_server_actions",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_data_filters",
+              "name": "cppm_data_filters",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_deny_listed_users",
+              "name": "cppm_deny_listed_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_fingerprint",
+              "name": "cppm_device_fingerprint",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_insight",
+              "name": "cppm_device_insight",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_policy",
+              "name": "cppm_enforcement_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_event_sources",
+              "name": "cppm_event_sources",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_external_account",
+              "name": "cppm_external_account",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_file_backup_server",
+              "name": "cppm_file_backup_server",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_fingerprints",
+              "name": "cppm_fingerprints",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ingress_event_dict",
+              "name": "cppm_ingress_event_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_licenses",
+              "name": "cppm_licenses",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_login_audit",
+              "name": "cppm_login_audit",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_device_groups",
+              "name": "cppm_network_device_groups",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_devices",
+              "name": "cppm_network_devices",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_network_proxy_targets",
+              "name": "cppm_network_proxy_targets",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_networkscan",
+              "name": "cppm_networkscan",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy",
+              "name": "cppm_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy_manager_zones",
+              "name": "cppm_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_posture_policy",
+              "name": "cppm_posture_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_profiler_subnet_mapping",
+              "name": "cppm_profiler_subnet_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dict",
+              "name": "cppm_radius_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_radius_dyn_autz_template",
+              "name": "cppm_radius_dyn_autz_template",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_revocation_lists",
+              "name": "cppm_revocation_lists",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_role_mapping",
+              "name": "cppm_role_mapping",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_roles",
+              "name": "cppm_roles",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_policy_manager_zones",
+              "name": "cppm_server_policy_manager_zones",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_server_snmps",
+              "name": "cppm_server_snmps",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_servers",
+              "name": "cppm_servers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_control",
+              "name": "cppm_service_control",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_service_parameter",
+              "name": "cppm_service_parameter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_services",
+              "name": "cppm_services",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_action",
+              "name": "cppm_session_action",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_snmp_trap_receivers",
+              "name": "cppm_snmp_trap_receivers",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_static_host_list",
+              "name": "cppm_static_host_list",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_export_filter",
+              "name": "cppm_syslog_export_filter",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_target",
+              "name": "cppm_syslog_target",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_system_events",
+              "name": "cppm_system_events",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_tacacs_service_dict",
+              "name": "cppm_tacacs_service_dict",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_windows_hotfix",
+              "name": "cppm_windows_hotfix",
+              "access": "full"
+            },
+            {
+              "raw": "engine",
+              "name": "engine",
+              "access": "full"
+            },
+            {
+              "raw": "engine_config",
+              "name": "engine_config",
+              "access": "full"
+            },
+            {
+              "raw": "engine_log",
+              "name": "engine_log",
+              "access": "full"
+            },
+            {
+              "raw": "engine_object_acl",
+              "name": "engine_object_acl",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            },
+            {
+              "raw": "insight_endpoints",
+              "name": "insight_endpoints",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        },
+        {
+          "candidate_keys": [
+            "admin",
+            "engine_object_acl",
+            "admin_content"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018admin_content\\u2019 appears more than once\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_operator_profile"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_operator_profile\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_operator_profiles"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_operator_profiles\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

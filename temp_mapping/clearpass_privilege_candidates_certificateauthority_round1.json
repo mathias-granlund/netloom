@@ -1,0 +1,49 @@
+{
+  "certificateauthority/certificate": [
+    [
+      "cppm_certificates"
+    ],
+    [
+      "cppm_cert_trust_list"
+    ],
+    [
+      "cppm_revocation_lists"
+    ]
+  ],
+  "certificateauthority/device": [
+    [
+      "cppm_certificates"
+    ],
+    [
+      "cppm_endpoints"
+    ],
+    [
+      "cppm_local_users"
+    ],
+    [
+      "guest_users"
+    ],
+    [
+      "cppm_certificates",
+      "cppm_endpoints"
+    ]
+  ],
+  "certificateauthority/user": [
+    [
+      "cppm_certificates"
+    ],
+    [
+      "cppm_local_users"
+    ],
+    [
+      "guest_users"
+    ],
+    [
+      "cppm_admin_users"
+    ],
+    [
+      "cppm_certificates",
+      "cppm_local_users"
+    ]
+  ]
+}

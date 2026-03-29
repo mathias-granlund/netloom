@@ -1,0 +1,227 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "enforcementprofile",
+    "globalserverconfiguration",
+    "identities",
+    "localserverconfiguration",
+    "logs",
+    "policyelements"
+  ],
+  "services": [
+    "globalserverconfiguration/operator-profile"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_operator_profile_round3.json",
+  "results": [
+    {
+      "module": "globalserverconfiguration",
+      "service": "operator-profile",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "user-logins"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "auth_config"
+        ],
+        [
+          "auth_ldap"
+        ],
+        [
+          "platform_authentication"
+        ],
+        [
+          "admin_content"
+        ],
+        [
+          "admin_security"
+        ],
+        [
+          "cppm_servers"
+        ],
+        [
+          "user-logins",
+          "auth_profiles"
+        ],
+        [
+          "user-logins",
+          "auth_config"
+        ],
+        [
+          "user-logins",
+          "platform_authentication"
+        ],
+        [
+          "user-logins",
+          "admin_content"
+        ],
+        [
+          "user-logins",
+          "admin_security"
+        ],
+        [
+          "user-logins",
+          "cppm_servers"
+        ],
+        [
+          "auth_profiles",
+          "auth_config"
+        ],
+        [
+          "auth_profiles",
+          "platform_authentication"
+        ],
+        [
+          "auth_config",
+          "platform_authentication"
+        ],
+        [
+          "admin_content",
+          "admin_security"
+        ],
+        [
+          "platform_authentication",
+          "cppm_servers"
+        ],
+        [
+          "user-logins",
+          "auth_profiles",
+          "auth_config"
+        ],
+        [
+          "user-logins",
+          "platform_authentication",
+          "admin_content"
+        ],
+        [
+          "user-logins",
+          "platform_authentication",
+          "admin_security"
+        ],
+        [
+          "cppm_operator_profile"
+        ],
+        [
+          "cppm_operator_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "user-logins"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "auth_profiles"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "auth_profiles"
+        ],
+        "module": "globalserverconfiguration",
+        "service": "operator-profile",
+        "probe_action": "list"
+      }
+    }
+  ]
+}

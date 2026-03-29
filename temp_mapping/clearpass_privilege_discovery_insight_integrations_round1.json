@@ -1,0 +1,732 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "insight",
+    "integrations"
+  ],
+  "services": [
+    "insight/alert",
+    "insight/report",
+    "integrations/context-server-action",
+    "integrations/device-insight",
+    "integrations/endpoint-context-server",
+    "integrations/event-sources",
+    "integrations/instance",
+    "integrations/store",
+    "integrations/syslog-export-filter",
+    "integrations/syslog-target"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_insight_integrations_round1.json",
+  "results": [
+    {
+      "module": "insight",
+      "service": "alert",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "cppm_alert"
+        ],
+        [
+          "cppm_alerts"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 422,
+            "detail": "{\"validation_messages\":\"Insight is not enabled on this server\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_alert"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_alert\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_alerts"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_alerts\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "insight",
+      "service": "report",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_report"
+        ],
+        [
+          "cppm_report"
+        ],
+        [
+          "cppm_reports"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_report"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 422,
+            "detail": "{\"validation_messages\":\"Insight is not enabled on this server\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_report"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_report\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_reports"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_reports\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "integrations",
+      "service": "context-server-action",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_context_server_actions"
+        ],
+        [
+          "cppm_context_server_action"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_context_server_actions"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_context_server_actions",
+              "name": "cppm_context_server_actions",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_context_server_actions"
+        ],
+        "module": "integrations",
+        "service": "context-server-action",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "device-insight",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_device_insight"
+        ],
+        [
+          "cppm_device_insights"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_device_insight"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_device_insight",
+              "name": "cppm_device_insight",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_device_insight"
+        ],
+        "module": "integrations",
+        "service": "device-insight",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "endpoint-context-server",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoint_context_servers"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_endpoint_context_server"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_endpoint_context_server"
+        ],
+        "module": "integrations",
+        "service": "endpoint-context-server",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "event-sources",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_event_sources"
+        ],
+        [
+          "cppm_event_source"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_event_sources"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_event_sources",
+              "name": "cppm_event_sources",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_event_sources"
+        ],
+        "module": "integrations",
+        "service": "event-sources",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "instance",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "extension_instance"
+        ],
+        [
+          "cppm_instance"
+        ],
+        [
+          "cppm_instances"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "extension_instance"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "extension_instance"
+        ],
+        "module": "integrations",
+        "service": "instance",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "store",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "extension_store"
+        ],
+        [
+          "cppm_store"
+        ],
+        [
+          "cppm_stores"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "extension_store"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "extension_store"
+        ],
+        "module": "integrations",
+        "service": "store",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "syslog-export-filter",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_syslog_export_filter"
+        ],
+        [
+          "cppm_syslog_export_filters"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_syslog_export_filter"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_export_filter",
+              "name": "cppm_syslog_export_filter",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_syslog_export_filter"
+        ],
+        "module": "integrations",
+        "service": "syslog-export-filter",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "integrations",
+      "service": "syslog-target",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_syslog_target"
+        ],
+        [
+          "cppm_syslog_targets"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_syslog_target"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_syslog_target",
+              "name": "cppm_syslog_target",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_syslog_target"
+        ],
+        "module": "integrations",
+        "service": "syslog-target",
+        "probe_action": "list"
+      }
+    }
+  ]
+}

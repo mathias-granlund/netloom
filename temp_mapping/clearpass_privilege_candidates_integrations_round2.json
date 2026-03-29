@@ -1,0 +1,7 @@
+{
+  "integrations/ingress-event-dictionary": [
+    [
+      "cppm_ingress_event_dict"
+    ]
+  ]
+}

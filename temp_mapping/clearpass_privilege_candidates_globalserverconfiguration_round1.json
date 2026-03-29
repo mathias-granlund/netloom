@@ -1,0 +1,44 @@
+{
+  "globalserverconfiguration/all-privileges": [
+    "cppm_admin_privileges",
+    "admin"
+  ],
+  "globalserverconfiguration/application-license-summary": [
+    "cppm_licenses",
+    "platform"
+  ],
+  "globalserverconfiguration/attribute-name": [
+    "cppm_attributes",
+    "cppm_config"
+  ],
+  "globalserverconfiguration/db-sync": [
+    "platform",
+    "cppm_config",
+    "cppm_servers",
+    "cppm_server_policy_manager_zones",
+    [
+      "platform",
+      "cppm_servers"
+    ]
+  ],
+  "globalserverconfiguration/parameters": [
+    "cppm_config",
+    "platform",
+    "auth_profiles",
+    "cppm_admin_users",
+    [
+      "cppm_config",
+      "platform"
+    ]
+  ],
+  "globalserverconfiguration/password-policy": [
+    "cppm_admin_users",
+    "auth_profiles",
+    "admin_security",
+    "user-logins",
+    [
+      "cppm_admin_users",
+      "auth_profiles"
+    ]
+  ]
+}

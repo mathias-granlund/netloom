@@ -1,0 +1,42 @@
+{
+  "guestconfiguration/authentication": [
+    ["guest_authentication"],
+    ["guest_auth"],
+    ["guest_authentication_methods"],
+    ["guest_configuration"],
+    ["guest_config"],
+    ["guest_manager"]
+  ],
+  "guestconfiguration/guestmanager": [
+    ["guest_manager"],
+    ["guestmanagement"],
+    ["guest_configuration"],
+    ["guest_config"],
+    ["guest_admin"]
+  ],
+  "guestconfiguration/pass": [
+    ["guest_pass_template"],
+    ["guest_pass_templates"],
+    ["pass_template"],
+    ["pass_templates"],
+    ["guest_templates"],
+    ["guest_manager"]
+  ],
+  "guestconfiguration/print": [
+    ["guest_print_template"],
+    ["guest_print_templates"],
+    ["print_template"],
+    ["print_templates"],
+    ["guest_templates"],
+    ["guest_manager"]
+  ],
+  "guestconfiguration/weblogin": [
+    ["guest_weblogin"],
+    ["guest_weblogins"],
+    ["guest_web_login"],
+    ["guest_web_logins"],
+    ["web_login"],
+    ["web_logins"],
+    ["guest_manager"]
+  ]
+}

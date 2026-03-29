@@ -1,0 +1,24 @@
+{
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_keys": [
+    "smtp_send"
+  ],
+  "service": "toolsandutilities/send",
+  "endpoint": "/api/email/send",
+  "baseline_probe": {
+    "status": "http-error",
+    "http_status": 403
+  },
+  "candidate_probe": {
+    "status": "ok",
+    "probe_action": "add"
+  },
+  "notes": [
+    "smtp_send was accepted by the operator-profile API",
+    "effective runtime privileges included smtp_send",
+    "a real email-send payload succeeded with the discovery profile"
+  ]
+}

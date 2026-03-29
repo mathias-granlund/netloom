@@ -1,0 +1,51 @@
+{
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_keys": [
+    "cppm_certificates"
+  ],
+  "server_uuid": "49bbc5d5-1520-4fa8-bacf-acd2ec167963",
+  "results": [
+    {
+      "service": "platformcertificates/server-cert-name",
+      "sample_service_name": "RADIUS",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403
+      },
+      "candidate_probe": {
+        "status": "ok",
+        "probe_action": "get"
+      }
+    },
+    {
+      "service": "platformcertificates/server-cert-name-enable",
+      "sample_service_name": "HTTPS(ECC)",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403
+      },
+      "candidate_probe": {
+        "status": "ok",
+        "probe_action": "update"
+      },
+      "cleanup": "restored HTTPS(ECC) to disabled via admin"
+    },
+    {
+      "service": "platformcertificates/server-cert-name-disable",
+      "sample_service_name": "HTTPS(RSA)",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403
+      },
+      "candidate_probe": {
+        "status": "ok",
+        "probe_action": "update"
+      },
+      "precondition": "temporarily enabled HTTPS(ECC) before disabling HTTPS(RSA) so the server would not reject leaving both HTTPS certificates disabled",
+      "cleanup": "restored HTTPS(RSA) to enabled and HTTPS(ECC) to disabled via admin"
+    }
+  ]
+}

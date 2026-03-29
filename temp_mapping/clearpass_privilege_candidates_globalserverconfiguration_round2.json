@@ -1,0 +1,54 @@
+{
+  "globalserverconfiguration/application-license-summary": [
+    [
+      "cppm_licenses"
+    ],
+    [
+      "platform"
+    ],
+    [
+      "cppm_licenses",
+      "platform"
+    ]
+  ],
+  "globalserverconfiguration/parameters": [
+    [
+      "cppm_config"
+    ],
+    [
+      "platform"
+    ],
+    [
+      "cppm_cluster_wide_parameters"
+    ],
+    [
+      "cppm_service_parameter"
+    ],
+    [
+      "cppm_config",
+      "platform"
+    ]
+  ],
+  "globalserverconfiguration/password-policy": [
+    [
+      "cppm_admin_users"
+    ],
+    [
+      "auth_profiles"
+    ],
+    [
+      "cppm_admin_user_pass_policy"
+    ],
+    [
+      "cppm_local_user_pass_policy"
+    ],
+    [
+      "cppm_admin_user_pass_policy",
+      "cppm_local_user_pass_policy"
+    ],
+    [
+      "cppm_admin_users",
+      "auth_profiles"
+    ]
+  ]
+}

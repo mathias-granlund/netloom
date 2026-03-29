@@ -1,0 +1,26 @@
+{
+  "globalserverconfiguration/operator-profile": [
+    ["user-logins"],
+    ["auth_profiles"],
+    ["auth_config"],
+    ["auth_ldap"],
+    ["platform_authentication"],
+    ["admin_content"],
+    ["admin_security"],
+    ["cppm_servers"],
+    ["user-logins", "auth_profiles"],
+    ["user-logins", "auth_config"],
+    ["user-logins", "platform_authentication"],
+    ["user-logins", "admin_content"],
+    ["user-logins", "admin_security"],
+    ["user-logins", "cppm_servers"],
+    ["auth_profiles", "auth_config"],
+    ["auth_profiles", "platform_authentication"],
+    ["auth_config", "platform_authentication"],
+    ["admin_content", "admin_security"],
+    ["platform_authentication", "cppm_servers"],
+    ["user-logins", "auth_profiles", "auth_config"],
+    ["user-logins", "platform_authentication", "admin_content"],
+    ["user-logins", "platform_authentication", "admin_security"]
+  ]
+}

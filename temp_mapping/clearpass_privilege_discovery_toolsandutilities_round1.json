@@ -1,0 +1,147 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "toolsandutilities"
+  ],
+  "services": [
+    "toolsandutilities/random-mpsk",
+    "toolsandutilities/random-password",
+    "toolsandutilities/send"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_toolsandutilities_round1.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "toolsandutilities",
+      "service": "random-mpsk",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "list",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "random_mpsk",
+          "random_mpsks",
+          "cppm_random_mpsk",
+          "cppm_random_mpsks",
+          "guest_users"
+        ],
+        [
+          "cppm_random_mpsk"
+        ],
+        [
+          "cppm_random_mpsks"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "random_mpsk",
+            "random_mpsks",
+            "cppm_random_mpsk",
+            "cppm_random_mpsks",
+            "guest_users"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018random_mpsk\\u2019 is not a valid privilege\\n\\u2018random_mpsks\\u2019 is not a valid privilege\\n\\u2018cppm_random_mpsk\\u2019 is not a valid privilege\\n\\u2018cppm_random_mpsks\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_random_mpsk"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_random_mpsk\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_random_mpsks"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_random_mpsks\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "toolsandutilities",
+      "service": "random-password",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "list",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "random_password",
+          "random_passwords",
+          "cppm_random_password",
+          "cppm_random_passwords",
+          "guest_users"
+        ],
+        [
+          "cppm_random_password"
+        ],
+        [
+          "cppm_random_passwords"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "random_password",
+            "random_passwords",
+            "cppm_random_password",
+            "cppm_random_passwords",
+            "guest_users"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018random_password\\u2019 is not a valid privilege\\n\\u2018random_passwords\\u2019 is not a valid privilege\\n\\u2018cppm_random_password\\u2019 is not a valid privilege\\n\\u2018cppm_random_passwords\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_random_password"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_random_password\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_random_passwords"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_random_passwords\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

@@ -1,0 +1,1118 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "certificateauthority"
+  ],
+  "services": [
+    "certificateauthority/certificate",
+    "certificateauthority/device",
+    "certificateauthority/user"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_certificateauthority_round2.json",
+  "results": [
+    {
+      "module": "certificateauthority",
+      "service": "certificate",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates",
+          "platform"
+        ],
+        [
+          "cppm_certificates",
+          "admin_security"
+        ],
+        [
+          "cppm_certificates",
+          "platform_authentication"
+        ],
+        [
+          "cppm_certificate"
+        ],
+        [
+          "cppm_certificates"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_data_retention",
+              "name": "admin_data_retention",
+              "access": "full"
+            },
+            {
+              "raw": "admin_restore",
+              "name": "admin_restore",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "extension_config",
+              "name": "extension_config",
+              "access": "full"
+            },
+            {
+              "raw": "extension_control",
+              "name": "extension_control",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            },
+            {
+              "raw": "extension_logs",
+              "name": "extension_logs",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            },
+            {
+              "raw": "platform",
+              "name": "platform",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "admin_security"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform_authentication"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificate"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_certificate\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "certificateauthority",
+      "service": "device",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates",
+          "platform"
+        ],
+        [
+          "cppm_certificates",
+          "admin_security"
+        ],
+        [
+          "cppm_certificates",
+          "platform_authentication"
+        ],
+        [
+          "cppm_certificates",
+          "guest_users"
+        ],
+        [
+          "cppm_certificates",
+          "cppm_local_users"
+        ],
+        [
+          "cppm_certificates",
+          "user-logins"
+        ],
+        [
+          "cppm_device"
+        ],
+        [
+          "cppm_devices"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_data_retention",
+              "name": "admin_data_retention",
+              "access": "full"
+            },
+            {
+              "raw": "admin_restore",
+              "name": "admin_restore",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "extension_config",
+              "name": "extension_config",
+              "access": "full"
+            },
+            {
+              "raw": "extension_control",
+              "name": "extension_control",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            },
+            {
+              "raw": "extension_logs",
+              "name": "extension_logs",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            },
+            {
+              "raw": "platform",
+              "name": "platform",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "admin_security"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform_authentication"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "guest_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "guest_users",
+              "name": "guest_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "cppm_local_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "user-logins"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_device"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_device\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_devices"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_devices\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "certificateauthority",
+      "service": "user",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates",
+          "platform"
+        ],
+        [
+          "cppm_certificates",
+          "admin_security"
+        ],
+        [
+          "cppm_certificates",
+          "platform_authentication"
+        ],
+        [
+          "cppm_certificates",
+          "user-logins"
+        ],
+        [
+          "cppm_certificates",
+          "cppm_admin_user_pass_policy"
+        ],
+        [
+          "cppm_certificates",
+          "cppm_local_users"
+        ],
+        [
+          "cppm_user"
+        ],
+        [
+          "cppm_users"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_content",
+              "name": "admin_content",
+              "access": "full"
+            },
+            {
+              "raw": "admin_data_retention",
+              "name": "admin_data_retention",
+              "access": "full"
+            },
+            {
+              "raw": "admin_restore",
+              "name": "admin_restore",
+              "access": "full"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "extension_config",
+              "name": "extension_config",
+              "access": "full"
+            },
+            {
+              "raw": "extension_control",
+              "name": "extension_control",
+              "access": "full"
+            },
+            {
+              "raw": "extension_instance",
+              "name": "extension_instance",
+              "access": "full"
+            },
+            {
+              "raw": "extension_logs",
+              "name": "extension_logs",
+              "access": "full"
+            },
+            {
+              "raw": "extension_store",
+              "name": "extension_store",
+              "access": "full"
+            },
+            {
+              "raw": "platform",
+              "name": "platform",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "admin_security"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "admin_security",
+              "name": "admin_security",
+              "access": "full"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "platform_authentication"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "user-logins"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "cppm_admin_user_pass_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_certificates",
+            "cppm_local_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_user"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_user\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_users"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_users\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

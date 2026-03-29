@@ -1,0 +1,52 @@
+{
+  "insight/alert": [
+    [
+      "insight_alert"
+    ]
+  ],
+  "insight/report": [
+    [
+      "insight_report"
+    ]
+  ],
+  "integrations/context-server-action": [
+    [
+      "cppm_context_server_actions"
+    ]
+  ],
+  "integrations/device-insight": [
+    [
+      "cppm_device_insight"
+    ]
+  ],
+  "integrations/endpoint-context-server": [
+    [
+      "cppm_endpoint_context_server"
+    ]
+  ],
+  "integrations/event-sources": [
+    [
+      "cppm_event_sources"
+    ]
+  ],
+  "integrations/instance": [
+    [
+      "extension_instance"
+    ]
+  ],
+  "integrations/store": [
+    [
+      "extension_store"
+    ]
+  ],
+  "integrations/syslog-export-filter": [
+    [
+      "cppm_syslog_export_filter"
+    ]
+  ],
+  "integrations/syslog-target": [
+    [
+      "cppm_syslog_target"
+    ]
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "globalserverconfiguration/messaging-setup": [
+    ["cppm_messaging_setup"],
+    ["smtp_config"],
+    ["sms_setup"],
+    ["cppm_messaging_setup", "smtp_config"],
+    ["cppm_messaging_setup", "sms_setup"],
+    ["smtp_config", "sms_setup"],
+    ["cppm_messaging_setup", "smtp_config", "sms_setup"]
+  ],
+  "globalserverconfiguration/operator-profile": [
+    ["engine_object_acl"],
+    ["admin"],
+    ["engine_object_acl", "admin"]
+  ],
+  "policyelements/radius-dictionary": [
+    ["cppm_radius_dict"],
+    ["pass_index"],
+    ["pass_config"],
+    ["cppm_radius_dict", "pass_index"],
+    ["cppm_radius_dict", "pass_config"],
+    ["pass_index", "pass_config"],
+    ["cppm_radius_dict", "pass_index", "pass_config"]
+  ]
+}

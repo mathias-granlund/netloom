@@ -1,0 +1,8 @@
+{
+  "insight/alert": [
+    ["insight_alert"]
+  ],
+  "insight/report": [
+    ["insight_report"]
+  ]
+}

@@ -1,0 +1,426 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "endpointvisibility"
+  ],
+  "services": [
+    "endpointvisibility/fingerprint",
+    "endpointvisibility/network-scan",
+    "endpointvisibility/onguard-custom-script",
+    "endpointvisibility/policy-manager-zones",
+    "endpointvisibility/profiler-subnet-mapping"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_endpointvisibility_round1.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "endpointvisibility",
+      "service": "fingerprint",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_fingerprint",
+          "cppm_fingerprints",
+          "fingerprint",
+          "fingerprints",
+          "cppm_profiler",
+          "profiler"
+        ],
+        [
+          "cppm_fingerprint"
+        ],
+        [
+          "cppm_fingerprints"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_fingerprint",
+            "cppm_fingerprints",
+            "fingerprint",
+            "fingerprints",
+            "cppm_profiler",
+            "profiler"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_fingerprint\\u2019 is not a valid privilege\\n\\u2018fingerprint\\u2019 is not a valid privilege\\n\\u2018fingerprints\\u2019 is not a valid privilege\\n\\u2018cppm_profiler\\u2019 is not a valid privilege\\n\\u2018profiler\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_fingerprint"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_fingerprint\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_fingerprints"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_fingerprints",
+              "name": "cppm_fingerprints",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_fingerprints"
+        ],
+        "module": "endpointvisibility",
+        "service": "fingerprint",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "network-scan",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_network_scan",
+          "network_scan",
+          "network_scans",
+          "cppm_profiler",
+          "profiler"
+        ],
+        [
+          "cppm_network_scan"
+        ],
+        [
+          "cppm_network_scans"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_network_scan",
+            "network_scan",
+            "network_scans",
+            "cppm_profiler",
+            "profiler"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_network_scan\\u2019 is not a valid privilege\\n\\u2018network_scan\\u2019 is not a valid privilege\\n\\u2018network_scans\\u2019 is not a valid privilege\\n\\u2018cppm_profiler\\u2019 is not a valid privilege\\n\\u2018profiler\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_network_scan"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_network_scan\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_network_scans"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_network_scans\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "onguard-custom-script",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_onguard",
+          "onguard",
+          "cppm_onguard_custom_script",
+          "cppm_onguard_custom_scripts",
+          "onguard_custom_script",
+          "onguard_custom_scripts"
+        ],
+        [
+          "cppm_onguard_custom_script"
+        ],
+        [
+          "cppm_onguard_custom_scripts"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_onguard",
+            "onguard",
+            "cppm_onguard_custom_script",
+            "cppm_onguard_custom_scripts",
+            "onguard_custom_script",
+            "onguard_custom_scripts"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard\\u2019 is not a valid privilege\\n\\u2018onguard\\u2019 is not a valid privilege\\n\\u2018cppm_onguard_custom_script\\u2019 is not a valid privilege\\n\\u2018cppm_onguard_custom_scripts\\u2019 is not a valid privilege\\n\\u2018onguard_custom_script\\u2019 is not a valid privilege\\n\\u2018onguard_custom_scripts\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_custom_script"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_custom_script\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_custom_scripts"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_custom_scripts\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "policy-manager-zones",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_server_policy_manager_zones",
+          "policy_manager_zones",
+          "cppm_policy_manager_zones"
+        ],
+        [
+          "cppm_policy_manager_zones"
+        ],
+        [
+          "cppm_policy_manager_zone"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_server_policy_manager_zones",
+            "policy_manager_zones",
+            "cppm_policy_manager_zones"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018policy_manager_zones\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_policy_manager_zones"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy_manager_zones",
+              "name": "cppm_policy_manager_zones",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_policy_manager_zones"
+        ],
+        "module": "endpointvisibility",
+        "service": "policy-manager-zones",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "profiler-subnet-mapping",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_profiler",
+          "profiler",
+          "cppm_profiler_subnet_mapping",
+          "profiler_subnet_mapping"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_profiler_subnet_mappings"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_profiler",
+            "profiler",
+            "cppm_profiler_subnet_mapping",
+            "profiler_subnet_mapping"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_profiler\\u2019 is not a valid privilege\\n\\u2018profiler\\u2019 is not a valid privilege\\n\\u2018profiler_subnet_mapping\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_profiler_subnet_mapping"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_profiler_subnet_mapping",
+              "name": "cppm_profiler_subnet_mapping",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_profiler_subnet_mapping"
+        ],
+        "module": "endpointvisibility",
+        "service": "profiler-subnet-mapping",
+        "probe_action": "list"
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "certificateauthority"
+  ],
+  "services": [],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs",
+    "mdps_ca"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?mdps_index",
+      "name": "mdps_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "mdps_ca",
+      "name": "mdps_ca",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": null,
+  "results": []
+}

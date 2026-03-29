@@ -1,0 +1,36 @@
+{
+  "endpointvisibility/fingerprint": [
+    "cppm_fingerprint",
+    "cppm_fingerprints",
+    "fingerprint",
+    "fingerprints",
+    "cppm_profiler",
+    "profiler"
+  ],
+  "endpointvisibility/network-scan": [
+    "cppm_network_scan",
+    "network_scan",
+    "network_scans",
+    "cppm_profiler",
+    "profiler"
+  ],
+  "endpointvisibility/onguard-custom-script": [
+    "cppm_onguard",
+    "onguard",
+    "cppm_onguard_custom_script",
+    "cppm_onguard_custom_scripts",
+    "onguard_custom_script",
+    "onguard_custom_scripts"
+  ],
+  "endpointvisibility/policy-manager-zones": [
+    "cppm_server_policy_manager_zones",
+    "policy_manager_zones",
+    "cppm_policy_manager_zones"
+  ],
+  "endpointvisibility/profiler-subnet-mapping": [
+    "cppm_profiler",
+    "profiler",
+    "cppm_profiler_subnet_mapping",
+    "profiler_subnet_mapping"
+  ]
+}

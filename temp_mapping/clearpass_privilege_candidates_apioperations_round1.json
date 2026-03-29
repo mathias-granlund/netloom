@@ -1,0 +1,14 @@
+{
+  "apioperations/me": [
+    "apigility",
+    "api_docs",
+    "api_index",
+    "oauth"
+  ],
+  "apioperations/privileges": [
+    "apigility",
+    "api_docs",
+    "api_index",
+    "oauth"
+  ]
+}

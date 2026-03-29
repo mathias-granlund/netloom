@@ -1,0 +1,22 @@
+{
+  "globalserverconfiguration/operator-profile": [
+    ["admin"],
+    ["engine_object_acl"],
+    ["cppm_config"],
+    ["platform"],
+    ["admin_content"],
+    ["cppm_admin_users"],
+    ["cppm_admin_privileges"],
+    ["admin", "cppm_config"],
+    ["admin", "admin_content"],
+    ["admin", "platform"],
+    ["admin", "cppm_admin_users"],
+    ["admin", "cppm_admin_privileges"],
+    ["engine_object_acl", "cppm_config"],
+    ["engine_object_acl", "admin_content"],
+    ["engine_object_acl", "cppm_admin_users"],
+    ["engine_object_acl", "cppm_admin_privileges"],
+    ["admin", "engine_object_acl", "cppm_config"],
+    ["admin", "engine_object_acl", "admin_content"]
+  ]
+}

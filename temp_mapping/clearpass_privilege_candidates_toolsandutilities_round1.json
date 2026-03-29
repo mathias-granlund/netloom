@@ -1,0 +1,24 @@
+{
+  "toolsandutilities/random-mpsk": [
+    "random_mpsk",
+    "random_mpsks",
+    "cppm_random_mpsk",
+    "cppm_random_mpsks",
+    "guest_users"
+  ],
+  "toolsandutilities/random-password": [
+    "random_password",
+    "random_passwords",
+    "cppm_random_password",
+    "cppm_random_passwords",
+    "guest_users"
+  ],
+  "toolsandutilities/send": [
+    "smtp_config",
+    "sms_setup",
+    [
+      "smtp_config",
+      "sms_setup"
+    ]
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "logs/endpoint": [
+    "cppm_endpoint",
+    "cppm_endpoints",
+    "insight_alert",
+    "insight_report",
+    "cppm_system_events",
+    [
+      "cppm_endpoints",
+      "insight_alert"
+    ],
+    [
+      "cppm_endpoints",
+      "insight_report"
+    ]
+  ],
+  "logs/endpoint-time-range": [
+    "cppm_endpoint_time_range",
+    "cppm_endpoint_time_ranges",
+    "cppm_endpoints",
+    "insight_alert",
+    "insight_report",
+    [
+      "cppm_endpoints",
+      "insight_alert"
+    ],
+    [
+      "cppm_endpoints",
+      "insight_report"
+    ]
+  ],
+  "logs/login-audit": [
+    "cppm_login_audit",
+    "cppm_login_audits",
+    "cppm_admin_users",
+    "auth_profiles",
+    "user-logins",
+    "platform_authentication",
+    [
+      "cppm_admin_users",
+      "auth_profiles"
+    ]
+  ]
+}

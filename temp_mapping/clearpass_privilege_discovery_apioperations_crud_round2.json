@@ -1,0 +1,22 @@
+{
+  "profile": "discovery",
+  "module": "apioperations",
+  "results": {
+    "me_list": {
+      "status": "ok",
+      "result_type": "dict"
+    },
+    "me_add": {
+      "status": "ok",
+      "result_type": "dict"
+    },
+    "oauth_add": {
+      "status": "ok",
+      "result_type": "dict"
+    },
+    "privileges_get": {
+      "status": "ok",
+      "result_type": "dict"
+    }
+  }
+}

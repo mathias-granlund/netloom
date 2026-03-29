@@ -1,0 +1,41 @@
+{
+  "localserverconfiguration/cppm-version": [
+    [
+      "platform"
+    ],
+    [
+      "cppm_servers"
+    ],
+    [
+      "platform",
+      "cppm_servers"
+    ]
+  ],
+  "localserverconfiguration/fips": [
+    [
+      "platform"
+    ],
+    [
+      "cppm_servers"
+    ],
+    [
+      "admin_security"
+    ],
+    [
+      "platform",
+      "admin_security"
+    ]
+  ],
+  "localserverconfiguration/version": [
+    [
+      "platform"
+    ],
+    [
+      "cppm_servers"
+    ],
+    [
+      "platform",
+      "cppm_servers"
+    ]
+  ]
+}

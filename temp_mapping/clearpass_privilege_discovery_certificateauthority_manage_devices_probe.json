@@ -1,0 +1,114 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "certificateauthority"
+  ],
+  "services": [
+    "certificateauthority/device",
+    "certificateauthority/user"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs",
+    "mdps_device_manage"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?mdps_index",
+      "name": "mdps_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "mdps_device_manage",
+      "name": "mdps_device_manage",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": null,
+  "results": [
+    {
+      "module": "certificateauthority",
+      "service": "device",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "list",
+        "result_type": "dict"
+      },
+      "candidate_specs": [
+        [
+          "cppm_device"
+        ],
+        [
+          "cppm_devices"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_device"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_device\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_devices"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_devices\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "certificateauthority",
+      "service": "user",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "list",
+        "result_type": "dict"
+      },
+      "candidate_specs": [
+        [
+          "cppm_user"
+        ],
+        [
+          "cppm_users"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_user"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_user\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_users"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_users\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

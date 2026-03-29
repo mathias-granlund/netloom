@@ -1,0 +1,121 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs",
+    "mdps_revoke_certificate"
+  ],
+  "results": [
+    {
+      "service": "platformcertificates/cert-sign-request",
+      "baseline": {
+        "status": "HTTPError",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "attempt": {
+        "candidate_keys": [
+          "cppm_certificates"
+        ],
+        "update_status": 200,
+        "effective_privileges": [
+          {
+            "raw": "?api_index",
+            "name": "api_index",
+            "access": "allowed"
+          },
+          {
+            "raw": "?cppm_config",
+            "name": "cppm_config",
+            "access": "allowed"
+          },
+          {
+            "raw": "?mdps_index",
+            "name": "mdps_index",
+            "access": "allowed"
+          },
+          {
+            "raw": "api_docs",
+            "name": "api_docs",
+            "access": "full"
+          },
+          {
+            "raw": "apigility",
+            "name": "apigility",
+            "access": "full"
+          },
+          {
+            "raw": "cppm_certificates",
+            "name": "cppm_certificates",
+            "access": "full"
+          },
+          {
+            "raw": "mdps_revoke_certificate",
+            "name": "mdps_revoke_certificate",
+            "access": "full"
+          }
+        ],
+        "probe": {
+          "status": "ok",
+          "result_type": "dict"
+        }
+      }
+    },
+    {
+      "service": "platformcertificates/self-signed-cert",
+      "baseline": {
+        "status": "HTTPError",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "attempt": {
+        "candidate_keys": [
+          "cppm_certificates"
+        ],
+        "update_status": 200,
+        "effective_privileges": [
+          {
+            "raw": "?api_index",
+            "name": "api_index",
+            "access": "allowed"
+          },
+          {
+            "raw": "?cppm_config",
+            "name": "cppm_config",
+            "access": "allowed"
+          },
+          {
+            "raw": "?mdps_index",
+            "name": "mdps_index",
+            "access": "allowed"
+          },
+          {
+            "raw": "api_docs",
+            "name": "api_docs",
+            "access": "full"
+          },
+          {
+            "raw": "apigility",
+            "name": "apigility",
+            "access": "full"
+          },
+          {
+            "raw": "cppm_certificates",
+            "name": "cppm_certificates",
+            "access": "full"
+          },
+          {
+            "raw": "mdps_revoke_certificate",
+            "name": "mdps_revoke_certificate",
+            "access": "full"
+          }
+        ],
+        "probe": {
+          "status": "HTTPError",
+          "http_status": 422,
+          "detail": "{\"validation_messages\":[\"Invalid type specified\"],\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Invalid type specified\"}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,447 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "platformcertificates"
+  ],
+  "services": [
+    "platformcertificates/cert-trust-list",
+    "platformcertificates/cert-trust-list-details",
+    "platformcertificates/client-cert",
+    "platformcertificates/revocation-list",
+    "platformcertificates/server-cert",
+    "platformcertificates/service-cert"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_platformcertificates_round1.json",
+  "results": [
+    {
+      "module": "platformcertificates",
+      "service": "cert-trust-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_cert_trust_list"
+        ],
+        [
+          "cppm_cert_trust_lists"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_cert_trust_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_cert_trust_list"
+        ],
+        "module": "platformcertificates",
+        "service": "cert-trust-list",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "platformcertificates",
+      "service": "cert-trust-list-details",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_cert_trust_list"
+        ],
+        [
+          "cppm_cert_trust_list_details"
+        ],
+        [
+          "cppm_cert_trust_list_detail"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_cert_trust_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_cert_trust_list",
+              "name": "cppm_cert_trust_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_cert_trust_list"
+        ],
+        "module": "platformcertificates",
+        "service": "cert-trust-list-details",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "platformcertificates",
+      "service": "client-cert",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates"
+        ],
+        [
+          "cppm_client_cert"
+        ],
+        [
+          "cppm_client_certs"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_certificates"
+        ],
+        "module": "platformcertificates",
+        "service": "client-cert",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "platformcertificates",
+      "service": "revocation-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_revocation_lists"
+        ],
+        [
+          "cppm_revocation_list"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_revocation_lists"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_revocation_lists",
+              "name": "cppm_revocation_lists",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_revocation_lists"
+        ],
+        "module": "platformcertificates",
+        "service": "revocation-list",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "platformcertificates",
+      "service": "server-cert",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates"
+        ],
+        [
+          "cppm_server_cert"
+        ],
+        [
+          "cppm_server_certs"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_certificates"
+        ],
+        "module": "platformcertificates",
+        "service": "server-cert",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "platformcertificates",
+      "service": "service-cert",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "cppm_certificates"
+        ],
+        [
+          "cppm_service_cert"
+        ],
+        [
+          "cppm_service_certs"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_certificates"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_certificates",
+              "name": "cppm_certificates",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict"
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_certificates"
+        ],
+        "module": "platformcertificates",
+        "service": "service-cert",
+        "probe_action": "list"
+      }
+    }
+  ]
+}
