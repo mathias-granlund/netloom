@@ -253,6 +253,75 @@ def test_visible_catalog_modules_hide_unmapped_services_when_filter_applied():
     assert metadata["hidden_service_count"] == 1
 
 
+def test_filter_catalog_by_effective_privileges_keeps_baseline_verified_services():
+    catalog = {
+        "modules": {
+            "apioperations": {
+                "me": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                },
+                "oauth": {
+                    "actions": {
+                        "add": {"method": "POST"},
+                    }
+                },
+            }
+        }
+    }
+
+    filtered, metadata = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {"name": "api_docs", "access": "full", "raw": "api_docs"},
+            {"name": "apigility", "access": "full", "raw": "apigility"},
+        ],
+    )
+
+    assert "me" in filtered["apioperations"]
+    assert filtered["apioperations"]["me"]["catalog_visibility"] == "baseline_verified"
+    assert "add" in filtered["apioperations"]["me"]["actions"]
+    assert "oauth" in filtered["apioperations"]
+    assert metadata["filter_applied"] is True
+
+
+def test_visible_catalog_modules_keeps_baseline_verified_services_when_filter_applied():
+    filtered_modules = {
+        "apioperations": {
+            "me": {
+                "actions": {"list": {"method": "GET"}},
+                "catalog_visibility": "baseline_verified",
+            },
+            "guest": {
+                "actions": {"list": {"method": "GET"}},
+            },
+        }
+    }
+
+    visible_modules, metadata = _visible_catalog_modules(
+        filtered_modules,
+        {
+            "filter_applied": True,
+            "effective_privileges": [
+                {
+                    "name": "api_docs",
+                    "access": "full",
+                    "raw": "api_docs",
+                }
+            ],
+        },
+    )
+
+    assert "me" in visible_modules["apioperations"]
+    assert visible_modules["apioperations"]["me"]["catalog_visibility"] == (
+        "baseline_verified"
+    )
+    assert "guest" not in visible_modules["apioperations"]
+    assert metadata["hidden_service_count"] == 1
+
+
 def test_project_catalog_view_can_switch_to_full_modules():
     catalog = {
         "version": 5,

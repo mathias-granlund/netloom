@@ -1,0 +1,1847 @@
+{
+  "0": {
+    "status": "ok",
+    "detail": {
+      "vendor_name": "Radius:IETF",
+      "vendor_id": 0,
+      "prefix": "IETF",
+      "enabled": true,
+      "attributes": [
+        {
+          "attr_id": 84,
+          "attr_name": "ARAP-Challenge-Response",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 71,
+          "attr_name": "ARAP-Features",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 70,
+          "attr_name": "ARAP-Password",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 73,
+          "attr_name": "ARAP-Security",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 74,
+          "attr_name": "ARAP-Security-Data",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 72,
+          "attr_name": "ARAP-Zone-Access",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Default-Zone"
+            },
+            {
+              "value_enum": 2,
+              "value": "Zone-Filter-Inclusive"
+            },
+            {
+              "value_enum": 4,
+              "value": "Zone-Filter-Exclusive"
+            }
+          ]
+        },
+        {
+          "attr_id": 45,
+          "attr_name": "Acct-Authentic",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "RADIUS"
+            },
+            {
+              "value_enum": 2,
+              "value": "Local"
+            },
+            {
+              "value_enum": 3,
+              "value": "Remote"
+            },
+            {
+              "value_enum": 4,
+              "value": "Diameter"
+            }
+          ]
+        },
+        {
+          "attr_id": 41,
+          "attr_name": "Acct-Delay-Time",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 52,
+          "attr_name": "Acct-Input-Gigawords",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 42,
+          "attr_name": "Acct-Input-Octets",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 47,
+          "attr_name": "Acct-Input-Packets",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 85,
+          "attr_name": "Acct-Interim-Interval",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 51,
+          "attr_name": "Acct-Link-Count",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 50,
+          "attr_name": "Acct-Multi-Session-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 53,
+          "attr_name": "Acct-Output-Gigawords",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 43,
+          "attr_name": "Acct-Output-Octets",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 48,
+          "attr_name": "Acct-Output-Packets",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 44,
+          "attr_name": "Acct-Session-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 46,
+          "attr_name": "Acct-Session-Time",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 40,
+          "attr_name": "Acct-Status-Type",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Start"
+            },
+            {
+              "value_enum": 2,
+              "value": "Stop"
+            },
+            {
+              "value_enum": 3,
+              "value": "Interim-Update"
+            },
+            {
+              "value_enum": 103809028,
+              "value": "Annex-IPXCP-Start"
+            },
+            {
+              "value_enum": 103809029,
+              "value": "Annex-ATCP-Start"
+            },
+            {
+              "value_enum": 103809030,
+              "value": "Annex-Accounting-Restart"
+            },
+            {
+              "value_enum": 103809025,
+              "value": "Annex-User-Reject"
+            },
+            {
+              "value_enum": 8,
+              "value": "Accounting-Off"
+            },
+            {
+              "value_enum": 9,
+              "value": "Tunnel-Start"
+            },
+            {
+              "value_enum": 10,
+              "value": "Tunnel-Stop"
+            },
+            {
+              "value_enum": 11,
+              "value": "Tunnel-Reject"
+            },
+            {
+              "value_enum": 12,
+              "value": "Tunnel-Link-Start"
+            },
+            {
+              "value_enum": 13,
+              "value": "Tunnel-Link-Stop"
+            },
+            {
+              "value_enum": 14,
+              "value": "Tunnel-Link-Reject"
+            },
+            {
+              "value_enum": 15,
+              "value": "Failed"
+            },
+            {
+              "value_enum": 103809040,
+              "value": "Annex-Rlogin-Start"
+            },
+            {
+              "value_enum": 103809041,
+              "value": "Annex-Rlogin-Stop"
+            },
+            {
+              "value_enum": 103809027,
+              "value": "Annex-IPCP-Start"
+            },
+            {
+              "value_enum": 219,
+              "value": "WB-WRitelog"
+            },
+            {
+              "value_enum": 7,
+              "value": "Accounting-On"
+            },
+            {
+              "value_enum": 103809032,
+              "value": "Annex-Tunnel-Start"
+            },
+            {
+              "value_enum": 103809033,
+              "value": "Annex-Tunnel-Stop"
+            },
+            {
+              "value_enum": 103809034,
+              "value": "Annex-Tunnel-Reject"
+            },
+            {
+              "value_enum": 103809026,
+              "value": "Annex-Call-Reject"
+            },
+            {
+              "value_enum": 103809035,
+              "value": "Annex-Tunnel-Link-Start"
+            },
+            {
+              "value_enum": 103809036,
+              "value": "Annex-Tunnel-Link-Stop"
+            },
+            {
+              "value_enum": 103809037,
+              "value": "Annex-MP-Start"
+            },
+            {
+              "value_enum": 103809038,
+              "value": "Annex-MP-Stop"
+            },
+            {
+              "value_enum": 103809031,
+              "value": "Annex-Accounting-Shutoff"
+            },
+            {
+              "value_enum": 217,
+              "value": "WB-Login"
+            },
+            {
+              "value_enum": 218,
+              "value": "WB-Logout"
+            },
+            {
+              "value_enum": 103809039,
+              "value": "Annex-Line-Seizure"
+            }
+          ]
+        },
+        {
+          "attr_id": 49,
+          "attr_name": "Acct-Terminate-Cause",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "User-Request"
+            },
+            {
+              "value_enum": 2,
+              "value": "Lost-Carrier"
+            },
+            {
+              "value_enum": 3,
+              "value": "Lost-Service"
+            },
+            {
+              "value_enum": 4,
+              "value": "Idle-Timeout"
+            },
+            {
+              "value_enum": 5,
+              "value": "Session-Timeout"
+            },
+            {
+              "value_enum": 6,
+              "value": "Admin-Reset"
+            },
+            {
+              "value_enum": 7,
+              "value": "Admin-Reboot"
+            },
+            {
+              "value_enum": 8,
+              "value": "Port-Error"
+            },
+            {
+              "value_enum": 9,
+              "value": "NAS-Error"
+            },
+            {
+              "value_enum": 10,
+              "value": "NAS-Request"
+            },
+            {
+              "value_enum": 11,
+              "value": "NAS-Reboot"
+            },
+            {
+              "value_enum": 12,
+              "value": "Port-Unneeded"
+            },
+            {
+              "value_enum": 13,
+              "value": "Port-Preempted"
+            },
+            {
+              "value_enum": 14,
+              "value": "Port-Suspended"
+            },
+            {
+              "value_enum": 15,
+              "value": "Service-Unavailable"
+            },
+            {
+              "value_enum": 16,
+              "value": "Callback"
+            },
+            {
+              "value_enum": 17,
+              "value": "User-Error"
+            },
+            {
+              "value_enum": 18,
+              "value": "Host-Request"
+            },
+            {
+              "value_enum": 19,
+              "value": "Supplicant-Restart"
+            },
+            {
+              "value_enum": 20,
+              "value": "Reauthentication-Failure"
+            },
+            {
+              "value_enum": 21,
+              "value": "Port-Reinit"
+            },
+            {
+              "value_enum": 22,
+              "value": "Port-Disabled"
+            }
+          ]
+        },
+        {
+          "attr_id": 68,
+          "attr_name": "Acct-Tunnel-Connection",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 86,
+          "attr_name": "Acct-Tunnel-Packets-Lost",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 174,
+          "attr_name": "Allowed-Called-Station-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 129,
+          "attr_name": "Basic-Location-Policy-Rules",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 60,
+          "attr_name": "CHAP-Challenge",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 3,
+          "attr_name": "CHAP-Password",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 20,
+          "attr_name": "Callback-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 19,
+          "attr_name": "Callback-Number",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 30,
+          "attr_name": "Called-Station-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 31,
+          "attr_name": "Calling-Station-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 89,
+          "attr_name": "Chargeable-User-Identity",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 25,
+          "attr_name": "Class",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 78,
+          "attr_name": "Configuration-Token",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 77,
+          "attr_name": "Connect-Info",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 169,
+          "attr_name": "DNS-Server-IPv6-Address",
+          "attr_type": "IPv6Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 123,
+          "attr_name": "Delegated-IPv6-Prefix",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 171,
+          "attr_name": "Delegated-IPv6-Prefix-Pool",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 102,
+          "attr_name": "EAP-Key-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 79,
+          "attr_name": "EAP-Message",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 175,
+          "attr_name": "EAP-Peer-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 176,
+          "attr_name": "EAP-Server-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 180,
+          "attr_name": "EAPoL-Announcement",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 58,
+          "attr_name": "Egress-VLAN-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 56,
+          "attr_name": "Egress-VLANID",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 101,
+          "attr_name": "Error-Cause",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 502,
+              "value": "Proxy-Request-Not-Routable"
+            },
+            {
+              "value_enum": 201,
+              "value": "Residual-Context-Removed"
+            },
+            {
+              "value_enum": 202,
+              "value": "Invalid-EAP-Packet"
+            },
+            {
+              "value_enum": 407,
+              "value": "Invalid-Attribute-Value"
+            },
+            {
+              "value_enum": 401,
+              "value": "Unsupported-Attribute"
+            },
+            {
+              "value_enum": 402,
+              "value": "Missing-Attribute"
+            },
+            {
+              "value_enum": 403,
+              "value": "NAS-Identification-Mismatch"
+            },
+            {
+              "value_enum": 404,
+              "value": "Invalid-Request"
+            },
+            {
+              "value_enum": 405,
+              "value": "Unsupported-Service"
+            },
+            {
+              "value_enum": 406,
+              "value": "Unsupported-Extension"
+            },
+            {
+              "value_enum": 503,
+              "value": "Session-Context-Not-Found"
+            },
+            {
+              "value_enum": 504,
+              "value": "Session-Context-Not-Removable"
+            },
+            {
+              "value_enum": 505,
+              "value": "Proxy-Processing-Error"
+            },
+            {
+              "value_enum": 506,
+              "value": "Resources-Unavailable"
+            },
+            {
+              "value_enum": 507,
+              "value": "Request-Initiated"
+            },
+            {
+              "value_enum": 508,
+              "value": "Multiple-Session-Selection-Unsupported"
+            },
+            {
+              "value_enum": 501,
+              "value": "Administratively-Prohibited"
+            }
+          ]
+        },
+        {
+          "attr_id": 55,
+          "attr_name": "Event-Timestamp",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 130,
+          "attr_name": "Extended-Location-Policy-Rules",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 11,
+          "attr_name": "Filter-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 37,
+          "attr_name": "Framed-AppleTalk-Link",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 38,
+          "attr_name": "Framed-AppleTalk-Network",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 39,
+          "attr_name": "Framed-AppleTalk-Zone",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 13,
+          "attr_name": "Framed-Compression",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "None"
+            },
+            {
+              "value_enum": 1,
+              "value": "Van-Jacobson-TCP-IP"
+            },
+            {
+              "value_enum": 2,
+              "value": "IPX-Header-Compression"
+            },
+            {
+              "value_enum": 3,
+              "value": "Stac-LZS"
+            }
+          ]
+        },
+        {
+          "attr_id": 8,
+          "attr_name": "Framed-IP-Address",
+          "attr_type": "IPv4Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 9,
+          "attr_name": "Framed-IP-Netmask",
+          "attr_type": "IPv4Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 23,
+          "attr_name": "Framed-IPX-Network",
+          "attr_type": "IPv4Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 168,
+          "attr_name": "Framed-IPv6-Address",
+          "attr_type": "IPv6Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 100,
+          "attr_name": "Framed-IPv6-Pool",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 97,
+          "attr_name": "Framed-IPv6-Prefix",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 99,
+          "attr_name": "Framed-IPv6-Route",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 96,
+          "attr_name": "Framed-Interface-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 12,
+          "attr_name": "Framed-MTU",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 133,
+          "attr_name": "Framed-Management",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "SNMP"
+            },
+            {
+              "value_enum": 2,
+              "value": "Web-Based"
+            },
+            {
+              "value_enum": 3,
+              "value": "Netconf"
+            },
+            {
+              "value_enum": 4,
+              "value": "FTP"
+            },
+            {
+              "value_enum": 5,
+              "value": "TFTP"
+            },
+            {
+              "value_enum": 6,
+              "value": "SFTP"
+            },
+            {
+              "value_enum": 7,
+              "value": "RCP"
+            },
+            {
+              "value_enum": 8,
+              "value": "SCP"
+            }
+          ]
+        },
+        {
+          "attr_id": 88,
+          "attr_name": "Framed-Pool",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 7,
+          "attr_name": "Framed-Protocol",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "PPP"
+            },
+            {
+              "value_enum": 2,
+              "value": "SLIP"
+            },
+            {
+              "value_enum": 3,
+              "value": "ARAP"
+            },
+            {
+              "value_enum": 4,
+              "value": "Gandalf-SLML"
+            },
+            {
+              "value_enum": 5,
+              "value": "Xylogics-IPX-SLIP"
+            },
+            {
+              "value_enum": 6,
+              "value": "X.75-Synchronous"
+            },
+            {
+              "value_enum": 17825799,
+              "value": "Bintec-MPR-LAPB"
+            },
+            {
+              "value_enum": 17825800,
+              "value": "Bintec-MPR-HDLC"
+            },
+            {
+              "value_enum": 17825801,
+              "value": "Bintec-FRAME-RELAY"
+            },
+            {
+              "value_enum": 17825802,
+              "value": "Bintec-X31-BCHAN"
+            },
+            {
+              "value_enum": 17825803,
+              "value": "Bintec-X75-PPP"
+            },
+            {
+              "value_enum": 17825804,
+              "value": "Bintec-X75BTX-PPP"
+            },
+            {
+              "value_enum": 17825794,
+              "value": "Bintec-X25"
+            },
+            {
+              "value_enum": 17825806,
+              "value": "Bintec-X25-PPP-OPT"
+            },
+            {
+              "value_enum": 17825805,
+              "value": "Bintec-X25-NOSIG"
+            },
+            {
+              "value_enum": 17825795,
+              "value": "Bintec-X25-PPP"
+            },
+            {
+              "value_enum": 9,
+              "value": "PPTP"
+            },
+            {
+              "value_enum": 7,
+              "value": "GPRS-PDP-Context"
+            },
+            {
+              "value_enum": 17825796,
+              "value": "Bintec-IP-LAPB"
+            },
+            {
+              "value_enum": 17825798,
+              "value": "Bintec-IP-HDLC"
+            }
+          ]
+        },
+        {
+          "attr_id": 22,
+          "attr_name": "Framed-Route",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 10,
+          "attr_name": "Framed-Routing",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "None"
+            },
+            {
+              "value_enum": 1,
+              "value": "Broadcast"
+            },
+            {
+              "value_enum": 2,
+              "value": "Listen"
+            },
+            {
+              "value_enum": 3,
+              "value": "Broadcast-Listen"
+            }
+          ]
+        },
+        {
+          "attr_id": 28,
+          "attr_name": "Idle-Timeout",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 57,
+          "attr_name": "Ingress-Filters",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Enabled"
+            },
+            {
+              "value_enum": 2,
+              "value": "Disabled"
+            }
+          ]
+        },
+        {
+          "attr_id": 131,
+          "attr_name": "Location-Capable",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Civix-Location"
+            },
+            {
+              "value_enum": 2,
+              "value": "Geo-Location"
+            },
+            {
+              "value_enum": 4,
+              "value": "Users-Location"
+            },
+            {
+              "value_enum": 8,
+              "value": "NAS-Location"
+            }
+          ]
+        },
+        {
+          "attr_id": 128,
+          "attr_name": "Location-Data",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 127,
+          "attr_name": "Location-Information",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 14,
+          "attr_name": "Login-IP-Host",
+          "attr_type": "IPv4Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 98,
+          "attr_name": "Login-IPv6-Host",
+          "attr_type": "IPv6Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 36,
+          "attr_name": "Login-LAT-Group",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 35,
+          "attr_name": "Login-LAT-Node",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 63,
+          "attr_name": "Login-LAT-Port",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 34,
+          "attr_name": "Login-LAT-Service",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 15,
+          "attr_name": "Login-Service",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "Telnet"
+            },
+            {
+              "value_enum": 1,
+              "value": "Rlogin"
+            },
+            {
+              "value_enum": 2,
+              "value": "TCP-Clear"
+            },
+            {
+              "value_enum": 3,
+              "value": "PortMaster"
+            },
+            {
+              "value_enum": 4,
+              "value": "LAT"
+            },
+            {
+              "value_enum": 5,
+              "value": "X25-PAD"
+            },
+            {
+              "value_enum": 6,
+              "value": "X25-T3POS"
+            },
+            {
+              "value_enum": 8,
+              "value": "TCP-Clear-Quiet"
+            }
+          ]
+        },
+        {
+          "attr_id": 16,
+          "attr_name": "Login-TCP-Port",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 513,
+              "value": "Rlogin"
+            },
+            {
+              "value_enum": 514,
+              "value": "Rsh"
+            },
+            {
+              "value_enum": 23,
+              "value": "Telnet"
+            }
+          ]
+        },
+        {
+          "attr_id": 124,
+          "attr_name": "MIP6-Feature-Vector",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 125,
+          "attr_name": "MIP6-Home-Link-Prefix",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 135,
+          "attr_name": "Management-Policy-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 136,
+          "attr_name": "Management-Privilege-Level",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 134,
+          "attr_name": "Management-Transport-Protection",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "No-Protection"
+            },
+            {
+              "value_enum": 2,
+              "value": "Integrity-Protection"
+            },
+            {
+              "value_enum": 3,
+              "value": "Integrity-Confidentiality-Protection"
+            }
+          ]
+        },
+        {
+          "attr_id": 80,
+          "attr_name": "Message-Authenticator",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 177,
+          "attr_name": "Mobility-Domain-Id",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 92,
+          "attr_name": "NAS-Filter-Rule",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 4,
+          "attr_name": "NAS-IP-Address",
+          "attr_type": "IPv4Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 95,
+          "attr_name": "NAS-IPv6-Address",
+          "attr_type": "IPv6Address",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 32,
+          "attr_name": "NAS-Identifier",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 5,
+          "attr_name": "NAS-Port",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 87,
+          "attr_name": "NAS-Port-Id",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 61,
+          "attr_name": "NAS-Port-Type",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "Async"
+            },
+            {
+              "value_enum": 1,
+              "value": "Sync"
+            },
+            {
+              "value_enum": 2,
+              "value": "ISDN"
+            },
+            {
+              "value_enum": 3,
+              "value": "ISDN-V120"
+            },
+            {
+              "value_enum": 4,
+              "value": "ISDN-V110"
+            },
+            {
+              "value_enum": 5,
+              "value": "Virtual"
+            },
+            {
+              "value_enum": 6,
+              "value": "PIAFS"
+            },
+            {
+              "value_enum": 7,
+              "value": "HDLC-Clear-Channel"
+            },
+            {
+              "value_enum": 8,
+              "value": "X.25"
+            },
+            {
+              "value_enum": 9,
+              "value": "X.75"
+            },
+            {
+              "value_enum": 10,
+              "value": "G.3-Fax"
+            },
+            {
+              "value_enum": 11,
+              "value": "SDSL"
+            },
+            {
+              "value_enum": 12,
+              "value": "ADSL-CAP"
+            },
+            {
+              "value_enum": 13,
+              "value": "ADSL-DMT"
+            },
+            {
+              "value_enum": 14,
+              "value": "IDSL"
+            },
+            {
+              "value_enum": 15,
+              "value": "Ethernet"
+            },
+            {
+              "value_enum": 16,
+              "value": "xDSL"
+            },
+            {
+              "value_enum": 17,
+              "value": "Cable"
+            },
+            {
+              "value_enum": 18,
+              "value": "Wireless-Other"
+            },
+            {
+              "value_enum": 19,
+              "value": "Wireless-802.11"
+            },
+            {
+              "value_enum": 20,
+              "value": "Token-Ring"
+            },
+            {
+              "value_enum": 21,
+              "value": "FDDI"
+            },
+            {
+              "value_enum": 22,
+              "value": "Wireless-CDMA2000"
+            },
+            {
+              "value_enum": 23,
+              "value": "Wireless-UMTS"
+            },
+            {
+              "value_enum": 24,
+              "value": "Wireless-1X-EV"
+            },
+            {
+              "value_enum": 25,
+              "value": "IAPP"
+            },
+            {
+              "value_enum": 26,
+              "value": "FTTP"
+            },
+            {
+              "value_enum": 27,
+              "value": "Wireless-802.16"
+            },
+            {
+              "value_enum": 28,
+              "value": "Wireless-802.20"
+            },
+            {
+              "value_enum": 29,
+              "value": "Wireless-802.22"
+            },
+            {
+              "value_enum": 30,
+              "value": "PPPoA"
+            },
+            {
+              "value_enum": 31,
+              "value": "PPPoEoA"
+            },
+            {
+              "value_enum": 32,
+              "value": "PPPoEoE"
+            },
+            {
+              "value_enum": 33,
+              "value": "PPPoEoVLAN"
+            },
+            {
+              "value_enum": 34,
+              "value": "PPPoEoQinQ"
+            },
+            {
+              "value_enum": 35,
+              "value": "xPON"
+            },
+            {
+              "value_enum": 36,
+              "value": "Wireless-XGP"
+            }
+          ]
+        },
+        {
+          "attr_id": 179,
+          "attr_name": "Network-Id-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 126,
+          "attr_name": "Operator-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 94,
+          "attr_name": "Originating-Line-Info",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 75,
+          "attr_name": "Password-Retry",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 62,
+          "attr_name": "Port-Limit",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 178,
+          "attr_name": "Preauth-Timeout",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 76,
+          "attr_name": "Prompt",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "No-Echo"
+            },
+            {
+              "value_enum": 1,
+              "value": "Echo"
+            }
+          ]
+        },
+        {
+          "attr_id": 33,
+          "attr_name": "Proxy-State",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 18,
+          "attr_name": "Reply-Message",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 132,
+          "attr_name": "Requested-Location-Info",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Civix-Location"
+            },
+            {
+              "value_enum": 2,
+              "value": "Geo-Location"
+            },
+            {
+              "value_enum": 4,
+              "value": "Users-Location"
+            },
+            {
+              "value_enum": 8,
+              "value": "NAS-Location"
+            },
+            {
+              "value_enum": 16,
+              "value": "Future-Requests"
+            },
+            {
+              "value_enum": 32,
+              "value": "None"
+            }
+          ]
+        },
+        {
+          "attr_id": 170,
+          "attr_name": "Route-IPv6-Information",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 6,
+          "attr_name": "Service-Type",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "Login-User"
+            },
+            {
+              "value_enum": 2,
+              "value": "Framed-User"
+            },
+            {
+              "value_enum": 3,
+              "value": "Callback-Login-User"
+            },
+            {
+              "value_enum": 4,
+              "value": "Callback-Framed-User"
+            },
+            {
+              "value_enum": 5,
+              "value": "Outbound-User"
+            },
+            {
+              "value_enum": 6,
+              "value": "Administrative-User"
+            },
+            {
+              "value_enum": 7,
+              "value": "NAS-Prompt-User"
+            },
+            {
+              "value_enum": 8,
+              "value": "Authenticate-Only"
+            },
+            {
+              "value_enum": 9,
+              "value": "Callback-NAS-Prompt"
+            },
+            {
+              "value_enum": 10,
+              "value": "Call-Check"
+            },
+            {
+              "value_enum": 11,
+              "value": "Callback-Administrative"
+            },
+            {
+              "value_enum": 12,
+              "value": "Voice"
+            },
+            {
+              "value_enum": 103809026,
+              "value": "Annex-Framed-Tunnel"
+            },
+            {
+              "value_enum": 14,
+              "value": "Modem-Relay"
+            },
+            {
+              "value_enum": 13,
+              "value": "Fax"
+            },
+            {
+              "value_enum": 16,
+              "value": "IAPP-AP-Check"
+            },
+            {
+              "value_enum": 17,
+              "value": "Authorize-Only"
+            },
+            {
+              "value_enum": 18,
+              "value": "Framed-Management"
+            },
+            {
+              "value_enum": 103809025,
+              "value": "Annex-Authorize-Only"
+            },
+            {
+              "value_enum": 25,
+              "value": "EAPoUDP"
+            },
+            {
+              "value_enum": 15,
+              "value": "IAPP-Register"
+            }
+          ]
+        },
+        {
+          "attr_id": 27,
+          "attr_name": "Session-Timeout",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 24,
+          "attr_name": "State",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 172,
+          "attr_name": "Stateful-IPv6-Address-Pool",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 29,
+          "attr_name": "Termination-Action",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "valid_values": [
+            {
+              "value_enum": 0,
+              "value": "Default"
+            },
+            {
+              "value_enum": 1,
+              "value": "RADIUS-Request"
+            }
+          ]
+        },
+        {
+          "attr_id": 82,
+          "attr_name": "Tunnel-Assignment-Id",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 90,
+          "attr_name": "Tunnel-Client-Auth-Id",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 66,
+          "attr_name": "Tunnel-Client-Endpoint",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 65,
+          "attr_name": "Tunnel-Medium-Type",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "extra_data": "has_tag",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "IPv4"
+            },
+            {
+              "value_enum": 2,
+              "value": "IPv6"
+            },
+            {
+              "value_enum": 3,
+              "value": "NSAP"
+            },
+            {
+              "value_enum": 4,
+              "value": "HDLC"
+            },
+            {
+              "value_enum": 5,
+              "value": "BBN-1822"
+            },
+            {
+              "value_enum": 6,
+              "value": "IEEE-802"
+            },
+            {
+              "value_enum": 7,
+              "value": "E.163"
+            },
+            {
+              "value_enum": 8,
+              "value": "E.164"
+            },
+            {
+              "value_enum": 9,
+              "value": "F.69"
+            },
+            {
+              "value_enum": 10,
+              "value": "X.121"
+            },
+            {
+              "value_enum": 11,
+              "value": "IPX"
+            },
+            {
+              "value_enum": 12,
+              "value": "Appletalk"
+            },
+            {
+              "value_enum": 13,
+              "value": "DecNet-IV"
+            },
+            {
+              "value_enum": 14,
+              "value": "Banyan-Vines"
+            },
+            {
+              "value_enum": 15,
+              "value": "E.164-NSAP"
+            }
+          ]
+        },
+        {
+          "attr_id": 69,
+          "attr_name": "Tunnel-Password",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag,encrypt=2"
+        },
+        {
+          "attr_id": 83,
+          "attr_name": "Tunnel-Preference",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 81,
+          "attr_name": "Tunnel-Private-Group-Id",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 91,
+          "attr_name": "Tunnel-Server-Auth-Id",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 67,
+          "attr_name": "Tunnel-Server-Endpoint",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "has_tag"
+        },
+        {
+          "attr_id": 64,
+          "attr_name": "Tunnel-Type",
+          "attr_type": "Integer32",
+          "attr_profile": "in out",
+          "extra_data": "has_tag",
+          "valid_values": [
+            {
+              "value_enum": 1,
+              "value": "PPTP"
+            },
+            {
+              "value_enum": 2,
+              "value": "L2F"
+            },
+            {
+              "value_enum": 3,
+              "value": "L2TP"
+            },
+            {
+              "value_enum": 4,
+              "value": "ATMP"
+            },
+            {
+              "value_enum": 5,
+              "value": "VTP"
+            },
+            {
+              "value_enum": 6,
+              "value": "AH"
+            },
+            {
+              "value_enum": 7,
+              "value": "IP"
+            },
+            {
+              "value_enum": 8,
+              "value": "MIN-IP"
+            },
+            {
+              "value_enum": 9,
+              "value": "ESP"
+            },
+            {
+              "value_enum": 10,
+              "value": "GRE"
+            },
+            {
+              "value_enum": 11,
+              "value": "DVS"
+            },
+            {
+              "value_enum": 12,
+              "value": "IP-in-IP"
+            },
+            {
+              "value_enum": 13,
+              "value": "VLAN"
+            }
+          ]
+        },
+        {
+          "attr_id": 1,
+          "attr_name": "User-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 2,
+          "attr_name": "User-Password",
+          "attr_type": "String",
+          "attr_profile": "in out",
+          "extra_data": "encrypt=1"
+        },
+        {
+          "attr_id": 59,
+          "attr_name": "User-Priority-Table",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 26,
+          "attr_name": "Vendor-Specific",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 188,
+          "attr_name": "WLAN-AKM-Suite",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 187,
+          "attr_name": "WLAN-Group-Cipher",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 189,
+          "attr_name": "WLAN-Group-Mgmt-Cipher",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 181,
+          "attr_name": "WLAN-HESSID",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 186,
+          "attr_name": "WLAN-Pairwise-Cipher",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 190,
+          "attr_name": "WLAN-RF-Band",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 185,
+          "attr_name": "WLAN-Reason-Code",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 182,
+          "attr_name": "WLAN-Venue-Info",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 183,
+          "attr_name": "WLAN-Venue-Language",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 184,
+          "attr_name": "WLAN-Venue-Name",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        }
+      ],
+      "_links": {
+        "self": {
+          "href": "https://192.168.100.64/api/radius-dictionary/0"
+        }
+      }
+    }
+  },
+  "4": {
+    "status": "ok",
+    "detail": {
+      "vendor_name": "Radius:Unix",
+      "vendor_id": 4,
+      "prefix": "Unix",
+      "enabled": false,
+      "attributes": [
+        {
+          "attr_id": 11,
+          "attr_name": "Unix-FTP-GID",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 15,
+          "attr_name": "Unix-FTP-Group-Ids",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 14,
+          "attr_name": "Unix-FTP-Group-Names",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 12,
+          "attr_name": "Unix-FTP-Home",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 13,
+          "attr_name": "Unix-FTP-Shell",
+          "attr_type": "String",
+          "attr_profile": "in out"
+        },
+        {
+          "attr_id": 10,
+          "attr_name": "Unix-FTP-UID",
+          "attr_type": "Integer32",
+          "attr_profile": "in out"
+        }
+      ],
+      "_links": {
+        "self": {
+          "href": "https://192.168.100.64/api/radius-dictionary/4"
+        }
+      }
+    }
+  }
+}

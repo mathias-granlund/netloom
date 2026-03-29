@@ -1,0 +1,65 @@
+{
+  "service": "endpointvisibility/profiler-subnet-mapping-network",
+  "path": "/api/profiler-subnet-mapping/WMI/network/10.255.255.0%2F24",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_privileges": [
+    "cppm_profiler_subnet_mapping"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "baseline_probe": {
+    "status": "http-error",
+    "http_status": 403,
+    "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+  },
+  "candidate_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?cppm_config",
+      "name": "cppm_config",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "cppm_profiler_subnet_mapping",
+      "name": "cppm_profiler_subnet_mapping",
+      "access": "full"
+    }
+  ],
+  "candidate_probe": {
+    "status": "http-error",
+    "http_status": 404,
+    "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "service": "identities/deny-listed-users-user_id-mac_address",
+  "path": "/api/deny-listed-users/user_id/netloom-privilege-probe/mac_address/00%3A11%3A22%3A33%3A44%3A55",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_privileges": [
+    "cppm_deny_listed_users"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "baseline_probe": {
+    "status": "http-error",
+    "http_status": 403,
+    "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+  },
+  "candidate_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?cppm_config",
+      "name": "cppm_config",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "cppm_deny_listed_users",
+      "name": "cppm_deny_listed_users",
+      "access": "full"
+    }
+  ],
+  "candidate_probe": {
+    "status": "http-error",
+    "http_status": 404,
+    "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+  }
+}

@@ -1,24 +1,20 @@
-# netloom v1.9.11
+# netloom v1.9.12
 
-This release shifts the planning focus from interactive performance to
-ClearPass privilege coverage, while also promoting the latest verified live
-service mappings into the enforced rule set.
+This release continues the ClearPass privilege-mapping work and promotes the
+latest live-verified policyelements action aliases into the enforced rule set.
 
 ## Highlights
 
-- renamed the old performance-only roadmap into `PLANNED_FEATURES.md` and
-  moved ClearPass privilege coverage to the top priority
-- added a current coverage summary for the retained full ClearPass catalog:
-  `35` verified mappings and `156` remaining unmapped retained services
-- verified and promoted `globalserverconfiguration/operator-profile ->
-  auth_profiles`
-- verified and promoted `policyelements/radius-dictionary ->
-  cppm_radius_dict`
-- improved the live discovery runner so it can fall back when
-  `/api/operator-profile/name/<name>` is not supported cleanly by the target
-  ClearPass server
-- added a reusable `CLEARPASS_PRIVILEGE_MAPPING_PROMPT.md` prompt for future
-  live mapping rounds
+- promoted `policyelements/radius-dictionary-disable`,
+  `radius-dictionary-enable`, `radius-dictionary-name-disable`, and
+  `radius-dictionary-name-enable` as privilege-gated with `cppm_radius_dict`
+- promoted `policyelements/service-disable`, `service-enable`,
+  `service-name-disable`, `service-name-enable`, and `service-reorder` as
+  privilege-gated with `cppm_services`
+- tightened the evidence standard for future write-action mappings so weak
+  `404`/`422`/fake-target results are no longer treated as sufficient proof
+- updated `PLANNED_FEATURES.md` coverage to `79` privilege-gated verified,
+  `5` baseline verified, and `108` unresolved retained services
 
 ## Examples
 
@@ -30,7 +26,7 @@ netloom --catalog-view=full globalserverconfiguration operator-profile list --li
 ## Notes
 
 - installable man pages still come from `netloom/data/man/`
-- `PLANNED_FEATURES.md` now tracks both the completed interactive performance
+- `PLANNED_FEATURES.md` tracks both the completed interactive performance
   work and the remaining ClearPass privilege-mapping backlog
-- `globalserverconfiguration/messaging-setup` remains unpromoted because it
-  still returns `404` even for admin on the current ClearPass server
+- `globalserverconfiguration/messaging-setup` remains unpromoted because the
+  latest focused probes still return `403`

@@ -98,6 +98,173 @@ def test_load_cached_interactive_catalog_reads_index_first():
     assert "guest" in full["modules"]["identities"]
 
 
+def test_load_cached_interactive_catalog_reprojects_baseline_verified_services():
+    with _workspace_root() as root:
+        settings = _settings(root)
+        (settings.paths.cache_dir / "api_endpoints_index.json").write_text(
+            json.dumps(
+                {
+                    "version": 5,
+                    "index_version": 1,
+                    "modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                },
+                                "catalog_visibility": "baseline",
+                            }
+                        }
+                    },
+                    "full_modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                }
+                            },
+                            "me": {
+                                "actions": {
+                                    "list": {
+                                        "method": "GET",
+                                        "paths": ["/api/oauth/me"],
+                                    },
+                                    "add": {
+                                        "method": "POST",
+                                        "paths": ["/api/oauth/me"],
+                                    },
+                                }
+                            },
+                            "privileges": {
+                                "actions": {
+                                    "get": {
+                                        "method": "GET",
+                                        "paths": ["/api/oauth/privileges"],
+                                    }
+                                }
+                            },
+                        }
+                    },
+                    "filter_metadata": {
+                        "effective_privileges": [
+                            {"name": "api_docs", "access": "full", "raw": "api_docs"},
+                            {"name": "apigility", "access": "full", "raw": "apigility"},
+                        ]
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        visible = load_cached_interactive_catalog(
+            "clearpass",
+            settings=settings,
+            prefer_index=True,
+        )
+
+    assert "oauth" in visible["modules"]["apioperations"]
+    assert "me" in visible["modules"]["apioperations"]
+    assert "privileges" in visible["modules"]["apioperations"]
+    assert visible["modules"]["apioperations"]["me"]["catalog_visibility"] == (
+        "baseline_verified"
+    )
+
+
+def test_visible_view_falls_back_to_full_cache_when_index_lacks_filter_metadata():
+    with _workspace_root() as root:
+        settings = _settings(root)
+        (settings.paths.cache_dir / "api_endpoints_index.json").write_text(
+            json.dumps(
+                {
+                    "version": 5,
+                    "index_version": 1,
+                    "modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                }
+                            }
+                        }
+                    },
+                    "full_modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                }
+                            },
+                            "me": {
+                                "actions": {
+                                    "list": {
+                                        "method": "GET",
+                                        "paths": ["/api/oauth/me"],
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        (settings.paths.cache_dir / "api_endpoints_cache.json").write_text(
+            json.dumps(
+                {
+                    "version": 5,
+                    "modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                }
+                            }
+                        }
+                    },
+                    "full_modules": {
+                        "apioperations": {
+                            "oauth": {
+                                "actions": {
+                                    "add": {"method": "POST", "paths": ["/api/oauth"]}
+                                }
+                            },
+                            "me": {
+                                "actions": {
+                                    "list": {
+                                        "method": "GET",
+                                        "paths": ["/api/oauth/me"],
+                                    },
+                                    "add": {
+                                        "method": "POST",
+                                        "paths": ["/api/oauth/me"],
+                                    },
+                                }
+                            },
+                        }
+                    },
+                    "filter_metadata": {
+                        "effective_privileges": [
+                            {"name": "api_docs", "access": "full", "raw": "api_docs"},
+                            {"name": "apigility", "access": "full", "raw": "apigility"},
+                        ]
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        visible = load_cached_interactive_catalog(
+            "clearpass",
+            settings=settings,
+            prefer_index=True,
+        )
+
+    assert "me" in visible["modules"]["apioperations"]
+    assert visible["modules"]["apioperations"]["me"]["catalog_visibility"] == (
+        "baseline_verified"
+    )
+
+
 def test_load_cached_interactive_catalog_falls_back_to_full_cache():
     with _workspace_root() as root:
         settings = _settings(root)

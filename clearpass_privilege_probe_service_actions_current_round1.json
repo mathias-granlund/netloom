@@ -1,0 +1,508 @@
+{
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "original_privileges": [
+    "apigility",
+    "api_docs",
+    "cppm_services"
+  ],
+  "current_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?cppm_config",
+      "name": "cppm_config",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "cppm_services",
+      "name": "cppm_services",
+      "access": "full"
+    }
+  ],
+  "targets": {
+    "test_service_1": {
+      "id": 3002,
+      "name": "test_service_1",
+      "enabled": true,
+      "order_no": 8
+    },
+    "test_service_2": {
+      "id": 3003,
+      "name": "test_service_2",
+      "enabled": true,
+      "order_no": 9
+    }
+  },
+  "cases": [
+    {
+      "service": "policyelements/service-enable",
+      "path": "/api/config/service/3002/enable",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3002,
+          "name": "test_service_1",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": true,
+          "hit_count": 0,
+          "order_no": 8,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3002"
+            }
+          }
+        }
+      },
+      "current_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3002,
+          "name": "test_service_1",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": true,
+          "hit_count": 0,
+          "order_no": 8,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3002"
+            }
+          }
+        }
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-name-enable",
+      "path": "/api/config/service/name/test_service_2/enable",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3003,
+          "name": "test_service_2",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": true,
+          "hit_count": 0,
+          "order_no": 9,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3003"
+            }
+          }
+        }
+      },
+      "current_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3003,
+          "name": "test_service_2",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": true,
+          "hit_count": 0,
+          "order_no": 9,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3003"
+            }
+          }
+        }
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-disable",
+      "path": "/api/config/service/3003/disable",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3003,
+          "name": "test_service_2",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": false,
+          "hit_count": 0,
+          "order_no": 9,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "auth_methods": [
+            "[EAP PEAP]",
+            "[EAP FAST]",
+            "[EAP TLS With CN Check]",
+            "[EAP TTLS]",
+            "[EAP MSCHAPv2]"
+          ],
+          "auth_sources": [
+            "[Endpoints Repository]"
+          ],
+          "strip_username": false,
+          "enf_policy": "[Sample Allow Access Policy]",
+          "use_cached_policy_results": false,
+          "posture_enabled": false,
+          "audit_enabled": false,
+          "profiler_enabled": false,
+          "acct_proxy_enabled": false,
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3003"
+            }
+          }
+        }
+      },
+      "current_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3003,
+          "name": "test_service_2",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": false,
+          "hit_count": 0,
+          "order_no": 9,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3003"
+            }
+          }
+        }
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-name-disable",
+      "path": "/api/config/service/name/test_service_1/disable",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3002,
+          "name": "test_service_1",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": false,
+          "hit_count": 0,
+          "order_no": 8,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "auth_methods": [
+            "[EAP PEAP]",
+            "[EAP FAST]",
+            "[EAP TLS With CN Check]",
+            "[EAP TTLS]",
+            "[EAP MSCHAPv2]"
+          ],
+          "auth_sources": [
+            "[Endpoints Repository]"
+          ],
+          "strip_username": false,
+          "enf_policy": "[Sample Allow Access Policy]",
+          "use_cached_policy_results": false,
+          "posture_enabled": false,
+          "audit_enabled": false,
+          "profiler_enabled": false,
+          "acct_proxy_enabled": false,
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3002"
+            }
+          }
+        }
+      },
+      "current_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "id": 3002,
+          "name": "test_service_1",
+          "type": "RADIUS",
+          "template": "802.1X Wired",
+          "enabled": false,
+          "hit_count": 0,
+          "order_no": 8,
+          "description": "802.1X Wired Access Service",
+          "monitor_mode": false,
+          "rules_match_type": "MATCHES_ALL",
+          "rules_conditions": [
+            {
+              "type": "Radius:IETF",
+              "name": "NAS-Port-Type",
+              "operator": "EQUALS",
+              "value": "Ethernet (15)"
+            },
+            {
+              "type": "Radius:IETF",
+              "name": "Service-Type",
+              "operator": "BELONGS_TO",
+              "value": "Login-User (1), Framed-User (2), Authenticate-Only (8)"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/3002"
+            }
+          }
+        }
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-reorder",
+      "path": "/api/config/service/reorder",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "service_orders": [
+            {
+              "service_name": "[Policy Manager Admin Network Login Service]",
+              "order_no": 1
+            },
+            {
+              "service_name": "[AirGroup Authorization Service]",
+              "order_no": 2
+            },
+            {
+              "service_name": "[Aruba Device Access Service]",
+              "order_no": 3
+            },
+            {
+              "service_name": "[Guest Operator Logins]",
+              "order_no": 4
+            },
+            {
+              "service_name": "[Insight Operator Logins]",
+              "order_no": 5
+            },
+            {
+              "service_name": "[Device Registration Disconnect]",
+              "order_no": 6
+            },
+            {
+              "service_name": "api OAuth2 API User Access",
+              "order_no": 7
+            },
+            {
+              "service_name": "test_service_1",
+              "order_no": 9
+            },
+            {
+              "service_name": "test_service_2",
+              "order_no": 8
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/reorder"
+            }
+          }
+        }
+      },
+      "current_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "service_orders": [
+            {
+              "service_name": "[Policy Manager Admin Network Login Service]",
+              "order_no": 1
+            },
+            {
+              "service_name": "[AirGroup Authorization Service]",
+              "order_no": 2
+            },
+            {
+              "service_name": "[Aruba Device Access Service]",
+              "order_no": 3
+            },
+            {
+              "service_name": "[Guest Operator Logins]",
+              "order_no": 4
+            },
+            {
+              "service_name": "[Insight Operator Logins]",
+              "order_no": 5
+            },
+            {
+              "service_name": "[Device Registration Disconnect]",
+              "order_no": 6
+            },
+            {
+              "service_name": "api OAuth2 API User Access",
+              "order_no": 7
+            },
+            {
+              "service_name": "test_service_1",
+              "order_no": 9
+            },
+            {
+              "service_name": "test_service_2",
+              "order_no": 8
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/config/service/reorder"
+            }
+          }
+        }
+      },
+      "verified": false
+    }
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ]
+}

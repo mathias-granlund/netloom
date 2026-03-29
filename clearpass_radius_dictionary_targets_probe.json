@@ -1,0 +1,863 @@
+[
+  {
+    "id": null,
+    "name": "Radius:IETF",
+    "vendor_name": "Radius:IETF",
+    "enabled": true,
+    "vendor_id": 0
+  },
+  {
+    "id": null,
+    "name": "Radius:Unix",
+    "vendor_name": "Radius:Unix",
+    "enabled": false,
+    "vendor_id": 4
+  },
+  {
+    "id": null,
+    "name": "Radius:Acc",
+    "vendor_name": "Radius:Acc",
+    "enabled": false,
+    "vendor_id": 5
+  },
+  {
+    "id": null,
+    "name": "Radius:Cisco",
+    "vendor_name": "Radius:Cisco",
+    "enabled": true,
+    "vendor_id": 9
+  },
+  {
+    "id": null,
+    "name": "Radius:Hewlett-Packard-Enterprise",
+    "vendor_name": "Radius:Hewlett-Packard-Enterprise",
+    "enabled": true,
+    "vendor_id": 11
+  },
+  {
+    "id": null,
+    "name": "Radius:3com",
+    "vendor_name": "Radius:3com",
+    "enabled": false,
+    "vendor_id": 43
+  },
+  {
+    "id": null,
+    "name": "Radius:Cabletron",
+    "vendor_name": "Radius:Cabletron",
+    "enabled": false,
+    "vendor_id": 52
+  },
+  {
+    "id": null,
+    "name": "Radius:Merit",
+    "vendor_name": "Radius:Merit",
+    "enabled": false,
+    "vendor_id": 61
+  },
+  {
+    "id": null,
+    "name": "Radius:Gandalf",
+    "vendor_name": "Radius:Gandalf",
+    "enabled": false,
+    "vendor_id": 64
+  },
+  {
+    "id": null,
+    "name": "Radius:Nokia",
+    "vendor_name": "Radius:Nokia",
+    "enabled": false,
+    "vendor_id": 94
+  },
+  {
+    "id": null,
+    "name": "Radius:Telebit",
+    "vendor_name": "Radius:Telebit",
+    "enabled": false,
+    "vendor_id": 117
+  },
+  {
+    "id": null,
+    "name": "Radius:Motorola",
+    "vendor_name": "Radius:Motorola",
+    "enabled": false,
+    "vendor_id": 161
+  },
+  {
+    "id": null,
+    "name": "Radius:Shiva",
+    "vendor_name": "Radius:Shiva",
+    "enabled": false,
+    "vendor_id": 166
+  },
+  {
+    "id": null,
+    "name": "Radius:Ericsson",
+    "vendor_name": "Radius:Ericsson",
+    "enabled": false,
+    "vendor_id": 193
+  },
+  {
+    "id": null,
+    "name": "Radius:Cisco-VPN5000",
+    "vendor_name": "Radius:Cisco-VPN5000",
+    "enabled": false,
+    "vendor_id": 255
+  },
+  {
+    "id": null,
+    "name": "Radius:Nexans",
+    "vendor_name": "Radius:Nexans",
+    "enabled": false,
+    "vendor_id": 266
+  },
+  {
+    "id": null,
+    "name": "Radius:BinTec",
+    "vendor_name": "Radius:BinTec",
+    "enabled": false,
+    "vendor_id": 272
+  },
+  {
+    "id": null,
+    "name": "Radius:Livingston",
+    "vendor_name": "Radius:Livingston",
+    "enabled": false,
+    "vendor_id": 307
+  },
+  {
+    "id": null,
+    "name": "Radius:Microsoft",
+    "vendor_name": "Radius:Microsoft",
+    "enabled": true,
+    "vendor_id": 311
+  },
+  {
+    "id": null,
+    "name": "Radius:APC",
+    "vendor_name": "Radius:APC",
+    "enabled": false,
+    "vendor_id": 318
+  },
+  {
+    "id": null,
+    "name": "Radius:Symbol",
+    "vendor_name": "Radius:Symbol",
+    "enabled": false,
+    "vendor_id": 388
+  },
+  {
+    "id": null,
+    "name": "Radius:USR",
+    "vendor_name": "Radius:USR",
+    "enabled": false,
+    "vendor_id": 429
+  },
+  {
+    "id": null,
+    "name": "Radius:Ascend",
+    "vendor_name": "Radius:Ascend",
+    "enabled": false,
+    "vendor_id": 529
+  },
+  {
+    "id": null,
+    "name": "Radius:Nortel",
+    "vendor_name": "Radius:Nortel",
+    "enabled": false,
+    "vendor_id": 562
+  },
+  {
+    "id": null,
+    "name": "Radius:BT",
+    "vendor_name": "Radius:BT",
+    "enabled": false,
+    "vendor_id": 594
+  },
+  {
+    "id": null,
+    "name": "Radius:KarlNet",
+    "vendor_name": "Radius:KarlNet",
+    "enabled": false,
+    "vendor_id": 762
+  },
+  {
+    "id": null,
+    "name": "Radius:Alcatel-Lucent-Enterprise",
+    "vendor_name": "Radius:Alcatel-Lucent-Enterprise",
+    "enabled": true,
+    "vendor_id": 800
+  },
+  {
+    "id": null,
+    "name": "Radius:Xedia",
+    "vendor_name": "Radius:Xedia",
+    "enabled": false,
+    "vendor_id": 838
+  },
+  {
+    "id": null,
+    "name": "Radius:Zyxel",
+    "vendor_name": "Radius:Zyxel",
+    "enabled": false,
+    "vendor_id": 890
+  },
+  {
+    "id": null,
+    "name": "Radius:NTUA",
+    "vendor_name": "Radius:NTUA",
+    "enabled": false,
+    "vendor_id": 969
+  },
+  {
+    "id": null,
+    "name": "Radius:ITK",
+    "vendor_name": "Radius:ITK",
+    "enabled": false,
+    "vendor_id": 1195
+  },
+  {
+    "id": null,
+    "name": "Radius:Tellabs",
+    "vendor_name": "Radius:Tellabs",
+    "enabled": false,
+    "vendor_id": 1397
+  },
+  {
+    "id": null,
+    "name": "Radius:Bay-Networks",
+    "vendor_name": "Radius:Bay-Networks",
+    "enabled": false,
+    "vendor_id": 1584
+  },
+  {
+    "id": null,
+    "name": "Radius:Brocade",
+    "vendor_name": "Radius:Brocade",
+    "enabled": false,
+    "vendor_id": 1588
+  },
+  {
+    "id": null,
+    "name": "Radius:Patton",
+    "vendor_name": "Radius:Patton",
+    "enabled": false,
+    "vendor_id": 1768
+  },
+  {
+    "id": null,
+    "name": "Radius:Alteon",
+    "vendor_name": "Radius:Alteon",
+    "enabled": false,
+    "vendor_id": 1872
+  },
+  {
+    "id": null,
+    "name": "Radius:Extreme",
+    "vendor_name": "Radius:Extreme",
+    "enabled": false,
+    "vendor_id": 1916
+  },
+  {
+    "id": null,
+    "name": "Radius:RedCreek",
+    "vendor_name": "Radius:RedCreek",
+    "enabled": false,
+    "vendor_id": 1958
+  },
+  {
+    "id": null,
+    "name": "Radius:Foundry",
+    "vendor_name": "Radius:Foundry",
+    "enabled": false,
+    "vendor_id": 1991
+  },
+  {
+    "id": null,
+    "name": "Radius:Walabi",
+    "vendor_name": "Radius:Walabi",
+    "enabled": false,
+    "vendor_id": 2004
+  },
+  {
+    "id": null,
+    "name": "Radius:Huawei",
+    "vendor_name": "Radius:Huawei",
+    "enabled": false,
+    "vendor_id": 2011
+  },
+  {
+    "id": null,
+    "name": "Radius:Versanet",
+    "vendor_name": "Radius:Versanet",
+    "enabled": false,
+    "vendor_id": 2180
+  },
+  {
+    "id": null,
+    "name": "Radius:Packeteer",
+    "vendor_name": "Radius:Packeteer",
+    "enabled": false,
+    "vendor_id": 2334
+  },
+  {
+    "id": null,
+    "name": "Radius:Redback",
+    "vendor_name": "Radius:Redback",
+    "enabled": false,
+    "vendor_id": 2352
+  },
+  {
+    "id": null,
+    "name": "Radius:Lancom",
+    "vendor_name": "Radius:Lancom",
+    "enabled": false,
+    "vendor_id": 2356
+  },
+  {
+    "id": null,
+    "name": "Radius:Adva",
+    "vendor_name": "Radius:Adva",
+    "enabled": false,
+    "vendor_id": 2544
+  },
+  {
+    "id": null,
+    "name": "Radius:CheckPoint",
+    "vendor_name": "Radius:CheckPoint",
+    "enabled": false,
+    "vendor_id": 2620
+  },
+  {
+    "id": null,
+    "name": "Radius:Juniper",
+    "vendor_name": "Radius:Juniper",
+    "enabled": false,
+    "vendor_id": 2636
+  },
+  {
+    "id": null,
+    "name": "Radius:Waverider",
+    "vendor_name": "Radius:Waverider",
+    "enabled": false,
+    "vendor_id": 2979
+  },
+  {
+    "id": null,
+    "name": "Radius:Alcatel",
+    "vendor_name": "Radius:Alcatel",
+    "enabled": false,
+    "vendor_id": 3041
+  },
+  {
+    "id": null,
+    "name": "Radius:Cisco-ASA",
+    "vendor_name": "Radius:Cisco-ASA",
+    "enabled": false,
+    "vendor_id": 3076
+  },
+  {
+    "id": null,
+    "name": "Radius:Cosine",
+    "vendor_name": "Radius:Cosine",
+    "enabled": false,
+    "vendor_id": 3085
+  },
+  {
+    "id": null,
+    "name": "Radius:Shasta",
+    "vendor_name": "Radius:Shasta",
+    "enabled": false,
+    "vendor_id": 3199
+  },
+  {
+    "id": null,
+    "name": "Radius:Netscreen",
+    "vendor_name": "Radius:Netscreen",
+    "enabled": false,
+    "vendor_id": 3224
+  },
+  {
+    "id": null,
+    "name": "Radius:Nomadix",
+    "vendor_name": "Radius:Nomadix",
+    "enabled": false,
+    "vendor_id": 3309
+  },
+  {
+    "id": null,
+    "name": "Radius:F5",
+    "vendor_name": "Radius:F5",
+    "enabled": false,
+    "vendor_id": 3375
+  },
+  {
+    "id": null,
+    "name": "Radius:SpringTide",
+    "vendor_name": "Radius:SpringTide",
+    "enabled": false,
+    "vendor_id": 3551
+  },
+  {
+    "id": null,
+    "name": "Radius:ADSL-Forum",
+    "vendor_name": "Radius:ADSL-Forum",
+    "enabled": false,
+    "vendor_id": 3561
+  },
+  {
+    "id": null,
+    "name": "Radius:Siemens",
+    "vendor_name": "Radius:Siemens",
+    "enabled": false,
+    "vendor_id": 4329
+  },
+  {
+    "id": null,
+    "name": "Radius:infonet",
+    "vendor_name": "Radius:infonet",
+    "enabled": false,
+    "vendor_id": 4453
+  },
+  {
+    "id": null,
+    "name": "Radius:CableLabs",
+    "vendor_name": "Radius:CableLabs",
+    "enabled": false,
+    "vendor_id": 4491
+  },
+  {
+    "id": null,
+    "name": "Radius:Prosoft",
+    "vendor_name": "Radius:Prosoft",
+    "enabled": false,
+    "vendor_id": 4735
+  },
+  {
+    "id": null,
+    "name": "Radius:Lucent",
+    "vendor_name": "Radius:Lucent",
+    "enabled": false,
+    "vendor_id": 4846
+  },
+  {
+    "id": null,
+    "name": "Radius:ERX",
+    "vendor_name": "Radius:ERX",
+    "enabled": false,
+    "vendor_id": 4874
+  },
+  {
+    "id": null,
+    "name": "Radius:Clavister",
+    "vendor_name": "Radius:Clavister",
+    "enabled": false,
+    "vendor_id": 5089
+  },
+  {
+    "id": null,
+    "name": "Radius:Cisco-BBSM",
+    "vendor_name": "Radius:Cisco-BBSM",
+    "enabled": false,
+    "vendor_id": 5263
+  },
+  {
+    "id": null,
+    "name": "Radius:Riverstone",
+    "vendor_name": "Radius:Riverstone",
+    "enabled": false,
+    "vendor_id": 5567
+  },
+  {
+    "id": null,
+    "name": "Radius:Meinberg",
+    "vendor_name": "Radius:Meinberg",
+    "enabled": false,
+    "vendor_id": 5597
+  },
+  {
+    "id": null,
+    "name": "Radius:ipUnplugged",
+    "vendor_name": "Radius:ipUnplugged",
+    "enabled": false,
+    "vendor_id": 5925
+  },
+  {
+    "id": null,
+    "name": "Radius:Issanni",
+    "vendor_name": "Radius:Issanni",
+    "enabled": false,
+    "vendor_id": 5948
+  },
+  {
+    "id": null,
+    "name": "Radius:Navini",
+    "vendor_name": "Radius:Navini",
+    "enabled": false,
+    "vendor_id": 6504
+  },
+  {
+    "id": null,
+    "name": "Radius:Alcatel-Lucent-Service-Router",
+    "vendor_name": "Radius:Alcatel-Lucent-Service-Router",
+    "enabled": false,
+    "vendor_id": 6527
+  },
+  {
+    "id": null,
+    "name": "Radius:Quintum",
+    "vendor_name": "Radius:Quintum",
+    "enabled": false,
+    "vendor_id": 6618
+  },
+  {
+    "id": null,
+    "name": "Radius:SofaWare",
+    "vendor_name": "Radius:SofaWare",
+    "enabled": false,
+    "vendor_id": 6983
+  },
+  {
+    "id": null,
+    "name": "Radius:Slipstream",
+    "vendor_name": "Radius:Slipstream",
+    "enabled": false,
+    "vendor_id": 7000
+  },
+  {
+    "id": null,
+    "name": "Radius:UTStarcom",
+    "vendor_name": "Radius:UTStarcom",
+    "enabled": false,
+    "vendor_id": 7064
+  },
+  {
+    "id": null,
+    "name": "Radius:NetworkPhysics",
+    "vendor_name": "Radius:NetworkPhysics",
+    "enabled": false,
+    "vendor_id": 7119
+  },
+  {
+    "id": null,
+    "name": "Radius:Azaire",
+    "vendor_name": "Radius:Azaire",
+    "enabled": false,
+    "vendor_id": 7751
+  },
+  {
+    "id": null,
+    "name": "Radius:Infoblox",
+    "vendor_name": "Radius:Infoblox",
+    "enabled": false,
+    "vendor_id": 7779
+  },
+  {
+    "id": null,
+    "name": "Radius:SonicWall",
+    "vendor_name": "Radius:SonicWall",
+    "enabled": false,
+    "vendor_id": 8741
+  },
+  {
+    "id": null,
+    "name": "Radius:Colubris",
+    "vendor_name": "Radius:Colubris",
+    "enabled": false,
+    "vendor_id": 8744
+  },
+  {
+    "id": null,
+    "name": "Radius:Acme",
+    "vendor_name": "Radius:Acme",
+    "enabled": false,
+    "vendor_id": 9148
+  },
+  {
+    "id": null,
+    "name": "Radius:Roaring-Penguin",
+    "vendor_name": "Radius:Roaring-Penguin",
+    "enabled": false,
+    "vendor_id": 10055
+  },
+  {
+    "id": null,
+    "name": "Radius:3GPP",
+    "vendor_name": "Radius:3GPP",
+    "enabled": false,
+    "vendor_id": 10415
+  },
+  {
+    "id": null,
+    "name": "Radius:Gemtek",
+    "vendor_name": "Radius:Gemtek",
+    "enabled": false,
+    "vendor_id": 10529
+  },
+  {
+    "id": null,
+    "name": "Radius:Fortinet",
+    "vendor_name": "Radius:Fortinet",
+    "enabled": true,
+    "vendor_id": 12356
+  },
+  {
+    "id": null,
+    "name": "Radius:Alvarion",
+    "vendor_name": "Radius:Alvarion",
+    "enabled": false,
+    "vendor_id": 12394
+  },
+  {
+    "id": null,
+    "name": "Radius:WISPr",
+    "vendor_name": "Radius:WISPr",
+    "enabled": false,
+    "vendor_id": 14122
+  },
+  {
+    "id": null,
+    "name": "Radius:Airespace",
+    "vendor_name": "Radius:Airespace",
+    "enabled": false,
+    "vendor_id": 14179
+  },
+  {
+    "id": null,
+    "name": "Radius:Quiconnect",
+    "vendor_name": "Radius:Quiconnect",
+    "enabled": false,
+    "vendor_id": 14436
+  },
+  {
+    "id": null,
+    "name": "Radius:BlueCoat",
+    "vendor_name": "Radius:BlueCoat",
+    "enabled": false,
+    "vendor_id": 14501
+  },
+  {
+    "id": null,
+    "name": "Radius:Trapeze",
+    "vendor_name": "Radius:Trapeze",
+    "enabled": false,
+    "vendor_id": 14525
+  },
+  {
+    "id": null,
+    "name": "Radius:Tropos",
+    "vendor_name": "Radius:Tropos",
+    "enabled": false,
+    "vendor_id": 14529
+  },
+  {
+    "id": null,
+    "name": "Radius:ChilliSpot",
+    "vendor_name": "Radius:ChilliSpot",
+    "enabled": false,
+    "vendor_id": 14559
+  },
+  {
+    "id": null,
+    "name": "Radius:Aruba",
+    "vendor_name": "Radius:Aruba",
+    "enabled": true,
+    "vendor_id": 14823
+  },
+  {
+    "id": null,
+    "name": "Radius:Propel",
+    "vendor_name": "Radius:Propel",
+    "enabled": false,
+    "vendor_id": 14895
+  },
+  {
+    "id": null,
+    "name": "Radius:Mikrotik",
+    "vendor_name": "Radius:Mikrotik",
+    "enabled": false,
+    "vendor_id": 14988
+  },
+  {
+    "id": null,
+    "name": "Radius:ValemountNetworks",
+    "vendor_name": "Radius:ValemountNetworks",
+    "enabled": false,
+    "vendor_id": 16313
+  },
+  {
+    "id": null,
+    "name": "Radius:Epygi",
+    "vendor_name": "Radius:Epygi",
+    "enabled": false,
+    "vendor_id": 16459
+  },
+  {
+    "id": null,
+    "name": "Radius:T-Systems-Nova",
+    "vendor_name": "Radius:T-Systems-Nova",
+    "enabled": false,
+    "vendor_id": 16787
+  },
+  {
+    "id": null,
+    "name": "Radius:Arista-WiFi",
+    "vendor_name": "Radius:Arista-WiFi",
+    "enabled": false,
+    "vendor_id": 16901
+  },
+  {
+    "id": null,
+    "name": "Radius:JRadius",
+    "vendor_name": "Radius:JRadius",
+    "enabled": false,
+    "vendor_id": 19211
+  },
+  {
+    "id": null,
+    "name": "Radius:Local-Web",
+    "vendor_name": "Radius:Local-Web",
+    "enabled": false,
+    "vendor_id": 19220
+  },
+  {
+    "id": null,
+    "name": "Radius:Manzara",
+    "vendor_name": "Radius:Manzara",
+    "enabled": false,
+    "vendor_id": 19382
+  },
+  {
+    "id": null,
+    "name": "Radius:Xirrus",
+    "vendor_name": "Radius:Xirrus",
+    "enabled": false,
+    "vendor_id": 21013
+  },
+  {
+    "id": null,
+    "name": "Radius:Purewave",
+    "vendor_name": "Radius:Purewave",
+    "enabled": false,
+    "vendor_id": 21074
+  },
+  {
+    "id": null,
+    "name": "Radius:Camiant",
+    "vendor_name": "Radius:Camiant",
+    "enabled": false,
+    "vendor_id": 21274
+  },
+  {
+    "id": null,
+    "name": "Radius:Digium",
+    "vendor_name": "Radius:Digium",
+    "enabled": false,
+    "vendor_id": 22736
+  },
+  {
+    "id": null,
+    "name": "Radius:IEA-Software",
+    "vendor_name": "Radius:IEA-Software",
+    "enabled": false,
+    "vendor_id": 24023
+  },
+  {
+    "id": null,
+    "name": "Radius:Ruckus",
+    "vendor_name": "Radius:Ruckus",
+    "enabled": false,
+    "vendor_id": 25053
+  },
+  {
+    "id": null,
+    "name": "Radius:TERENA",
+    "vendor_name": "Radius:TERENA",
+    "enabled": false,
+    "vendor_id": 25178
+  },
+  {
+    "id": null,
+    "name": "Radius:Avenda",
+    "vendor_name": "Radius:Avenda",
+    "enabled": true,
+    "vendor_id": 25427
+  },
+  {
+    "id": null,
+    "name": "Radius:PaloAlto",
+    "vendor_name": "Radius:PaloAlto",
+    "enabled": false,
+    "vendor_id": 25461
+  },
+  {
+    "id": null,
+    "name": "Radius:H3C",
+    "vendor_name": "Radius:H3C",
+    "enabled": false,
+    "vendor_id": 25506
+  },
+  {
+    "id": null,
+    "name": "Radius:UKERNA",
+    "vendor_name": "Radius:UKERNA",
+    "enabled": false,
+    "vendor_id": 25622
+  },
+  {
+    "id": null,
+    "name": "Radius:Aerohive",
+    "vendor_name": "Radius:Aerohive",
+    "enabled": false,
+    "vendor_id": 26928
+  },
+  {
+    "id": null,
+    "name": "Radius:Wichorus",
+    "vendor_name": "Radius:Wichorus",
+    "enabled": false,
+    "vendor_id": 27030
+  },
+  {
+    "id": null,
+    "name": "Radius:Freeswitch",
+    "vendor_name": "Radius:Freeswitch",
+    "enabled": false,
+    "vendor_id": 27880
+  },
+  {
+    "id": null,
+    "name": "Radius:Meraki",
+    "vendor_name": "Radius:Meraki",
+    "enabled": false,
+    "vendor_id": 29671
+  },
+  {
+    "id": null,
+    "name": "Radius:Arista",
+    "vendor_name": "Radius:Arista",
+    "enabled": false,
+    "vendor_id": 30065
+  },
+  {
+    "id": null,
+    "name": "Radius:Eltex",
+    "vendor_name": "Radius:Eltex",
+    "enabled": false,
+    "vendor_id": 35265
+  },
+  {
+    "id": null,
+    "name": "Radius:Wi-Fi-Alliance",
+    "vendor_name": "Radius:Wi-Fi-Alliance",
+    "enabled": false,
+    "vendor_id": 40808
+  },
+  {
+    "id": null,
+    "name": "Radius:Hewlett-Packard-Enterprise-2",
+    "vendor_name": "Radius:Hewlett-Packard-Enterprise-2",
+    "enabled": true,
+    "vendor_id": 47196
+  }
+]

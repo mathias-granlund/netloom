@@ -1,0 +1,159 @@
+{
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "candidate_privileges": [
+    "cppm_agentless_onguard_subnet_mapping"
+  ],
+  "services": [
+    {
+      "service": "endpointvisibility/subnet-mapping",
+      "method": "GET",
+      "path": "/api/agentless-onguard/subnet-mapping",
+      "baseline_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/agentless-onguard/subnet-mapping?calculate_count=false&offset=0&limit=25&sort=%2Bid&filter=%7B%7D"
+            },
+            "first": {
+              "href": "https://192.168.100.64/api/agentless-onguard/subnet-mapping?calculate_count=false&offset=0&limit=25&sort=%2Bid&filter=%7B%7D"
+            }
+          },
+          "_embedded": {
+            "items": []
+          }
+        }
+      },
+      "candidate_probe": {
+        "status": "ok",
+        "http_status": 200,
+        "detail": {
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/agentless-onguard/subnet-mapping?calculate_count=false&offset=0&limit=25&sort=%2Bid&filter=%7B%7D"
+            },
+            "first": {
+              "href": "https://192.168.100.64/api/agentless-onguard/subnet-mapping?calculate_count=false&offset=0&limit=25&sort=%2Bid&filter=%7B%7D"
+            }
+          },
+          "_embedded": {
+            "items": []
+          }
+        }
+      },
+      "verified": false
+    },
+    {
+      "service": "endpointvisibility/subnet-mapping-enable",
+      "method": "PATCH",
+      "path": "/api/agentless-onguard/subnet-mapping/999999/enable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 500,
+        "detail": "{\"headers\":{\"Date\":\"Sun, 29 Mar 2026 15:47:24 GMT\",\"Server\":\"Apache\",\"X-Frame-Options\":\"SAMEORIGIN, SAMEORIGIN\",\"X-Xss-Protection\":\"1;mode=block\",\"X-Content-Type-Options\":\"nosniff\",\"Vary\":\"X-Forwarded-For,User-Agent\",\"Cache-Control\":\"no-cache, no-store, must-revalidate\",\"Pragma\":\"no-cache\",\"Expires\":\"Mon, 26 Jul 1997 05:00:00 GMT\",\"Set-Cookie\":\"JSESSIONID=6224A4F21dB0Bd56294106A6568bA92b; Path=/; Secure; HttpOnly;SameSite=Strict\",\"Connection\":\"close\",\"Transfer-Encoding\":\"chunked\",\"Content-Type\":\"application/json;charset=UTF-8\"},\"body\":\"[\\\"Error in processing request. Please retry...\\\"]\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 500,
+        "detail": "{\"headers\":{\"Date\":\"Sun, 29 Mar 2026 15:47:24 GMT\",\"Server\":\"Apache\",\"X-Frame-Options\":\"SAMEORIGIN, SAMEORIGIN\",\"X-Xss-Protection\":\"1;mode=block\",\"X-Content-Type-Options\":\"nosniff\",\"Vary\":\"X-Forwarded-For,User-Agent\",\"Cache-Control\":\"no-cache, no-store, must-revalidate\",\"Pragma\":\"no-cache\",\"Expires\":\"Mon, 26 Jul 1997 05:00:00 GMT\",\"Set-Cookie\":\"JSESSIONID=1f4aDdFb824cA6204b012b7eA084F943; Path=/; Secure; HttpOnly;SameSite=Strict\",\"Connection\":\"close\",\"Transfer-Encoding\":\"chunked\",\"Content-Type\":\"application/json;charset=UTF-8\"},\"body\":\"[\\\"Error in processing request. Please retry...\\\"]\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "endpointvisibility/subnet-mapping-disable",
+      "method": "PATCH",
+      "path": "/api/agentless-onguard/subnet-mapping/999999/disable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 500,
+        "detail": "{\"headers\":{\"Date\":\"Sun, 29 Mar 2026 15:47:24 GMT\",\"Server\":\"Apache\",\"X-Frame-Options\":\"SAMEORIGIN, SAMEORIGIN\",\"X-Xss-Protection\":\"1;mode=block\",\"X-Content-Type-Options\":\"nosniff\",\"Vary\":\"X-Forwarded-For,User-Agent\",\"Cache-Control\":\"no-cache, no-store, must-revalidate\",\"Pragma\":\"no-cache\",\"Expires\":\"Mon, 26 Jul 1997 05:00:00 GMT\",\"Set-Cookie\":\"JSESSIONID=48065136C30337D2EeF78e08CcDaE697; Path=/; Secure; HttpOnly;SameSite=Strict\",\"Connection\":\"close\",\"Transfer-Encoding\":\"chunked\",\"Content-Type\":\"application/json;charset=UTF-8\"},\"body\":\"[\\\"Error in processing request. Please retry...\\\"]\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 500,
+        "detail": "{\"headers\":{\"Date\":\"Sun, 29 Mar 2026 15:47:25 GMT\",\"Server\":\"Apache\",\"X-Frame-Options\":\"SAMEORIGIN, SAMEORIGIN\",\"X-Xss-Protection\":\"1;mode=block\",\"X-Content-Type-Options\":\"nosniff\",\"Vary\":\"X-Forwarded-For,User-Agent\",\"Cache-Control\":\"no-cache, no-store, must-revalidate\",\"Pragma\":\"no-cache\",\"Expires\":\"Mon, 26 Jul 1997 05:00:00 GMT\",\"Set-Cookie\":\"JSESSIONID=99F1409433625b293cE6Be2441D3D040; Path=/; Secure; HttpOnly;SameSite=Strict\",\"Connection\":\"close\",\"Transfer-Encoding\":\"chunked\",\"Content-Type\":\"application/json;charset=UTF-8\"},\"body\":\"[\\\"Error in processing request. Please retry...\\\"]\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "endpointvisibility/subnet-mapping-name-enable",
+      "method": "PATCH",
+      "path": "/api/agentless-onguard/subnet-mapping/name/netloom-privilege-probe/enable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "endpointvisibility/subnet-mapping-name-disable",
+      "method": "PATCH",
+      "path": "/api/agentless-onguard/subnet-mapping/name/netloom-privilege-probe/disable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    }
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "candidate_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "?cppm_config",
+      "name": "cppm_config",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    },
+    {
+      "raw": "cppm_agentless_onguard_subnet_mapping",
+      "name": "cppm_agentless_onguard_subnet_mapping",
+      "access": "full"
+    }
+  ]
+}

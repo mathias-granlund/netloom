@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.12 - 2026-03-29
+
+### Changed
+- continued the ClearPass privilege-mapping work and promoted the `policyelements` action aliases for `radius-dictionary-*` and `service-*` as privilege-gated mappings under `cppm_radius_dict` and `cppm_services`
+- tightened the verification standard for future write-action privilege mappings so weak `404`/`422`/fake-target results are no longer treated as sufficient proof
+- updated `PLANNED_FEATURES.md` coverage to `79` privilege-gated verified, `5` baseline verified, and `108` unresolved retained services
+- aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.12` release
+
 ## 1.9.11 - 2026-03-27
 
 ### Added

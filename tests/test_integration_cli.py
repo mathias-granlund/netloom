@@ -232,6 +232,7 @@ def test_main_parse_error_prints_help_and_message(monkeypatch, capsys, tmp_path)
 def test_main_complete_mode_outputs_and_exits(monkeypatch, capsys, tmp_path):
     settings = make_settings(tmp_path)
     monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(main, "load_interactive_settings", lambda: settings)
     monkeypatch.setattr(
         main,
         "configure_logging",
@@ -257,6 +258,7 @@ def test_main_complete_mode_without_plugin_still_outputs_builtins(
     settings = make_settings(tmp_path)
     settings = types.SimpleNamespace(**{**settings.__dict__, "plugin": None})
     monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(main, "load_interactive_settings", lambda: settings)
     monkeypatch.setattr(
         main,
         "configure_logging",

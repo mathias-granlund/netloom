@@ -657,6 +657,14 @@ def _filter_actions_for_access(
 def _service_visible_by_default(
     module_name: str, service_name: str, service_entry: dict[str, Any]
 ) -> bool:
+    visibility = service_entry.get("catalog_visibility")
+    if visibility in {
+        "privilege_gated_verified",
+        "baseline_verified",
+        "verified",
+        "baseline",
+    }:
+        return True
     required = service_entry.get("required_privileges") or []
     if isinstance(required, list) and required:
         return True
@@ -691,9 +699,13 @@ def _visible_catalog_modules(
                 hidden_services.append({"module": module_name, "service": service_name})
                 continue
             next_entry = dict(service_entry)
-            next_entry["catalog_visibility"] = (
-                "verified" if next_entry.get("required_privileges") else "baseline"
-            )
+            if next_entry.get("catalog_visibility") not in {
+                "privilege_gated_verified",
+                "baseline_verified",
+            }:
+                next_entry["catalog_visibility"] = (
+                    "verified" if next_entry.get("required_privileges") else "baseline"
+                )
             next_services[service_name] = next_entry
         if next_services:
             visible_modules[module_name] = next_services
@@ -770,6 +782,16 @@ def _filter_catalog_by_effective_privileges(
                 )
                 continue
 
+            if (
+                getattr(rule, "source", "privilege_gated_verified")
+                == "baseline_verified"
+            ):
+                next_entry = dict(service_entry)
+                next_entry["catalog_visibility"] = "baseline_verified"
+                next_entry["granted_access"] = "full"
+                next_services[service_name] = next_entry
+                continue
+
             if getattr(rule, "match", "any") == "all":
                 if not all(name in effective_access for name in rule.privileges):
                     filtered_services.append(
@@ -804,6 +826,7 @@ def _filter_catalog_by_effective_privileges(
             next_entry["required_privileges"] = list(rule.privileges)
             next_entry["privilege_match"] = getattr(rule, "match", "any")
             next_entry["granted_access"] = access_level
+            next_entry["catalog_visibility"] = "privilege_gated_verified"
             next_services[service_name] = next_entry
 
         if next_services:
@@ -1344,7 +1367,8 @@ class ApiEndpointCache:
             log.info("Privilege filter not applied; using unfiltered catalog.")
         if visibility_metadata.get("view_applied"):
             log.info(
-                "Default visible catalog keeps %d verified/baseline services "
+                "Default visible catalog keeps %d privilege-gated/baseline "
+                "verified services "
                 "and hides %d conservatively preserved services.",
                 visibility_metadata.get("visible_service_count", 0),
                 visibility_metadata.get("hidden_service_count", 0),

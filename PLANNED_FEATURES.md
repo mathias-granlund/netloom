@@ -8,19 +8,30 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- services with verified privilege mappings: `58`
-- services without verified mappings: `134`
+- privilege-gated verified services: `79`
+- baseline verified services: `5`
+- unresolved services: `108`
 
 Current measured coverage against the visible cache:
-- visible services in the current cache: `47`
-- visible services with explicit verified mappings: `46`
-- visible services without an explicit mapping: `1`
-- the only currently visible unmapped service is `apioperations/oauth`
+- the currently checked-in cache predates the new baseline/gated split
+- after the next `netloom cache update`, both privilege-gated verified and
+  baseline verified services should appear in the default visible cache
+- until then, the visible-cache counts on disk may lag behind the current
+  rule table
 
 Important status notes:
+- `apioperations/me`, `apioperations/oauth`, and `apioperations/privileges`
+  are now tracked as baseline verified services
 - `globalserverconfiguration/operator-profile` is now verified with
   `auth_profiles`
 - `policyelements/radius-dictionary` is now verified with `cppm_radius_dict`
+- `policyelements/radius-dictionary-*` action aliases are now also verified
+  with `cppm_radius_dict`
+- `policyelements/service-*` action aliases are now also verified with
+  `cppm_services`
+- several `endpointvisibility/*` services are now verified, including
+  `fingerprint`, `policy-manager-zones`, `profiler-subnet-mapping`, and
+  `profiler-subnet-mapping-network`
 - multiple `integrations/*` services are now verified, including
   `context-server-action`, `device-insight`, `endpoint-context-server`,
   `event-sources`, `instance`, `store`, `syslog-export-filter`, and
@@ -28,21 +39,28 @@ Important status notes:
 - `insight/alert` and `insight/report` are now verified after Insight was
   enabled on the ClearPass server
 - several `platformcertificates/*` services are now verified, including
-  `cert-trust-list`, `cert-trust-list-details`, `client-cert`,
-  `revocation-list`, `server-cert`, and `service-cert`
+  `cert-sign-request`, `cert-trust-list`, `cert-trust-list-details`,
+  `client-cert`, `revocation-list`, `server-cert`, `server-cert-name`,
+  `server-cert-name-disable`, `server-cert-name-enable`, and `service-cert`
+- `toolsandutilities/send` is now verified with `smtp_send`
+- `toolsandutilities/random-mpsk` and `toolsandutilities/random-password`
+  are now tracked as baseline verified services
 - `certificateauthority/certificate` is now verified with
   `mdps_view_certificate`
 - `certificateauthority/device` and `certificateauthority/user` are now
   verified with `mdps_device_manage`
+- `identities/deny-listed-users-user_id-mac_address` is now verified with
+  `cppm_deny_listed_users`
 - additional Onboard internal keys are now documented for future
   `certificateauthority` work:
   `mdps_ca`, `mdps_create_csr`, `mdps_issue_certificate`,
   and `mdps_revoke_certificate`
 - `integrations/ingress-event-dictionary` is now verified with
   `cppm_ingress_event_dict`
+- `logs/login-audit` is now verified with `cppm_login_audit`
 - `globalserverconfiguration/messaging-setup` is still not promoted, but it
-  currently returns `404` even for admin on this server, so it looks like an
-  endpoint availability issue rather than a missing privilege mapping
+  still returned `403` in the latest focused probes even with
+  `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup`
 
 Goal:
 - continue turning retained full-catalog services into verified privilege
@@ -54,11 +72,6 @@ Goal:
 
 Current unmapped retained services by module:
 
-#### `apioperations` (`3`)
-- `me`
-- `oauth`
-- `privileges`
-
 #### `certificateauthority` (`8`)
 - `chain`
 - `export`
@@ -69,21 +82,16 @@ Current unmapped retained services by module:
 - `revoke`
 - `sign`
 
-#### `endpointvisibility` (`22`)
+#### `endpointvisibility` (`17`)
 - `device-fingerprint`
-- `fingerprint`
 - `fingerprint-name`
 - `global-settings`
-- `network-scan`
 - `network-scan-disable`
 - `network-scan-enable`
 - `onguard-activity`
 - `onguard-activity-message`
 - `onguard-activity-notification`
 - `onguard-custom-script`
-- `policy-manager-zones`
-- `profiler-subnet-mapping`
-- `profiler-subnet-mapping-network`
 - `settings`
 - `subnet-mapping`
 - `subnet-mapping-disable`
@@ -142,9 +150,6 @@ Current unmapped retained services by module:
 - `print`
 - `weblogin`
 
-#### `identities` (`1`)
-- `deny-listed-users-user_id-mac_address`
-
 #### `insight` (`7`)
 - `alert-disable`
 - `alert-enable`
@@ -177,28 +182,12 @@ Current unmapped retained services by module:
 - `{server_uuid}-stop`
 - `{service_id}`
 
-#### `logs` (`3`)
+#### `logs` (`2`)
 - `endpoint`
 - `endpoint-time-range`
-- `login-audit`
 
-#### `platformcertificates` (`5`)
-- `cert-sign-request`
+#### `platformcertificates` (`1`)
 - `self-signed-cert`
-- `server-cert-name`
-- `server-cert-name-disable`
-- `server-cert-name-enable`
-
-#### `policyelements` (`9`)
-- `radius-dictionary-disable`
-- `radius-dictionary-enable`
-- `radius-dictionary-name-disable`
-- `radius-dictionary-name-enable`
-- `service-disable`
-- `service-enable`
-- `service-name-disable`
-- `service-name-enable`
-- `service-reorder`
 
 #### `sessioncontrol` (`13`)
 - `active-session`
@@ -214,11 +203,6 @@ Current unmapped retained services by module:
 - `session-action-disconnect-ip`
 - `session-action-disconnect-mac`
 - `session-action-disconnect-username`
-
-#### `toolsandutilities` (`3`)
-- `random-mpsk`
-- `random-password`
-- `send`
 
 ### 2. Cache/help/completion performance follow-up
 
@@ -259,15 +243,40 @@ Measured outcomes:
 ### ClearPass privilege mapping
 
 Recently verified mappings include:
+- `apioperations/me -> baseline verified`
+- `apioperations/oauth -> baseline verified`
+- `apioperations/privileges -> baseline verified`
 - `certificateauthority/device -> mdps_device_manage`
 - `certificateauthority/user -> mdps_device_manage`
 - `certificateauthority/certificate -> mdps_view_certificate`
+- `endpointvisibility/fingerprint -> cppm_fingerprints`
+- `endpointvisibility/network-scan -> cppm_networkscan`
+- `endpointvisibility/policy-manager-zones -> cppm_policy_manager_zones`
+- `endpointvisibility/profiler-subnet-mapping -> cppm_profiler_subnet_mapping`
+- `endpointvisibility/profiler-subnet-mapping-network -> cppm_profiler_subnet_mapping`
 - `globalserverconfiguration/operator-profile -> auth_profiles`
+- `platformcertificates/server-cert-name -> cppm_certificates`
+- `platformcertificates/server-cert-name-disable -> cppm_certificates`
+- `platformcertificates/server-cert-name-enable -> cppm_certificates`
+- `toolsandutilities/send -> smtp_send`
+- `identities/deny-listed-users-user_id-mac_address -> cppm_deny_listed_users`
+- `logs/login-audit -> cppm_login_audit`
+- `toolsandutilities/random-mpsk -> baseline verified`
+- `toolsandutilities/random-password -> baseline verified`
 - `policyelements/radius-dictionary -> cppm_radius_dict`
+- `policyelements/radius-dictionary-disable -> cppm_radius_dict`
+- `policyelements/radius-dictionary-enable -> cppm_radius_dict`
+- `policyelements/radius-dictionary-name-disable -> cppm_radius_dict`
+- `policyelements/radius-dictionary-name-enable -> cppm_radius_dict`
+- `policyelements/service-disable -> cppm_services`
+- `policyelements/service-enable -> cppm_services`
+- `policyelements/service-name-disable -> cppm_services`
+- `policyelements/service-name-enable -> cppm_services`
+- `policyelements/service-reorder -> cppm_services`
 
 Current explicitly unresolved service:
 - `globalserverconfiguration/messaging-setup`
-  - still returns `404` even for admin on this server
+  - latest focused candidate probes still returned `403`
 
 ## Deferred Ideas
 

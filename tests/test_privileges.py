@@ -108,6 +108,12 @@ def test_normalize_effective_privileges_tracks_prefix_access_levels():
 def test_service_privilege_rule_index_includes_verified_live_mappings():
     rules = service_privilege_rule_index()
 
+    assert rules[("apioperations", "me")].source == "baseline_verified"
+    assert rules[("apioperations", "me")].privileges == ()
+    assert rules[("apioperations", "oauth")].source == "baseline_verified"
+    assert rules[("apioperations", "oauth")].privileges == ()
+    assert rules[("apioperations", "privileges")].source == "baseline_verified"
+    assert rules[("apioperations", "privileges")].privileges == ()
     assert rules[("certificateauthority", "certificate")].privileges == (
         "mdps_view_certificate",
     )
@@ -118,6 +124,21 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("enforcementprofile", "enforcement-profile")].privileges == (
         "cppm_enforcement_profile",
     )
+    assert rules[("endpointvisibility", "fingerprint")].privileges == (
+        "cppm_fingerprints",
+    )
+    assert rules[("endpointvisibility", "network-scan")].privileges == (
+        "cppm_networkscan",
+    )
+    assert rules[("endpointvisibility", "policy-manager-zones")].privileges == (
+        "cppm_policy_manager_zones",
+    )
+    assert rules[("endpointvisibility", "profiler-subnet-mapping")].privileges == (
+        "cppm_profiler_subnet_mapping",
+    )
+    assert rules[
+        ("endpointvisibility", "profiler-subnet-mapping-network")
+    ].privileges == ("cppm_profiler_subnet_mapping",)
     assert rules[("globalserverconfiguration", "application-license")].privileges == (
         "cppm_licenses",
     )
@@ -137,6 +158,12 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
         "cppm_admin_user_pass_policy",
     )
     assert rules[("identities", "api-client")].privileges == ("api_clients",)
+    assert rules[("identities", "deny-listed-users")].privileges == (
+        "cppm_deny_listed_users",
+    )
+    assert rules[
+        ("identities", "deny-listed-users-user_id-mac_address")
+    ].privileges == ("cppm_deny_listed_users",)
     assert rules[("identities", "device")].privileges == ("mac", "guest_users")
     assert rules[("identities", "device")].match == "all"
     assert rules[("identities", "endpoint")].privileges == ("cppm_endpoints",)
@@ -168,9 +195,13 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     )
     assert rules[("localserverconfiguration", "server")].privileges == ("platform",)
     assert rules[("identities", "local-user")].privileges == ("cppm_local_users",)
+    assert rules[("logs", "login-audit")].privileges == ("cppm_login_audit",)
     assert rules[("logs", "system-event")].privileges == ("cppm_system_events",)
     assert rules[("platformcertificates", "cert-trust-list")].privileges == (
         "cppm_cert_trust_list",
+    )
+    assert rules[("platformcertificates", "cert-sign-request")].privileges == (
+        "cppm_certificates",
     )
     assert rules[("platformcertificates", "cert-trust-list-details")].privileges == (
         "cppm_cert_trust_list",
@@ -184,12 +215,47 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("platformcertificates", "server-cert")].privileges == (
         "cppm_certificates",
     )
+    assert rules[("platformcertificates", "server-cert-name")].privileges == (
+        "cppm_certificates",
+    )
+    assert rules[("platformcertificates", "server-cert-name-disable")].privileges == (
+        "cppm_certificates",
+    )
+    assert rules[("platformcertificates", "server-cert-name-enable")].privileges == (
+        "cppm_certificates",
+    )
     assert rules[("platformcertificates", "service-cert")].privileges == (
         "cppm_certificates",
     )
+    assert rules[("toolsandutilities", "random-mpsk")].source == "baseline_verified"
+    assert rules[("toolsandutilities", "random-password")].source == (
+        "baseline_verified"
+    )
+    assert rules[("toolsandutilities", "send")].privileges == ("smtp_send",)
     assert rules[("policyelements", "application-dictionary")].privileges == (
         "cppm_application_dict",
     )
+    assert rules[("policyelements", "radius-dictionary-disable")].privileges == (
+        "cppm_radius_dict",
+    )
+    assert rules[("policyelements", "radius-dictionary-enable")].privileges == (
+        "cppm_radius_dict",
+    )
+    assert rules[("policyelements", "radius-dictionary-name-disable")].privileges == (
+        "cppm_radius_dict",
+    )
+    assert rules[("policyelements", "radius-dictionary-name-enable")].privileges == (
+        "cppm_radius_dict",
+    )
+    assert rules[("policyelements", "service-disable")].privileges == ("cppm_services",)
+    assert rules[("policyelements", "service-enable")].privileges == ("cppm_services",)
+    assert rules[("policyelements", "service-name-disable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "service-name-enable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "service-reorder")].privileges == ("cppm_services",)
     assert rules[("policyelements", "auth-source")].privileges == (
         "auth_config",
         "cppm_config",

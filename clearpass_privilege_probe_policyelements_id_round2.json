@@ -1,0 +1,97 @@
+{
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "cases": [
+    {
+      "service": "policyelements/radius-dictionary-enable",
+      "candidate": [
+        "cppm_radius_dict"
+      ],
+      "path": "/api/radius-dictionary/999999/enable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/radius-dictionary-disable",
+      "candidate": [
+        "cppm_radius_dict"
+      ],
+      "path": "/api/radius-dictionary/999999/disable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-enable",
+      "candidate": [
+        "cppm_services"
+      ],
+      "path": "/api/config/service/999999/enable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "policyelements/service-disable",
+      "candidate": [
+        "cppm_services"
+      ],
+      "path": "/api/config/service/999999/disable",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "verified": false
+    }
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ]
+}

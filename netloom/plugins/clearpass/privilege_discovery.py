@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import time
 from pathlib import Path
@@ -39,6 +40,7 @@ LIST_QUERY_DEFAULTS = {
 MODULE_PREFIX_VARIANTS = {
     "enforcementprofile": ("enforcement_profile",),
 }
+_WRITE_PROBE_NAME_PREFIX = "netloom-privilege-probe"
 
 
 def _pluralize_token(token: str) -> str:
@@ -257,6 +259,26 @@ def _probe_action_for_service(service_entry: dict[str, Any]) -> str | None:
     return None
 
 
+def _service_supports_reversible_write_probe(service_entry: dict[str, Any]) -> bool:
+    actions = service_entry.get("actions") or {}
+    add_action = actions.get("add")
+    delete_action = actions.get("delete")
+    if not isinstance(add_action, dict) or not isinstance(delete_action, dict):
+        return False
+    if any("{" in str(path) for path in add_action.get("paths") or []):
+        return False
+    body_example = add_action.get("body_example")
+    if not isinstance(body_example, dict) or not body_example:
+        return False
+    for field_name in add_action.get("body_required") or []:
+        if field_name in {"name", "page_name"}:
+            continue
+        value = body_example.get(field_name)
+        if value in ("", None, [], {}):
+            return False
+    return True
+
+
 def _has_non_parameterized_action_path(
     service_entry: dict[str, Any], action_name: str
 ) -> bool:
@@ -278,7 +300,54 @@ def _probe_params(action_def: dict[str, Any]) -> dict[str, Any] | None:
     return chosen or None
 
 
-def _probe_service(
+def _make_probe_name(module_name: str, service_name: str) -> str:
+    normalized = f"{module_name}-{service_name}".replace("/", "-").replace("_", "-")
+    return f"{_WRITE_PROBE_NAME_PREFIX}-{normalized}-{int(time.time() * 1000)}"
+
+
+def _build_write_probe_payload(
+    module_name: str, service_name: str, action_def: dict[str, Any]
+) -> dict[str, Any] | None:
+    body_example = action_def.get("body_example")
+    if not isinstance(body_example, dict):
+        return None
+    payload = copy.deepcopy(body_example)
+    payload.pop("id", None)
+    probe_name = _make_probe_name(module_name, service_name)
+    if isinstance(payload.get("name"), str):
+        payload["name"] = probe_name
+    if isinstance(payload.get("page_name"), str):
+        payload["page_name"] = probe_name
+    if isinstance(payload.get("description"), str):
+        payload["description"] = probe_name
+    return payload
+
+
+def _extract_action_args(
+    payload: dict[str, Any],
+    response_payload: dict[str, Any] | None,
+    placeholders: list[str],
+) -> dict[str, Any]:
+    args: dict[str, Any] = {}
+    sources = [response_payload or {}, payload]
+    for placeholder in placeholders:
+        variants = {
+            placeholder,
+            placeholder.replace("-", "_"),
+            placeholder.replace("_", "-"),
+        }
+        for source in sources:
+            for variant in variants:
+                value = source.get(variant) if isinstance(source, dict) else None
+                if value not in (None, ""):
+                    args[placeholder] = value
+                    break
+            if placeholder in args:
+                break
+    return args
+
+
+def _probe_write_actions(
     discovery_cp,
     discovery_token: str,
     catalog: dict[str, Any],
@@ -290,17 +359,182 @@ def _probe_service(
     )
     if not isinstance(service_entry, dict):
         return {"status": "missing-service"}
+    if not _service_supports_reversible_write_probe(service_entry):
+        return {"status": "unsupported"}
+
+    add_action = discovery_cp.get_action_definition(
+        catalog, module_name, service_name, "add"
+    )
+    payload = _build_write_probe_payload(module_name, service_name, add_action)
+    if payload is None:
+        return {"status": "unsupported"}
+
+    actions_result: list[dict[str, Any]] = []
+    created_args: dict[str, Any] = {"module": module_name, "service": service_name}
+    cleanup_required = False
+    add_payload: dict[str, Any] | None = None
+
+    try:
+        add_response = discovery_cp.request_action(
+            catalog,
+            "add",
+            discovery_token,
+            created_args,
+            json_body=payload,
+        )
+        add_payload = add_response if isinstance(add_response, dict) else {}
+        actions_result.append({"action": "add", "status": "ok"})
+        cleanup_required = True
+
+        for followup_action in ("get", "update", "replace", "delete"):
+            action_def = (service_entry.get("actions") or {}).get(followup_action)
+            if not isinstance(action_def, dict):
+                continue
+            _, _, placeholders = discovery_cp.resolve_action(
+                catalog,
+                module_name,
+                service_name,
+                followup_action,
+                {
+                    "module": module_name,
+                    "service": service_name,
+                    **_extract_action_args(
+                        payload,
+                        add_payload,
+                        ["id", "page-name", "page_name", "name"],
+                    ),
+                },
+            )
+            action_args = {
+                "module": module_name,
+                "service": service_name,
+                **_extract_action_args(payload, add_payload, placeholders),
+            }
+            if len(action_args) < len(placeholders) + 2:
+                actions_result.append(
+                    {
+                        "action": followup_action,
+                        "status": "skipped",
+                        "detail": "missing-path-args",
+                    }
+                )
+                continue
+
+            if followup_action == "get":
+                get_response = discovery_cp.request_action(
+                    catalog, "get", discovery_token, action_args
+                )
+                if isinstance(get_response, dict):
+                    add_payload = get_response
+                actions_result.append({"action": "get", "status": "ok"})
+                continue
+
+            if followup_action in {"update", "replace"}:
+                probe_payload = copy.deepcopy(
+                    add_payload if isinstance(add_payload, dict) else payload
+                )
+                if isinstance(probe_payload.get("description"), str):
+                    probe_payload["description"] = _make_probe_name(
+                        module_name, f"{service_name}-{followup_action}"
+                    )
+                elif isinstance(probe_payload.get("name"), str):
+                    probe_payload["name"] = _make_probe_name(
+                        module_name, f"{service_name}-{followup_action}"
+                    )
+                discovery_cp.request_action(
+                    catalog,
+                    followup_action,
+                    discovery_token,
+                    action_args,
+                    json_body=probe_payload,
+                )
+                actions_result.append({"action": followup_action, "status": "ok"})
+                continue
+
+            if followup_action == "delete":
+                discovery_cp.request_action(
+                    catalog, "delete", discovery_token, action_args
+                )
+                actions_result.append({"action": "delete", "status": "ok"})
+                cleanup_required = False
+                continue
+    except ValueError as exc:
+        return {"status": "skipped", "detail": str(exc), "actions": actions_result}
+    except requests.HTTPError as exc:
+        response = exc.response
+        return {
+            "status": "http-error",
+            "http_status": response.status_code if response is not None else None,
+            "detail": (response.text or "")[:1000] if response is not None else "",
+            "actions": actions_result,
+        }
+    finally:
+        if cleanup_required:
+            try:
+                _, _, placeholders = discovery_cp.resolve_action(
+                    catalog,
+                    module_name,
+                    service_name,
+                    "delete",
+                    {
+                        "module": module_name,
+                        "service": service_name,
+                        **_extract_action_args(
+                            payload,
+                            add_payload,
+                            ["id", "page-name", "page_name", "name"],
+                        ),
+                    },
+                )
+                cleanup_args = {
+                    "module": module_name,
+                    "service": service_name,
+                    **_extract_action_args(payload, add_payload, placeholders),
+                }
+                if len(cleanup_args) >= len(placeholders) + 2:
+                    discovery_cp.request_action(
+                        catalog, "delete", discovery_token, cleanup_args
+                    )
+            except Exception:
+                pass
+
+    return {"status": "ok", "actions": actions_result}
+
+
+def _probe_service(
+    discovery_cp,
+    discovery_token: str,
+    catalog: dict[str, Any],
+    module_name: str,
+    service_name: str,
+    *,
+    probe_writes: bool = False,
+) -> dict[str, Any]:
+    service_entry = ((catalog.get("modules") or {}).get(module_name) or {}).get(
+        service_name
+    )
+    if not isinstance(service_entry, dict):
+        result = {"status": "missing-service"}
+        if probe_writes:
+            result["write_probe"] = {"status": "missing-service"}
+        return result
 
     action_name = _probe_action_for_service(service_entry)
     if action_name is None:
-        return {"status": "no-probe-action"}
+        result = {"status": "no-probe-action"}
+        if probe_writes:
+            result["write_probe"] = _probe_write_actions(
+                discovery_cp, discovery_token, catalog, module_name, service_name
+            )
+        return result
 
+    result: dict[str, Any]
     try:
         action_def = discovery_cp.get_action_definition(
             catalog, module_name, service_name, action_name
         )
         params = _probe_params(action_def)
-        result = discovery_cp.request_action(
+        response = discovery_cp.request_action(
             catalog,
             action_name,
             discovery_token,
@@ -308,23 +542,29 @@ def _probe_service(
             params=params,
         )
     except ValueError as exc:
-        return {"status": "skipped", "detail": str(exc), "action": action_name}
+        result = {"status": "skipped", "detail": str(exc), "action": action_name}
     except requests.HTTPError as exc:
         response = exc.response
         detail = ""
         if response is not None:
             detail = (response.text or "")[:1000]
-        return {
+        result = {
             "status": "http-error",
             "action": action_name,
             "http_status": response.status_code if response is not None else None,
             "detail": detail,
         }
-    return {
-        "status": "ok",
-        "action": action_name,
-        "result_type": type(result).__name__,
-    }
+    else:
+        result = {
+            "status": "ok",
+            "action": action_name,
+            "result_type": type(response).__name__,
+        }
+    if probe_writes:
+        result["write_probe"] = _probe_write_actions(
+            discovery_cp, discovery_token, catalog, module_name, service_name
+        )
+    return result
 
 
 def _build_admin_catalog(admin_settings) -> dict[str, Any]:
@@ -429,6 +669,14 @@ def build_argument_parser() -> argparse.ArgumentParser:
         default=None,
         help="JSON file with explicit candidate privilege keys per module/service.",
     )
+    parser.add_argument(
+        "--probe-writes",
+        action="store_true",
+        help=(
+            "Also attempt reversible add/update/replace/delete probes when the "
+            "service supports it."
+        ),
+    )
     return parser
 
 
@@ -469,7 +717,12 @@ def main(argv: list[str] | None = None) -> int:
     baseline_access: dict[str, dict[str, Any]] = {}
     for module_name, service_name in target_services:
         baseline_access[f"{module_name}/{service_name}"] = _probe_service(
-            discovery_cp, baseline_token, catalog, module_name, service_name
+            discovery_cp,
+            baseline_token,
+            catalog,
+            module_name,
+            service_name,
+            probe_writes=args.probe_writes,
         )
 
     results: list[dict[str, Any]] = []
@@ -526,19 +779,45 @@ def main(argv: list[str] | None = None) -> int:
                 discovery_token = resolve_auth_token(discovery_cp, discovery_settings)
                 effective = _effective_privileges(discovery_cp, discovery_token)
                 probe = _probe_service(
-                    discovery_cp, discovery_token, catalog, module_name, service_name
+                    discovery_cp,
+                    discovery_token,
+                    catalog,
+                    module_name,
+                    service_name,
+                    probe_writes=args.probe_writes,
                 )
                 attempt["update_status"] = 200
                 attempt["effective_privileges"] = effective
                 attempt["probe"] = probe
                 service_result["attempts"].append(attempt)
 
+                baseline_write = (baseline_probe.get("write_probe") or {}).get("status")
+                candidate_write = (probe.get("write_probe") or {}).get("status")
                 if baseline_probe.get("status") != "ok" and probe.get("status") == "ok":
                     service_result["verified"] = {
                         "privileges": candidate_spec,
                         "module": module_name,
                         "service": service_name,
                         "probe_action": probe.get("action"),
+                    }
+                    break
+                if baseline_write != "ok" and candidate_write == "ok":
+                    write_actions = (probe.get("write_probe") or {}).get(
+                        "actions"
+                    ) or []
+                    first_ok = next(
+                        (
+                            item.get("action")
+                            for item in write_actions
+                            if isinstance(item, dict) and item.get("status") == "ok"
+                        ),
+                        "write",
+                    )
+                    service_result["verified"] = {
+                        "privileges": candidate_spec,
+                        "module": module_name,
+                        "service": service_name,
+                        "probe_action": first_ok,
                     }
                     break
 
@@ -563,6 +842,7 @@ def main(argv: list[str] | None = None) -> int:
         "baseline_effective_privileges": baseline_effective,
         "include_mapped": args.include_mapped,
         "candidate_file": args.candidate_file,
+        "probe_writes": args.probe_writes,
         "results": results,
     }
     out_path = _default_out_path(args.out)

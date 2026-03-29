@@ -1,10 +1,12 @@
 import requests
 
 from netloom.plugins.clearpass.privilege_discovery import (
+    _build_write_probe_payload,
     _fetch_operator_profile,
     _iter_target_services,
     _operator_profile_item_path,
     _probe_action_for_service,
+    _service_supports_reversible_write_probe,
     _update_operator_profile,
 )
 
@@ -126,3 +128,46 @@ def test_iter_target_services_includes_safe_get_only_services():
 
     assert ("globalserverconfiguration", "application-license-summary") in services
     assert ("globalserverconfiguration", "attribute-name") not in services
+
+
+def test_service_supports_reversible_write_probe_for_resource_style_service():
+    service_entry = {
+        "actions": {
+            "add": {
+                "paths": ["/api/template/pass"],
+                "body_example": {"id": 0, "name": "", "description": ""},
+                "body_required": [],
+            },
+            "delete": {"paths": ["/api/template/pass/{id}"]},
+        }
+    }
+
+    assert _service_supports_reversible_write_probe(service_entry) is True
+
+
+def test_service_supports_reversible_write_probe_rejects_unfilled_required_fields():
+    service_entry = {
+        "actions": {
+            "add": {
+                "paths": ["/api/weblogin"],
+                "body_example": {"name": "", "vendor_preset": ""},
+                "body_required": ["name", "vendor_preset"],
+            },
+            "delete": {"paths": ["/api/weblogin/{id}"]},
+        }
+    }
+
+    assert _service_supports_reversible_write_probe(service_entry) is False
+
+
+def test_build_write_probe_payload_populates_unique_name_fields():
+    action_def = {
+        "body_example": {"id": 0, "name": "", "page_name": "", "description": ""}
+    }
+
+    payload = _build_write_probe_payload("guestconfiguration", "pass", action_def)
+
+    assert "id" not in payload
+    assert payload["name"].startswith("netloom-privilege-probe-")
+    assert payload["page_name"].startswith("netloom-privilege-probe-")
+    assert payload["description"].startswith("netloom-privilege-probe-")

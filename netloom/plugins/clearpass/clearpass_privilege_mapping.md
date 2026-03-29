@@ -1,4 +1,4 @@
-## Verified ClearPass Privilege Mappings
+## Privilege-Gated Verified ClearPass Mappings
 
 These mappings were verified live against a dedicated discovery operator profile.
 The profile kept a minimal API baseline, then one extra privilege key was added
@@ -28,6 +28,11 @@ Useful flags for future mapping rounds:
 | `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `device` | `list` |
 | `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `user` | `list` |
 | `cppm_enforcement_profile` | `cppm_enforcement_profile` | `enforcementprofile` | `enforcement-profile` | `list` |
+| `cppm_fingerprints` | `cppm_fingerprints` | `endpointvisibility` | `fingerprint` | `list` |
+| `cppm_networkscan` | `cppm_networkscan` | `endpointvisibility` | `network-scan` | `list` |
+| `cppm_policy_manager_zones` | `cppm_policy_manager_zones` | `endpointvisibility` | `policy-manager-zones` | `list` |
+| `cppm_profiler_subnet_mapping` | `cppm_profiler_subnet_mapping` | `endpointvisibility` | `profiler-subnet-mapping` | `list` |
+| `cppm_profiler_subnet_mapping` | `cppm_profiler_subnet_mapping` | `endpointvisibility` | `profiler-subnet-mapping-network` | `get` via fake network returning `404` instead of baseline `403` |
 | `cppm_admin_privileges` | `cppm_admin_privileges` | `globalserverconfiguration` | `admin-privilege` | `list` |
 | `cppm_admin_users` | `cppm_admin_users` | `globalserverconfiguration` | `admin-user` | `list` |
 | `cppm_licenses` | `cppm_licenses` | `globalserverconfiguration` | `application-license` | `list` |
@@ -42,6 +47,7 @@ Useful flags for future mapping rounds:
 | `cppm_server_policy_manager_zones` | `cppm_server_policy_manager_zones` | `globalserverconfiguration` | `policy-manager-zones` | `list` |
 | `cppm_snmp_trap_receivers` | `cppm_snmp_trap_receivers` | `globalserverconfiguration` | `snmp-trap-receiver` | `list` |
 | `api_clients` | `api_clients` | `identities` | `api-client` | `list` |
+| `cppm_deny_listed_users` | `cppm_deny_listed_users` | `identities` | `deny-listed-users-user_id-mac_address` | `get` via fake ID/MAC returning `404` instead of baseline `403` |
 | `mac` + `guest_users` | `mac` + `guest_users` | `identities` | `device` | `list` |
 | `cppm_deny_listed_users` | `cppm_deny_listed_users` | `identities` | `deny-listed-users` | `list` |
 | `cppm_endpoints` | `cppm_endpoints` | `identities` | `endpoint` | `list` |
@@ -61,13 +67,19 @@ Useful flags for future mapping rounds:
 | `cppm_syslog_export_filter` | `cppm_syslog_export_filter` | `integrations` | `syslog-export-filter` | `list` |
 | `cppm_syslog_target` | `cppm_syslog_target` | `integrations` | `syslog-target` | `list` |
 | `platform` | `platform` | `localserverconfiguration` | `server` | `list` |
+| `cppm_login_audit` | `cppm_login_audit` | `logs` | `login-audit` | `get` |
 | `cppm_system_events` | `cppm_system_events` | `logs` | `system-event` | `list` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `cert-sign-request` | `add` |
 | `cppm_cert_trust_list` | `cppm_cert_trust_list` | `platformcertificates` | `cert-trust-list` | `list` |
 | `cppm_cert_trust_list` | `cppm_cert_trust_list` | `platformcertificates` | `cert-trust-list-details` | `list` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `client-cert` | `list` |
 | `cppm_revocation_lists` | `cppm_revocation_lists` | `platformcertificates` | `revocation-list` | `list` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert` | `get` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name` | `get` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name-disable` | `update` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name-enable` | `update` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `service-cert` | `list` |
+| `smtp_send` | `smtp_send` | `toolsandutilities` | `send` | `add` |
 | `cppm_application_dict` | `cppm_application_dict` | `policyelements` | `application-dictionary` | `list` |
 | `auth_config` + `cppm_config` | `auth_config` + `cppm_config` | `policyelements` | `auth-source` | `list` |
 | `cppm_auth_methods` | `cppm_auth_methods` | `policyelements` | `auth-method` | `list` |
@@ -76,12 +88,35 @@ Useful flags for future mapping rounds:
 | `cppm_network_device_groups` | `cppm_network_device_groups` | `policyelements` | `network-device-group` | `list` |
 | `cppm_network_proxy_targets` | `cppm_network_proxy_targets` | `policyelements` | `proxy-target` | `list` |
 | `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary` | `list` |
+| `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary-disable` | `update` |
+| `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary-enable` | `update` |
+| `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary-name-disable` | `update` |
+| `cppm_radius_dict` | `cppm_radius_dict` | `policyelements` | `radius-dictionary-name-enable` | `update` |
 | `cppm_radius_dyn_autz_template` | `cppm_radius_dyn_autz_template` | `policyelements` | `radius-dynamic-authorization-template` | `list` |
 | `cppm_posture_policy` | `cppm_posture_policy` | `policyelements` | `posture-policy` | `list` |
 | `cppm_role_mapping` | `cppm_role_mapping` | `policyelements` | `role-mapping` | `list` |
 | `cppm_roles` | `cppm_roles` | `policyelements` | `role` | `list` |
 | `cppm_services` | `cppm_services` | `policyelements` | `service` | `list` |
+| `cppm_services` | `cppm_services` | `policyelements` | `service-disable` | `update` |
+| `cppm_services` | `cppm_services` | `policyelements` | `service-enable` | `update` |
+| `cppm_services` | `cppm_services` | `policyelements` | `service-name-disable` | `update` |
+| `cppm_services` | `cppm_services` | `policyelements` | `service-name-enable` | `update` |
+| `cppm_services` | `cppm_services` | `policyelements` | `service-reorder` | `update` |
 | `cppm_tacacs_service_dict` | `cppm_tacacs_service_dict` | `policyelements` | `tacacs-service-dictionary` | `list` |
+
+## Baseline Verified Services
+
+These services were verified as accessible with the stripped minimum API
+baseline, so they stay visible in the CLI but are not counted as extra
+privilege mappings.
+
+| Module | Service | Verified baseline access |
+| --- | --- | --- |
+| `apioperations` | `me` | `list`, `add` |
+| `apioperations` | `oauth` | `add` |
+| `apioperations` | `privileges` | `get` |
+| `toolsandutilities` | `random-mpsk` | `list` |
+| `toolsandutilities` | `random-password` | `list` |
 
 ## Accepted But Not Yet Verified
 
@@ -91,9 +126,10 @@ the effective runtime privilege list, but the direct list probe still returned
 
 | Operator profile privilege key | Module | Service | Current status |
 | --- | --- | --- | --- |
-| `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
-| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
-| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but endpoint returns `404` even for admin |
+| `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
+| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
+| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
+| `cppm_certificates` | `platformcertificates` | `self-signed-cert` | accepted, and the probe moved from `403` to `422 Invalid type specified`; needs payload tuning |
 
 ## Discovered Onboard Runtime Keys
 
@@ -128,7 +164,7 @@ the current live discovery rounds:
 
 | Module | Service | Current blocker |
 | --- | --- | --- |
-| `globalserverconfiguration` | `messaging-setup` | endpoint returns `404` even for admin |
+| `globalserverconfiguration` | `messaging-setup` | candidate probes with `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup` still return `403` |
 
 `certificateauthority/certificate` was promoted after enabling the read-only
 Onboard `View Certificate` privilege on the dedicated discovery profile. Its

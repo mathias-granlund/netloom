@@ -1,0 +1,27 @@
+[
+  {
+    "raw": "?api_index",
+    "name": "api_index",
+    "access": "allowed"
+  },
+  {
+    "raw": "?cppm_config",
+    "name": "cppm_config",
+    "access": "allowed"
+  },
+  {
+    "raw": "api_docs",
+    "name": "api_docs",
+    "access": "full"
+  },
+  {
+    "raw": "apigility",
+    "name": "apigility",
+    "access": "full"
+  },
+  {
+    "raw": "cppm_services",
+    "name": "cppm_services",
+    "access": "full"
+  }
+]

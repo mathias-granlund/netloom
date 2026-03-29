@@ -78,10 +78,28 @@ class ServicePrivilegeRule:
     service: str
     privileges: tuple[str, ...]
     match: str = "any"
-    source: str = "verified"
+    source: str = "privilege_gated_verified"
 
 
 SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
+    ServicePrivilegeRule(
+        module="apioperations",
+        service="me",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="apioperations",
+        service="oauth",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="apioperations",
+        service="privileges",
+        privileges=(),
+        source="baseline_verified",
+    ),
     ServicePrivilegeRule(
         module="certificateauthority",
         service="certificate",
@@ -101,6 +119,31 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="enforcementprofile",
         service="enforcement-profile",
         privileges=("cppm_enforcement_profile",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="fingerprint",
+        privileges=("cppm_fingerprints",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="network-scan",
+        privileges=("cppm_networkscan",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="policy-manager-zones",
+        privileges=("cppm_policy_manager_zones",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="profiler-subnet-mapping",
+        privileges=("cppm_profiler_subnet_mapping",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="profiler-subnet-mapping-network",
+        privileges=("cppm_profiler_subnet_mapping",),
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
@@ -175,6 +218,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ServicePrivilegeRule(
         module="identities",
         service="deny-listed-users",
+        privileges=("cppm_deny_listed_users",),
+    ),
+    ServicePrivilegeRule(
+        module="identities",
+        service="deny-listed-users-user_id-mac_address",
         privileges=("cppm_deny_listed_users",),
     ),
     ServicePrivilegeRule(
@@ -270,8 +318,18 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="logs",
+        service="login-audit",
+        privileges=("cppm_login_audit",),
+    ),
+    ServicePrivilegeRule(
+        module="logs",
         service="system-event",
         privileges=("cppm_system_events",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="cert-sign-request",
+        privileges=("cppm_certificates",),
     ),
     ServicePrivilegeRule(
         module="platformcertificates",
@@ -287,6 +345,51 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="platformcertificates",
         service="client-cert",
         privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dictionary-disable",
+        privileges=("cppm_radius_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dictionary-enable",
+        privileges=("cppm_radius_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dictionary-name-disable",
+        privileges=("cppm_radius_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="radius-dictionary-name-enable",
+        privileges=("cppm_radius_dict",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service-disable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service-enable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service-name-disable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service-name-enable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="service-reorder",
+        privileges=("cppm_services",),
     ),
     ServicePrivilegeRule(
         module="policyelements",
@@ -341,8 +444,40 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="platformcertificates",
+        service="server-cert-name",
+        privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="server-cert-name-disable",
+        privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="server-cert-name-enable",
+        privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
         service="service-cert",
         privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="toolsandutilities",
+        service="random-mpsk",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="toolsandutilities",
+        service="random-password",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="toolsandutilities",
+        service="send",
+        privileges=("smtp_send",),
     ),
     ServicePrivilegeRule(
         module="policyelements",
