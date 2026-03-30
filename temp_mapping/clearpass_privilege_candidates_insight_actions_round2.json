@@ -1,0 +1,53 @@
+{
+  "insight/alert-disable": [
+    ["insight_alert"],
+    ["insight_alerts"],
+    ["insight_administration"],
+    ["insight_alert", "insight_administration"],
+    ["insight_alerts", "insight_administration"]
+  ],
+  "insight/alert-enable": [
+    ["insight_alert"],
+    ["insight_alerts"],
+    ["insight_administration"],
+    ["insight_alert", "insight_administration"],
+    ["insight_alerts", "insight_administration"]
+  ],
+  "insight/alert-mute": [
+    ["insight_alert"],
+    ["insight_alerts"],
+    ["insight_administration"],
+    ["insight_alert", "insight_administration"],
+    ["insight_alerts", "insight_administration"]
+  ],
+  "insight/alert-unmute": [
+    ["insight_alert"],
+    ["insight_alerts"],
+    ["insight_administration"],
+    ["insight_alert", "insight_administration"],
+    ["insight_alerts", "insight_administration"]
+  ],
+  "insight/report-disable": [
+    ["insight_report"],
+    ["insight_reports"],
+    ["insight_administration"],
+    ["insight_report", "insight_administration"],
+    ["insight_reports", "insight_administration"]
+  ],
+  "insight/report-enable": [
+    ["insight_report"],
+    ["insight_reports"],
+    ["insight_administration"],
+    ["insight_report", "insight_administration"],
+    ["insight_reports", "insight_administration"]
+  ],
+  "insight/report-run": [
+    ["insight_report"],
+    ["insight_reports"],
+    ["insight_administration"],
+    ["insight_dashboard"],
+    ["insight_report", "insight_administration"],
+    ["insight_reports", "insight_administration"],
+    ["insight_reports", "insight_dashboard"]
+  ]
+}

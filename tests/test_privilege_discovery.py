@@ -171,3 +171,56 @@ def test_build_write_probe_payload_populates_unique_name_fields():
     assert payload["name"].startswith("netloom-privilege-probe-")
     assert payload["page_name"].startswith("netloom-privilege-probe-")
     assert payload["description"].startswith("netloom-privilege-probe-")
+
+
+def test_service_supports_reversible_write_probe_with_synthesized_required_fields():
+    service_entry = {
+        "actions": {
+            "add": {
+                "paths": ["/api/messaging-setup"],
+                "body_required": ["server_name", "default_from_address"],
+                "body_fields": [
+                    {"name": "server_name", "type": "string"},
+                    {"name": "default_from_address", "type": "string"},
+                    {"name": "port", "type": "int"},
+                ],
+                "body_example": {
+                    "server_name": "",
+                    "default_from_address": "",
+                    "port": 0,
+                },
+            },
+            "delete": {"paths": ["/api/messaging-setup"]},
+        }
+    }
+
+    assert _service_supports_reversible_write_probe(service_entry) is True
+
+
+def test_build_write_probe_payload_prefers_minimal_required_values():
+    action_def = {
+        "body_required": ["server_name", "default_from_address"],
+        "body_fields": [
+            {"name": "server_name", "type": "string"},
+            {"name": "default_from_address", "type": "string"},
+            {"name": "port", "type": "int"},
+            {"name": "password", "type": "string"},
+        ],
+        "body_example": {
+            "server_name": "",
+            "default_from_address": "",
+            "port": 0,
+            "password": "",
+        },
+    }
+
+    payload = _build_write_probe_payload(
+        "globalserverconfiguration",
+        "messaging-setup",
+        action_def,
+    )
+
+    assert payload == {
+        "server_name": "localhost",
+        "default_from_address": "netloom@example.com",
+    }

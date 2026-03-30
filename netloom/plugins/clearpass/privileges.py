@@ -263,7 +263,42 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="insight",
+        service="alert-disable",
+        privileges=("insight_alert",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="alert-enable",
+        privileges=("insight_alert",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="alert-mute",
+        privileges=("insight_alert",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="alert-unmute",
+        privileges=("insight_alert",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
         service="report",
+        privileges=("insight_report",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="report-disable",
+        privileges=("insight_report",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="report-enable",
+        privileges=("insight_report",),
+    ),
+    ServicePrivilegeRule(
+        module="insight",
+        service="report-run",
         privileges=("insight_report",),
     ),
     ServicePrivilegeRule(
@@ -436,6 +471,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="platformcertificates",
         service="revocation-list",
         privileges=("cppm_revocation_lists",),
+    ),
+    ServicePrivilegeRule(
+        module="platformcertificates",
+        service="self-signed-cert",
+        privileges=("cppm_certificates",),
     ),
     ServicePrivilegeRule(
         module="platformcertificates",

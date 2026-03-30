@@ -1,0 +1,487 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "guestconfiguration"
+  ],
+  "services": [
+    "guestconfiguration/pass"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "temp_mapping/clearpass_privilege_candidates_guestconfiguration_pass_round2.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "guestconfiguration",
+      "service": "pass",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "pass_template"
+        ],
+        [
+          "pass_index"
+        ],
+        [
+          "pass_config"
+        ],
+        [
+          "pass_template",
+          "pass_index"
+        ],
+        [
+          "pass_template",
+          "pass_config"
+        ],
+        [
+          "pass_index",
+          "pass_config"
+        ],
+        [
+          "pass_template",
+          "pass_index",
+          "pass_config"
+        ],
+        [
+          "cppm_pass"
+        ],
+        [
+          "cppm_pas"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "pass_template"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?pass_index",
+              "name": "pass_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_index"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?pass_index",
+              "name": "pass_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_template",
+            "pass_index"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_template",
+            "pass_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?pass_index",
+              "name": "pass_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_index",
+            "pass_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_template",
+            "pass_index",
+            "pass_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_pass"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pass\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_pas"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pas\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

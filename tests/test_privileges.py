@@ -169,7 +169,14 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("identities", "endpoint")].privileges == ("cppm_endpoints",)
     assert rules[("identities", "guest")].privileges == ("guest_users",)
     assert rules[("insight", "alert")].privileges == ("insight_alert",)
+    assert rules[("insight", "alert-disable")].privileges == ("insight_alert",)
+    assert rules[("insight", "alert-enable")].privileges == ("insight_alert",)
+    assert rules[("insight", "alert-mute")].privileges == ("insight_alert",)
+    assert rules[("insight", "alert-unmute")].privileges == ("insight_alert",)
     assert rules[("insight", "report")].privileges == ("insight_report",)
+    assert rules[("insight", "report-disable")].privileges == ("insight_report",)
+    assert rules[("insight", "report-enable")].privileges == ("insight_report",)
+    assert rules[("insight", "report-run")].privileges == ("insight_report",)
     assert rules[("integrations", "context-server-action")].privileges == (
         "cppm_context_server_actions",
     )
@@ -211,6 +218,9 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     )
     assert rules[("platformcertificates", "revocation-list")].privileges == (
         "cppm_revocation_lists",
+    )
+    assert rules[("platformcertificates", "self-signed-cert")].privileges == (
+        "cppm_certificates",
     )
     assert rules[("platformcertificates", "server-cert")].privileges == (
         "cppm_certificates",

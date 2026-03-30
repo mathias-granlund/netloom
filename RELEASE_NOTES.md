@@ -1,20 +1,21 @@
-# netloom v1.9.12
+# netloom v1.9.13
 
 This release continues the ClearPass privilege-mapping work and promotes the
-latest live-verified policyelements action aliases into the enforced rule set.
+latest live-verified platform certificate and Insight action mappings into the
+enforced rule set.
 
 ## Highlights
 
-- promoted `policyelements/radius-dictionary-disable`,
-  `radius-dictionary-enable`, `radius-dictionary-name-disable`, and
-  `radius-dictionary-name-enable` as privilege-gated with `cppm_radius_dict`
-- promoted `policyelements/service-disable`, `service-enable`,
-  `service-name-disable`, `service-name-enable`, and `service-reorder` as
-  privilege-gated with `cppm_services`
-- tightened the evidence standard for future write-action mappings so weak
-  `404`/`422`/fake-target results are no longer treated as sufficient proof
-- updated `PLANNED_FEATURES.md` coverage to `79` privilege-gated verified,
-  `5` baseline verified, and `108` unresolved retained services
+- promoted `platformcertificates/self-signed-cert` as privilege-gated with
+  `cppm_certificates` using a live verified POST payload
+- promoted `insight/alert-disable`, `alert-enable`, `alert-mute`,
+  `alert-unmute`, `report-disable`, `report-enable`, and `report-run` into
+  the enforced mapping set
+- hardened the write-probe payload builder so reversible discovery probes can
+  use minimal synthetic required values instead of placeholder-heavy swagger
+  examples
+- updated `PLANNED_FEATURES.md` coverage to `87` privilege-gated verified,
+  `5` baseline verified, and `100` unresolved retained services
 
 ## Examples
 

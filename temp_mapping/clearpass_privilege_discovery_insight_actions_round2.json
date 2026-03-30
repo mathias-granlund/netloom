@@ -1,0 +1,1296 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "candidate_file": "temp_mapping/clearpass_privilege_candidates_insight_actions_round2.json",
+  "results": [
+    {
+      "service": "insight/alert-disable",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "insight_alerts"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_alert",
+          "insight_administration"
+        ],
+        [
+          "insight_alerts",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        }
+      ],
+      "verified": {
+        "service": "insight/alert-disable",
+        "privileges": [
+          "insight_alert"
+        ],
+        "baseline_status": 403,
+        "candidate_status": 404
+      }
+    },
+    {
+      "service": "insight/alert-enable",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "insight_alerts"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_alert",
+          "insight_administration"
+        ],
+        [
+          "insight_alerts",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alerts"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alerts",
+              "name": "insight_alerts",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alert",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alerts",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alerts",
+              "name": "insight_alerts",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        }
+      ],
+      "verified": null
+    },
+    {
+      "service": "insight/alert-mute",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "insight_alerts"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_alert",
+          "insight_administration"
+        ],
+        [
+          "insight_alerts",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        }
+      ],
+      "verified": {
+        "service": "insight/alert-mute",
+        "privileges": [
+          "insight_alert"
+        ],
+        "baseline_status": 403,
+        "candidate_status": 404
+      }
+    },
+    {
+      "service": "insight/alert-unmute",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_alert"
+        ],
+        [
+          "insight_alerts"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_alert",
+          "insight_administration"
+        ],
+        [
+          "insight_alerts",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_alert"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alerts"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alerts",
+              "name": "insight_alerts",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alert",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alert",
+              "name": "insight_alert",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_alerts",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_alerts",
+              "name": "insight_alerts",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        }
+      ],
+      "verified": null
+    },
+    {
+      "service": "insight/report-disable",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_report"
+        ],
+        [
+          "insight_reports"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_report",
+          "insight_administration"
+        ],
+        [
+          "insight_reports",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_report"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        }
+      ],
+      "verified": {
+        "service": "insight/report-disable",
+        "privileges": [
+          "insight_report"
+        ],
+        "baseline_status": 403,
+        "candidate_status": 404
+      }
+    },
+    {
+      "service": "insight/report-enable",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 404,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_report"
+        ],
+        [
+          "insight_reports"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_report",
+          "insight_administration"
+        ],
+        [
+          "insight_reports",
+          "insight_administration"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_report"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_reports"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_reports",
+              "name": "insight_reports",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_report",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_reports",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_reports",
+              "name": "insight_reports",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        }
+      ],
+      "verified": null
+    },
+    {
+      "service": "insight/report-run",
+      "probe_name": "netloom-privilege-probe-missing",
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_specs": [
+        [
+          "insight_report"
+        ],
+        [
+          "insight_reports"
+        ],
+        [
+          "insight_administration"
+        ],
+        [
+          "insight_dashboard"
+        ],
+        [
+          "insight_report",
+          "insight_administration"
+        ],
+        [
+          "insight_reports",
+          "insight_administration"
+        ],
+        [
+          "insight_reports",
+          "insight_dashboard"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "insight_report"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 500,
+            "detail": "{\"headers\":{\"Server\":\"\",\"Date\":\"Mon, 30 Mar 2026 09:30:16 GMT\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Content-Length\":\"16\",\"Set-Cookie\":\"session=cb5a38ec-ff95-4e14-90ec-1e1cf90397cb; Path=/; HttpOnly\"},\"body\":\"Object not found\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_reports"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_reports",
+              "name": "insight_reports",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_dashboard"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_dashboard",
+              "name": "insight_dashboard",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_report",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_report",
+              "name": "insight_report",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 500,
+            "detail": "{\"headers\":{\"Server\":\"\",\"Date\":\"Mon, 30 Mar 2026 09:30:23 GMT\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/json\",\"Content-Length\":\"16\",\"Set-Cookie\":\"session=47853c65-dbef-4e9e-a2a5-3e20091edd47; Path=/; HttpOnly\"},\"body\":\"Object not found\",\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Internal Server Error\",\"status\":500,\"detail\":\"Internal server error\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_reports",
+            "insight_administration"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_administration",
+              "name": "insight_administration",
+              "access": "full"
+            },
+            {
+              "raw": "insight_reports",
+              "name": "insight_reports",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_reports",
+            "insight_dashboard"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?insight_config",
+              "name": "insight_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_dashboard",
+              "name": "insight_dashboard",
+              "access": "full"
+            },
+            {
+              "raw": "insight_reports",
+              "name": "insight_reports",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          }
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

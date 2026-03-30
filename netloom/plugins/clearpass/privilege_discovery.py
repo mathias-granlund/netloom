@@ -267,16 +267,7 @@ def _service_supports_reversible_write_probe(service_entry: dict[str, Any]) -> b
         return False
     if any("{" in str(path) for path in add_action.get("paths") or []):
         return False
-    body_example = add_action.get("body_example")
-    if not isinstance(body_example, dict) or not body_example:
-        return False
-    for field_name in add_action.get("body_required") or []:
-        if field_name in {"name", "page_name"}:
-            continue
-        value = body_example.get(field_name)
-        if value in ("", None, [], {}):
-            return False
-    return True
+    return _build_write_probe_payload("probe", "probe", add_action) is not None
 
 
 def _has_non_parameterized_action_path(
@@ -305,6 +296,83 @@ def _make_probe_name(module_name: str, service_name: str) -> str:
     return f"{_WRITE_PROBE_NAME_PREFIX}-{normalized}-{int(time.time() * 1000)}"
 
 
+def _placeholder_collection(value: Any) -> bool:
+    if isinstance(value, list):
+        return not value or all(_is_placeholder_value(item) for item in value)
+    if isinstance(value, dict):
+        return not value or all(_is_placeholder_value(item) for item in value.values())
+    return False
+
+
+def _is_placeholder_value(value: Any) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() == ""
+    if isinstance(value, (list, dict)):
+        return _placeholder_collection(value)
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, (int, float)):
+        return value == 0
+    return False
+
+
+def _field_type_index(action_def: dict[str, Any]) -> dict[str, str]:
+    fields = action_def.get("body_fields") or []
+    out: dict[str, str] = {}
+    if not isinstance(fields, list):
+        return out
+    for field in fields:
+        if not isinstance(field, dict):
+            continue
+        name = field.get("name")
+        field_type = field.get("type")
+        if isinstance(name, str) and isinstance(field_type, str):
+            out[name] = field_type
+    return out
+
+
+def _synthetic_field_value(field_name: str, field_type: str, probe_name: str) -> Any:
+    lowered_name = field_name.lower()
+    lowered_type = field_type.lower()
+
+    if field_name in {"name", "page_name", "description"}:
+        return probe_name
+    if "password" in lowered_name:
+        return "Netloom123!"
+    if "email" in lowered_name or "address" in lowered_name:
+        return "netloom@example.com"
+    if "server" in lowered_name or "host" in lowered_name:
+        return "localhost"
+    if lowered_name == "subject_cn":
+        return f"{probe_name}.example.com"
+    if lowered_name == "subject_c":
+        return "SE"
+    if lowered_name == "subject_san":
+        return f"DNS:{probe_name}.example.com"
+    if lowered_name == "type":
+        return "RADIUS"
+    if "connection_security" in lowered_name:
+        return "none"
+    if "timeout" in lowered_name:
+        return 30
+    if "port" in lowered_name:
+        return 25
+    if "country" in lowered_name:
+        return "SE"
+
+    if "bool" in lowered_type:
+        return True
+    if "int" in lowered_type:
+        return 1
+    if "array" in lowered_type:
+        return [probe_name]
+    if "string" in lowered_type:
+        return probe_name
+    return None
+
+
 def _build_write_probe_payload(
     module_name: str, service_name: str, action_def: dict[str, Any]
 ) -> dict[str, Any] | None:
@@ -314,12 +382,36 @@ def _build_write_probe_payload(
     payload = copy.deepcopy(body_example)
     payload.pop("id", None)
     probe_name = _make_probe_name(module_name, service_name)
-    if isinstance(payload.get("name"), str):
-        payload["name"] = probe_name
-    if isinstance(payload.get("page_name"), str):
-        payload["page_name"] = probe_name
-    if isinstance(payload.get("description"), str):
-        payload["description"] = probe_name
+    field_types = _field_type_index(action_def)
+
+    for field_name in list(payload):
+        field_type = field_types.get(field_name, "")
+        value = payload[field_name]
+        replacement = _synthetic_field_value(field_name, field_type, probe_name)
+
+        if replacement is not None and (
+            field_name in {"name", "page_name", "description"}
+            or field_name in set(action_def.get("body_required") or [])
+        ):
+            payload[field_name] = replacement
+            continue
+
+        if field_name not in set(action_def.get("body_required") or []) and (
+            _is_placeholder_value(value)
+        ):
+            payload.pop(field_name, None)
+
+    for field_name in action_def.get("body_required") or []:
+        value = payload.get(field_name)
+        if not _is_placeholder_value(value):
+            continue
+        replacement = _synthetic_field_value(
+            field_name, field_types.get(field_name, ""), probe_name
+        )
+        if replacement is None or _is_placeholder_value(replacement):
+            return None
+        payload[field_name] = replacement
+
     return payload
 
 

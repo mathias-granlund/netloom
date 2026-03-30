@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.13 - 2026-03-30
+
+### Changed
+- continued the ClearPass privilege-mapping work and promoted `platformcertificates/self-signed-cert -> cppm_certificates`
+- promoted the remaining live-verified Insight action aliases, including `alert-disable`, `alert-enable`, `alert-mute`, `alert-unmute`, `report-disable`, `report-enable`, and `report-run`
+- hardened the ClearPass write-probe payload builder so reversible probes can synthesize minimal required values for services whose swagger examples use empty placeholders
+- updated `PLANNED_FEATURES.md` coverage to `87` privilege-gated verified, `5` baseline verified, and `100` unresolved retained services
+- aligned package metadata, release notes, README badge, and checked-in manpage version headers for the `1.9.13` release
+
 ## 1.9.12 - 2026-03-29
 
 ### Changed

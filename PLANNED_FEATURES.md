@@ -8,9 +8,9 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- privilege-gated verified services: `79`
+- privilege-gated verified services: `87`
 - baseline verified services: `5`
-- unresolved services: `108`
+- unresolved services: `100`
 
 Current measured coverage against the visible cache:
 - the currently checked-in cache predates the new baseline/gated split
@@ -38,10 +38,16 @@ Important status notes:
   `syslog-target`
 - `insight/alert` and `insight/report` are now verified after Insight was
   enabled on the ClearPass server
+- `insight/alert-disable`, `insight/alert-enable`, `insight/alert-mute`,
+  and `insight/alert-unmute` are now verified with `insight_alert`
+- `insight/report-disable` is now verified with `insight_report`
+- `insight/report-enable` and `insight/report-run` are now verified with
+  `insight_report` against a real `test_report`
 - several `platformcertificates/*` services are now verified, including
   `cert-sign-request`, `cert-trust-list`, `cert-trust-list-details`,
-  `client-cert`, `revocation-list`, `server-cert`, `server-cert-name`,
-  `server-cert-name-disable`, `server-cert-name-enable`, and `service-cert`
+  `client-cert`, `revocation-list`, `self-signed-cert`, `server-cert`,
+  `server-cert-name`, `server-cert-name-disable`,
+  `server-cert-name-enable`, and `service-cert`
 - `toolsandutilities/send` is now verified with `smtp_send`
 - `toolsandutilities/random-mpsk` and `toolsandutilities/random-password`
   are now tracked as baseline verified services
@@ -60,7 +66,15 @@ Important status notes:
 - `logs/login-audit` is now verified with `cppm_login_audit`
 - `globalserverconfiguration/messaging-setup` is still not promoted, but it
   still returned `403` in the latest focused probes even with
-  `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup`
+  `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup`,
+  including a reversible write probe with a cleaned minimal payload
+- `guestconfiguration/pass` is still not promoted; `pass_template`,
+  `pass_config`, `pass_index`, and their tested combinations were all
+  accepted into the operator profile, but both `list` and reversible `add`
+  probes still returned `403`
+- `insight_reports` alone still was not enough for the real `test_report`
+  `report-enable` and `report-run` API probes; the minimal verified mapping
+  for those endpoints remains `insight_report`
 
 Goal:
 - continue turning retained full-catalog services into verified privilege
@@ -150,15 +164,6 @@ Current unmapped retained services by module:
 - `print`
 - `weblogin`
 
-#### `insight` (`7`)
-- `alert-disable`
-- `alert-enable`
-- `alert-mute`
-- `alert-unmute`
-- `report-disable`
-- `report-enable`
-- `report-run`
-
 #### `integrations` (`10`)
 - `config`
 - `context-server-action-action-name`
@@ -185,9 +190,6 @@ Current unmapped retained services by module:
 #### `logs` (`2`)
 - `endpoint`
 - `endpoint-time-range`
-
-#### `platformcertificates` (`1`)
-- `self-signed-cert`
 
 #### `sessioncontrol` (`13`)
 - `active-session`

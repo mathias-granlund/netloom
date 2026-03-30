@@ -56,7 +56,14 @@ Useful flags for future mapping rounds:
 | `cppm_local_users` | `cppm_local_users` | `identities` | `local-user` | `list` |
 | `cppm_static_host_list` | `cppm_static_host_list` | `identities` | `static-host-list` | `list` |
 | `insight_alert` | `insight_alert` | `insight` | `alert` | `list` |
+| `insight_alert` | `insight_alert` | `insight` | `alert-disable` | `update` via real `test_alert` |
+| `insight_alert` | `insight_alert` | `insight` | `alert-enable` | `update` via real `test_alert` |
+| `insight_alert` | `insight_alert` | `insight` | `alert-mute` | `update` via real `test_alert` |
+| `insight_alert` | `insight_alert` | `insight` | `alert-unmute` | `update` via real `test_alert` |
 | `insight_report` | `insight_report` | `insight` | `report` | `list` |
+| `insight_report` | `insight_report` | `insight` | `report-disable` | `update` via fake report name returning `404` instead of baseline `403` |
+| `insight_report` | `insight_report` | `insight` | `report-enable` | `update` via real `test_report` |
+| `insight_report` | `insight_report` | `insight` | `report-run` | `add` via real `test_report` |
 | `cppm_context_server_actions` | `cppm_context_server_actions` | `integrations` | `context-server-action` | `list` |
 | `cppm_device_insight` | `cppm_device_insight` | `integrations` | `device-insight` | `list` |
 | `cppm_endpoint_context_server` | `cppm_endpoint_context_server` | `integrations` | `endpoint-context-server` | `list` |
@@ -74,6 +81,7 @@ Useful flags for future mapping rounds:
 | `cppm_cert_trust_list` | `cppm_cert_trust_list` | `platformcertificates` | `cert-trust-list-details` | `list` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `client-cert` | `list` |
 | `cppm_revocation_lists` | `cppm_revocation_lists` | `platformcertificates` | `revocation-list` | `list` |
+| `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `self-signed-cert` | `add` via direct POST with verified minimal payload |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert` | `get` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name` | `get` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name-disable` | `update` |
@@ -121,15 +129,20 @@ privilege mappings.
 ## Accepted But Not Yet Verified
 
 These privilege keys were accepted by the operator-profile API and appeared in
-the effective runtime privilege list, but the direct list probe still returned
-`403 Forbidden` in this round, so they are not enforced in the cache filter yet.
+the effective runtime privilege list, but the live endpoint probes still did
+not produce a promotable success in this round, so they are not enforced in
+the cache filter yet.
 
 | Operator profile privilege key | Module | Service | Current status |
 | --- | --- | --- | --- |
 | `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
-| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
-| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
-| `cppm_certificates` | `platformcertificates` | `self-signed-cert` | accepted, and the probe moved from `403` to `422 Invalid type specified`; needs payload tuning |
+| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `pass_template` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `pass_config` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `pass_index` | `guestconfiguration` | `pass` | accepted; enabling it also exposed `pass_config`, `pass_template`, `pass_cert_install`, and `pass_cert_view`, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `insight_reports` | `insight` | `report-enable` | accepted on the operator profile and exposed runtime key `insight_reports`, but the real `test_report` enable probe still returned baseline `403` |
+| `insight_reports` | `insight` | `report-run` | accepted on the operator profile and exposed runtime key `insight_reports`, but the real `test_report` run probe still returned baseline `403` |
 
 ## Discovered Onboard Runtime Keys
 
@@ -157,14 +170,16 @@ matches.
 | `identities` | `device` | `mac` and `guest_users` |
 | `policyelements` | `auth-source` | `auth_config` and `cppm_config` |
 
-## Remaining Unresolved Services
+## Current Unresolved Live-Probe Results
 
-These are the only services still not promoted into enforced cache mappings after
-the current live discovery rounds:
+These services were revisited in focused live discovery rounds and still are
+not promotable into enforced cache mappings. The broader remaining unmapped
+backlog still lives in `PLANNED_FEATURES.md`.
 
 | Module | Service | Current blocker |
 | --- | --- | --- |
-| `globalserverconfiguration` | `messaging-setup` | candidate probes with `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup` still return `403` |
+| `globalserverconfiguration` | `messaging-setup` | candidate probes with `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup` still return `403` for both `list` and reversible `add` probes |
+| `guestconfiguration` | `pass` | candidate probes with `pass_template`, `pass_config`, `pass_index`, and their tested combinations still return `403` for both `list` and reversible `add` probes |
 
 `certificateauthority/certificate` was promoted after enabling the read-only
 Onboard `View Certificate` privilege on the dedicated discovery profile. Its

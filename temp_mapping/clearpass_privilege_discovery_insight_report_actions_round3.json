@@ -1,0 +1,520 @@
+{
+  "report_id": 3001,
+  "report_name": "test_report",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "initial_state": {
+    "id": 3001,
+    "name": "test_report",
+    "is_enabled": true
+  },
+  "results": [
+    {
+      "service": "insight/report-enable",
+      "candidate_keys": [
+        "insight_report"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_after_baseline": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": false
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_report",
+          "name": "insight_report",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "is_enabled": true,
+          "subcategory": "Unique Failed Auth",
+          "description": "",
+          "language": "en",
+          "copy_remote": false,
+          "config": {
+            "filter": {},
+            "csv_cols": [
+              "auth.timestamp",
+              "auth.mac",
+              "auth.username",
+              "auth.ip",
+              "auth.service",
+              "cppm_error_codes.error_code_str",
+              "alerts.alerts"
+            ]
+          },
+          "schedule": {},
+          "begin_dt": "2026-03-30 00:00:00.000000",
+          "email_targets": [],
+          "sms_targets": [],
+          "end_dt": "2026-03-30 11:35:00.000000",
+          "id": 3001,
+          "name": "test_report",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/report/3001"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": true
+      },
+      "verified": true
+    },
+    {
+      "service": "insight/report-enable",
+      "candidate_keys": [
+        "insight_reports"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_after_baseline": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": false
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?insight_config",
+          "name": "insight_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_reports",
+          "name": "insight_reports",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_after_candidate": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": false
+      },
+      "verified": false
+    },
+    {
+      "service": "insight/report-enable",
+      "candidate_keys": [
+        "insight_report",
+        "insight_reports"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_after_baseline": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": false
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "?insight_config",
+          "name": "insight_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_report",
+          "name": "insight_report",
+          "access": "full"
+        },
+        {
+          "raw": "insight_reports",
+          "name": "insight_reports",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "is_enabled": true,
+          "subcategory": "Unique Failed Auth",
+          "description": "",
+          "language": "en",
+          "copy_remote": false,
+          "config": {
+            "filter": {},
+            "csv_cols": [
+              "auth.timestamp",
+              "auth.mac",
+              "auth.username",
+              "auth.ip",
+              "auth.service",
+              "cppm_error_codes.error_code_str",
+              "alerts.alerts"
+            ]
+          },
+          "schedule": {},
+          "begin_dt": "2026-03-30 00:00:00.000000",
+          "email_targets": [],
+          "sms_targets": [],
+          "end_dt": "2026-03-30 11:35:00.000000",
+          "id": 3001,
+          "name": "test_report",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/report/3001"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 3001,
+        "name": "test_report",
+        "is_enabled": true
+      },
+      "verified": true
+    },
+    {
+      "service": "insight/report-run",
+      "candidate_keys": [
+        "insight_report"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_report",
+          "name": "insight_report",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "success": "Started running report; check Report folder view for details",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/report/3001%2Frun"
+            }
+          }
+        }
+      },
+      "verified": true
+    },
+    {
+      "service": "insight/report-run",
+      "candidate_keys": [
+        "insight_reports"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?insight_config",
+          "name": "insight_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_reports",
+          "name": "insight_reports",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "verified": false
+    },
+    {
+      "service": "insight/report-run",
+      "candidate_keys": [
+        "insight_report",
+        "insight_reports"
+      ],
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "?insight_config",
+          "name": "insight_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_report",
+          "name": "insight_report",
+          "access": "full"
+        },
+        {
+          "raw": "insight_reports",
+          "name": "insight_reports",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "success": "Started running report; check Report folder view for details",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/report/3001%2Frun"
+            }
+          }
+        }
+      },
+      "verified": true
+    }
+  ],
+  "state_after_admin_disable": {
+    "id": 3001,
+    "name": "test_report",
+    "is_enabled": false
+  },
+  "state_before_report_run": {
+    "id": 3001,
+    "name": "test_report",
+    "is_enabled": true
+  },
+  "final_state": {
+    "id": 3001,
+    "name": "test_report",
+    "is_enabled": true
+  }
+}

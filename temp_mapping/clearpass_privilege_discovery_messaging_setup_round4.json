@@ -1,0 +1,356 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "globalserverconfiguration"
+  ],
+  "services": [
+    "globalserverconfiguration/messaging-setup"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "temp_mapping/clearpass_privilege_candidates_messaging_setup_round3.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "globalserverconfiguration",
+      "service": "messaging-setup",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "smtp_config",
+          "smtp_send"
+        ],
+        [
+          "smtp_config",
+          "sms_setup"
+        ],
+        [
+          "smtp_send",
+          "sms_setup"
+        ],
+        [
+          "smtp_config",
+          "smtp_send",
+          "sms_setup"
+        ],
+        [
+          "cppm_messaging_setup"
+        ],
+        [
+          "cppm_messaging_setups"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "smtp_config",
+            "smtp_send"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_config",
+              "name": "smtp_config",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_send",
+              "name": "smtp_send",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "smtp_config",
+            "sms_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?sms-admin",
+              "name": "sms-admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "sms_setup",
+              "name": "sms_setup",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_config",
+              "name": "smtp_config",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "smtp_send",
+            "sms_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?sms-admin",
+              "name": "sms-admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "sms_setup",
+              "name": "sms_setup",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_send",
+              "name": "smtp_send",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "smtp_config",
+            "smtp_send",
+            "sms_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?sms-admin",
+              "name": "sms-admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "sms_setup",
+              "name": "sms_setup",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_config",
+              "name": "smtp_config",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_send",
+              "name": "smtp_send",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_messaging_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_messaging_setups"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_messaging_setups\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    }
+  ]
+}

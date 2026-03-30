@@ -1,0 +1,414 @@
+{
+  "alert_id": 2,
+  "alert_name": "test_alert",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "initial_state": {
+    "id": 2,
+    "name": "test_alert",
+    "is_enabled": true,
+    "is_muted": false
+  },
+  "results": [
+    {
+      "service": "insight/alert-disable",
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_before_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": false
+      },
+      "candidate_keys": [
+        "insight_alert"
+      ],
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_alert",
+          "name": "insight_alert",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "interval_unit": "minute",
+          "subcategory": "WEBAUTH Failed Authentication",
+          "description": "",
+          "is_enabled": false,
+          "interval": 10,
+          "name": "test_alert",
+          "is_muted": false,
+          "email_targets": [
+            "mathias.granlund@aranya.se"
+          ],
+          "threshold": 10,
+          "sms_targets": [],
+          "config": {
+            "filter": {}
+          },
+          "id": 2,
+          "severity": "critical",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/alert/2"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": false,
+        "is_muted": false
+      },
+      "expected_state_field": "is_enabled",
+      "expected_state_value": false,
+      "verified": true
+    },
+    {
+      "service": "insight/alert-enable",
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_before_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": false,
+        "is_muted": false
+      },
+      "candidate_keys": [
+        "insight_alert"
+      ],
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_alert",
+          "name": "insight_alert",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "interval_unit": "minute",
+          "subcategory": "WEBAUTH Failed Authentication",
+          "description": "",
+          "is_enabled": true,
+          "interval": 10,
+          "name": "test_alert",
+          "is_muted": false,
+          "email_targets": [
+            "mathias.granlund@aranya.se"
+          ],
+          "threshold": 10,
+          "sms_targets": [],
+          "config": {
+            "filter": {}
+          },
+          "id": 2,
+          "severity": "critical",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/alert/2"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": false
+      },
+      "expected_state_field": "is_enabled",
+      "expected_state_value": true,
+      "verified": true
+    },
+    {
+      "service": "insight/alert-mute",
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_before_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": false
+      },
+      "candidate_keys": [
+        "insight_alert"
+      ],
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_alert",
+          "name": "insight_alert",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "interval_unit": "minute",
+          "subcategory": "WEBAUTH Failed Authentication",
+          "description": "",
+          "is_enabled": true,
+          "interval": 10,
+          "name": "test_alert",
+          "is_muted": true,
+          "email_targets": [
+            "mathias.granlund@aranya.se"
+          ],
+          "threshold": 10,
+          "sms_targets": [],
+          "config": {
+            "filter": {}
+          },
+          "id": 2,
+          "severity": "critical",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/alert/2"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": true
+      },
+      "expected_state_field": "is_muted",
+      "expected_state_value": true,
+      "verified": true
+    },
+    {
+      "service": "insight/alert-unmute",
+      "baseline_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        }
+      ],
+      "baseline_probe": {
+        "status": "http-error",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "state_before_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": true
+      },
+      "candidate_keys": [
+        "insight_alert"
+      ],
+      "candidate_effective_privileges": [
+        {
+          "raw": "?api_index",
+          "name": "api_index",
+          "access": "allowed"
+        },
+        {
+          "raw": "?cppm_config",
+          "name": "cppm_config",
+          "access": "allowed"
+        },
+        {
+          "raw": "api_docs",
+          "name": "api_docs",
+          "access": "full"
+        },
+        {
+          "raw": "apigility",
+          "name": "apigility",
+          "access": "full"
+        },
+        {
+          "raw": "insight_alert",
+          "name": "insight_alert",
+          "access": "full"
+        }
+      ],
+      "candidate_probe": {
+        "status": "ok",
+        "response": {
+          "category": "Authentication",
+          "interval_unit": "minute",
+          "subcategory": "WEBAUTH Failed Authentication",
+          "description": "",
+          "is_enabled": true,
+          "interval": 10,
+          "name": "test_alert",
+          "is_muted": false,
+          "email_targets": [
+            "mathias.granlund@aranya.se"
+          ],
+          "threshold": 10,
+          "sms_targets": [],
+          "config": {
+            "filter": {}
+          },
+          "id": 2,
+          "severity": "critical",
+          "_links": {
+            "self": {
+              "href": "https://192.168.100.64/api/alert/2"
+            }
+          }
+        }
+      },
+      "state_after_candidate": {
+        "id": 2,
+        "name": "test_alert",
+        "is_enabled": true,
+        "is_muted": false
+      },
+      "expected_state_field": "is_muted",
+      "expected_state_value": false,
+      "verified": true
+    }
+  ],
+  "final_state": {
+    "id": 2,
+    "name": "test_alert",
+    "is_enabled": true,
+    "is_muted": false
+  }
+}

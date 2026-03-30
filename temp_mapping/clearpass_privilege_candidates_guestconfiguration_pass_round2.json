@@ -1,0 +1,11 @@
+{
+  "guestconfiguration/pass": [
+    ["pass_template"],
+    ["pass_index"],
+    ["pass_config"],
+    ["pass_template", "pass_index"],
+    ["pass_template", "pass_config"],
+    ["pass_index", "pass_config"],
+    ["pass_template", "pass_index", "pass_config"]
+  ]
+}
