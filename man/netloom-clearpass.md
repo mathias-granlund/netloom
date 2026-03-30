@@ -247,13 +247,13 @@ For `netloom toolsandutilities random-password add`, the optional
 the new shorthand aliases:
 
 ```text
-1 | digits         -> nwa_digits_password
-2 | letters        -> nwa_letters_password
-3 | lettersdigits  -> nwa_lettersdigits_password
-4 | words          -> nwa_words_password
-5 | alnum          -> nwa_alnum_password
-6 | complex        -> nwa_complex_password
-7 | strong         -> nwa_strong_password
+1 | digits         -> nwa_digits_password         | Random digits
+2 | letters        -> nwa_letters_password        | Random lowercase letters
+3 | lettersdigits  -> nwa_lettersdigits_password  | Random lowercase letters & digits
+4 | words          -> nwa_words_password          | Random words separated by a small number
+5 | alnum          -> nwa_alnum_password          | Random letters & digits
+6 | complex        -> nwa_complex_password        | At least one each: upper case, lower case, digit, and symbol
+7 | strong         -> nwa_strong_password         | Random letters, digits and symbols
 ```
 
 The full native values still work too.
