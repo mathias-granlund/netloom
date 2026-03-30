@@ -240,6 +240,30 @@ ClearPass plugin:
 - `--token-file=PATH`: Load a bearer token from a file.
 - `--encrypt=enable|disable`: Mask or show secret fields.
 
+## Random Password Aliases
+
+For `netloom toolsandutilities random-password add`, the optional
+`--random_password_method` field accepts both the native ClearPass values and
+the new shorthand aliases:
+
+```text
+1 | digits         -> nwa_digits_password
+2 | letters        -> nwa_letters_password
+3 | lettersdigits  -> nwa_lettersdigits_password
+4 | words          -> nwa_words_password
+5 | alnum          -> nwa_alnum_password
+6 | complex        -> nwa_complex_password
+7 | strong         -> nwa_strong_password
+```
+
+The full native values still work too.
+
+```bash
+netloom toolsandutilities random-password add --random_password_method=6
+netloom toolsandutilities random-password add --random_password_method=strong
+netloom toolsandutilities random-password add --random_password_method=nwa_strong_password
+```
+
 ## Copy Workflow
 
 Preferred syntax:

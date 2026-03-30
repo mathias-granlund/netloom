@@ -57,6 +57,29 @@ _CONTENT_TYPE_EXTENSIONS = {
     "application/pdf": "pdf",
     "text/plain": "txt",
 }
+_RANDOM_PASSWORD_METHOD_ALIASES = {
+    "1": "nwa_digits_password",
+    "digits": "nwa_digits_password",
+    "nwa_digits_password": "nwa_digits_password",
+    "2": "nwa_letters_password",
+    "letters": "nwa_letters_password",
+    "nwa_letters_password": "nwa_letters_password",
+    "3": "nwa_lettersdigits_password",
+    "lettersdigits": "nwa_lettersdigits_password",
+    "nwa_lettersdigits_password": "nwa_lettersdigits_password",
+    "4": "nwa_words_password",
+    "words": "nwa_words_password",
+    "nwa_words_password": "nwa_words_password",
+    "5": "nwa_alnum_password",
+    "alnum": "nwa_alnum_password",
+    "nwa_alnum_password": "nwa_alnum_password",
+    "6": "nwa_complex_password",
+    "complex": "nwa_complex_password",
+    "nwa_complex_password": "nwa_complex_password",
+    "7": "nwa_strong_password",
+    "strong": "nwa_strong_password",
+    "nwa_strong_password": "nwa_strong_password",
+}
 
 
 def _normalize_content_type(value: str | None) -> str:
@@ -257,8 +280,34 @@ def output_settings(
     return console, data_format, out_path, csv_fieldnames
 
 
+def _normalize_random_password_method(value):
+    if not isinstance(value, str):
+        return value
+    normalized = value.strip().lower()
+    return _RANDOM_PASSWORD_METHOD_ALIASES.get(normalized, value)
+
+
+def normalize_special_arg_aliases(args: dict) -> dict:
+    if (
+        args.get("module") != "toolsandutilities"
+        or args.get("service") != "random-password"
+        or args.get("action") != "add"
+        or "random_password_method" not in args
+    ):
+        return args
+
+    normalized_args = dict(args)
+    normalized_args["random_password_method"] = _normalize_random_password_method(
+        args["random_password_method"]
+    )
+    return normalized_args
+
+
 def payload_from_args(args: dict, excluded_keys: set[str]) -> dict:
-    return {key: value for key, value in args.items() if key not in excluded_keys}
+    normalized_args = normalize_special_arg_aliases(args)
+    return {
+        key: value for key, value in normalized_args.items() if key not in excluded_keys
+    }
 
 
 def resolve_placeholders_for_action(
@@ -335,26 +384,30 @@ def normalize_file_payload_for_action(
 
 
 def query_params_for_action(cp, api_catalog, args: dict, action: str) -> dict:
+    normalized_args = normalize_special_arg_aliases(args)
     action_def = cp.get_action_definition(
-        api_catalog, args["module"], args["service"], action
+        api_catalog, normalized_args["module"], normalized_args["service"], action
     )
     allowed = list(action_def.get("params") or [])
     params: dict[str, str | int | bool] = {}
 
     if action == "list":
         if "limit" in allowed:
-            limit = int(args.get("limit", 25))
+            limit = int(normalized_args.get("limit", 25))
             if limit < 1 or limit > 1000:
                 raise ValueError("--limit must be between 1 and 1000")
             params["limit"] = limit
         if "offset" in allowed:
-            params["offset"] = int(args.get("offset", 0))
+            params["offset"] = int(normalized_args.get("offset", 0))
         if "sort" in allowed:
-            params["sort"] = args.get("sort")
-        if "filter" in allowed and args.get("filter") is not None:
-            params["filter"] = normalize_filter_value(args["filter"])
-        if "calculate_count" in allowed and args.get("calculate_count") is not None:
-            raw_value = args["calculate_count"]
+            params["sort"] = normalized_args.get("sort")
+        if "filter" in allowed and normalized_args.get("filter") is not None:
+            params["filter"] = normalize_filter_value(normalized_args["filter"])
+        if (
+            "calculate_count" in allowed
+            and normalized_args.get("calculate_count") is not None
+        ):
+            raw_value = normalized_args["calculate_count"]
             if isinstance(raw_value, str):
                 enabled = raw_value.strip().lower() in {"1", "true", "yes", "on"}
             else:
@@ -364,7 +417,7 @@ def query_params_for_action(cp, api_catalog, args: dict, action: str) -> dict:
     for name in allowed:
         if name in params:
             continue
-        if name in args:
-            params[name] = args[name]
+        if name in normalized_args:
+            params[name] = normalized_args[name]
 
     return params

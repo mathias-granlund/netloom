@@ -347,6 +347,33 @@ Load a bearer token from a file.
 .BI --encrypt= enable|disable
 Mask or show secret fields.
 
+.SH RANDOM PASSWORD ALIASES
+For
+.B netloom toolsandutilities random-password add
+the optional
+.B --random_password_method
+field accepts both the native ClearPass values and short aliases.
+
+.PP
+.EX
+1 | digits         -> nwa_digits_password
+2 | letters        -> nwa_letters_password
+3 | lettersdigits  -> nwa_lettersdigits_password
+4 | words          -> nwa_words_password
+5 | alnum          -> nwa_alnum_password
+6 | complex        -> nwa_complex_password
+7 | strong         -> nwa_strong_password
+.EE
+
+You can still pass the full native values if you prefer.
+
+.PP
+.EX
+netloom toolsandutilities random-password add --random_password_method=6
+netloom toolsandutilities random-password add --random_password_method=strong
+netloom toolsandutilities random-password add --random_password_method=nwa_strong_password
+.EE
+
 .SH COPY WORKFLOW
 The ClearPass plugin supports copying resources between named profiles without
 manual export and replay steps.

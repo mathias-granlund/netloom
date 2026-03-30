@@ -50,6 +50,17 @@ def api_catalog():
                         },
                     }
                 }
+            },
+            "toolsandutilities": {
+                "random-password": {
+                    "actions": {
+                        "add": {
+                            "method": "POST",
+                            "paths": ["/api/random-password"],
+                            "params": ["random_password_method", "length"],
+                        }
+                    }
+                }
             }
         }
     }
@@ -90,6 +101,26 @@ def test_payload_from_args_strips_reserved():
     args = {"name": "x", "id": "1", "console": True, "module": "m", "foo": "bar"}
     payload = commands.payload_from_cli_args(args, {"console", "module"})
     assert payload == {"name": "x", "id": "1", "foo": "bar"}
+
+
+def test_payload_from_args_normalizes_random_password_method_shorthand():
+    args = {
+        "module": "toolsandutilities",
+        "service": "random-password",
+        "action": "add",
+        "random_password_method": "6",
+        "length": "20",
+        "console": True,
+    }
+
+    payload = commands.payload_from_cli_args(
+        args, {"console", "module", "service", "action"}
+    )
+
+    assert payload == {
+        "random_password_method": "nwa_complex_password",
+        "length": "20",
+    }
 
 
 def test_list_handler_validates_limit_range(api_catalog, settings):
@@ -629,6 +660,62 @@ def test_add_handler_file_payload_filters_response_fields(
         "name": "alice",
         "description": "demo",
         "foo": "bar",
+    }
+
+
+def test_add_handler_normalizes_random_password_method_alias(
+    monkeypatch, api_catalog, settings
+):
+    logged = {}
+
+    class CP:
+        last_response_meta = None
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def resolve_action(self, api_catalog, module, service, action, args):
+            return (
+                api_catalog["modules"][module][service]["actions"][action],
+                "/api/random-password",
+                [],
+            )
+
+        def add(self, api_catalog, token, args, payload):
+            logged["add_call"] = {
+                "api_catalog": api_catalog,
+                "token": token,
+                "args": args,
+                "payload": payload,
+            }
+            return {"id": 7, **payload}
+
+    monkeypatch.setattr(
+        commands,
+        "log_to_file",
+        lambda thing, filename, **kwargs: logged.update(
+            {"thing": thing, "filename": str(filename)}
+        ),
+    )
+
+    commands.add_handler(
+        CP(),
+        "tok",
+        api_catalog,
+        {
+            "module": "toolsandutilities",
+            "service": "random-password",
+            "action": "add",
+            "random_password_method": "strong",
+            "length": "24",
+            "console": False,
+        },
+        settings=settings,
+    )
+
+    assert logged["add_call"]["payload"] == {
+        "random_password_method": "nwa_strong_password",
+        "length": "24",
     }
 
 
