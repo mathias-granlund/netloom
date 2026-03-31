@@ -8,9 +8,9 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- privilege-gated verified services: `123`
-- baseline verified services: `9`
-- unresolved services: `60`
+- privilege-gated verified services: `125`
+- baseline verified services: `10`
+- unresolved services: `57`
 
 Goal:
 - continue turning retained full-catalog services into verified privilege
@@ -19,6 +19,9 @@ Goal:
   operator profile
 - explicitly separate real privilege gaps from endpoints that are not
   actually usable on the current ClearPass server
+- treat `certificateauthority` as the only remaining higher-priority mapping
+  area for now; the remaining unresolved services are lower value and may be
+  hidden from the CLI later if they stay unmapped
 
 Current unmapped retained services by module:
 
@@ -46,11 +49,6 @@ Current unmapped retained services by module:
 - `subnet-mapping-name-disable`
 - `subnet-mapping-name-enable`
 - `windows-hotfix-kbid-operating_system`
-
-#### `globalserverconfiguration` (`3`)
-- `attribute-name`
-- `db-sync`
-- `messaging-setup`
 
 #### `guestactions` (`4`)
 - `sms`

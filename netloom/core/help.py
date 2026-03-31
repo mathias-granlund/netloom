@@ -109,12 +109,29 @@ def _supports_path_token(paths: list[str], token: str) -> bool:
     return any(marker in path for path in paths)
 
 
+def _path_tokens(path: str) -> list[str]:
+    tokens: list[str] = []
+    for segment in path.split("/"):
+        if segment.startswith("{") and segment.endswith("}") and len(segment) > 2:
+            tokens.append(segment[1:-1])
+    return tokens
+
+
+def _selector_usage_groups_from_paths(paths: list[str]) -> list[str]:
+    groups: list[str] = []
+    for path in paths:
+        tokens = _path_tokens(path)
+        if not tokens:
+            continue
+        groups.append(" ".join(_compact_param_flag(token) for token in tokens))
+    return _dedupe_lines(groups)
+
+
 def _selector_flags_from_paths(paths: list[str]) -> list[str]:
     selectors: list[str] = []
-    if _supports_path_token(paths, "id"):
-        selectors.append("--id=VALUE")
-    if _supports_path_token(paths, "name"):
-        selectors.append("--name=VALUE")
+    for path in paths:
+        for token in _path_tokens(path):
+            selectors.append(_compact_param_flag(token))
     return selectors
 
 
@@ -181,12 +198,8 @@ def render_get_action_help(module: str, service: str, service_entry: dict) -> st
     selectors: list[str] = []
     options: list[str] = []
 
-    if _supports_path_token(get_paths, "id"):
-        selector_usage.append("--id=VALUE")
-        selectors.append("--id=VALUE")
-    if _supports_path_token(get_paths, "name"):
-        selector_usage.append("--name=VALUE")
-        selectors.append("--name=VALUE")
+    selector_usage.extend(_selector_usage_groups_from_paths(get_paths))
+    selectors.extend(_selector_flags_from_paths(get_paths))
     if list_def:
         selector_usage.append("--all")
         selectors.append("--all")

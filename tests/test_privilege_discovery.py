@@ -97,7 +97,7 @@ def test_probe_action_for_service_falls_back_to_get_when_list_is_missing():
     assert _probe_action_for_service(service_entry) == "get"
 
 
-def test_iter_target_services_includes_safe_get_only_services():
+def test_iter_target_services_skips_parameterized_services_without_known_probe_args():
     catalog = {
         "modules": {
             "globalserverconfiguration": {
@@ -112,7 +112,7 @@ def test_iter_target_services_includes_safe_get_only_services():
                 "attribute-name": {
                     "actions": {
                         "get": {
-                            "paths": ["/api/attribute/{entity_name}/name/{name}"],
+                            "paths": ["/api/attribute/{unknown}/name/{name}"],
                             "params": None,
                         }
                     }
@@ -129,6 +129,31 @@ def test_iter_target_services_includes_safe_get_only_services():
 
     assert ("globalserverconfiguration", "application-license-summary") in services
     assert ("globalserverconfiguration", "attribute-name") not in services
+
+
+def test_iter_target_services_includes_attribute_name_with_known_probe_args():
+    catalog = {
+        "modules": {
+            "globalserverconfiguration": {
+                "attribute-name": {
+                    "actions": {
+                        "get": {
+                            "paths": ["/api/attribute/{entity_name}/name/{name}"],
+                            "params": None,
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    services = _iter_target_services(
+        catalog,
+        ("globalserverconfiguration",),
+        include_mapped=True,
+    )
+
+    assert ("globalserverconfiguration", "attribute-name") in services
 
 
 def test_iter_target_services_includes_parameterized_services_with_known_probe_args():

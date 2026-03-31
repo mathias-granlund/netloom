@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.9.15 - 2026-03-31
+
+### Changed
+- continued the ClearPass privilege-mapping work and promoted
+  `globalserverconfiguration/attribute-name -> cppm_attributes` and
+  `globalserverconfiguration/messaging-setup -> cppm_admin_user_pass_policy`
+- taught both normal help and cached interactive help to show multi-part path
+  selectors correctly, including `attribute-name` routes that require both
+  `--entity-name` and `--name`
+- clarified the ClearPass attribute endpoint notes so the default per-entity
+  attributes and support for custom attributes are both documented
+- updated `PLANNED_FEATURES.md` coverage to `125` privilege-gated verified,
+  `10` baseline verified, and `57` unresolved retained services, with
+  `certificateauthority` now effectively the only remaining higher-priority
+  mapping area
+- aligned package metadata, release notes, README badge, and checked-in
+  manpage version headers for the `1.9.15` release
+
 ## 1.9.14 - 2026-03-31
 
 ### Added

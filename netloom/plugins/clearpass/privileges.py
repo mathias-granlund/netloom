@@ -313,6 +313,12 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
+        service="db-sync",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
         service="admin-privilege",
         privileges=("cppm_admin_privileges",),
     ),
@@ -334,6 +340,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ServicePrivilegeRule(
         module="globalserverconfiguration",
         service="attribute",
+        privileges=("cppm_attributes",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="attribute-name",
         privileges=("cppm_attributes",),
     ),
     ServicePrivilegeRule(
@@ -364,6 +375,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ServicePrivilegeRule(
         module="globalserverconfiguration",
         service="password-policy",
+        privileges=("cppm_admin_user_pass_policy",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="messaging-setup",
         privileges=("cppm_admin_user_pass_policy",),
     ),
     ServicePrivilegeRule(

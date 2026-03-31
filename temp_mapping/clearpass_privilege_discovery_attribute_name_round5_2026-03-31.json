@@ -1,0 +1,112 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "globalserverconfiguration"
+  ],
+  "services": [
+    "globalserverconfiguration/attribute-name"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_attribute_name_round1.json",
+  "probe_writes": false,
+  "results": [
+    {
+      "module": "globalserverconfiguration",
+      "service": "attribute-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "entity_name": "LocalUser",
+          "name": "Title"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_attributes"
+        ],
+        [
+          "cppm_attribute_name"
+        ],
+        [
+          "cppm_attribute_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_attributes"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_attributes",
+              "name": "cppm_attributes",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "entity_name": "LocalUser",
+              "name": "Title"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_attributes"
+        ],
+        "module": "globalserverconfiguration",
+        "service": "attribute-name",
+        "probe_action": "get"
+      }
+    }
+  ]
+}

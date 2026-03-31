@@ -290,6 +290,62 @@ def test_render_help_for_get_action_is_compact():
     assert "list (used by `get --all`)" not in text
 
 
+def test_render_help_for_get_action_with_multi_part_path_selector():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "globalserverconfiguration": {
+                    "attribute-name": {
+                        "actions": {
+                            "list": {
+                                "method": "GET",
+                                "paths": ["/api/attribute"],
+                                "params": [
+                                    "sort",
+                                    "offset",
+                                    "limit",
+                                    "calculate_count",
+                                    "filter",
+                                ],
+                            },
+                            "get": {
+                                "method": "GET",
+                                "paths": [
+                                    "/api/attribute/{entity_name}/name/{name}",
+                                ],
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "globalserverconfiguration",
+            "service": "attribute-name",
+            "action": "get",
+        },
+        version="1.9.5",
+    )
+
+    assert "get (globalserverconfiguration attribute-name):" in text
+    assert (
+        "usage: netloom <module> <service> get "
+        "[--entity-name=VALUE --name=VALUE | --all] [options]" in text
+    )
+    assert "  selectors:" in text
+    assert "    - --entity-name=VALUE" in text
+    assert "    - --name=VALUE" in text
+    assert "    - --all" in text
+    assert "    - --filter=JSON|FIELD:OP:VALUE" in text
+    assert "  options:" in text
+    assert "    - --sort=+FIELD|-FIELD" in text
+    assert "    - --limit=N" in text
+    assert "    - --offset=N" in text
+    assert "    - --calculate-count=true|false" in text
+    assert "    - --console" in text
+    assert "    - --out=PATH" in text
+
+
 def test_render_help_for_list_action_is_compact():
     text = helpmod.render_help(
         {

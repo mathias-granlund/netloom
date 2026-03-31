@@ -101,6 +101,9 @@ _PARAMETERIZED_READ_PROBE_ARGS: dict[tuple[str, str], list[dict[str, str]]] = {
     ("enforcementprofile", "voip-profile"): [
         {"product_name": "Mobility Access Switch"},
     ],
+    ("globalserverconfiguration", "attribute-name"): [
+        {"entity_name": "LocalUser", "name": "Title"},
+    ],
 }
 
 

@@ -115,6 +115,40 @@ def test_render_help_lists_builtin_and_catalog_modules_from_lightweight_layer():
             },
             {"module": "identities", "service": "endpoint", "action": "list"},
         ),
+        (
+            {
+                "modules": {
+                    "globalserverconfiguration": {
+                        "attribute-name": {
+                            "actions": {
+                                "list": {
+                                    "method": "GET",
+                                    "paths": ["/api/attribute"],
+                                    "params": [
+                                        "limit",
+                                        "offset",
+                                        "filter",
+                                        "sort",
+                                        "calculate_count",
+                                    ],
+                                },
+                                "get": {
+                                    "method": "GET",
+                                    "paths": [
+                                        "/api/attribute/{entity_name}/name/{name}"
+                                    ],
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "module": "globalserverconfiguration",
+                "service": "attribute-name",
+                "action": "get",
+            },
+        ),
     ],
 )
 def test_lightweight_help_matches_cli_help_for_cached_compact_cases(

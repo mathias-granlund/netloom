@@ -114,6 +114,10 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("apioperations", "oauth")].privileges == ()
     assert rules[("apioperations", "privileges")].source == "baseline_verified"
     assert rules[("apioperations", "privileges")].privileges == ()
+    assert rules[("globalserverconfiguration", "db-sync")].source == (
+        "baseline_verified"
+    )
+    assert rules[("globalserverconfiguration", "db-sync")].privileges == ()
     assert rules[("certificateauthority", "certificate")].privileges == (
         "mdps_view_certificate",
     )
@@ -145,8 +149,14 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[
         ("globalserverconfiguration", "application-license-summary")
     ].privileges == ("cppm_licenses",)
+    assert rules[("globalserverconfiguration", "attribute-name")].privileges == (
+        "cppm_attributes",
+    )
     assert rules[("globalserverconfiguration", "admin-user")].privileges == (
         "cppm_admin_users",
+    )
+    assert rules[("globalserverconfiguration", "messaging-setup")].privileges == (
+        "cppm_admin_user_pass_policy",
     )
     assert rules[("globalserverconfiguration", "operator-profile")].privileges == (
         "auth_profiles",

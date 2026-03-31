@@ -70,12 +70,14 @@ Useful flags for future mapping rounds:
 | `cppm_licenses` | `cppm_licenses` | `globalserverconfiguration` | `application-license` | `list` |
 | `cppm_licenses` | `cppm_licenses` | `globalserverconfiguration` | `application-license-summary` | `get` |
 | `cppm_attributes` | `cppm_attributes` | `globalserverconfiguration` | `attribute` | `list` |
+| `cppm_attributes` | `cppm_attributes` | `globalserverconfiguration` | `attribute-name` | `get` via real `entity_name=LocalUser`, `name=Title` |
 | `cppm_clearpass_portal` | `cppm_clearpass_portal` | `globalserverconfiguration` | `clearpass-portal` | `list` |
 | `cppm_data_filters` | `cppm_data_filters` | `globalserverconfiguration` | `data-filter` | `list` |
 | `cppm_file_backup_server` | `cppm_file_backup_server` | `globalserverconfiguration` | `file-backup-server` | `list` |
 | `auth_profiles` | `auth_profiles` | `globalserverconfiguration` | `operator-profile` | `list` |
 | `cppm_config` | `cppm_config` | `globalserverconfiguration` | `parameters` | `get` |
 | `cppm_admin_user_pass_policy` | `cppm_admin_user_pass_policy` | `globalserverconfiguration` | `password-policy` | `get` |
+| `cppm_admin_user_pass_policy` | `cppm_admin_user_pass_policy` | `globalserverconfiguration` | `messaging-setup` | `get`; empty-body `POST` returns `400` instead of baseline `403` |
 | `cppm_server_policy_manager_zones` | `cppm_server_policy_manager_zones` | `globalserverconfiguration` | `policy-manager-zones` | `list` |
 | `cppm_snmp_trap_receivers` | `cppm_snmp_trap_receivers` | `globalserverconfiguration` | `snmp-trap-receiver` | `list` |
 | `platform_authentication` | `platform_authentication` | `guestconfiguration` | `authentication` | `list` |
@@ -160,6 +162,7 @@ privilege mappings.
 | `apioperations` | `oauth` | `add` |
 | `apioperations` | `privileges` | `get` |
 | `globalserverconfiguration` | `all-privileges` | `get` |
+| `globalserverconfiguration` | `db-sync` | `add` via direct `POST` with `{"timeout":"10"}` returning JSON fields `error`, `is_publisher`, `sync_time`, `timeout`, `timeout_error`, and `message` |
 | `localserverconfiguration` | `cppm-version` | `get` |
 | `localserverconfiguration` | `fips` | `get` |
 | `localserverconfiguration` | `version` | `get` |
@@ -175,9 +178,6 @@ the cache filter yet.
 
 | Operator profile privilege key | Module | Service | Current status |
 | --- | --- | --- | --- |
-| `cppm_messaging_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but baseline and candidate probes still returned `403` |
-| `smtp_config` | `globalserverconfiguration` | `messaging-setup` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
-| `sms_setup` | `globalserverconfiguration` | `messaging-setup` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
 | `pass_template` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
 | `pass_config` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
 | `pass_index` | `guestconfiguration` | `pass` | accepted; enabling it also exposed `pass_config`, `pass_template`, `pass_cert_install`, and `pass_cert_view`, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
@@ -210,6 +210,15 @@ matches.
 | `identities` | `device` | `mac` and `guest_users` |
 | `policyelements` | `auth-source` | `auth_config` and `cppm_config` |
 
+## Attribute Endpoint Notes
+
+For `globalserverconfiguration/attribute` and `globalserverconfiguration/attribute-name`:
+
+- The `entity_name` values currently confirmed from live server data are `LocalUser`, `GuestUser`, `Endpoint`, and `Device`.
+- The `name` field returned by `GET /api/attribute` represents the default available attributes for each `entity_name`.
+- ClearPass also allows custom attributes, so `attribute-name` is not limited to only the built-in defaults.
+- The live verification for `attribute-name` used a real default attribute: `entity_name=LocalUser`, `name=Title`.
+
 ## Current Unresolved Live-Probe Results
 
 These services were revisited in focused live discovery rounds and still are
@@ -218,7 +227,6 @@ backlog still lives in `PLANNED_FEATURES.md`.
 
 | Module | Service | Current blocker |
 | --- | --- | --- |
-| `globalserverconfiguration` | `messaging-setup` | candidate probes with `cppm_messaging_setup`, `smtp_config`, `smtp_send`, and `sms_setup` still return `403` for both `list` and reversible `add` probes |
 | `guestconfiguration` | `pass` | candidate probes with `pass_template`, `pass_config`, `pass_index`, and their tested combinations still return `403` for both `list` and reversible `add` probes |
 
 `certificateauthority/certificate` was promoted after enabling the read-only
