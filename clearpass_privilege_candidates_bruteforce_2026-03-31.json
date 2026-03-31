@@ -1,0 +1,878 @@
+{
+  "certificateauthority/chain": [
+    "mdps_ca",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_issue_certificate",
+    "mdps_revoke_certificate"
+  ],
+  "certificateauthority/export": [
+    "#mdps_export_ca_key",
+    "#mdps_export_private_key",
+    "#guest_export",
+    "#mac_export",
+    "cppm_syslog_export_filter",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list"
+  ],
+  "certificateauthority/import": [
+    "mdps_csc_import",
+    "guest_import",
+    "mac_import",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate"
+  ],
+  "certificateauthority/new": [
+    "mdps_ca",
+    "mdps_create_ca",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_issue_certificate"
+  ],
+  "certificateauthority/reject": [
+    "mdps_ca",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_issue_certificate",
+    "mdps_revoke_certificate"
+  ],
+  "certificateauthority/request": [
+    "mdps_create_csr",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_issue_certificate",
+    "mdps_revoke_certificate"
+  ],
+  "certificateauthority/revoke": [
+    "mdps_revoke_certificate",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_issue_certificate",
+    "pass_cert_install"
+  ],
+  "certificateauthority/sign": [
+    "mdps_issue_certificate",
+    "hotspot_manage_signup",
+    "#mdps_view_certificate",
+    "#mdps_view_own_certificate",
+    "cppm_cert_trust_list",
+    "cppm_certificates",
+    "mdps_delete_certificate",
+    "mdps_revoke_certificate"
+  ],
+  "endpointvisibility/device-fingerprint": [
+    "cppm_device_fingerprint",
+    "cppm_fingerprints",
+    "cppm_device_insight",
+    "cppm_network_device_groups",
+    "cppm_network_devices",
+    "mdps_device_manage",
+    "mdps_own_device_delete",
+    "mdps_own_device_disable"
+  ],
+  "endpointvisibility/fingerprint-name": [
+    "cppm_fingerprints",
+    "cppm_device_fingerprint",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/global-settings": [
+    "cppm_onguard_global_settings",
+    "cppm_agentless_onguard_settings",
+    "cppm_onguard_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/network-scan-disable": [
+    "cppm_networkscan",
+    "cppm_profiler_subnet_mapping",
+    "cppm_network_device_groups",
+    "cppm_network_devices",
+    "cppm_network_proxy_targets",
+    "mdps_own_device_disable",
+    "mdps_shared_device_disable",
+    "cppm_endpoint_context_server"
+  ],
+  "endpointvisibility/network-scan-enable": [
+    "cppm_networkscan",
+    "cppm_profiler_subnet_mapping",
+    "cppm_network_device_groups",
+    "cppm_network_devices",
+    "cppm_network_proxy_targets",
+    "mdps_own_device_enable",
+    "mdps_shared_device_enable",
+    "cppm_endpoint_context_server"
+  ],
+  "endpointvisibility/onguard-activity": [
+    "cppm_on_guard_activity",
+    "cppm_agentless_onguard_settings",
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_onguard_global_settings",
+    "cppm_onguard_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/onguard-activity-message": [
+    "cppm_on_guard_activity",
+    "cppm_agentless_onguard_settings",
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_onguard_global_settings",
+    "cppm_onguard_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/onguard-activity-notification": [
+    "cppm_on_guard_activity",
+    "cppm_agentless_onguard_settings",
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_onguard_global_settings",
+    "cppm_onguard_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/onguard-custom-script": [
+    "cppm_agentless_onguard_settings",
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_onguard_global_settings",
+    "cppm_onguard_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "cppm_on_guard_activity",
+    "guest_customize"
+  ],
+  "endpointvisibility/settings": [
+    "cppm_onguard_settings",
+    "cppm_agentless_onguard_settings",
+    "cppm_onguard_global_settings",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/subnet-mapping": [
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_profiler_subnet_mapping",
+    "cppm_role_mapping",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/subnet-mapping-disable": [
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_profiler_subnet_mapping",
+    "cppm_role_mapping",
+    "mdps_own_device_disable",
+    "mdps_shared_device_disable",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/subnet-mapping-enable": [
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_profiler_subnet_mapping",
+    "cppm_role_mapping",
+    "mdps_own_device_enable",
+    "mdps_shared_device_enable",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/subnet-mapping-name-disable": [
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_profiler_subnet_mapping",
+    "cppm_role_mapping",
+    "mdps_own_device_disable",
+    "mdps_shared_device_disable",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/subnet-mapping-name-enable": [
+    "cppm_agentless_onguard_subnet_mapping",
+    "cppm_profiler_subnet_mapping",
+    "cppm_role_mapping",
+    "mdps_own_device_enable",
+    "mdps_shared_device_enable",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/windows-hotfix": [
+    "cppm_windows_hotfix",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "endpointvisibility/windows-hotfix-kbid-operating_system": [
+    "cppm_windows_hotfix",
+    "cppm_endpoint_context_server",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "enforcementprofile/captive-portal-profile": [
+    "cppm_captive_portal_profile",
+    "cppm_enforcement_profile",
+    "auth_profiles",
+    "cppm_clearpass_portal",
+    "cppm_policer_profile",
+    "cppm_qos_profile",
+    "cppm_voip_profile",
+    "#mdps_export_ca_key"
+  ],
+  "enforcementprofile/captive-portal-profile-name": [
+    "cppm_enforcement_profile",
+    "cppm_captive_portal_profile",
+    "auth_profiles",
+    "cppm_clearpass_portal",
+    "cppm_policer_profile",
+    "cppm_qos_profile",
+    "cppm_voip_profile",
+    "#mdps_export_ca_key"
+  ],
+  "enforcementprofile/dur-class": [
+    "cppm_dur_class",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/dur-class-name": [
+    "cppm_dur_class",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/ethertype-access-control-list": [
+    "cppm_ethertype_access_control_list",
+    "cppm_access_controls",
+    "cppm_mac_access_control_list",
+    "cppm_service_control",
+    "cppm_session_access_control_list",
+    "cppm_stateless_access_control_list",
+    "extension_control",
+    "full-user-control"
+  ],
+  "enforcementprofile/ethertype-access-control-list-name": [
+    "cppm_ethertype_access_control_list",
+    "cppm_access_controls",
+    "cppm_mac_access_control_list",
+    "cppm_service_control",
+    "cppm_session_access_control_list",
+    "cppm_stateless_access_control_list",
+    "extension_control",
+    "full-user-control"
+  ],
+  "enforcementprofile/mac-access-control-list": [
+    "cppm_mac_access_control_list",
+    "mac",
+    "#mac_export",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_active_session",
+    "cppm_service_control",
+    "cppm_session_access_control_list"
+  ],
+  "enforcementprofile/mac-access-control-list-name": [
+    "mac",
+    "cppm_mac_access_control_list",
+    "#mac_export",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_active_session",
+    "cppm_service_control",
+    "cppm_session_access_control_list"
+  ],
+  "enforcementprofile/nat-pool": [
+    "cppm_nat_pool",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/nat-pool-name": [
+    "cppm_nat_pool",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/net-destination": [
+    "cppm_net_destination",
+    "cppm_net_service",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile",
+    "cppm_network_device_groups",
+    "cppm_network_devices",
+    "cppm_network_proxy_targets",
+    "cppm_networkscan"
+  ],
+  "enforcementprofile/net-destination-name": [
+    "cppm_net_destination",
+    "cppm_net_service",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile",
+    "cppm_network_device_groups",
+    "cppm_network_devices",
+    "cppm_network_proxy_targets",
+    "cppm_networkscan"
+  ],
+  "enforcementprofile/net-service": [
+    "cppm_net_service",
+    "cppm_net_destination",
+    "cppm_service_control",
+    "cppm_service_parameter",
+    "cppm_services",
+    "cppm_tacacs_service_dict",
+    "soap_services",
+    "cppm_enforcement_policy"
+  ],
+  "enforcementprofile/net-service-name": [
+    "cppm_net_service",
+    "cppm_net_destination",
+    "cppm_service_control",
+    "cppm_service_parameter",
+    "cppm_services",
+    "cppm_tacacs_service_dict",
+    "soap_services",
+    "cppm_enforcement_policy"
+  ],
+  "enforcementprofile/policer-profile": [
+    "cppm_policer_profile",
+    "cppm_enforcement_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_qos_profile",
+    "cppm_voip_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "enforcementprofile/policer-profile-name": [
+    "cppm_enforcement_profile",
+    "cppm_policer_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_qos_profile",
+    "cppm_voip_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "enforcementprofile/policy": [
+    "cppm_policy",
+    "cppm_enforcement_policy",
+    "cppm_admin_user_pass_policy",
+    "cppm_local_user_pass_policy",
+    "cppm_policy_manager_zones",
+    "cppm_posture_policy",
+    "cppm_server_policy_manager_zones",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/policy-name": [
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/qos-profile": [
+    "cppm_qos_profile",
+    "cppm_enforcement_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_policer_profile",
+    "cppm_voip_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "enforcementprofile/qos-profile-name": [
+    "cppm_enforcement_profile",
+    "cppm_qos_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_policer_profile",
+    "cppm_voip_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "enforcementprofile/session-access-control-list": [
+    "cppm_session_access_control_list",
+    "#guest_sessions_history",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_access_control_list",
+    "cppm_mac_active_session",
+    "cppm_service_control",
+    "cppm_session_action"
+  ],
+  "enforcementprofile/session-access-control-list-name": [
+    "cppm_session_access_control_list",
+    "#guest_sessions_history",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_access_control_list",
+    "cppm_mac_active_session",
+    "cppm_service_control",
+    "cppm_session_action"
+  ],
+  "enforcementprofile/stateless-access-control-list": [
+    "cppm_stateless_access_control_list",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_access_control_list",
+    "cppm_service_control",
+    "cppm_session_access_control_list",
+    "extension_control",
+    "full-user-control"
+  ],
+  "enforcementprofile/stateless-access-control-list-name": [
+    "cppm_stateless_access_control_list",
+    "cppm_access_controls",
+    "cppm_ethertype_access_control_list",
+    "cppm_mac_access_control_list",
+    "cppm_service_control",
+    "cppm_session_access_control_list",
+    "extension_control",
+    "full-user-control"
+  ],
+  "enforcementprofile/time-range": [
+    "cppm_time_range",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/time-range-name": [
+    "cppm_time_range",
+    "cppm_enforcement_policy",
+    "cppm_enforcement_profile"
+  ],
+  "enforcementprofile/voip-profile": [
+    "cppm_voip_profile",
+    "cppm_enforcement_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_policer_profile",
+    "cppm_qos_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "enforcementprofile/voip-profile-name": [
+    "cppm_enforcement_profile",
+    "cppm_voip_profile",
+    "auth_profiles",
+    "cppm_captive_portal_profile",
+    "cppm_policer_profile",
+    "cppm_qos_profile",
+    "cppm_enforcement_policy",
+    "cppm_profiler_subnet_mapping"
+  ],
+  "globalserverconfiguration/all-privileges": [
+    "cppm_onguard_global_settings"
+  ],
+  "globalserverconfiguration/attribute-name": [
+    "cppm_attributes",
+    "cppm_onguard_global_settings"
+  ],
+  "globalserverconfiguration/db-sync": [
+    "cppm_onguard_global_settings"
+  ],
+  "globalserverconfiguration/messaging-setup": [
+    [
+      "cppm_messaging_setup",
+      "smtp_config"
+    ],
+    [
+      "cppm_messaging_setup",
+      "sms_setup"
+    ],
+    [
+      "smtp_config",
+      "sms_setup"
+    ],
+    "cppm_messaging_setup",
+    "sms_setup",
+    "smtp_config",
+    "smtp_send",
+    "cppm_onguard_global_settings"
+  ],
+  "guestactions/sms": [
+    "sms-send",
+    "sms_setup",
+    "sms-admin",
+    "sms-receipt",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize"
+  ],
+  "guestactions/smtp": [
+    "smtp",
+    "smtp_config",
+    "smtp_send",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import"
+  ],
+  "guestactions/sponsor": [
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import",
+    "guest_multi",
+    "guest_print_list",
+    "guest_sessions"
+  ],
+  "guestactions/{id}": [
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import",
+    "guest_multi",
+    "guest_print_list",
+    "guest_sessions"
+  ],
+  "guestconfiguration/authentication": [
+    "auth_config",
+    "auth_index",
+    "auth_ldap",
+    "platform_authentication",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "auth_profiles"
+  ],
+  "guestconfiguration/guestmanager": [
+    "guestmanager",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import",
+    "guest_multi",
+    "guest_print_list"
+  ],
+  "guestconfiguration/pass": [
+    [
+      "pass_index",
+      "pass_config"
+    ],
+    [
+      "pass_index",
+      "pass_template"
+    ],
+    [
+      "pass_config",
+      "pass_template"
+    ],
+    "pass_cert_install",
+    "pass_cert_view",
+    "pass_config",
+    "pass_index",
+    "pass_template",
+    "cppm_admin_user_pass_policy",
+    "cppm_local_user_pass_policy",
+    "#guest_password"
+  ],
+  "guestconfiguration/print": [
+    "guest_print_list",
+    "cppm_device_fingerprint",
+    "cppm_fingerprints",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import"
+  ],
+  "guestconfiguration/weblogin": [
+    "radius_weblogins",
+    "#guest_export",
+    "#guest_password",
+    "#guest_sessions_history",
+    "guest_customize",
+    "guest_import",
+    "guest_multi",
+    "guest_print_list"
+  ],
+  "integrations/config": [
+    "extension_config",
+    "cppm_config",
+    "airgroup_config",
+    "auth_config",
+    "engine_config",
+    "insight_config",
+    "mdps_config",
+    "pass_config"
+  ],
+  "integrations/context-server-action-action-name": [
+    "cppm_context_server_actions",
+    "cppm_endpoint_context_server",
+    "cppm_session_action",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers"
+  ],
+  "integrations/endpoint-context-server-server-name-trigger-poll": [
+    "cppm_endpoint_context_server",
+    "cppm_context_server_actions",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers",
+    "cppm_endpoints",
+    "insight_endpoints"
+  ],
+  "integrations/endpoint-context-server-trigger-poll": [
+    "cppm_endpoint_context_server",
+    "cppm_context_server_actions",
+    "cppm_endpoints",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers",
+    "insight_endpoints"
+  ],
+  "integrations/log": [
+    "extension_logs",
+    "#engine_log",
+    "cppm_login_audit",
+    "user-logins",
+    "cppm_syslog_export_filter",
+    "cppm_syslog_target",
+    "radius_weblogins"
+  ],
+  "integrations/reinstall": [
+    "extension_control"
+  ],
+  "integrations/restart": [
+    "extension_control"
+  ],
+  "integrations/start": [
+    "extension_control"
+  ],
+  "integrations/stop": [
+    "extension_control"
+  ],
+  "integrations/upgrade": [
+    "extension_control"
+  ],
+  "localserverconfiguration/ad-domain": [
+    "cppm_ad_domain",
+    "admin",
+    "admin_backup",
+    "admin_content",
+    "admin_data_retention",
+    "admin_restore",
+    "admin_security",
+    "cppm_admin_privileges"
+  ],
+  "localserverconfiguration/ad-domain-netbios-name": [
+    "cppm_ad_domain",
+    "admin",
+    "admin_backup",
+    "admin_content",
+    "admin_data_retention",
+    "admin_restore",
+    "admin_security",
+    "cppm_admin_privileges"
+  ],
+  "localserverconfiguration/cppm-version": [
+    "cppm_local_user_pass_policy",
+    "cppm_local_users",
+    "cppm_access_controls",
+    "cppm_ad_domain",
+    "cppm_admin_privileges",
+    "cppm_admin_user_pass_policy",
+    "cppm_admin_users",
+    "cppm_agentless_onguard_settings"
+  ],
+  "localserverconfiguration/fips": [
+    "cppm_local_user_pass_policy",
+    "cppm_local_users"
+  ],
+  "localserverconfiguration/version": [
+    "cppm_local_user_pass_policy",
+    "cppm_local_users"
+  ],
+  "localserverconfiguration/{server_uuid}": [
+    "platform",
+    "cppm_context_server_actions",
+    "cppm_endpoint_context_server",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers",
+    "cppm_local_user_pass_policy"
+  ],
+  "localserverconfiguration/{server_uuid}-start": [
+    "platform",
+    "cppm_context_server_actions",
+    "cppm_endpoint_context_server",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers",
+    "cppm_local_user_pass_policy"
+  ],
+  "localserverconfiguration/{server_uuid}-stop": [
+    "platform",
+    "cppm_context_server_actions",
+    "cppm_endpoint_context_server",
+    "cppm_file_backup_server",
+    "cppm_server_policy_manager_zones",
+    "cppm_server_snmps",
+    "cppm_servers",
+    "cppm_local_user_pass_policy"
+  ],
+  "localserverconfiguration/{service_id}": [
+    "cppm_net_service",
+    "cppm_service_control",
+    "cppm_service_parameter",
+    "cppm_services",
+    "cppm_tacacs_service_dict",
+    "soap_services",
+    "cppm_local_user_pass_policy",
+    "cppm_local_users"
+  ],
+  "logs/endpoint": [
+    "cppm_endpoints",
+    "cppm_endpoint_context_server",
+    "insight_endpoints",
+    "#engine_log",
+    "extension_logs",
+    "cppm_login_audit",
+    "user-logins"
+  ],
+  "logs/endpoint-time-range": [
+    "cppm_endpoints",
+    "cppm_time_range",
+    "#engine_log",
+    "cppm_endpoint_context_server",
+    "extension_logs",
+    "insight_endpoints",
+    "cppm_login_audit",
+    "user-logins"
+  ],
+  "sessioncontrol/active-session": [
+    "cppm_mac_active_session",
+    "#guest_sessions_history",
+    "cppm_session_access_control_list",
+    "cppm_session_action",
+    "guest_sessions"
+  ],
+  "sessioncontrol/disconnect": [
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "cppm_session_action",
+    "guest_sessions"
+  ],
+  "sessioncontrol/reauthorize": [
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "cppm_session_action",
+    "guest_sessions"
+  ],
+  "sessioncontrol/session": [
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "cppm_session_action",
+    "guest_sessions"
+  ],
+  "sessioncontrol/session-action": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-coa": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-coa-ip": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-coa-mac": [
+    "cppm_session_action",
+    "cppm_mac_active_session",
+    "mac",
+    "#guest_sessions_history",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "#mac_export",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-coa-username": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions",
+    "cppm_admin_user_pass_policy",
+    "cppm_admin_users"
+  ],
+  "sessioncontrol/session-action-disconnect": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-disconnect-ip": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-disconnect-mac": [
+    "cppm_session_action",
+    "cppm_mac_active_session",
+    "mac",
+    "#guest_sessions_history",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "#mac_export",
+    "cppm_context_server_actions"
+  ],
+  "sessioncontrol/session-action-disconnect-username": [
+    "cppm_session_action",
+    "#guest_sessions_history",
+    "cppm_mac_active_session",
+    "cppm_session_access_control_list",
+    "guest_sessions",
+    "cppm_context_server_actions",
+    "cppm_admin_user_pass_policy",
+    "cppm_admin_users"
+  ]
+}

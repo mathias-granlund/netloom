@@ -1,0 +1,3444 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "endpointvisibility",
+    "globalserverconfiguration",
+    "guestconfiguration",
+    "localserverconfiguration",
+    "sessioncontrol"
+  ],
+  "services": [
+    "endpointvisibility/global-settings",
+    "endpointvisibility/onguard-activity",
+    "endpointvisibility/onguard-custom-script",
+    "endpointvisibility/settings",
+    "endpointvisibility/subnet-mapping",
+    "endpointvisibility/windows-hotfix",
+    "globalserverconfiguration/all-privileges",
+    "globalserverconfiguration/messaging-setup",
+    "guestconfiguration/authentication",
+    "guestconfiguration/guestmanager",
+    "guestconfiguration/pass",
+    "guestconfiguration/print",
+    "guestconfiguration/weblogin",
+    "localserverconfiguration/cppm-version",
+    "localserverconfiguration/fips",
+    "localserverconfiguration/version",
+    "sessioncontrol/session"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_bruteforce_2026-03-31.json",
+  "probe_writes": true,
+  "results": [
+    {
+      "module": "endpointvisibility",
+      "service": "global-settings",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_onguard_global_settings"
+        ],
+        [
+          "cppm_agentless_onguard_settings"
+        ],
+        [
+          "cppm_onguard_settings"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "insight_endpoints"
+        ],
+        [
+          "cppm_global_settings"
+        ],
+        [
+          "cppm_global_setting"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_onguard_global_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_onguard_global_settings"
+        ],
+        "module": "endpointvisibility",
+        "service": "global-settings",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "onguard-activity",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_on_guard_activity"
+        ],
+        [
+          "cppm_agentless_onguard_settings"
+        ],
+        [
+          "cppm_agentless_onguard_subnet_mapping"
+        ],
+        [
+          "cppm_onguard_global_settings"
+        ],
+        [
+          "cppm_onguard_settings"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "insight_endpoints"
+        ],
+        [
+          "cppm_onguard_activity"
+        ],
+        [
+          "cppm_onguard_activities"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_on_guard_activity"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_subnet_mapping"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_global_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_endpoint_context_server"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_endpoints"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "insight_endpoints"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "insight_endpoints",
+              "name": "insight_endpoints",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_activity"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_activity\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_activities"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_activities\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "onguard-custom-script",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_agentless_onguard_settings"
+        ],
+        [
+          "cppm_agentless_onguard_subnet_mapping"
+        ],
+        [
+          "cppm_onguard_global_settings"
+        ],
+        [
+          "cppm_onguard_settings"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "cppm_on_guard_activity"
+        ],
+        [
+          "guest_customize"
+        ],
+        [
+          "cppm_onguard_custom_script"
+        ],
+        [
+          "cppm_onguard_custom_scripts"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_subnet_mapping"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_global_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_endpoint_context_server"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoint_context_server",
+              "name": "cppm_endpoint_context_server",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_endpoints"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_endpoints",
+              "name": "cppm_endpoints",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_on_guard_activity"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_on_guard_activity",
+              "name": "cppm_on_guard_activity",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "guest_customize"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_customize",
+              "name": "guest_customize",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_custom_script"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_custom_script\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_onguard_custom_scripts"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_onguard_custom_scripts\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "settings",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_onguard_settings"
+        ],
+        [
+          "cppm_agentless_onguard_settings"
+        ],
+        [
+          "cppm_onguard_global_settings"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "insight_endpoints"
+        ],
+        [
+          "cppm_settings"
+        ],
+        [
+          "cppm_setting"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_settings",
+              "name": "cppm_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": [
+                {
+                  "action": "add",
+                  "status": "ok"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_onguard_settings"
+        ],
+        "module": "endpointvisibility",
+        "service": "settings",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "subnet-mapping",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_agentless_onguard_subnet_mapping"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_role_mapping"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "insight_endpoints"
+        ],
+        [
+          "cppm_subnet_mapping"
+        ],
+        [
+          "cppm_subnet_mappings"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_subnet_mapping"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_subnet_mapping",
+              "name": "cppm_agentless_onguard_subnet_mapping",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 422,
+              "detail": "{\"validation_messages\":[\"No policy manager zone named \\\"netloom-privilege-probe-endpointvisibility-subnet-mapping-1774947916446\\\"\"],\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"No policy manager zone named \\\"netloom-privilege-probe-endpointvisibility-subnet-mapping-1774947916446\\\"\"}",
+              "actions": []
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_agentless_onguard_subnet_mapping"
+        ],
+        "module": "endpointvisibility",
+        "service": "subnet-mapping",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "endpointvisibility",
+      "service": "windows-hotfix",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_windows_hotfix"
+        ],
+        [
+          "cppm_endpoint_context_server"
+        ],
+        [
+          "cppm_endpoints"
+        ],
+        [
+          "insight_endpoints"
+        ],
+        [
+          "cppm_windows_hotfixs"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_windows_hotfix"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_windows_hotfix",
+              "name": "cppm_windows_hotfix",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 422,
+              "detail": "{\"validation_messages\":[\"Invalid Severity rating Specified\"],\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Invalid Severity rating Specified\"}",
+              "actions": []
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_windows_hotfix"
+        ],
+        "module": "endpointvisibility",
+        "service": "windows-hotfix",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "globalserverconfiguration",
+      "service": "all-privileges",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "get",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_onguard_global_settings"
+        ],
+        [
+          "cppm_all_privileges"
+        ],
+        [
+          "cppm_all_privilege"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_onguard_global_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_onguard_global_settings",
+              "name": "cppm_onguard_global_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_all_privileges"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_all_privileges\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_all_privilege"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_all_privilege\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "globalserverconfiguration",
+      "service": "messaging-setup",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_messaging_setup",
+          "smtp_config"
+        ],
+        [
+          "cppm_messaging_setup",
+          "sms_setup"
+        ],
+        [
+          "smtp_config",
+          "sms_setup"
+        ],
+        [
+          "cppm_messaging_setup"
+        ],
+        [
+          "cppm_messaging_setups"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_messaging_setup",
+            "smtp_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_config",
+              "name": "smtp_config",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_messaging_setup",
+            "sms_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "?sms-admin",
+              "name": "sms-admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            },
+            {
+              "raw": "sms_setup",
+              "name": "sms_setup",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "smtp_config",
+            "sms_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?sms-admin",
+              "name": "sms-admin",
+              "access": "allowed"
+            },
+            {
+              "raw": "?smtp",
+              "name": "smtp",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "sms_setup",
+              "name": "sms_setup",
+              "access": "full"
+            },
+            {
+              "raw": "smtp_config",
+              "name": "smtp_config",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_messaging_setup"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_messaging_setup",
+              "name": "cppm_messaging_setup",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_messaging_setups"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_messaging_setups\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "authentication",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "auth_config"
+        ],
+        [
+          "auth_index"
+        ],
+        [
+          "auth_ldap"
+        ],
+        [
+          "platform_authentication"
+        ],
+        [
+          "#guest_export"
+        ],
+        [
+          "#guest_password"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_authentication"
+        ],
+        [
+          "cppm_authentications"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "auth_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "auth_index"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_config",
+              "name": "auth_config",
+              "access": "full"
+            },
+            {
+              "raw": "auth_index",
+              "name": "auth_index",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            },
+            {
+              "raw": "auth_profiles",
+              "name": "auth_profiles",
+              "access": "full"
+            },
+            {
+              "raw": "user-logins",
+              "name": "user-logins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "auth_ldap"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?auth_index",
+              "name": "auth_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "auth_ldap",
+              "name": "auth_ldap",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "platform_authentication"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "platform_authentication",
+              "name": "platform_authentication",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "platform_authentication"
+        ],
+        "module": "guestconfiguration",
+        "service": "authentication",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "guestmanager",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "guestmanager"
+        ],
+        [
+          "#guest_export"
+        ],
+        [
+          "#guest_password"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "guest_customize"
+        ],
+        [
+          "guest_import"
+        ],
+        [
+          "guest_multi"
+        ],
+        [
+          "guest_print_list"
+        ],
+        [
+          "cppm_guestmanager"
+        ],
+        [
+          "cppm_guestmanagers"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guestmanager"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "change_expiration",
+              "name": "change_expiration",
+              "access": "full"
+            },
+            {
+              "raw": "create_multi",
+              "name": "create_multi",
+              "access": "full"
+            },
+            {
+              "raw": "create_user",
+              "name": "create_user",
+              "access": "full"
+            },
+            {
+              "raw": "full-user-control",
+              "name": "full-user-control",
+              "access": "full"
+            },
+            {
+              "raw": "guest_customize",
+              "name": "guest_customize",
+              "access": "full"
+            },
+            {
+              "raw": "guest_export",
+              "name": "guest_export",
+              "access": "full"
+            },
+            {
+              "raw": "guest_import",
+              "name": "guest_import",
+              "access": "full"
+            },
+            {
+              "raw": "guest_multi",
+              "name": "guest_multi",
+              "access": "full"
+            },
+            {
+              "raw": "guest_password",
+              "name": "guest_password",
+              "access": "full"
+            },
+            {
+              "raw": "guest_print_list",
+              "name": "guest_print_list",
+              "access": "full"
+            },
+            {
+              "raw": "guest_sessions",
+              "name": "guest_sessions",
+              "access": "full"
+            },
+            {
+              "raw": "guest_sessions_history",
+              "name": "guest_sessions_history",
+              "access": "full"
+            },
+            {
+              "raw": "guest_show_details",
+              "name": "guest_show_details",
+              "access": "full"
+            },
+            {
+              "raw": "guest_users",
+              "name": "guest_users",
+              "access": "full"
+            },
+            {
+              "raw": "guestmanager",
+              "name": "guestmanager",
+              "access": "full"
+            },
+            {
+              "raw": "remove_account",
+              "name": "remove_account",
+              "access": "full"
+            },
+            {
+              "raw": "reset_password",
+              "name": "reset_password",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "guestmanager"
+        ],
+        "module": "guestconfiguration",
+        "service": "guestmanager",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "pass",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "pass_index",
+          "pass_config"
+        ],
+        [
+          "pass_index",
+          "pass_template"
+        ],
+        [
+          "pass_config",
+          "pass_template"
+        ],
+        [
+          "cppm_pass"
+        ],
+        [
+          "cppm_pas"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "pass_index",
+            "pass_config"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_index",
+            "pass_template"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_install",
+              "name": "pass_cert_install",
+              "access": "full"
+            },
+            {
+              "raw": "pass_cert_view",
+              "name": "pass_cert_view",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_index",
+              "name": "pass_index",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "pass_config",
+            "pass_template"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?pass_index",
+              "name": "pass_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "pass_config",
+              "name": "pass_config",
+              "access": "full"
+            },
+            {
+              "raw": "pass_template",
+              "name": "pass_template",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "http-error",
+              "http_status": 403,
+              "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+              "actions": []
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_pass"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pass\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_pas"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_pas\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "print",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "http-error",
+          "http_status": 403,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+          "actions": []
+        }
+      },
+      "candidate_specs": [
+        [
+          "guest_print_list"
+        ],
+        [
+          "cppm_device_fingerprint"
+        ],
+        [
+          "cppm_fingerprints"
+        ],
+        [
+          "#guest_export"
+        ],
+        [
+          "#guest_password"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "guest_customize"
+        ],
+        [
+          "guest_import"
+        ],
+        [
+          "cppm_print"
+        ],
+        [
+          "cppm_prints"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "guest_print_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_print_list",
+              "name": "guest_print_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "ok",
+              "actions": [
+                {
+                  "action": "add",
+                  "status": "ok"
+                },
+                {
+                  "action": "get",
+                  "status": "ok"
+                },
+                {
+                  "action": "update",
+                  "status": "ok"
+                },
+                {
+                  "action": "replace",
+                  "status": "ok"
+                },
+                {
+                  "action": "delete",
+                  "status": "ok"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "guest_print_list"
+        ],
+        "module": "guestconfiguration",
+        "service": "print",
+        "probe_action": "list"
+      }
+    },
+    {
+      "module": "guestconfiguration",
+      "service": "weblogin",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "radius_weblogins"
+        ],
+        [
+          "#guest_export"
+        ],
+        [
+          "#guest_password"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "guest_customize"
+        ],
+        [
+          "guest_import"
+        ],
+        [
+          "guest_multi"
+        ],
+        [
+          "guest_print_list"
+        ],
+        [
+          "cppm_weblogin"
+        ],
+        [
+          "cppm_weblogins"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "radius_weblogins"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?platform",
+              "name": "platform",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "radius_weblogins",
+              "name": "radius_weblogins",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "#guest_export"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#guest_export",
+              "name": "guest_export",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "#guest_password"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#guest_password",
+              "name": "guest_password",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "#guest_sessions_history"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#guest_sessions_history",
+              "name": "guest_sessions_history",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "guest_customize"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_customize",
+              "name": "guest_customize",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "guest_import"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_import",
+              "name": "guest_import",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "guest_multi"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_multi",
+              "name": "guest_multi",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "guest_print_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "guest_print_list",
+              "name": "guest_print_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "list",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_weblogin"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_weblogin\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_weblogins"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_weblogins\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "localserverconfiguration",
+      "service": "cppm-version",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "get",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_local_user_pass_policy"
+        ],
+        [
+          "cppm_local_users"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ad_domain"
+        ],
+        [
+          "cppm_admin_privileges"
+        ],
+        [
+          "cppm_admin_user_pass_policy"
+        ],
+        [
+          "cppm_admin_users"
+        ],
+        [
+          "cppm_agentless_onguard_settings"
+        ],
+        [
+          "cppm_cppm_version"
+        ],
+        [
+          "cppm_cppm_versions"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_local_user_pass_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_local_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_access_controls"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_access_controls",
+              "name": "cppm_access_controls",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_ad_domain"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ad_domain",
+              "name": "cppm_ad_domain",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_admin_privileges"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_privileges",
+              "name": "cppm_admin_privileges",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_admin_user_pass_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_user_pass_policy",
+              "name": "cppm_admin_user_pass_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_admin_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_admin_users",
+              "name": "cppm_admin_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_agentless_onguard_settings"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_agentless_onguard_settings",
+              "name": "cppm_agentless_onguard_settings",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_cppm_version"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_cppm_version\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_cppm_versions"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_cppm_versions\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "localserverconfiguration",
+      "service": "fips",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "get",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_local_user_pass_policy"
+        ],
+        [
+          "cppm_local_users"
+        ],
+        [
+          "cppm_fips"
+        ],
+        [
+          "cppm_fip"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_local_user_pass_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_local_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_fips"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_fips\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_fip"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_fip\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "localserverconfiguration",
+      "service": "version",
+      "baseline_probe": {
+        "status": "ok",
+        "action": "get",
+        "result_type": "dict",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_local_user_pass_policy"
+        ],
+        [
+          "cppm_local_users"
+        ],
+        [
+          "cppm_version"
+        ],
+        [
+          "cppm_versions"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_local_user_pass_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_user_pass_policy",
+              "name": "cppm_local_user_pass_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_local_users"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_local_users",
+              "name": "cppm_local_users",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_version"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_version\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_versions"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_versions\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "sessioncontrol",
+      "service": "session",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "list",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "write_probe": {
+          "status": "unsupported"
+        }
+      },
+      "candidate_specs": [
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "cppm_mac_active_session"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "cppm_session_action"
+        ],
+        [
+          "guest_sessions"
+        ],
+        [
+          "cppm_session"
+        ],
+        [
+          "cppm_sessions"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "#guest_sessions_history"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#guest_sessions_history",
+              "name": "guest_sessions_history",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?guestmanager",
+              "name": "guestmanager",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "list",
+            "result_type": "dict",
+            "write_probe": {
+              "status": "unsupported"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "#guest_sessions_history"
+        ],
+        "module": "sessioncontrol",
+        "service": "session",
+        "probe_action": "list"
+      }
+    }
+  ]
+}

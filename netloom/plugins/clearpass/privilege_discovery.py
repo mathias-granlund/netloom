@@ -156,11 +156,11 @@ def _normalize_candidate_specs(
         specs.append(normalized)
 
     if isinstance(override_value, list):
-        if override_value and all(isinstance(item, list) for item in override_value):
-            for item in override_value:
+        for item in override_value:
+            if isinstance(item, str):
+                add_spec([item])
+            elif isinstance(item, list):
                 add_spec([part for part in item if isinstance(part, str)])
-        else:
-            add_spec([item for item in override_value if isinstance(item, str)])
 
     for candidate in default_candidates:
         add_spec([candidate])

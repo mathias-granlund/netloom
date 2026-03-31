@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.9.14 - 2026-03-31
+
+### Added
+- added `netloom.plugins.clearpass.privilege_bruteforce` to turn unresolved
+  retained services plus a real admin privilege dump into ordered
+  brute-force candidate batches
+
+### Changed
+- updated the ClearPass discovery runner so candidate files can mix single-key
+  and combo guesses in one ordered list
+- continued the ClearPass privilege-mapping work and promoted
+  `endpointvisibility/global-settings`, `settings`, `subnet-mapping`,
+  `windows-hotfix`, `guestconfiguration/authentication`, `guestmanager`,
+  `print`, and `sessioncontrol/session`
+- promoted `globalserverconfiguration/all-privileges` and
+  `localserverconfiguration/cppm-version`, `version`, and `fips` as
+  baseline-verified services
+- updated `PLANNED_FEATURES.md` coverage to `95` privilege-gated verified,
+  `9` baseline verified, and `88` unresolved retained services
+- aligned package metadata, release notes, README badge, and checked-in
+  manpage version headers for the `1.9.14` release
+
 ## 1.9.13 - 2026-03-30
 
 ### Changed

@@ -127,6 +127,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="endpointvisibility",
+        service="global-settings",
+        privileges=("cppm_onguard_global_settings",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
         service="network-scan",
         privileges=("cppm_networkscan",),
     ),
@@ -144,6 +149,27 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="endpointvisibility",
         service="profiler-subnet-mapping-network",
         privileges=("cppm_profiler_subnet_mapping",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="settings",
+        privileges=("cppm_onguard_settings",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="subnet-mapping",
+        privileges=("cppm_agentless_onguard_subnet_mapping",),
+    ),
+    ServicePrivilegeRule(
+        module="endpointvisibility",
+        service="windows-hotfix",
+        privileges=("cppm_windows_hotfix",),
+    ),
+    ServicePrivilegeRule(
+        module="globalserverconfiguration",
+        service="all-privileges",
+        privileges=(),
+        source="baseline_verified",
     ),
     ServicePrivilegeRule(
         module="globalserverconfiguration",
@@ -209,6 +235,27 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="globalserverconfiguration",
         service="snmp-trap-receiver",
         privileges=("cppm_snmp_trap_receivers",),
+    ),
+    ServicePrivilegeRule(
+        module="guestconfiguration",
+        service="authentication",
+        privileges=("platform_authentication",),
+    ),
+    ServicePrivilegeRule(
+        module="guestconfiguration",
+        service="guestmanager",
+        privileges=("guestmanager",),
+    ),
+    ServicePrivilegeRule(
+        module="guestconfiguration",
+        service="print",
+        privileges=("guest_print_list",),
+    ),
+    ServicePrivilegeRule(
+        module="localserverconfiguration",
+        service="fips",
+        privileges=(),
+        source="baseline_verified",
     ),
     ServicePrivilegeRule(
         module="identities",
@@ -362,6 +409,18 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         privileges=("cppm_system_events",),
     ),
     ServicePrivilegeRule(
+        module="localserverconfiguration",
+        service="cppm-version",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="localserverconfiguration",
+        service="version",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
         module="platformcertificates",
         service="cert-sign-request",
         privileges=("cppm_certificates",),
@@ -501,6 +560,11 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
         module="platformcertificates",
         service="service-cert",
         privileges=("cppm_certificates",),
+    ),
+    ServicePrivilegeRule(
+        module="sessioncontrol",
+        service="session",
+        privileges=("guest_sessions_history",),
     ),
     ServicePrivilegeRule(
         module="toolsandutilities",

@@ -29,10 +29,14 @@ Useful flags for future mapping rounds:
 | `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `user` | `list` |
 | `cppm_enforcement_profile` | `cppm_enforcement_profile` | `enforcementprofile` | `enforcement-profile` | `list` |
 | `cppm_fingerprints` | `cppm_fingerprints` | `endpointvisibility` | `fingerprint` | `list` |
+| `cppm_onguard_global_settings` | `cppm_onguard_global_settings` | `endpointvisibility` | `global-settings` | `list` |
 | `cppm_networkscan` | `cppm_networkscan` | `endpointvisibility` | `network-scan` | `list` |
 | `cppm_policy_manager_zones` | `cppm_policy_manager_zones` | `endpointvisibility` | `policy-manager-zones` | `list` |
 | `cppm_profiler_subnet_mapping` | `cppm_profiler_subnet_mapping` | `endpointvisibility` | `profiler-subnet-mapping` | `list` |
 | `cppm_profiler_subnet_mapping` | `cppm_profiler_subnet_mapping` | `endpointvisibility` | `profiler-subnet-mapping-network` | `get` via fake network returning `404` instead of baseline `403` |
+| `cppm_onguard_settings` | `cppm_onguard_settings` | `endpointvisibility` | `settings` | `list` |
+| `cppm_agentless_onguard_subnet_mapping` | `cppm_agentless_onguard_subnet_mapping` | `endpointvisibility` | `subnet-mapping` | `list` |
+| `cppm_windows_hotfix` | `cppm_windows_hotfix` | `endpointvisibility` | `windows-hotfix` | `list` |
 | `cppm_admin_privileges` | `cppm_admin_privileges` | `globalserverconfiguration` | `admin-privilege` | `list` |
 | `cppm_admin_users` | `cppm_admin_users` | `globalserverconfiguration` | `admin-user` | `list` |
 | `cppm_licenses` | `cppm_licenses` | `globalserverconfiguration` | `application-license` | `list` |
@@ -46,6 +50,9 @@ Useful flags for future mapping rounds:
 | `cppm_admin_user_pass_policy` | `cppm_admin_user_pass_policy` | `globalserverconfiguration` | `password-policy` | `get` |
 | `cppm_server_policy_manager_zones` | `cppm_server_policy_manager_zones` | `globalserverconfiguration` | `policy-manager-zones` | `list` |
 | `cppm_snmp_trap_receivers` | `cppm_snmp_trap_receivers` | `globalserverconfiguration` | `snmp-trap-receiver` | `list` |
+| `platform_authentication` | `platform_authentication` | `guestconfiguration` | `authentication` | `list` |
+| `guestmanager` | `guestmanager` | `guestconfiguration` | `guestmanager` | `list` |
+| `guest_print_list` | `guest_print_list` | `guestconfiguration` | `print` | `list` |
 | `api_clients` | `api_clients` | `identities` | `api-client` | `list` |
 | `cppm_deny_listed_users` | `cppm_deny_listed_users` | `identities` | `deny-listed-users-user_id-mac_address` | `get` via fake ID/MAC returning `404` instead of baseline `403` |
 | `mac` + `guest_users` | `mac` + `guest_users` | `identities` | `device` | `list` |
@@ -87,6 +94,7 @@ Useful flags for future mapping rounds:
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name-disable` | `update` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `server-cert-name-enable` | `update` |
 | `cppm_certificates` | `cppm_certificates` | `platformcertificates` | `service-cert` | `list` |
+| `#guest_sessions_history` | `guest_sessions_history` | `sessioncontrol` | `session` | `list` |
 | `smtp_send` | `smtp_send` | `toolsandutilities` | `send` | `add` |
 | `cppm_application_dict` | `cppm_application_dict` | `policyelements` | `application-dictionary` | `list` |
 | `auth_config` + `cppm_config` | `auth_config` + `cppm_config` | `policyelements` | `auth-source` | `list` |
@@ -123,6 +131,10 @@ privilege mappings.
 | `apioperations` | `me` | `list`, `add` |
 | `apioperations` | `oauth` | `add` |
 | `apioperations` | `privileges` | `get` |
+| `globalserverconfiguration` | `all-privileges` | `get` |
+| `localserverconfiguration` | `cppm-version` | `get` |
+| `localserverconfiguration` | `fips` | `get` |
+| `localserverconfiguration` | `version` | `get` |
 | `toolsandutilities` | `random-mpsk` | `list` |
 | `toolsandutilities` | `random-password` | `list` |
 

@@ -8,9 +8,9 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- privilege-gated verified services: `87`
-- baseline verified services: `5`
-- unresolved services: `100`
+- privilege-gated verified services: `95`
+- baseline verified services: `9`
+- unresolved services: `88`
 
 Goal:
 - continue turning retained full-catalog services into verified privilege
@@ -32,23 +32,19 @@ Current unmapped retained services by module:
 - `revoke`
 - `sign`
 
-#### `endpointvisibility` (`17`)
+#### `endpointvisibility` (`13`)
 - `device-fingerprint`
 - `fingerprint-name`
-- `global-settings`
 - `network-scan-disable`
 - `network-scan-enable`
 - `onguard-activity`
 - `onguard-activity-message`
 - `onguard-activity-notification`
 - `onguard-custom-script`
-- `settings`
-- `subnet-mapping`
 - `subnet-mapping-disable`
 - `subnet-mapping-enable`
 - `subnet-mapping-name-disable`
 - `subnet-mapping-name-enable`
-- `windows-hotfix`
 - `windows-hotfix-kbid-operating_system`
 
 #### `enforcementprofile` (`28`)
@@ -81,8 +77,7 @@ Current unmapped retained services by module:
 - `voip-profile`
 - `voip-profile-name`
 
-#### `globalserverconfiguration` (`4`)
-- `all-privileges`
+#### `globalserverconfiguration` (`3`)
 - `attribute-name`
 - `db-sync`
 - `messaging-setup`
@@ -93,11 +88,8 @@ Current unmapped retained services by module:
 - `sponsor`
 - `{id}`
 
-#### `guestconfiguration` (`5`)
-- `authentication`
-- `guestmanager`
+#### `guestconfiguration` (`2`)
 - `pass`
-- `print`
 - `weblogin`
 
 #### `integrations` (`10`)
@@ -112,12 +104,9 @@ Current unmapped retained services by module:
 - `stop`
 - `upgrade`
 
-#### `localserverconfiguration` (`9`)
+#### `localserverconfiguration` (`6`)
 - `ad-domain`
 - `ad-domain-netbios-name`
-- `cppm-version`
-- `fips`
-- `version`
 - `{server_uuid}`
 - `{server_uuid}-start`
 - `{server_uuid}-stop`
@@ -127,11 +116,10 @@ Current unmapped retained services by module:
 - `endpoint`
 - `endpoint-time-range`
 
-#### `sessioncontrol` (`13`)
+#### `sessioncontrol` (`12`)
 - `active-session`
 - `disconnect`
 - `reauthorize`
-- `session`
 - `session-action`
 - `session-action-coa`
 - `session-action-coa-ip`
