@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netloom-tool"
-version = "1.10.1"
+version = "1.10.2"
 description = "Spec-driven network API CLI for operators, with first-class ClearPass support"
 readme = "README.md"
 authors = [
@@ -47,6 +47,7 @@ dev = [
 
 [project.scripts]
 netloom = "netloom.cli.main:main"
+netloom-generate-manpages = "netloom.generate_manpages:main"
 netloom-install-manpage = "netloom.install_manpage:main"
 
 [tool.setuptools]

@@ -20,11 +20,13 @@ Run locally before tagging:
 ```bash
 python -m pip install --upgrade pip
 python -m pip install -e '.[dev]'
+python -m netloom.generate_manpages --check
 pytest -q
 python -m build
 python -m twine check dist/*
 python -m pip install --force-reinstall dist/*.whl
 netloom --version
+netloom-generate-manpages --check
 netloom-install-manpage --print-path
 ```
 

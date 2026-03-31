@@ -2,7 +2,7 @@
 
 GitHub-friendly reference for the shared `netloom` CLI.
 
-Source of truth for the installable man page:
+Markdown source of truth for the installable man page:
 [netloom/data/man/netloom.1](../netloom/data/man/netloom.1)
 
 ## Name
@@ -237,9 +237,21 @@ Dynamic help is available at several levels:
 
 ```bash
 netloom ?
+  cache                       Manage the local API catalog cache
+  load                        Select or inspect the active plugin
+  server                      Select or inspect the active profile
+  policyelements              Policy elements and network services
+
+netloom certificateauthority ?
+  certificate-chain           Get a certificate and its trust chain
+  certificate-export          Export a certificate or certificate signing request
+
 netloom <module> <service> ?
 netloom <module> <service> <action> ?
 ```
+
+When the Bash completion script is installed, `?` can also describe the
+current context immediately without pressing `Enter`.
 
 ## Bash Completion
 
@@ -281,10 +293,11 @@ netloom cache update
 ```bash
 netloom load clearpass
 netloom cache update
-netloom server use dev
+netloom server use <profile>
 netloom identities endpoint list --limit=10
 netloom policyelements network-device get --id=1001 --console
 netloom policyelements network-device add ?
+netloom certificateauthority certificate-chain get ?
 ```
 
 ## See Also

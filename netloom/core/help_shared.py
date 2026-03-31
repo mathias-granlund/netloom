@@ -23,7 +23,34 @@ NETLOOM_BANNER = r"""
 
 PLUGIN_SELECTION_HINT = "<select a plugin with `netloom load <plugin>`>"
 BUILTIN_MODULES = ["cache", "load", "server"]
+BUILTIN_MODULE_SUMMARIES = {
+    "cache": "Manage the local API catalog cache",
+    "load": "Select or inspect the active plugin",
+    "server": "Select or inspect the active profile",
+}
+CATALOG_MODULE_SUMMARIES = {
+    "apioperations": "API authentication and token operations",
+    "certificateauthority": "Onboard certificates, devices, and users",
+    "endpointvisibility": "Endpoint visibility and OnGuard settings",
+    "enforcementprofile": "Enforcement and network policy profiles",
+    "globalserverconfiguration": "Cluster-wide server configuration",
+    "guestactions": "Guest workflow actions",
+    "guestconfiguration": "Guest portal and login settings",
+    "identities": "Identity, endpoint, and account records",
+    "insight": "Insight alerts and reports",
+    "integrations": "External integrations and extensions",
+    "localserverconfiguration": "Local server configuration and services",
+    "logs": "Endpoint, login, and system logs",
+    "platformcertificates": "Platform and service certificates",
+    "policyelements": "Policy elements and network services",
+    "sessioncontrol": "Active sessions and session actions",
+    "toolsandutilities": "Utility and messaging tools",
+}
 _LIST_SUMMARY_RE = re.compile(r"^Get a list of (?P<target>.+)$")
+
+
+def module_display_summary(module: str) -> str | None:
+    return BUILTIN_MODULE_SUMMARIES.get(module) or CATALOG_MODULE_SUMMARIES.get(module)
 
 
 def service_cli_actions(service_entry: dict) -> list[str]:
@@ -216,10 +243,13 @@ def resolve_service_entry(
 
 __all__ = [
     "BUILTIN_MODULES",
+    "BUILTIN_MODULE_SUMMARIES",
+    "CATALOG_MODULE_SUMMARIES",
     "CLI_ACTION_ORDER",
     "combined_catalog_modules",
     "combined_services_for_module",
     "display_services_for_module",
+    "module_display_summary",
     "NETLOOM_BANNER",
     "PLUGIN_SELECTION_HINT",
     "merge_service_entries",

@@ -4,10 +4,12 @@ import json
 from pathlib import Path
 
 from netloom.core.help_shared import (
+    BUILTIN_MODULE_SUMMARIES,
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
     display_services_for_module,
+    module_display_summary,
     resolve_service_entry,
     service_cli_actions,
     visible_catalog_modules,
@@ -31,6 +33,21 @@ __all__ = [
     "render_write_action_help",
     "service_cli_actions",
 ]
+
+
+def _format_named_rows(rows: list[tuple[str, str | None]]) -> str:
+    visible_rows = [(name, summary) for name, summary in rows if name]
+    if not visible_rows:
+        return ""
+
+    width = max(len(name) for name, _ in visible_rows) + 2
+    lines: list[str] = []
+    for name, summary in visible_rows:
+        if summary:
+            lines.append(f"  {name.ljust(width)} {summary}")
+        else:
+            lines.append(f"  - {name}")
+    return "\n".join(lines)
 
 
 def render_copy_action_help(module: str, service: str) -> str:
@@ -454,7 +471,9 @@ def render_catalog_help(
 ) -> str:
     modules = visible_catalog_modules(api_catalog)
     if not modules:
-        builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
+        builtin_modules = _format_named_rows(
+            [(name, BUILTIN_MODULE_SUMMARIES.get(name)) for name in BUILTIN_MODULES]
+        )
         text = header + usage + "\nAvailable modules:\n" + builtin_modules
         if not has_plugin:
             return text
@@ -465,10 +484,13 @@ def render_catalog_help(
         )
 
     if not module:
-        available_modules = "\n".join(
+        available_modules = _format_named_rows(
             [
-                *[f"  - {name}" for name in BUILTIN_MODULES],
-                *[f"  - {name}" for name in sorted(modules.keys())],
+                *[
+                    (name, BUILTIN_MODULE_SUMMARIES.get(name))
+                    for name in BUILTIN_MODULES
+                ],
+                *[(name, module_display_summary(name)) for name in sorted(modules)],
             ]
         )
         return header + usage + "\nAvailable modules:\n" + available_modules

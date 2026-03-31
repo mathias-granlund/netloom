@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.10.2 - 2026-03-31
+
+### Changed
+- added short vendor-style descriptions for the ClearPass API modules in both
+  normal `--help` output and the cached interactive help path, so top-level
+  module listings now read more like traditional network vendor CLIs
+- made the markdown manpages under `man/` the authoring source of truth and
+  added `python -m netloom.generate_manpages` plus
+  `python -m netloom.generate_manpages --check` to generate and verify the
+  installable manpages under `netloom/data/man/`
+- refreshed the shared and ClearPass manpage content to document canonical
+  full service names, vendor-style `?` help behavior, and privilege-aware
+  command visibility
+- replaced hard-coded example profile names in the manpages and README with
+  generic placeholders such as `<profile>`, `<source-profile>`, and
+  `<target-profile>`
+- aligned package metadata, release notes, README badge, and checked-in
+  manpage version headers for the `1.10.2` release
+
 ## 1.10.1 - 2026-03-31
 
 ### Changed

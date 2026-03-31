@@ -1,35 +1,32 @@
-# netloom v1.10.1
+# netloom v1.10.2
 
-This release makes the ClearPass help and completion experience much more
-vendor-like while keeping command visibility aligned with verified privilege
-mapping.
+This release rounds out the help and documentation work with clearer module
+descriptions and generated installable manpages.
 
 ## Highlights
 
-- added vendor-style Bash `?` help so the current context can be described
-  immediately without pressing `Enter`
-- taught the ClearPass catalog parser to read service summaries and canonical
-  service names from `/api-docs`, which now surfaces names like
-  `certificate-chain`, `certificate-export`, `certificate-sign-request`, and
-  `onboard-device`
-- unified normal help, cached interactive help, Bash completion, and runtime
-  service resolution around the same canonical ClearPass service names
-- restored privilege-aware service visibility so user-facing command lists only
-  show baseline-accessible or privilege-verified commands even when canonical
-  names are available in the full catalog
+- added short vendor-style descriptions for the ClearPass API modules in
+  top-level `--help` output and cached interactive help
+- made the markdown manpages under `man/` the single authoring source and
+  added `netloom.generate_manpages` / `netloom-generate-manpages` to build and
+  check the bundled installable manpages
+- refreshed the shared and ClearPass manpages to document canonical full
+  service names, vendor-style `?` help behavior, and privilege-aware command
+  visibility
+- replaced hard-coded example profile names with generic placeholders such as
+  `<profile>`, `<source-profile>`, and `<target-profile>`
 
 ## Examples
 
 ```bash
-netloom policyelements ?
-netloom certificateauthority certificate-chain --help
-netloom certificateauthority certificate-chain get --id=123 --console
+python -m netloom.generate_manpages
+python -m netloom.generate_manpages --check
+netloom --help
 ```
 
 ## Notes
 
-- installable man pages still come from `netloom/data/man/`
+- the markdown manpages in `man/` are now the source of truth for the bundled
+  installable manpages in `netloom/data/man/`
 - the privilege-aware visible catalog remains the source of truth for
   user-facing command lists
-- the richer full catalog is still used behind the scenes to map visible
-  services onto their canonical `/api-docs` names when possible

@@ -1,7 +1,7 @@
-.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.10.1" "Miscellaneous Information Manual"
+.TH NETLOOM-CLEARPASS 7 "March 2026" "netloom 1.10.2" "Miscellaneous Information Manual"
 .SH NAME
-netloom-clearpass \- ClearPass plugin reference for netloom.
-
+.PP
+netloom-clearpass \- ClearPass plugin reference for netloom
 .SH SYNOPSIS
 .PP
 .EX
@@ -10,243 +10,148 @@ netloom server use <profile>
 netloom cache update
 netloom <module> <service> <action> [options]
 .EE
-
 .SH DESCRIPTION
-.B netloom-clearpass
-documents the bundled ClearPass plugin for
-.BR netloom (1).
-
-The plugin targets HPE Aruba ClearPass Policy Manager and discovers the API
-surface dynamically from the documentation endpoints exposed by the selected
-server. Because of that, available modules, services, actions, request fields,
-and response metadata can vary between deployments and software versions.
-
-Use this manual for the ClearPass-specific behavior that does not belong in the
-shared
-.BR netloom (1)
-manual: configuration layout, authentication methods, discovery workflow,
-privilege-aware catalog behavior, filtering conventions, and the
-profile-to-profile
-.B copy
-and
-.B diff
-workflows.
-
+.PP
+The plugin targets HPE Aruba ClearPass Policy Manager and discovers the API surface dynamically from the documentation endpoints exposed by the selected server. Available modules, services, actions, request fields, and response metadata can therefore vary between deployments and software versions.
+.PP
+Use this guide for ClearPass-specific behavior that does not belong in the shared netloom(1) reference: configuration layout, authentication methods, discovery workflow, privilege-aware catalog behavior, filtering conventions, and the profile-to-profile copy and diff workflows.
 .SH CONFIGURATION
+.PP
 The ClearPass plugin stores configuration under:
-
 .PP
 .EX
 ~/.config/netloom/plugins/clearpass/
 .EE
-
+.PP
 Important files and directories:
-
-.TP
-.B defaults.env
-Plugin-wide defaults such as the active profile, TLS verification, timeout, and
-path overrides.
-
-.TP
-.B profiles/<profile>.env
-Per-profile connection settings such as
-.BR NETLOOM_SERVER .
-
-.TP
-.B credentials/<profile>.env
-Per-profile authentication settings such as
-.BR NETLOOM_CLIENT_ID ,
-.BR NETLOOM_CLIENT_SECRET_REF ,
-.BR NETLOOM_CLIENT_SECRET ,
-.BR NETLOOM_API_TOKEN ,
-or
-.BR NETLOOM_API_TOKEN_FILE .
-
-A typical layout looks like:
-
+.IP "\[bu]" 2
+defaults.env: Plugin-wide defaults such as the active profile, TLS verification, timeout, and path overrides.
+.IP "\[bu]" 2
+profiles/<profile>.env: Per-profile connection settings such as NETLOOM_SERVER.
+.IP "\[bu]" 2
+credentials/<profile>.env: Per-profile authentication settings such as NETLOOM_CLIENT_ID, NETLOOM_CLIENT_SECRET_REF, NETLOOM_CLIENT_SECRET, NETLOOM_API_TOKEN, or NETLOOM_API_TOKEN_FILE.
+.PP
+Typical layout:
 .PP
 .EX
 ~/.config/netloom/plugins/clearpass/defaults.env
-~/.config/netloom/plugins/clearpass/profiles/dev.env
-~/.config/netloom/plugins/clearpass/credentials/dev.env
+~/.config/netloom/plugins/clearpass/profiles/<profile>.env
+~/.config/netloom/plugins/clearpass/credentials/<profile>.env
 .EE
-
+.PP
 Minimal profile connection settings:
-
 .PP
 .EX
 NETLOOM_SERVER=clearpass.example.com:443
 .EE
-
+.PP
 Minimal OAuth client credentials:
-
 .PP
 .EX
-NETLOOM_CLIENT_ID=dev-client-id
-NETLOOM_CLIENT_SECRET_REF=dev/client-secret
+NETLOOM_CLIENT_ID=<client-id>
+NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 .EE
-
-Direct
-.B NETLOOM_*
-environment variables still override profile files when set in the current
-shell session.
-
+.PP
+Direct NETLOOM_ environment variables still override profile files when set in the current shell session.
 .SH AUTHENTICATION
-The ClearPass plugin supports three practical authentication paths.
-
-.TP
-.B OAuth client credentials
-Uses
-.BR NETLOOM_SERVER ,
-.BR NETLOOM_CLIENT_ID ,
-and either
-.BR NETLOOM_CLIENT_SECRET_REF
-or
-.BR NETLOOM_CLIENT_SECRET .
-
-.TP
-.B Direct bearer token
-Uses
-.BR NETLOOM_API_TOKEN .
-
-.TP
-.B Token file
-Uses
-.BR NETLOOM_API_TOKEN_FILE .
-The file may contain either a raw token or JSON with an
-.B access_token
-field.
-
+.PP
+The ClearPass plugin supports three practical authentication paths:
+.IP "\[bu]" 2
+OAuth client credentials via NETLOOM_SERVER, NETLOOM_CLIENT_ID, and either NETLOOM_CLIENT_SECRET_REF or NETLOOM_CLIENT_SECRET
+.IP "\[bu]" 2
+Direct bearer token via NETLOOM_API_TOKEN
+.IP "\[bu]" 2
+Token file via NETLOOM_API_TOKEN_FILE
+.PP
 When a login secret is needed, the runtime checks in this order:
-.RS
 .IP "1." 4
-.B NETLOOM_API_TOKEN
+NETLOOM_API_TOKEN
 .IP "2." 4
-.B NETLOOM_API_TOKEN_FILE
+NETLOOM_API_TOKEN_FILE
 .IP "3." 4
-keychain-resolved
-.B NETLOOM_CLIENT_SECRET_REF
+keychain-resolved NETLOOM_CLIENT_SECRET_REF
 .IP "4." 4
-plaintext
-.B NETLOOM_CLIENT_SECRET
-.RE
-
+plaintext NETLOOM_CLIENT_SECRET
 .SH KEYCHAIN SETUP
-When
-.B NETLOOM_CLIENT_SECRET_REF
-is configured, the runtime resolves the client secret from the OS keychain with:
-.RS
-.TP
-.B service
-netloom/clearpass
-.TP
-.B username
-the literal value of
-.BR NETLOOM_CLIENT_SECRET_REF .
-.RE
-
+.PP
+When NETLOOM_CLIENT_SECRET_REF is configured, the runtime resolves the client secret from the OS keychain with:
+.IP "\[bu]" 2
+service: netloom/clearpass
+.IP "\[bu]" 2
+username: the literal value of NETLOOM_CLIENT_SECRET_REF
+.PP
 Typical setup:
-
 .PP
 .EX
-python -m keyring set netloom/clearpass dev/client-secret
+python -m keyring set netloom/clearpass <profile>/client-secret
 .EE
-
 .PP
 .EX
-NETLOOM_CLIENT_ID=dev-client-id
-NETLOOM_CLIENT_SECRET_REF=dev/client-secret
+NETLOOM_CLIENT_ID=<client-id>
+NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 .EE
-
-To inspect the backend that Python
-.B keyring
-sees:
-
+.PP
+To inspect the backend that Python keyring sees:
 .PP
 .EX
 python -m keyring diagnose
 python -m keyring --help
 .EE
-
+.PP
 To verify a stored secret:
-
 .PP
 .EX
-python -m keyring get netloom/clearpass dev/client-secret
+python -m keyring get netloom/clearpass <profile>/client-secret
 .EE
-
-In headless Linux or WSL-style environments, a keyring backend may need to be
-installed and unlocked explicitly. One workable pattern is:
-
+.PP
+In headless Linux or WSL-style environments, a keyring backend may need to be installed and unlocked explicitly:
 .PP
 .EX
 sudo apt install -y gnome-keyring
 dbus-run-session -- bash
 echo 'choose-a-keyring-password' | gnome-keyring-daemon --unlock
-python -m keyring set netloom/clearpass dev/client-secret
+python -m keyring set netloom/clearpass <profile>/client-secret
 .EE
-
-If
-.B NETLOOM_CLIENT_SECRET_REF
-is configured but no usable backend exists, the runtime only falls back to
-plaintext
-.B NETLOOM_CLIENT_SECRET
-when that plaintext value is also configured.
-
+.PP
+If NETLOOM_CLIENT_SECRET_REF is configured but no usable backend exists, the runtime only falls back to plaintext NETLOOM_CLIENT_SECRET when that value is also configured.
 .SH DISCOVERY AND CACHE
-The ClearPass plugin discovers API structure from documentation endpoints such
-as:
-
-.TP
-.B /api-docs
-Top-level module and service discovery.
-
-.TP
-.B /api/apigility/documentation/<Module-v1>
-Action metadata, request field hints, and endpoint details for a module.
-
-Refresh discovery metadata when the ClearPass server is upgraded, when API
-features change, or when help/completion looks stale:
-
+.PP
+The ClearPass plugin discovers API structure from documentation endpoints such as:
+.IP "\[bu]" 2
+/api-docs: top-level module and service discovery
+.IP "\[bu]" 2
+/api/apigility/documentation/<Module-v1>: action metadata, request field hints, and endpoint details for a module
+.PP
+Refresh discovery metadata when the ClearPass server is upgraded, when API features change, or when help/completion looks stale:
 .PP
 .EX
 netloom cache clear
 netloom cache update
 .EE
-
-The resulting cache powers shell completion, context-aware help, and command
-validation.
-
+.PP
+The resulting cache powers shell completion, context-aware help, and command validation.
+.PP
+Service names shown in help and completion follow the canonical /api-docs names when available. For example, module help now prefers names such as certificate-chain, certificate-export, certificate-sign-request, onboard-device, and onboard-user instead of shorter path fragments such as chain or sign.
 .SH PRIVILEGE-AWARE CATALOG
-During
-.B netloom cache update
-the ClearPass plugin also queries:
-
-.TP
-.B /api/oauth/privileges
-Effective runtime privileges for the authenticated API client.
-
-The plugin keeps the full discovered catalog, then builds a stricter default
-visible view from verified privilege mappings. This makes normal help,
-completion, and command discovery better match what the current API client can
-actually access.
-
-Normal CLI behavior uses the visible catalog. To troubleshoot or inspect the
-retained full discovery data, use:
-
+.PP
+During netloom cache update the ClearPass plugin also queries /api/oauth/privileges for effective runtime privileges.
+.PP
+The plugin keeps the full discovered catalog, then builds a stricter default visible view from verified privilege mappings. This makes normal help, completion, and command discovery better match what the current API client can actually access.
+.PP
+To inspect the retained full discovery data:
 .PP
 .EX
 netloom --catalog-view=full ?
 netloom --catalog-view=full <module> <service> ?
 netloom --catalog-view=full <module> <service> <action> ?
 .EE
-
+.PP
+The default visible catalog remains the source of truth for normal help, completion, and command validation, so user-facing command lists only show baseline-accessible or privilege-verified services.
 .SH FILTERING
-When an endpoint supports server-side filtering, the ClearPass plugin accepts
-either shorthand filters or full JSON expressions.
-
+.PP
+When an endpoint supports server-side filtering, the ClearPass plugin accepts either shorthand filters or full JSON expressions.
+.PP
 Shorthand examples:
-
 .PP
 .EX
 --filter=name:equals:TEST
@@ -254,9 +159,8 @@ Shorthand examples:
 --filter=id:in:1,2,3
 --filter=enabled:exists:true
 .EE
-
+.PP
 Supported shorthand operators:
-
 .PP
 .EX
 equals
@@ -270,9 +174,8 @@ lt
 lte
 exists
 .EE
-
-Useful JSON patterns include:
-
+.PP
+Useful JSON patterns:
 .PP
 .EX
 {"key":{"$eq":"value"}}
@@ -282,78 +185,43 @@ Useful JSON patterns include:
 {"$or":[filter1,filter2]}
 {"$not":{filter}}
 .EE
-
+.PP
 Advanced JSON examples:
-
 .PP
 .EX
 --filter='{"name":{"$contains":"TEST"}}'
 --filter='{"$and":[{"name":{"$contains":"TEST"}},{"status":{"$eq":"Known"}}]}'
 .EE
-
+.PP
 Shell quoting matters because JSON expressions are passed as strings.
-
 .SH COMMON OPTIONS
-The following common CLI options are especially relevant when working with the
-ClearPass plugin:
-
-.TP
-.BI --file= PATH
-Path to JSON/CSV bulk payload input.
-
-.TP
-.BI --out= PATH
-Override the output file path.
-
-.TP
-.BI --data-format= JSON|CSV|RAW
-Output format (default:
-.BR json ).
-
-.TP
-.BI --csv-fieldnames= A,B,C
-Fields and order for CSV output.
-
-.TP
-.BI --filter= JSON|FIELD:OP:VALUE
-Server-side filter applied across all matching pages.
-
-.TP
-.BI --limit= N
-Page size for list/get
-.B --all
-and
-.B copy
-requests.
-
-.TP
-.BI --calculate-count= true|false
-Request total count metadata.
-
-.TP
-.BI --log-level= LEVEL
-Select log level (default:
-.BR info ).
-
-.TP
-.BI --api-token= TOKEN
-Use an existing bearer token.
-
-.TP
-.BI --token-file= PATH
-Load a bearer token from a file.
-
-.TP
-.BI --encrypt= enable|disable
-Mask or show secret fields.
-
+.PP
+The following common CLI options are especially relevant when working with the ClearPass plugin:
+.IP "\[bu]" 2
+--file=PATH: Path to JSON/CSV bulk payload input.
+.IP "\[bu]" 2
+--out=PATH: Override the output file path.
+.IP "\[bu]" 2
+--data-format=JSON|CSV|RAW: Output format (default: json).
+.IP "\[bu]" 2
+--csv-fieldnames=A,B,C: Fields and order for CSV output.
+.IP "\[bu]" 2
+--filter=JSON|FIELD:OP:VALUE: Server-side filter applied across all matching pages.
+.IP "\[bu]" 2
+--limit=N: Page size for list/get --all and copy requests.
+.IP "\[bu]" 2
+--calculate-count=true|false: Request total count metadata.
+.IP "\[bu]" 2
+--log-level=LEVEL: Select log level (default: info).
+.IP "\[bu]" 2
+--api-token=TOKEN: Use an existing bearer token.
+.IP "\[bu]" 2
+--token-file=PATH: Load a bearer token from a file.
+.IP "\[bu]" 2
+--encrypt=enable|disable: Mask or show secret fields.
 .SH RANDOM PASSWORD ALIASES
-For
-.B netloom toolsandutilities random-password add
-the optional
-.B --random_password_method
-field accepts both the native ClearPass values and short aliases.
-
+.PP
+For netloom toolsandutilities random-password add, the optional --random_password_method field accepts both the native ClearPass values and the new shorthand aliases:
 .PP
 .EX
 1 | digits         -> nwa_digits_password         | Random digits
@@ -364,210 +232,100 @@ field accepts both the native ClearPass values and short aliases.
 6 | complex        -> nwa_complex_password        | At least one each: upper case, lower case, digit, and symbol
 7 | strong         -> nwa_strong_password         | Random letters, digits and symbols
 .EE
-
-You can still pass the full native values if you prefer.
-
+.PP
+The full native values still work too.
 .PP
 .EX
 netloom toolsandutilities random-password add --random_password_method=6
 netloom toolsandutilities random-password add --random_password_method=strong
 netloom toolsandutilities random-password add --random_password_method=nwa_strong_password
 .EE
-
 .SH COPY WORKFLOW
-The ClearPass plugin supports copying resources between named profiles without
-manual export and replay steps.
-
+.PP
 Preferred syntax:
-
 .PP
 .EX
 netloom <module> <service> copy --from=SOURCE --to=TARGET [options]
 .EE
-
+.PP
 Useful options include:
-
-.TP
-.B --dry-run
-Preview planned writes without changing the target profile.
-
-.TP
-.BI --match-by= auto|name|id
-Choose how target objects are matched.
-
-.TP
-.BI --on-conflict= fail|skip|update|replace
-Choose the write strategy when a match already exists.
-
-.TP
-.BI --save-source= FILE
-Save fetched source objects. If omitted, a generated file under
-.B NETLOOM_OUT_DIR
-is still written.
-
-.TP
-.BI --save-payload= FILE
-Save normalized write payloads. If omitted, a generated file under
-.B NETLOOM_OUT_DIR
-is still written.
-
-.TP
-.BI --save-plan= FILE
-Save the planned operations. If omitted, a generated file under
-.B NETLOOM_OUT_DIR
-is still written.
-
-The plugin normalizes payloads before replaying them so response-only metadata,
-links, IDs, and similar API noise are not sent back as write input.
-
+.IP "\[bu]" 2
+--dry-run: Preview planned writes without changing the target profile.
+.IP "\[bu]" 2
+--match-by=auto|name|id: Choose how target objects are matched.
+.IP "\[bu]" 2
+--on-conflict=fail|skip|update|replace: Choose the write strategy when a match already exists.
+.IP "\[bu]" 2
+--save-source=FILE: Save fetched source objects.
+.IP "\[bu]" 2
+--save-payload=FILE: Save normalized write payloads.
+.IP "\[bu]" 2
+--save-plan=FILE: Save the planned operations.
+.PP
+The plugin normalizes payloads before replaying them so response-only metadata, links, IDs, and similar API noise are not sent back as write input.
 .SH DIFF WORKFLOW
-The ClearPass plugin also supports read-only comparison between two named
-profiles.
-
+.PP
 Preferred syntax:
-
 .PP
 .EX
 netloom <module> <service> diff --from=SOURCE --to=TARGET [options]
 .EE
-
+.PP
 Useful options include:
-
-.TP
-.BI --match-by= auto|name|id
-Choose how source and target objects are matched.
-
-.TP
-.B --all
-Compare the full selected collection on both profiles.
-
-.TP
-.BI --filter= JSON|FIELD:OP:VALUE
-Compare the same filtered selection on both profiles.
-
-.TP
-.BI --fields= FIELD1,FIELD2
-Restrict the comparison to named fields when supported by the selected action.
-
-.TP
-.BI --ignore-fields= FIELD1,FIELD2
-Ignore named fields when comparing items.
-
-.TP
-.BI --out= FILE
-Write the JSON diff report to an explicit file. If omitted, a generated
-timestamped file under
-.B NETLOOM_OUT_DIR
-is still written.
-
-.TP
-.B --show-all
-Disable console preview caps and print every listed diff item and changed
-field.
-
-.TP
-.BI --max-items= N
-Adjust the console preview cap for listed items and changed fields.
-
-Broad selectors such as
-.B --all
-and
-.B --filter
-produce symmetric reports with
-.BR same ,
-.BR different ,
-.BR only_in_source ,
-and
-.BR only_in_target
-statuses. Narrow selectors such as
-.B --id
-and
-.B --name
-stay source-scoped and primarily answer whether the chosen source object matches
-an object in the target profile.
-
+.IP "\[bu]" 2
+--match-by=auto|name|id
+.IP "\[bu]" 2
+--all
+.IP "\[bu]" 2
+--filter=JSON|FIELD:OP:VALUE
+.IP "\[bu]" 2
+--fields=FIELD1,FIELD2
+.IP "\[bu]" 2
+--ignore-fields=FIELD1,FIELD2
+.IP "\[bu]" 2
+--out=FILE
+.IP "\[bu]" 2
+--show-all
+.IP "\[bu]" 2
+--max-items=N
+.PP
+Broad selectors such as --all and --filter produce symmetric reports with same, different, only_in_source, and only_in_target statuses. Narrow selectors such as --id and --name stay source-scoped and primarily answer whether the chosen source object matches an object in the target profile.
 .SH TROUBLESHOOTING
+.PP
 If a profile is not behaving as expected, start with:
-
 .PP
 .EX
 netloom server show
 .EE
-
+.PP
 If help or completion looks incomplete, refresh the cache:
-
 .PP
 .EX
 netloom cache update
 .EE
-
-If a module or service seems to be missing for the current API client, inspect
-the retained catalog:
-
+.PP
+If a module or service seems to be missing for the current API client, inspect the retained catalog:
 .PP
 .EX
 netloom --catalog-view=full ?
 .EE
-
 .SH EXAMPLES
-List endpoints:
-
 .PP
 .EX
 netloom identities endpoint list --limit=10
-.EE
-
-Filter endpoints by name:
-
-.PP
-.EX
 netloom identities endpoint list --filter=name:contains:guest
-.EE
-
-Get one network device by id:
-
-.PP
-.EX
 netloom policyelements network-device get --id=1001
-.EE
-
-Copy matching network devices from one profile to another:
-
-.PP
-.EX
-netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
-.EE
-
-Compare roles between two profiles:
-
-.PP
-.EX
-netloom policyelements role diff --from=lab --to=prod --all
-.EE
-
-Use action-specific help:
-
-.PP
-.EX
+netloom policyelements network-device copy --from=<source-profile> --to=<target-profile> --all --dry-run
+netloom policyelements role diff --from=<source-profile> --to=<target-profile> --all
 netloom policyelements network-device add ?
+netloom certificateauthority certificate-chain --help
+netloom certificateauthority ?
+  certificate-chain          Get a certificate and its trust chain
+  certificate-export         Export a certificate or certificate signing request
+  onboard-device             Manage Onboard devices
 .EE
-
-.SH FILES
-.TP
-.B ~/.config/netloom/plugins/clearpass/defaults.env
-ClearPass-wide defaults.
-
-.TP
-.B ~/.config/netloom/plugins/clearpass/profiles/
-Profile-specific connection settings.
-
-.TP
-.B ~/.config/netloom/plugins/clearpass/credentials/
-Profile-specific credentials.
-
-.TP
-.B ~/.cache/netloom/
-Default cache location used for discovered ClearPass API metadata.
-
 .SH SEE ALSO
-.BR netloom (1)
+.IP "\[bu]" 2
+man/netloom.md
+.IP "\[bu]" 2
+netloom/data/man/netloom-clearpass.7

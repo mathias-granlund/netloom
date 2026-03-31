@@ -3,10 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from netloom.core.help_shared import (
+    BUILTIN_MODULE_SUMMARIES,
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
     display_services_for_module,
+    module_display_summary,
     resolve_service_entry,
     service_cli_actions,
     service_display_summary,
@@ -23,11 +25,6 @@ from netloom.core.interactive import (
 # Keep its user-visible output aligned with `netloom.cli.help.render_help`
 # for the cached compact-help cases, and rely on parity tests to catch drift.
 
-_DESCRIBE_BUILTIN_SUMMARIES = {
-    "cache": "Manage the local API catalog cache",
-    "load": "Select or inspect the active plugin",
-    "server": "Select or inspect the active profile",
-}
 _DESCRIBE_CACHE_COMMANDS = [
     ("clear", "Remove the cached API catalog"),
     ("update", "Refresh the cached API catalog"),
@@ -223,6 +220,10 @@ def _describe_lines(rows: list[tuple[str, str | None]]) -> str:
     return "\n".join(lines)
 
 
+def _format_named_rows(rows: list[tuple[str, str | None]]) -> str:
+    return _describe_lines(rows)
+
+
 def _service_summary(service_entry: dict) -> str | None:
     summary = service_display_summary(service_entry)
     if summary:
@@ -264,19 +265,19 @@ def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
     if not positionals:
         rows = [
             *[
-                (name, _DESCRIBE_BUILTIN_SUMMARIES.get(name))
+                (name, BUILTIN_MODULE_SUMMARIES.get(name))
                 for name in BUILTIN_MODULES
             ],
             *[
-                (name, None)
+                (name, module_display_summary(name))
                 for name in sorted(modules.keys())
-                if name not in _DESCRIBE_BUILTIN_SUMMARIES
+                if name not in BUILTIN_MODULE_SUMMARIES
             ],
         ]
         return _describe_lines(rows)
 
     module = positionals[0]
-    if module in _DESCRIBE_BUILTIN_SUMMARIES:
+    if module in BUILTIN_MODULE_SUMMARIES:
         if module == "server" and len(positionals) >= 2 and positionals[1] == "use":
             return _describe_lines(
                 [(profile, "Configured profile") for profile in list_profiles()]
@@ -286,13 +287,13 @@ def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
     if module not in modules:
         rows = [
             *[
-                (name, _DESCRIBE_BUILTIN_SUMMARIES.get(name))
+                (name, BUILTIN_MODULE_SUMMARIES.get(name))
                 for name in BUILTIN_MODULES
             ],
             *[
-                (name, None)
+                (name, module_display_summary(name))
                 for name in sorted(modules.keys())
-                if name not in _DESCRIBE_BUILTIN_SUMMARIES
+                if name not in BUILTIN_MODULE_SUMMARIES
             ],
         ]
         return _describe_lines(rows)
@@ -521,7 +522,9 @@ def render_catalog_help(
 ) -> str:
     modules = visible_catalog_modules(api_catalog)
     if not modules:
-        builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
+        builtin_modules = _format_named_rows(
+            [(name, BUILTIN_MODULE_SUMMARIES.get(name)) for name in BUILTIN_MODULES]
+        )
         text = header + usage + "\nAvailable modules:\n" + builtin_modules
         if not has_plugin:
             return text
@@ -532,10 +535,13 @@ def render_catalog_help(
         )
 
     if not module:
-        available_modules = "\n".join(
+        available_modules = _format_named_rows(
             [
-                *[f"  - {name}" for name in BUILTIN_MODULES],
-                *[f"  - {name}" for name in sorted(modules.keys())],
+                *[
+                    (name, BUILTIN_MODULE_SUMMARIES.get(name))
+                    for name in BUILTIN_MODULES
+                ],
+                *[(name, module_display_summary(name)) for name in sorted(modules)],
             ]
         )
         return header + usage + "\nAvailable modules:\n" + available_modules

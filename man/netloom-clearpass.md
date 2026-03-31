@@ -2,7 +2,7 @@
 
 GitHub-friendly reference for the bundled ClearPass plugin.
 
-Source of truth for the installable man page:
+Markdown source of truth for the installable man page:
 [netloom/data/man/netloom-clearpass.7](../netloom/data/man/netloom-clearpass.7)
 
 ## Name
@@ -53,8 +53,8 @@ Typical layout:
 
 ```text
 ~/.config/netloom/plugins/clearpass/defaults.env
-~/.config/netloom/plugins/clearpass/profiles/dev.env
-~/.config/netloom/plugins/clearpass/credentials/dev.env
+~/.config/netloom/plugins/clearpass/profiles/<profile>.env
+~/.config/netloom/plugins/clearpass/credentials/<profile>.env
 ```
 
 Minimal profile connection settings:
@@ -66,8 +66,8 @@ NETLOOM_SERVER=clearpass.example.com:443
 Minimal OAuth client credentials:
 
 ```bash
-NETLOOM_CLIENT_ID=dev-client-id
-NETLOOM_CLIENT_SECRET_REF=dev/client-secret
+NETLOOM_CLIENT_ID=<client-id>
+NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 ```
 
 Direct `NETLOOM_*` environment variables still override profile files when set
@@ -100,12 +100,12 @@ secret from the OS keychain with:
 Typical setup:
 
 ```bash
-python -m keyring set netloom/clearpass dev/client-secret
+python -m keyring set netloom/clearpass <profile>/client-secret
 ```
 
 ```bash
-NETLOOM_CLIENT_ID=dev-client-id
-NETLOOM_CLIENT_SECRET_REF=dev/client-secret
+NETLOOM_CLIENT_ID=<client-id>
+NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 ```
 
 To inspect the backend that Python `keyring` sees:
@@ -118,7 +118,7 @@ python -m keyring --help
 To verify a stored secret:
 
 ```bash
-python -m keyring get netloom/clearpass dev/client-secret
+python -m keyring get netloom/clearpass <profile>/client-secret
 ```
 
 In headless Linux or WSL-style environments, a keyring backend may need to be
@@ -128,7 +128,7 @@ installed and unlocked explicitly:
 sudo apt install -y gnome-keyring
 dbus-run-session -- bash
 echo 'choose-a-keyring-password' | gnome-keyring-daemon --unlock
-python -m keyring set netloom/clearpass dev/client-secret
+python -m keyring set netloom/clearpass <profile>/client-secret
 ```
 
 If `NETLOOM_CLIENT_SECRET_REF` is configured but no usable backend exists, the
@@ -155,6 +155,12 @@ netloom cache update
 The resulting cache powers shell completion, context-aware help, and command
 validation.
 
+Service names shown in help and completion follow the canonical `/api-docs`
+names when available. For example, module help now prefers names such as
+`certificate-chain`, `certificate-export`, `certificate-sign-request`,
+`onboard-device`, and `onboard-user` instead of shorter path fragments such as
+`chain` or `sign`.
+
 ## Privilege-Aware Catalog
 
 During `netloom cache update` the ClearPass plugin also queries
@@ -172,6 +178,10 @@ netloom --catalog-view=full ?
 netloom --catalog-view=full <module> <service> ?
 netloom --catalog-view=full <module> <service> <action> ?
 ```
+
+The default visible catalog remains the source of truth for normal help,
+completion, and command validation, so user-facing command lists only show
+baseline-accessible or privilege-verified services.
 
 ## Filtering
 
@@ -336,9 +346,14 @@ netloom --catalog-view=full ?
 netloom identities endpoint list --limit=10
 netloom identities endpoint list --filter=name:contains:guest
 netloom policyelements network-device get --id=1001
-netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
-netloom policyelements role diff --from=lab --to=prod --all
+netloom policyelements network-device copy --from=<source-profile> --to=<target-profile> --all --dry-run
+netloom policyelements role diff --from=<source-profile> --to=<target-profile> --all
 netloom policyelements network-device add ?
+netloom certificateauthority certificate-chain --help
+netloom certificateauthority ?
+  certificate-chain          Get a certificate and its trust chain
+  certificate-export         Export a certificate or certificate signing request
+  onboard-device             Manage Onboard devices
 ```
 
 ## See Also

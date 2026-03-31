@@ -128,8 +128,10 @@ def test_render_help_without_catalog_lists_builtin_modules():
     text = helpmod.render_help({}, {}, version="1.4.7")
 
     assert "Available modules:" in text
-    assert "  - cache" in text
-    assert "  - server" in text
+    assert "cache" in text
+    assert "Manage the local API catalog cache" in text
+    assert "server" in text
+    assert "Select or inspect the active profile" in text
 
 
 def test_render_help_for_legacy_copy_command():

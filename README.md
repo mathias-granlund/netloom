@@ -8,7 +8,7 @@
 
 **A CLI for working with network APIs — easy, consistent, safe, and fast.**
 
-[![Version](https://img.shields.io/badge/version-1.10.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.10.2-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -115,13 +115,13 @@ netloom policyelements network-device get --id=1001 --console
 Compare the same service between two profiles:
 
 ```bash
-netloom policyelements network-device diff --from=dev --to=prod --all --max-items=25
+netloom policyelements network-device diff --from=<source-profile> --to=<target-profile> --all --max-items=25
 ```
 
 Preview a cross-profile copy without writing changes:
 
 ```bash
-netloom policyelements network-device copy --from=dev --to=prod --all --dry-run
+netloom policyelements network-device copy --from=<source-profile> --to=<target-profile> --all --dry-run
 ```
 
 ## Feature Roadmap
@@ -152,6 +152,8 @@ ruff check .
 ruff format .
 python -m build
 python -m twine check dist/*
+netloom-generate-manpages
+netloom-generate-manpages --check
 ```
 
 ## License

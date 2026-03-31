@@ -39,10 +39,11 @@ def test_render_help_lists_builtin_and_catalog_modules_from_lightweight_layer():
     )
 
     assert "Available modules:" in text
-    assert "  - cache" in text
-    assert "  - load" in text
-    assert "  - server" in text
-    assert "  - identities" in text
+    assert "Manage the local API catalog cache" in text
+    assert "Select or inspect the active plugin" in text
+    assert "Select or inspect the active profile" in text
+    assert "identities" in text
+    assert "Identity, endpoint, and account records" in text
 
 
 @pytest.mark.parametrize(
