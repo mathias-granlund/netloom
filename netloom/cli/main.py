@@ -446,6 +446,18 @@ def print_help(
     if render_plugin is None and plugin_name:
         render_plugin = _HELP_PLUGIN_MARKER
     if selected_plugin is not None and catalog is None:
+        if plugin_name is None:
+            plugin_name = getattr(selected_plugin, "name", None)
+        if plugin_name:
+            catalog = profiler.call(
+                "load_core_cached_catalog",
+                load_cached_catalog_for_plugin,
+                plugin_name,
+                settings=effective_settings,
+                catalog_view=catalog_view,
+                prefer_index=prefer_index,
+            )
+    if selected_plugin is not None and catalog is None:
         catalog = profiler.call(
             "plugin_fallback_cached_catalog",
             _load_catalog_for_cli,

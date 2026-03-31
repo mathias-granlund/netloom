@@ -128,11 +128,42 @@ def display_services_for_module(
     }
 
 
+def merge_service_entries(base: dict, extra: dict) -> dict:
+    merged = dict(base)
+    merged_actions = dict(base.get("actions") or {})
+    for action_name, action_def in (extra.get("actions") or {}).items():
+        merged_actions.setdefault(action_name, action_def)
+    merged["actions"] = merged_actions
+
+    for key, value in extra.items():
+        if key == "actions":
+            continue
+        merged.setdefault(key, value)
+
+    return merged
+
+
 def resolve_service_entry(
     api_catalog: dict | None, module: str, service: str
 ) -> dict | None:
-    entry = combined_services_for_module(api_catalog, module).get(service)
-    return entry if isinstance(entry, dict) else None
+    services = combined_services_for_module(api_catalog, module)
+    entry = services.get(service)
+    if not isinstance(entry, dict):
+        return None
+
+    merged = dict(entry)
+    for alias_name, alias_entry in services.items():
+        if alias_name == service or not isinstance(alias_entry, dict):
+            continue
+        if service_is_hidden_alias(alias_name, alias_entry, services):
+            summary = service_display_summary(alias_entry)
+            target_summary = service_display_summary(entry)
+            if service.endswith(f"-{alias_name}") or (
+                summary and target_summary and summary == target_summary
+            ):
+                merged = merge_service_entries(merged, alias_entry)
+
+    return merged
 
 
 __all__ = [
@@ -143,6 +174,7 @@ __all__ = [
     "display_services_for_module",
     "NETLOOM_BANNER",
     "PLUGIN_SELECTION_HINT",
+    "merge_service_entries",
     "resolve_service_entry",
     "service_display_summary",
     "service_cli_actions",

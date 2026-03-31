@@ -207,3 +207,34 @@ def test_get_service_entry_accepts_canonical_service_name_from_full_modules():
     )
 
     assert entry["actions"]["get"]["method"] == "GET"
+
+
+def test_get_service_entry_merges_actions_from_hidden_alias():
+    cp = clearpass.ClearPassClient(
+        "server:443", https_prefix="https://", verify_ssl=False
+    )
+
+    entry = cp._get_service_entry(
+        {
+            "modules": {
+                "certificateauthority": {
+                    "chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {"get": {"method": "GET"}},
+                    }
+                }
+            },
+            "full_modules": {
+                "certificateauthority": {
+                    "certificate-chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {},
+                    }
+                }
+            },
+        },
+        "certificateauthority",
+        "certificate-chain",
+    )
+
+    assert entry["actions"]["get"]["method"] == "GET"

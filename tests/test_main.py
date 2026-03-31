@@ -389,6 +389,59 @@ def test_print_help_falls_back_to_get_plugin_when_direct_index_missing(
     assert "Available services:" in out
 
 
+def test_print_help_with_plugin_prefers_core_cached_loader(monkeypatch, capsys):
+    plugin = types.SimpleNamespace(
+        name="clearpass",
+        load_cached_index=lambda **kwargs: {
+            "modules": {
+                "certificateauthority": {
+                    "chain": {"actions": {"get": {"method": "GET"}}}
+                }
+            }
+        },
+        load_cached_catalog=lambda **kwargs: {
+            "modules": {
+                "certificateauthority": {
+                    "chain": {"actions": {"get": {"method": "GET"}}}
+                }
+            }
+        },
+    )
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: {
+            "modules": {
+                "certificateauthority": {
+                    "chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {"get": {"method": "GET"}},
+                    }
+                }
+            },
+            "full_modules": {
+                "certificateauthority": {
+                    "certificate-chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {},
+                    }
+                }
+            },
+        },
+    )
+    monkeypatch.setattr(main, "get_version", lambda: "1.9.15")
+
+    main.print_help(
+        {"module": "certificateauthority"},
+        plugin=plugin,
+        settings=_settings(plugin="clearpass"),
+    )
+
+    out = capsys.readouterr().out
+    assert "certificate-chain" in out
+    assert "  - chain" not in out
+
+
 def test_complete_emits_timing_when_enabled(capsys, monkeypatch):
     plugin = _catalog_plugin(TEST_CATALOG)
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
