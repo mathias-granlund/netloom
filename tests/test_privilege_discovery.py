@@ -6,6 +6,7 @@ from netloom.plugins.clearpass.privilege_discovery import (
     _iter_target_services,
     _operator_profile_item_path,
     _probe_action_for_service,
+    _probe_service,
     _service_supports_reversible_write_probe,
     _update_operator_profile,
 )
@@ -128,6 +129,142 @@ def test_iter_target_services_includes_safe_get_only_services():
 
     assert ("globalserverconfiguration", "application-license-summary") in services
     assert ("globalserverconfiguration", "attribute-name") not in services
+
+
+def test_iter_target_services_includes_parameterized_services_with_known_probe_args():
+    catalog = {
+        "modules": {
+            "enforcementprofile": {
+                "nat-pool": {
+                    "actions": {
+                        "get": {
+                            "paths": [
+                                "/api/enforcement-profile-dur/nat-pool/{product_name}"
+                            ],
+                            "params": None,
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    services = _iter_target_services(
+        catalog,
+        ("enforcementprofile",),
+        include_mapped=True,
+    )
+
+    assert ("enforcementprofile", "nat-pool") in services
+
+
+def test_probe_service_tries_multiple_parameterized_probe_args_until_success():
+    catalog = {
+        "modules": {
+            "enforcementprofile": {
+                "nat-pool": {
+                    "actions": {
+                        "get": {
+                            "paths": [
+                                "/api/enforcement-profile-dur/nat-pool/{product_name}"
+                            ],
+                            "params": ["limit", "offset", "calculate_count", "filter"],
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    class _Client:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def request_action(self, api_catalog, action, token, args, params=None):
+            if args["product_name"] == "Mobility Controller":
+                response = requests.Response()
+                response.status_code = 422
+                response.url = "https://clearpass.example/api/enforcement-profile-dur/nat-pool/Mobility%20Controller"
+                response._content = b'{"validation_messages":"Invalid product_name"}'
+                raise requests.HTTPError(response=response)
+            return {"_embedded": {"items": []}}
+
+    result = _probe_service(
+        _Client(),
+        "token",
+        catalog,
+        "enforcementprofile",
+        "nat-pool",
+    )
+
+    assert result["status"] == "ok"
+    assert result["action"] == "get"
+    assert result["probe_args"] == {"product_name": "Mobility Access Switch"}
+
+
+def test_probe_action_for_name_service_uses_base_product_probe_args():
+    service_entry = {
+        "actions": {
+            "get": {
+                "paths": [
+                    "/api/enforcement-profile-dur/nat-pool/{product_name}/name/{name}"
+                ],
+                "params": None,
+            }
+        }
+    }
+
+    assert (
+        _probe_action_for_service(
+            service_entry,
+            "enforcementprofile",
+            "nat-pool-name",
+        )
+        == "get"
+    )
+
+
+def test_probe_service_preserves_name_probe_args_on_404_signal():
+    catalog = {
+        "modules": {
+            "enforcementprofile": {
+                "nat-pool-name": {
+                    "actions": {
+                        "get": {
+                            "paths": [
+                                "/api/enforcement-profile-dur/nat-pool/{product_name}/name/{name}"
+                            ],
+                            "params": None,
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    class _Client:
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def request_action(self, api_catalog, action, token, args, params=None):
+            response = requests.Response()
+            response.status_code = 404
+            response.url = "https://clearpass.example/api/enforcement-profile-dur/nat-pool/Mobility%20Controller/name/test"
+            response._content = b'{"detail":"Not Found"}'
+            raise requests.HTTPError(response=response)
+
+    result = _probe_service(
+        _Client(),
+        "token",
+        catalog,
+        "enforcementprofile",
+        "nat-pool-name",
+    )
+
+    assert result["status"] == "http-error"
+    assert result["http_status"] == 404
+    assert result["probe_args"]["product_name"] == "Mobility Controller"
+    assert result["probe_args"]["name"].startswith("netloom-privilege-probe-")
 
 
 def test_service_supports_reversible_write_probe_for_resource_style_service():

@@ -1,0 +1,1754 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "enforcementprofile"
+  ],
+  "services": [
+    "enforcementprofile/captive-portal-profile-name",
+    "enforcementprofile/dur-class-name",
+    "enforcementprofile/ethertype-access-control-list-name",
+    "enforcementprofile/mac-access-control-list-name",
+    "enforcementprofile/nat-pool-name",
+    "enforcementprofile/net-destination-name",
+    "enforcementprofile/net-service-name",
+    "enforcementprofile/policer-profile-name",
+    "enforcementprofile/policy-name",
+    "enforcementprofile/qos-profile-name",
+    "enforcementprofile/session-access-control-list-name",
+    "enforcementprofile/stateless-access-control-list-name",
+    "enforcementprofile/time-range-name",
+    "enforcementprofile/voip-profile-name"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_bruteforce_2026-03-31.json",
+  "probe_writes": false,
+  "results": [
+    {
+      "module": "enforcementprofile",
+      "service": "captive-portal-profile-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-captive-portal-profile-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_clearpass_portal"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "#mdps_export_ca_key"
+        ],
+        [
+          "cppm_captive_portal_profile_name"
+        ],
+        [
+          "cppm_captive_portal_profile_names"
+        ],
+        [
+          "cppm_enforcement_profile_captive_portal_profile_name"
+        ],
+        [
+          "cppm_enforcement_profile_captive_portal_profile_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-captive-portal-profile-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_captive_portal_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-captive-portal-profile-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_captive_portal_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "captive-portal-profile-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "dur-class-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "ArubaOS-Switch",
+          "name": "netloom-privilege-probe-dur-class-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_dur_class"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_dur_class_name"
+        ],
+        [
+          "cppm_dur_class_names"
+        ],
+        [
+          "cppm_enforcement_profile_dur_class_name"
+        ],
+        [
+          "cppm_enforcement_profile_dur_class_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_dur_class"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "ArubaOS-Switch",
+              "name": "netloom-privilege-probe-dur-class-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_dur_class"
+        ],
+        "module": "enforcementprofile",
+        "service": "dur-class-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "ethertype-access-control-list-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-ethertype-access-control-list-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "cppm_stateless_access_control_list"
+        ],
+        [
+          "extension_control"
+        ],
+        [
+          "full-user-control"
+        ],
+        [
+          "cppm_ethertype_access_control_list_name"
+        ],
+        [
+          "cppm_ethertype_access_control_list_names"
+        ],
+        [
+          "cppm_enforcement_profile_ethertype_access_control_list_name"
+        ],
+        [
+          "cppm_enforcement_profile_ethertype_access_control_list_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_ethertype_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-ethertype-access-control-list-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_ethertype_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "ethertype-access-control-list-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "mac-access-control-list-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-mac-access-control-list-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "mac"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "#mac_export"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_active_session"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_list_name"
+        ],
+        [
+          "cppm_mac_access_control_list_names"
+        ],
+        [
+          "cppm_enforcement_profile_mac_access_control_list_name"
+        ],
+        [
+          "cppm_enforcement_profile_mac_access_control_list_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mac"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mac",
+              "name": "mac",
+              "access": "full"
+            },
+            {
+              "raw": "mac_create",
+              "name": "mac_create",
+              "access": "full"
+            },
+            {
+              "raw": "mac_export",
+              "name": "mac_export",
+              "access": "full"
+            },
+            {
+              "raw": "mac_import",
+              "name": "mac_import",
+              "access": "full"
+            },
+            {
+              "raw": "mac_list",
+              "name": "mac_list",
+              "access": "full"
+            },
+            {
+              "raw": "mac_multi",
+              "name": "mac_multi",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-mac-access-control-list-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_mac_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-mac-access-control-list-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_mac_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "mac-access-control-list-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "nat-pool-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-nat-pool-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_nat_pool"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_nat_pool_name"
+        ],
+        [
+          "cppm_nat_pool_names"
+        ],
+        [
+          "cppm_enforcement_profile_nat_pool_name"
+        ],
+        [
+          "cppm_enforcement_profile_nat_pool_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_nat_pool"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-nat-pool-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_nat_pool"
+        ],
+        "module": "enforcementprofile",
+        "service": "nat-pool-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "net-destination-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-net-destination-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_net_destination"
+        ],
+        [
+          "cppm_net_service"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_network_device_groups"
+        ],
+        [
+          "cppm_network_devices"
+        ],
+        [
+          "cppm_network_proxy_targets"
+        ],
+        [
+          "cppm_networkscan"
+        ],
+        [
+          "cppm_net_destination_name"
+        ],
+        [
+          "cppm_net_destination_names"
+        ],
+        [
+          "cppm_enforcement_profile_net_destination_name"
+        ],
+        [
+          "cppm_enforcement_profile_net_destination_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_net_destination"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-net-destination-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_net_destination"
+        ],
+        "module": "enforcementprofile",
+        "service": "net-destination-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "net-service-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-net-service-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_net_service"
+        ],
+        [
+          "cppm_net_destination"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_service_parameter"
+        ],
+        [
+          "cppm_services"
+        ],
+        [
+          "cppm_tacacs_service_dict"
+        ],
+        [
+          "soap_services"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_net_service_name"
+        ],
+        [
+          "cppm_net_service_names"
+        ],
+        [
+          "cppm_enforcement_profile_net_service_name"
+        ],
+        [
+          "cppm_enforcement_profile_net_service_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_net_service"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-net-service-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_net_service"
+        ],
+        "module": "enforcementprofile",
+        "service": "net-service-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "policer-profile-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch",
+          "name": "netloom-privilege-probe-policer-profile-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_policer_profile_name"
+        ],
+        [
+          "cppm_policer_profile_names"
+        ],
+        [
+          "cppm_enforcement_profile_policer_profile_name"
+        ],
+        [
+          "cppm_enforcement_profile_policer_profile_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-policer-profile-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_policer_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-policer-profile-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_policer_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "policer-profile-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "policy-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "ArubaOS-Switch",
+          "name": "netloom-privilege-probe-policy-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_policy_name"
+        ],
+        [
+          "cppm_policy_names"
+        ],
+        [
+          "cppm_enforcement_profile_policy_name"
+        ],
+        [
+          "cppm_enforcement_profile_policy_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_enforcement_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_policy",
+              "name": "cppm_enforcement_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "ArubaOS-Switch",
+              "name": "netloom-privilege-probe-policy-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "ArubaOS-Switch",
+              "name": "netloom-privilege-probe-policy-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_policy_name"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_policy_name\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_policy_names"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_policy_names\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile_policy_name"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_enforcement_profile_policy_name\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        },
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile_policy_names"
+          ],
+          "update_status": 422,
+          "update_detail": "{\"validation_messages\":{\"privileges\":{\"NwaAclIsValidPrivileges\":\"\\u2018cppm_enforcement_profile_policy_names\\u2019 is not a valid privilege\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      ],
+      "verified": null
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "qos-profile-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch",
+          "name": "netloom-privilege-probe-qos-profile-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_qos_profile_name"
+        ],
+        [
+          "cppm_qos_profile_names"
+        ],
+        [
+          "cppm_enforcement_profile_qos_profile_name"
+        ],
+        [
+          "cppm_enforcement_profile_qos_profile_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-qos-profile-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_qos_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-qos-profile-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_qos_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "qos-profile-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "session-access-control-list-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-session-access-control-list-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_mac_active_session"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_action"
+        ],
+        [
+          "cppm_session_access_control_list_name"
+        ],
+        [
+          "cppm_session_access_control_list_names"
+        ],
+        [
+          "cppm_enforcement_profile_session_access_control_list_name"
+        ],
+        [
+          "cppm_enforcement_profile_session_access_control_list_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_session_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-session-access-control-list-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_session_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "session-access-control-list-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "stateless-access-control-list-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch",
+          "name": "netloom-privilege-probe-stateless-access-control-list-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_stateless_access_control_list"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "extension_control"
+        ],
+        [
+          "full-user-control"
+        ],
+        [
+          "cppm_stateless_access_control_list_name"
+        ],
+        [
+          "cppm_stateless_access_control_list_names"
+        ],
+        [
+          "cppm_enforcement_profile_stateless_access_control_list_name"
+        ],
+        [
+          "cppm_enforcement_profile_stateless_access_control_list_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_stateless_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-stateless-access-control-list-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_stateless_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "stateless-access-control-list-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "time-range-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller",
+          "name": "netloom-privilege-probe-time-range-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_time_range"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_time_range_name"
+        ],
+        [
+          "cppm_time_range_names"
+        ],
+        [
+          "cppm_enforcement_profile_time_range_name"
+        ],
+        [
+          "cppm_enforcement_profile_time_range_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_time_range"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Controller",
+              "name": "netloom-privilege-probe-time-range-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_time_range"
+        ],
+        "module": "enforcementprofile",
+        "service": "time-range-name",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "voip-profile-name",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch",
+          "name": "netloom-privilege-probe-voip-profile-missing"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_voip_profile_name"
+        ],
+        [
+          "cppm_voip_profile_names"
+        ],
+        [
+          "cppm_enforcement_profile_voip_profile_name"
+        ],
+        [
+          "cppm_enforcement_profile_voip_profile_names"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_enforcement_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_enforcement_profile",
+              "name": "cppm_enforcement_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 403,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-voip-profile-missing"
+            }
+          }
+        },
+        {
+          "candidate_keys": [
+            "cppm_voip_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "http-error",
+            "action": "get",
+            "http_status": 404,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Object not found\"}",
+            "probe_args": {
+              "product_name": "Mobility Access Switch",
+              "name": "netloom-privilege-probe-voip-profile-missing"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_voip_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "voip-profile-name",
+        "probe_action": "get"
+      }
+    }
+  ]
+}

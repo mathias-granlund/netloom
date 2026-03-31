@@ -1,0 +1,1386 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "enforcementprofile"
+  ],
+  "services": [
+    "enforcementprofile/captive-portal-profile",
+    "enforcementprofile/dur-class",
+    "enforcementprofile/ethertype-access-control-list",
+    "enforcementprofile/mac-access-control-list",
+    "enforcementprofile/nat-pool",
+    "enforcementprofile/net-destination",
+    "enforcementprofile/net-service",
+    "enforcementprofile/policer-profile",
+    "enforcementprofile/policy",
+    "enforcementprofile/qos-profile",
+    "enforcementprofile/session-access-control-list",
+    "enforcementprofile/stateless-access-control-list",
+    "enforcementprofile/time-range",
+    "enforcementprofile/voip-profile"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_bruteforce_2026-03-31.json",
+  "probe_writes": false,
+  "results": [
+    {
+      "module": "enforcementprofile",
+      "service": "captive-portal-profile",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_clearpass_portal"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "#mdps_export_ca_key"
+        ],
+        [
+          "cppm_captive_portal_profiles"
+        ],
+        [
+          "cppm_enforcement_profile_captive_portal_profile"
+        ],
+        [
+          "cppm_enforcement_profile_captive_portal_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_captive_portal_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_captive_portal_profile",
+              "name": "cppm_captive_portal_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_captive_portal_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "captive-portal-profile",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "dur-class",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "ArubaOS-Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_dur_class"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_dur_clas"
+        ],
+        [
+          "cppm_enforcement_profile_dur_class"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_dur_class"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_dur_class",
+              "name": "cppm_dur_class",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "ArubaOS-Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_dur_class"
+        ],
+        "module": "enforcementprofile",
+        "service": "dur-class",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "ethertype-access-control-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "cppm_stateless_access_control_list"
+        ],
+        [
+          "extension_control"
+        ],
+        [
+          "full-user-control"
+        ],
+        [
+          "cppm_ethertype_access_control_lists"
+        ],
+        [
+          "cppm_enforcement_profile_ethertype_access_control_list"
+        ],
+        [
+          "cppm_enforcement_profile_ethertype_access_control_lists"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_ethertype_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_ethertype_access_control_list",
+              "name": "cppm_ethertype_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_ethertype_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "ethertype-access-control-list",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "mac-access-control-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "mac"
+        ],
+        [
+          "#mac_export"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_active_session"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_lists"
+        ],
+        [
+          "cppm_enforcement_profile_mac_access_control_list"
+        ],
+        [
+          "cppm_enforcement_profile_mac_access_control_lists"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_mac_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_mac_access_control_list",
+              "name": "cppm_mac_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_mac_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "mac-access-control-list",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "nat-pool",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_nat_pool"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_nat_pools"
+        ],
+        [
+          "cppm_enforcement_profile_nat_pool"
+        ],
+        [
+          "cppm_enforcement_profile_nat_pools"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_nat_pool"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_nat_pool",
+              "name": "cppm_nat_pool",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_nat_pool"
+        ],
+        "module": "enforcementprofile",
+        "service": "nat-pool",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "net-destination",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_net_destination"
+        ],
+        [
+          "cppm_net_service"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_network_device_groups"
+        ],
+        [
+          "cppm_network_devices"
+        ],
+        [
+          "cppm_network_proxy_targets"
+        ],
+        [
+          "cppm_networkscan"
+        ],
+        [
+          "cppm_net_destinations"
+        ],
+        [
+          "cppm_enforcement_profile_net_destination"
+        ],
+        [
+          "cppm_enforcement_profile_net_destinations"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_net_destination"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_destination",
+              "name": "cppm_net_destination",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_net_destination"
+        ],
+        "module": "enforcementprofile",
+        "service": "net-destination",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "net-service",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_net_service"
+        ],
+        [
+          "cppm_net_destination"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_service_parameter"
+        ],
+        [
+          "cppm_services"
+        ],
+        [
+          "cppm_tacacs_service_dict"
+        ],
+        [
+          "soap_services"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_net_services"
+        ],
+        [
+          "cppm_enforcement_profile_net_service"
+        ],
+        [
+          "cppm_enforcement_profile_net_services"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_net_service"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_net_service",
+              "name": "cppm_net_service",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_net_service"
+        ],
+        "module": "enforcementprofile",
+        "service": "net-service",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "policer-profile",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_policer_profiles"
+        ],
+        [
+          "cppm_enforcement_profile_policer_profile"
+        ],
+        [
+          "cppm_enforcement_profile_policer_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_policer_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policer_profile",
+              "name": "cppm_policer_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Access Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_policer_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "policer-profile",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "policy",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "ArubaOS-Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_policy"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_admin_user_pass_policy"
+        ],
+        [
+          "cppm_local_user_pass_policy"
+        ],
+        [
+          "cppm_policy_manager_zones"
+        ],
+        [
+          "cppm_posture_policy"
+        ],
+        [
+          "cppm_server_policy_manager_zones"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_policies"
+        ],
+        [
+          "cppm_enforcement_profile_policy"
+        ],
+        [
+          "cppm_enforcement_profile_policies"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_policy"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_policy",
+              "name": "cppm_policy",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "ArubaOS-Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_policy"
+        ],
+        "module": "enforcementprofile",
+        "service": "policy",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "qos-profile",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_qos_profiles"
+        ],
+        [
+          "cppm_enforcement_profile_qos_profile"
+        ],
+        [
+          "cppm_enforcement_profile_qos_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_qos_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_qos_profile",
+              "name": "cppm_qos_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Access Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_qos_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "qos-profile",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "session-access-control-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "#guest_sessions_history"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_mac_active_session"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_action"
+        ],
+        [
+          "cppm_session_access_control_lists"
+        ],
+        [
+          "cppm_enforcement_profile_session_access_control_list"
+        ],
+        [
+          "cppm_enforcement_profile_session_access_control_lists"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_session_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_session_access_control_list",
+              "name": "cppm_session_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_session_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "session-access-control-list",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "stateless-access-control-list",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_stateless_access_control_list"
+        ],
+        [
+          "cppm_access_controls"
+        ],
+        [
+          "cppm_ethertype_access_control_list"
+        ],
+        [
+          "cppm_mac_access_control_list"
+        ],
+        [
+          "cppm_service_control"
+        ],
+        [
+          "cppm_session_access_control_list"
+        ],
+        [
+          "extension_control"
+        ],
+        [
+          "full-user-control"
+        ],
+        [
+          "cppm_stateless_access_control_lists"
+        ],
+        [
+          "cppm_enforcement_profile_stateless_access_control_list"
+        ],
+        [
+          "cppm_enforcement_profile_stateless_access_control_lists"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_stateless_access_control_list"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_stateless_access_control_list",
+              "name": "cppm_stateless_access_control_list",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Access Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_stateless_access_control_list"
+        ],
+        "module": "enforcementprofile",
+        "service": "stateless-access-control-list",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "time-range",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Controller"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_time_range"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "cppm_time_ranges"
+        ],
+        [
+          "cppm_enforcement_profile_time_range"
+        ],
+        [
+          "cppm_enforcement_profile_time_ranges"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_time_range"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_time_range",
+              "name": "cppm_time_range",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Controller"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_time_range"
+        ],
+        "module": "enforcementprofile",
+        "service": "time-range",
+        "probe_action": "get"
+      }
+    },
+    {
+      "module": "enforcementprofile",
+      "service": "voip-profile",
+      "baseline_probe": {
+        "status": "http-error",
+        "action": "get",
+        "http_status": 403,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}",
+        "probe_args": {
+          "product_name": "Mobility Access Switch"
+        }
+      },
+      "candidate_specs": [
+        [
+          "cppm_voip_profile"
+        ],
+        [
+          "cppm_enforcement_profile"
+        ],
+        [
+          "auth_profiles"
+        ],
+        [
+          "cppm_captive_portal_profile"
+        ],
+        [
+          "cppm_policer_profile"
+        ],
+        [
+          "cppm_qos_profile"
+        ],
+        [
+          "cppm_enforcement_policy"
+        ],
+        [
+          "cppm_profiler_subnet_mapping"
+        ],
+        [
+          "cppm_voip_profiles"
+        ],
+        [
+          "cppm_enforcement_profile_voip_profile"
+        ],
+        [
+          "cppm_enforcement_profile_voip_profiles"
+        ]
+      ],
+      "attempts": [
+        {
+          "candidate_keys": [
+            "cppm_voip_profile"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?cppm_config",
+              "name": "cppm_config",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "cppm_voip_profile",
+              "name": "cppm_voip_profile",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status": "ok",
+            "action": "get",
+            "result_type": "dict",
+            "probe_args": {
+              "product_name": "Mobility Access Switch"
+            }
+          }
+        }
+      ],
+      "verified": {
+        "privileges": [
+          "cppm_voip_profile"
+        ],
+        "module": "enforcementprofile",
+        "service": "voip-profile",
+        "probe_action": "get"
+      }
+    }
+  ]
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import time
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,66 @@ MODULE_PREFIX_VARIANTS = {
     "enforcementprofile": ("enforcement_profile",),
 }
 _WRITE_PROBE_NAME_PREFIX = "netloom-privilege-probe"
+_PLACEHOLDER_RE = re.compile(r"{([^}]+)}")
+_PARAMETERIZED_READ_PROBE_ARGS: dict[tuple[str, str], list[dict[str, str]]] = {
+    ("enforcementprofile", "captive-portal-profile"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+        {"product_name": "ArubaOS-Switch"},
+        {"product_name": "AOS-CX"},
+    ],
+    ("enforcementprofile", "dur-class"): [
+        {"product_name": "ArubaOS-Switch"},
+        {"product_name": "AOS-CX"},
+    ],
+    ("enforcementprofile", "ethertype-access-control-list"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "mac-access-control-list"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "nat-pool"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "net-destination"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+        {"product_name": "ArubaOS-Switch"},
+    ],
+    ("enforcementprofile", "net-service"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+        {"product_name": "ArubaOS-Switch"},
+        {"product_name": "AOS-CX"},
+    ],
+    ("enforcementprofile", "policer-profile"): [
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "policy"): [
+        {"product_name": "ArubaOS-Switch"},
+        {"product_name": "AOS-CX"},
+    ],
+    ("enforcementprofile", "qos-profile"): [
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "session-access-control-list"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "stateless-access-control-list"): [
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "time-range"): [
+        {"product_name": "Mobility Controller"},
+        {"product_name": "Mobility Access Switch"},
+    ],
+    ("enforcementprofile", "voip-profile"): [
+        {"product_name": "Mobility Access Switch"},
+    ],
+}
 
 
 def _pluralize_token(token: str) -> str:
@@ -248,12 +309,82 @@ def _effective_privileges(discovery_cp, discovery_token: str) -> list[dict[str, 
     return items
 
 
-def _probe_action_for_service(service_entry: dict[str, Any]) -> str | None:
+def _extract_placeholders(path: str) -> list[str]:
+    return _PLACEHOLDER_RE.findall(path)
+
+
+def _action_supports_probe_args(
+    service_entry: dict[str, Any],
+    action_name: str,
+    probe_args: list[dict[str, Any]],
+) -> bool:
+    if not probe_args:
+        return False
+    action_def = (service_entry.get("actions") or {}).get(action_name) or {}
+    for path in action_def.get("paths") or []:
+        placeholders = _extract_placeholders(str(path))
+        if not placeholders:
+            continue
+        for arg_spec in probe_args:
+            if all(arg_spec.get(name) not in (None, "") for name in placeholders):
+                return True
+    return False
+
+
+def _parameterized_read_probe_args(
+    module_name: str,
+    service_name: str,
+    action_name: str,
+) -> list[dict[str, Any]]:
+    if action_name not in {"list", "get"}:
+        return []
+    if module_name == "enforcementprofile" and service_name.endswith("-name"):
+        base_service = service_name[: -len("-name")]
+        base_args = _PARAMETERIZED_READ_PROBE_ARGS.get((module_name, base_service), [])
+        if not base_args:
+            return []
+        return [
+            {
+                **copy.deepcopy(arg_spec),
+                "name": f"{_WRITE_PROBE_NAME_PREFIX}-{base_service}-missing",
+            }
+            for arg_spec in base_args
+        ]
+    return copy.deepcopy(
+        _PARAMETERIZED_READ_PROBE_ARGS.get((module_name, service_name), [])
+    )
+
+
+def _probe_arg_specs_for_service(
+    module_name: str,
+    service_name: str,
+    service_entry: dict[str, Any],
+    action_name: str,
+) -> list[dict[str, Any]]:
+    if _has_non_parameterized_action_path(service_entry, action_name):
+        return [{}]
+    probe_args = _parameterized_read_probe_args(module_name, service_name, action_name)
+    if _action_supports_probe_args(service_entry, action_name, probe_args):
+        return probe_args
+    return []
+
+
+def _probe_action_for_service(
+    service_entry: dict[str, Any],
+    module_name: str | None = None,
+    service_name: str | None = None,
+) -> str | None:
     actions = service_entry.get("actions") or {}
     for action_name in ("list", "get"):
         action_def = actions.get(action_name)
-        if isinstance(action_def, dict) and _has_non_parameterized_action_path(
-            service_entry, action_name
+        if not isinstance(action_def, dict):
+            continue
+        if _has_non_parameterized_action_path(service_entry, action_name):
+            return action_name
+        if module_name and service_name and _action_supports_probe_args(
+            service_entry,
+            action_name,
+            _parameterized_read_probe_args(module_name, service_name, action_name),
         ):
             return action_name
     return None
@@ -611,7 +742,7 @@ def _probe_service(
             result["write_probe"] = {"status": "missing-service"}
         return result
 
-    action_name = _probe_action_for_service(service_entry)
+    action_name = _probe_action_for_service(service_entry, module_name, service_name)
     if action_name is None:
         result = {"status": "no-probe-action"}
         if probe_writes:
@@ -620,38 +751,62 @@ def _probe_service(
             )
         return result
 
-    result: dict[str, Any]
-    try:
-        action_def = discovery_cp.get_action_definition(
-            catalog, module_name, service_name, action_name
-        )
-        params = _probe_params(action_def)
-        response = discovery_cp.request_action(
-            catalog,
-            action_name,
-            discovery_token,
-            {"module": module_name, "service": service_name},
-            params=params,
-        )
-    except ValueError as exc:
-        result = {"status": "skipped", "detail": str(exc), "action": action_name}
-    except requests.HTTPError as exc:
-        response = exc.response
-        detail = ""
-        if response is not None:
-            detail = (response.text or "")[:1000]
-        result = {
-            "status": "http-error",
-            "action": action_name,
-            "http_status": response.status_code if response is not None else None,
-            "detail": detail,
-        }
-    else:
-        result = {
-            "status": "ok",
-            "action": action_name,
-            "result_type": type(response).__name__,
-        }
+    action_def = discovery_cp.get_action_definition(
+        catalog, module_name, service_name, action_name
+    )
+    params = _probe_params(action_def)
+    probe_arg_specs = _probe_arg_specs_for_service(
+        module_name, service_name, service_entry, action_name
+    )
+
+    result: dict[str, Any] = {
+        "status": "skipped",
+        "detail": "No supported probe arguments were available.",
+        "action": action_name,
+    }
+    for probe_arg_spec in probe_arg_specs:
+        try:
+            response = discovery_cp.request_action(
+                catalog,
+                action_name,
+                discovery_token,
+                {
+                    "module": module_name,
+                    "service": service_name,
+                    **probe_arg_spec,
+                },
+                params=params,
+            )
+        except ValueError as exc:
+            result = {
+                "status": "skipped",
+                "detail": str(exc),
+                "action": action_name,
+                "probe_args": probe_arg_spec,
+            }
+        except requests.HTTPError as exc:
+            response = exc.response
+            detail = ""
+            if response is not None:
+                detail = (response.text or "")[:1000]
+            result = {
+                "status": "http-error",
+                "action": action_name,
+                "http_status": response.status_code if response is not None else None,
+                "detail": detail,
+                "probe_args": probe_arg_spec,
+            }
+            if response is not None and response.status_code == 422:
+                continue
+            break
+        else:
+            result = {
+                "status": "ok",
+                "action": action_name,
+                "result_type": type(response).__name__,
+                "probe_args": probe_arg_spec,
+            }
+            break
     if probe_writes:
         result["write_probe"] = _probe_write_actions(
             discovery_cp, discovery_token, catalog, module_name, service_name
@@ -693,7 +848,9 @@ def _iter_target_services(
                 continue
             if not include_mapped and (module_name, service_name) in rules:
                 continue
-            if _probe_action_for_service(service_entry) is None:
+            if _probe_action_for_service(
+                service_entry, module_name, service_name
+            ) is None:
                 continue
             services.append((module_name, service_name))
     return services
@@ -886,6 +1043,19 @@ def main(argv: list[str] | None = None) -> int:
                 baseline_write = (baseline_probe.get("write_probe") or {}).get("status")
                 candidate_write = (probe.get("write_probe") or {}).get("status")
                 if baseline_probe.get("status") != "ok" and probe.get("status") == "ok":
+                    service_result["verified"] = {
+                        "privileges": candidate_spec,
+                        "module": module_name,
+                        "service": service_name,
+                        "probe_action": probe.get("action"),
+                    }
+                    break
+                if (
+                    baseline_probe.get("status") == "http-error"
+                    and baseline_probe.get("http_status") == 403
+                    and probe.get("status") == "http-error"
+                    and probe.get("http_status") == 404
+                ):
                     service_result["verified"] = {
                         "privileges": candidate_spec,
                         "module": module_name,

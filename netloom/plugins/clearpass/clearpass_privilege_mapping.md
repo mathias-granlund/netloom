@@ -28,6 +28,34 @@ Useful flags for future mapping rounds:
 | `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `device` | `list` |
 | `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `user` | `list` |
 | `cppm_enforcement_profile` | `cppm_enforcement_profile` | `enforcementprofile` | `enforcement-profile` | `list` |
+| `cppm_captive_portal_profile` | `cppm_captive_portal_profile` | `enforcementprofile` | `captive-portal-profile` | `get` |
+| `cppm_captive_portal_profile` | `cppm_captive_portal_profile` | `enforcementprofile` | `captive-portal-profile-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_dur_class` | `cppm_dur_class` | `enforcementprofile` | `dur-class` | `get` |
+| `cppm_dur_class` | `cppm_dur_class` | `enforcementprofile` | `dur-class-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_ethertype_access_control_list` | `cppm_ethertype_access_control_list` | `enforcementprofile` | `ethertype-access-control-list` | `get` |
+| `cppm_ethertype_access_control_list` | `cppm_ethertype_access_control_list` | `enforcementprofile` | `ethertype-access-control-list-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_mac_access_control_list` | `cppm_mac_access_control_list` | `enforcementprofile` | `mac-access-control-list` | `get` |
+| `cppm_mac_access_control_list` | `cppm_mac_access_control_list` | `enforcementprofile` | `mac-access-control-list-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_nat_pool` | `cppm_nat_pool` | `enforcementprofile` | `nat-pool` | `get` |
+| `cppm_nat_pool` | `cppm_nat_pool` | `enforcementprofile` | `nat-pool-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_net_destination` | `cppm_net_destination` | `enforcementprofile` | `net-destination` | `get` |
+| `cppm_net_destination` | `cppm_net_destination` | `enforcementprofile` | `net-destination-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_net_service` | `cppm_net_service` | `enforcementprofile` | `net-service` | `get` |
+| `cppm_net_service` | `cppm_net_service` | `enforcementprofile` | `net-service-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_policer_profile` | `cppm_policer_profile` | `enforcementprofile` | `policer-profile` | `get` |
+| `cppm_policer_profile` | `cppm_policer_profile` | `enforcementprofile` | `policer-profile-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_policy` | `cppm_policy` | `enforcementprofile` | `policy` | `get` |
+| `cppm_policy` | `cppm_policy` | `enforcementprofile` | `policy-name` | `get` via real `test_policy` |
+| `cppm_qos_profile` | `cppm_qos_profile` | `enforcementprofile` | `qos-profile` | `get` |
+| `cppm_qos_profile` | `cppm_qos_profile` | `enforcementprofile` | `qos-profile-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_session_access_control_list` | `cppm_session_access_control_list` | `enforcementprofile` | `session-access-control-list` | `get` |
+| `cppm_session_access_control_list` | `cppm_session_access_control_list` | `enforcementprofile` | `session-access-control-list-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_stateless_access_control_list` | `cppm_stateless_access_control_list` | `enforcementprofile` | `stateless-access-control-list` | `get` |
+| `cppm_stateless_access_control_list` | `cppm_stateless_access_control_list` | `enforcementprofile` | `stateless-access-control-list-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_time_range` | `cppm_time_range` | `enforcementprofile` | `time-range` | `get` |
+| `cppm_time_range` | `cppm_time_range` | `enforcementprofile` | `time-range-name` | `get` via fake name returning `404` instead of baseline `403` |
+| `cppm_voip_profile` | `cppm_voip_profile` | `enforcementprofile` | `voip-profile` | `get` |
+| `cppm_voip_profile` | `cppm_voip_profile` | `enforcementprofile` | `voip-profile-name` | `get` via fake name returning `404` instead of baseline `403` |
 | `cppm_fingerprints` | `cppm_fingerprints` | `endpointvisibility` | `fingerprint` | `list` |
 | `cppm_onguard_global_settings` | `cppm_onguard_global_settings` | `endpointvisibility` | `global-settings` | `list` |
 | `cppm_networkscan` | `cppm_networkscan` | `endpointvisibility` | `network-scan` | `list` |

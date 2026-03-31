@@ -69,6 +69,11 @@ MANUAL_SERVICE_CANDIDATES: dict[str, list[str | list[str]]] = {
     ],
     "endpointvisibility/windows-hotfix": ["cppm_windows_hotfix"],
     "endpointvisibility/windows-hotfix-kbid-operating_system": ["cppm_windows_hotfix"],
+    "enforcementprofile/policy-name": [
+        "cppm_policy",
+        "cppm_enforcement_policy",
+        "cppm_enforcement_profile",
+    ],
     "globalserverconfiguration/messaging-setup": [
         "cppm_messaging_setup",
         "smtp_config",
@@ -127,24 +132,33 @@ def _read_text(path: str) -> str:
     return Path(path).read_text(encoding="utf-8")
 
 
-def parse_admin_privileges(text: str) -> list[str]:
+def _extract_json_object(text: str) -> dict[str, Any] | None:
     stripped = text.strip()
-    if stripped:
-        start = stripped.find("{")
-        end = stripped.rfind("}")
-        if start != -1 and end > start:
-            try:
-                parsed = json.loads(stripped[start : end + 1])
-            except json.JSONDecodeError:
-                parsed = None
-            if isinstance(parsed, dict):
-                values = parsed.get("privileges")
-                if isinstance(values, list):
-                    return [
-                        str(value).strip()
-                        for value in values
-                        if isinstance(value, str) and str(value).strip()
-                    ]
+    if not stripped:
+        return None
+
+    start = stripped.find("{")
+    end = stripped.rfind("}")
+    if start == -1 or end <= start:
+        return None
+
+    try:
+        parsed = json.loads(stripped[start : end + 1])
+    except json.JSONDecodeError:
+        return None
+    return parsed if isinstance(parsed, dict) else None
+
+
+def parse_admin_privileges(text: str) -> list[str]:
+    parsed = _extract_json_object(text)
+    if isinstance(parsed, dict):
+        values = parsed.get("privileges")
+        if isinstance(values, list):
+            return [
+                str(value).strip()
+                for value in values
+                if isinstance(value, str) and str(value).strip()
+            ]
 
     privileges: list[str] = []
     quoted_pattern = re.compile(r'^\s*"([^"]+)"\s*,?\s*$')
@@ -160,6 +174,72 @@ def parse_admin_privileges(text: str) -> list[str]:
         if plain_pattern.match(stripped_line):
             privileges.append(stripped_line)
     return _unique_ordered(privileges)
+
+
+def parse_oauth_privileges(text: str) -> dict[str, dict[str, Any]]:
+    parsed = _extract_json_object(text)
+    if not isinstance(parsed, dict):
+        return {}
+
+    privileges = parsed.get("privileges")
+    if not isinstance(privileges, dict):
+        return {}
+
+    flattened: dict[str, dict[str, Any]] = {}
+
+    def add_entry(
+        key: str,
+        payload: dict[str, Any],
+        *,
+        domain_key: str | None = None,
+        domain_payload: dict[str, Any] | None = None,
+    ) -> None:
+        entry = {
+            "key": key,
+            "type": payload.get("type"),
+            "domain": payload.get("domain") or domain_key,
+            "name": payload.get("name"),
+            "desc": payload.get("desc"),
+        }
+        if isinstance(domain_payload, dict):
+            entry["domain_name"] = domain_payload.get("name")
+            entry["domain_desc"] = domain_payload.get("desc")
+        flattened[key] = entry
+
+    for key, payload in privileges.items():
+        if not isinstance(key, str) or not isinstance(payload, dict):
+            continue
+        add_entry(key, payload)
+
+    for domain_key, domain_payload in privileges.items():
+        if not isinstance(domain_key, str) or not isinstance(domain_payload, dict):
+            continue
+        features = domain_payload.get("features")
+        if not isinstance(features, dict):
+            continue
+        for feature_key, feature_payload in features.items():
+            if not isinstance(feature_key, str) or not isinstance(
+                feature_payload, dict
+            ):
+                continue
+            add_entry(
+                feature_key,
+                feature_payload,
+                domain_key=domain_key,
+                domain_payload=domain_payload,
+            )
+
+    for entry in flattened.values():
+        domain_key = entry.get("domain")
+        if not isinstance(domain_key, str):
+            continue
+        domain_entry = flattened.get(domain_key)
+        if not isinstance(domain_entry, dict):
+            continue
+        entry.setdefault("domain_name", domain_entry.get("name"))
+        entry.setdefault("domain_desc", domain_entry.get("desc"))
+
+    return flattened
 
 
 def parse_unresolved_services(text: str) -> list[tuple[str, str]]:
@@ -242,54 +322,92 @@ def _service_similarity(target_service: str, known_service: str) -> int:
     return score
 
 
-def _candidate_records(admin_privileges: list[str]) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
+def _candidate_records(
+    admin_privileges: list[str],
+    oauth_privileges: dict[str, dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    records_by_raw: dict[str, dict[str, Any]] = {}
+    available_lookup = _available_key_lookup(admin_privileges)
+
     for raw in admin_privileges:
         normalized = normalize_effective_privilege(raw)
         name = normalized["name"]
-        records.append(
-            {
-                "raw": raw,
-                "name": name,
-                "tokens": _tokenize(name),
-            }
-        )
-    return records
+        records_by_raw[raw] = {
+            "raw": raw,
+            "name": name,
+            "tokens": _tokenize(name),
+        }
+
+    if oauth_privileges:
+        for key, payload in oauth_privileges.items():
+            if not isinstance(key, str) or not isinstance(payload, dict):
+                continue
+            resolved = _resolve_candidate_key(available_lookup, key)
+            if not resolved:
+                continue
+            record = records_by_raw.setdefault(
+                resolved,
+                {
+                    "raw": resolved,
+                    "name": normalize_effective_privilege(resolved)["name"],
+                    "tokens": [],
+                },
+            )
+            metadata_text = " ".join(
+                str(value).strip()
+                for value in (
+                    key,
+                    payload.get("name"),
+                    payload.get("desc"),
+                    payload.get("domain"),
+                    payload.get("domain_name"),
+                    payload.get("domain_desc"),
+                )
+                if isinstance(value, str) and value.strip()
+            )
+            record["tokens"] = _unique_ordered(
+                record["tokens"] + _tokenize(metadata_text)
+            )
+
+    return list(records_by_raw.values())
 
 
-def _available_key_lookup(admin_privileges: list[str]) -> dict[str, str]:
-    lookup: dict[str, str] = {}
-    for raw in admin_privileges:
-        normalized = normalize_effective_privilege(raw)
-        lookup.setdefault(raw, raw)
-        lookup.setdefault(normalized["name"], raw)
-    return lookup
+def _service_metadata_score(
+    module_name: str,
+    service_name: str,
+    record: dict[str, Any],
+) -> int:
+    target_tokens = _tokenize(f"{module_name} {service_name}")
+    score = _token_overlap(target_tokens, record["tokens"]) * 18
+    score += _prefix_overlap(target_tokens, record["tokens"]) * 5
 
+    record_token_set = set(record["tokens"])
+    for variant in _service_variants(service_name):
+        variant_tokens = _tokenize(variant)
+        if variant_tokens and all(
+            token in record_token_set for token in variant_tokens
+        ):
+            score += 24
 
-def _resolve_candidate_key(
-    available_lookup: dict[str, str], candidate_name: str
-) -> str | None:
-    return available_lookup.get(candidate_name.strip())
-
-
-def _add_candidate_score(
-    scores: dict[str, int],
-    resolved_key: str | None,
-    score: int,
-) -> None:
-    if not resolved_key or score <= 0:
-        return
-    scores[resolved_key] = max(scores.get(resolved_key, 0), score)
+    if record.get("name") and (
+        record["name"] in service_name or service_name in record["name"]
+    ):
+        score += 24
+    return score
 
 
 def build_bruteforce_candidate_overrides(
     unresolved_services: list[tuple[str, str]],
     admin_privileges: list[str],
     *,
+    oauth_privileges: dict[str, dict[str, Any]] | None = None,
     max_single_candidates: int = 8,
 ) -> dict[str, list[str | list[str]]]:
     available_lookup = _available_key_lookup(admin_privileges)
-    candidate_records = _candidate_records(admin_privileges)
+    candidate_records = _candidate_records(
+        admin_privileges,
+        oauth_privileges=oauth_privileges,
+    )
     rules_by_module: dict[str, list[tuple[str, tuple[str, ...]]]] = {}
     for rule in SERVICE_PRIVILEGE_RULES:
         if not rule.privileges:
@@ -301,7 +419,6 @@ def build_bruteforce_candidate_overrides(
     overrides: dict[str, list[str | list[str]]] = {}
     for module_name, service_name in unresolved_services:
         service_key = f"{module_name}/{service_name}"
-        target_tokens = _tokenize(f"{module_name} {service_name}")
         scores: dict[str, int] = {}
         ordered_candidates: list[str | list[str]] = []
 
@@ -334,11 +451,7 @@ def build_bruteforce_candidate_overrides(
                 _add_candidate_score(scores, resolved, 80 + similarity)
 
         for record in candidate_records:
-            overlap = _token_overlap(target_tokens, record["tokens"])
-            prefix_overlap = _prefix_overlap(target_tokens, record["tokens"])
-            score = overlap * 18 + prefix_overlap * 5
-            if record["name"] in service_name or service_name in record["name"]:
-                score += 24
+            score = _service_metadata_score(module_name, service_name, record)
             _add_candidate_score(scores, record["raw"], score)
 
         ranked_singles = sorted(
@@ -354,6 +467,31 @@ def build_bruteforce_candidate_overrides(
             overrides[service_key] = ordered_candidates
 
     return overrides
+
+
+def _available_key_lookup(admin_privileges: list[str]) -> dict[str, str]:
+    lookup: dict[str, str] = {}
+    for raw in admin_privileges:
+        normalized = normalize_effective_privilege(raw)
+        lookup.setdefault(raw, raw)
+        lookup.setdefault(normalized["name"], raw)
+    return lookup
+
+
+def _resolve_candidate_key(
+    available_lookup: dict[str, str], candidate_name: str
+) -> str | None:
+    return available_lookup.get(candidate_name.strip())
+
+
+def _add_candidate_score(
+    scores: dict[str, int],
+    resolved_key: str | None,
+    score: int,
+) -> None:
+    if not resolved_key or score <= 0:
+        return
+    scores[resolved_key] = max(scores.get(resolved_key, 0), score)
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
@@ -383,6 +521,15 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help=f"Output JSON path (default: .\\{DEFAULT_OUT_FILE})",
     )
     parser.add_argument(
+        "--oauth-privileges-file",
+        default=None,
+        help=(
+            "Optional JSON file containing '/api/oauth/all-privileges' output. "
+            "Both 'format=list' and 'format=tree' are supported, but "
+            "'format=list' is recommended because it is flatter."
+        ),
+    )
+    parser.add_argument(
         "--max-single-candidates",
         type=int,
         default=8,
@@ -397,11 +544,16 @@ def main(argv: list[str] | None = None) -> int:
 
     unresolved_text = Path(args.planned_features_file).read_text(encoding="utf-8")
     admin_text = _read_text(args.admin_privileges_file)
+    oauth_text = (
+        _read_text(args.oauth_privileges_file) if args.oauth_privileges_file else ""
+    )
     unresolved_services = parse_unresolved_services(unresolved_text)
     admin_privileges = parse_admin_privileges(admin_text)
+    oauth_privileges = parse_oauth_privileges(oauth_text) if oauth_text else {}
     overrides = build_bruteforce_candidate_overrides(
         unresolved_services,
         admin_privileges,
+        oauth_privileges=oauth_privileges,
         max_single_candidates=max(args.max_single_candidates, 1),
     )
 
@@ -410,7 +562,9 @@ def main(argv: list[str] | None = None) -> int:
     print(
         "Wrote"
         f" {len(overrides)} service candidate sets using"
-        f" {len(admin_privileges)} admin privilege keys to {out_path}"
+        f" {len(admin_privileges)} admin privilege keys"
+        f" and {len(oauth_privileges)} OAuth privilege metadata entries"
+        f" to {out_path}"
     )
     return 0
 

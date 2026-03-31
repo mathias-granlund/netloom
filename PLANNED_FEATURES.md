@@ -8,9 +8,9 @@ Top priority.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- privilege-gated verified services: `95`
+- privilege-gated verified services: `123`
 - baseline verified services: `9`
-- unresolved services: `88`
+- unresolved services: `60`
 
 Goal:
 - continue turning retained full-catalog services into verified privilege
@@ -46,36 +46,6 @@ Current unmapped retained services by module:
 - `subnet-mapping-name-disable`
 - `subnet-mapping-name-enable`
 - `windows-hotfix-kbid-operating_system`
-
-#### `enforcementprofile` (`28`)
-- `captive-portal-profile`
-- `captive-portal-profile-name`
-- `dur-class`
-- `dur-class-name`
-- `ethertype-access-control-list`
-- `ethertype-access-control-list-name`
-- `mac-access-control-list`
-- `mac-access-control-list-name`
-- `nat-pool`
-- `nat-pool-name`
-- `net-destination`
-- `net-destination-name`
-- `net-service`
-- `net-service-name`
-- `policer-profile`
-- `policer-profile-name`
-- `policy`
-- `policy-name`
-- `qos-profile`
-- `qos-profile-name`
-- `session-access-control-list`
-- `session-access-control-list-name`
-- `stateless-access-control-list`
-- `stateless-access-control-list-name`
-- `time-range`
-- `time-range-name`
-- `voip-profile`
-- `voip-profile-name`
 
 #### `globalserverconfiguration` (`3`)
 - `attribute-name`
