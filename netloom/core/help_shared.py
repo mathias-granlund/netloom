@@ -62,8 +62,13 @@ def service_display_summary(service_entry: dict) -> str | None:
     return None
 
 
-def combined_catalog_modules(api_catalog: dict | None) -> dict[str, dict]:
+def visible_catalog_modules(api_catalog: dict | None) -> dict[str, dict]:
     modules = (api_catalog or {}).get("modules") or {}
+    return dict(modules) if isinstance(modules, dict) else {}
+
+
+def combined_catalog_modules(api_catalog: dict | None) -> dict[str, dict]:
+    modules = visible_catalog_modules(api_catalog)
     full_modules = (api_catalog or {}).get("full_modules") or {}
     if not isinstance(full_modules, dict):
         return dict(modules)
@@ -82,6 +87,14 @@ def combined_catalog_modules(api_catalog: dict | None) -> dict[str, dict]:
     return combined
 
 
+def visible_services_for_module(
+    api_catalog: dict | None, module: str
+) -> dict[str, dict]:
+    modules = visible_catalog_modules(api_catalog)
+    services = modules.get(module)
+    return services if isinstance(services, dict) else {}
+
+
 def combined_services_for_module(
     api_catalog: dict | None, module: str
 ) -> dict[str, dict]:
@@ -90,9 +103,9 @@ def combined_services_for_module(
     return services if isinstance(services, dict) else {}
 
 
-def service_is_hidden_alias(
+def _alias_candidates(
     service_name: str, service_entry: dict, services: dict[str, dict]
-) -> bool:
+) -> tuple[list[str], list[str]]:
     suffix_candidates: list[str] = []
     summary_candidates: list[str] = []
     service_summary = service_display_summary(service_entry)
@@ -112,20 +125,49 @@ def service_is_hidden_alias(
         ):
             summary_candidates.append(canonical_name)
 
+    return suffix_candidates, summary_candidates
+
+
+def preferred_service_name(
+    service_name: str, service_entry: dict, services: dict[str, dict]
+) -> str:
+    suffix_candidates, summary_candidates = _alias_candidates(
+        service_name, service_entry, services
+    )
     if len(set(summary_candidates)) == 1:
-        return True
-    return len(set(suffix_candidates)) == 1
+        return summary_candidates[0]
+    if len(set(suffix_candidates)) == 1:
+        return suffix_candidates[0]
+    return service_name
+
+
+def service_is_hidden_alias(
+    service_name: str, service_entry: dict, services: dict[str, dict]
+) -> bool:
+    return preferred_service_name(service_name, service_entry, services) != service_name
 
 
 def display_services_for_module(
     api_catalog: dict | None, module: str
 ) -> dict[str, dict]:
+    visible = visible_services_for_module(api_catalog, module)
     combined = combined_services_for_module(api_catalog, module)
-    return {
-        service_name: service_entry
-        for service_name, service_entry in combined.items()
-        if not service_is_hidden_alias(service_name, service_entry, combined)
-    }
+    display: dict[str, dict] = {}
+
+    for service_name, service_entry in visible.items():
+        if not isinstance(service_entry, dict):
+            continue
+        display_name = preferred_service_name(service_name, service_entry, combined)
+        base_entry = combined.get(display_name)
+        if not isinstance(base_entry, dict):
+            base_entry = service_entry
+        merged = merge_service_entries(base_entry, service_entry)
+        existing = display.get(display_name)
+        if isinstance(existing, dict):
+            merged = merge_service_entries(existing, merged)
+        display[display_name] = merged
+
+    return display
 
 
 def merge_service_entries(base: dict, extra: dict) -> dict:
@@ -146,24 +188,30 @@ def merge_service_entries(base: dict, extra: dict) -> dict:
 def resolve_service_entry(
     api_catalog: dict | None, module: str, service: str
 ) -> dict | None:
-    services = combined_services_for_module(api_catalog, module)
-    entry = services.get(service)
-    if not isinstance(entry, dict):
-        return None
+    displayed = display_services_for_module(api_catalog, module)
+    entry = displayed.get(service)
+    if isinstance(entry, dict):
+        return entry
 
-    merged = dict(entry)
-    for alias_name, alias_entry in services.items():
-        if alias_name == service or not isinstance(alias_entry, dict):
+    visible = visible_services_for_module(api_catalog, module)
+    raw_entry = visible.get(service)
+    if isinstance(raw_entry, dict):
+        preferred = preferred_service_name(
+            service, raw_entry, combined_services_for_module(api_catalog, module)
+        )
+        if preferred != service and isinstance(displayed.get(preferred), dict):
+            return displayed[preferred]
+        return raw_entry
+
+    combined = combined_services_for_module(api_catalog, module)
+    for visible_name, visible_entry in visible.items():
+        if not isinstance(visible_entry, dict):
             continue
-        if service_is_hidden_alias(alias_name, alias_entry, services):
-            summary = service_display_summary(alias_entry)
-            target_summary = service_display_summary(entry)
-            if service.endswith(f"-{alias_name}") or (
-                summary and target_summary and summary == target_summary
-            ):
-                merged = merge_service_entries(merged, alias_entry)
-
-    return merged
+        if preferred_service_name(visible_name, visible_entry, combined) == service:
+            candidate = displayed.get(service)
+            if isinstance(candidate, dict):
+                return candidate
+    return None
 
 
 __all__ = [
@@ -175,8 +223,11 @@ __all__ = [
     "NETLOOM_BANNER",
     "PLUGIN_SELECTION_HINT",
     "merge_service_entries",
+    "preferred_service_name",
     "resolve_service_entry",
     "service_display_summary",
     "service_cli_actions",
     "service_is_hidden_alias",
+    "visible_catalog_modules",
+    "visible_services_for_module",
 ]

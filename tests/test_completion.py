@@ -1,7 +1,7 @@
 from netloom.cli.completion import completion_candidates
 
 
-def test_completion_candidates_include_full_only_services():
+def test_completion_candidates_hide_full_only_services():
     candidates = completion_candidates(
         ["certificateauthority", "--_cur="],
         {
@@ -31,10 +31,10 @@ def test_completion_candidates_include_full_only_services():
     )
 
     assert "certificate" in candidates
-    assert "certificate-chain" in candidates
+    assert "certificate-chain" not in candidates
 
 
-def test_completion_candidates_do_not_invent_actions_for_summary_only_service():
+def test_completion_candidates_unknown_hidden_service_falls_back_to_visible_services():
     candidates = completion_candidates(
         ["certificateauthority", "certificate-chain"],
         {
@@ -58,7 +58,7 @@ def test_completion_candidates_do_not_invent_actions_for_summary_only_service():
         },
     )
 
-    assert candidates == []
+    assert candidates == ["certificate"]
 
 
 def test_completion_candidates_hide_short_aliases_when_canonical_services_exist():
@@ -175,5 +175,5 @@ def test_completion_candidates_hide_request_alias_when_summary_picks_one_match()
     )
 
     assert "certificate-request" in candidates
-    assert "certificate-sign-request" in candidates
+    assert "certificate-sign-request" not in candidates
     assert "request" not in candidates

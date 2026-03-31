@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from netloom.core.help_shared import (
-    combined_services_for_module,
     display_services_for_module,
+    resolve_service_entry,
     service_cli_actions,
 )
 
@@ -57,16 +57,16 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
         return ["cache", "load", "server", *sorted(modules.keys())]
 
     services = display_services_for_module(catalog, module)
-    all_services = combined_services_for_module(catalog, module)
     if len(positionals) == 1 or (len(positionals) == 2 and current != ""):
         return sorted(services.keys())
 
     service = positionals[1]
-    if service not in all_services:
+    service_entry = resolve_service_entry(catalog, module, service)
+    if not isinstance(service_entry, dict):
         return sorted(services.keys())
 
     if len(positionals) == 2:
-        return service_cli_actions(all_services[service])
+        return service_cli_actions(service_entry)
 
     return []
 

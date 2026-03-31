@@ -188,9 +188,10 @@ def test_get_service_entry_accepts_canonical_service_name_from_full_modules():
         {
             "modules": {
                 "certificateauthority": {
-                    "certificate": {"actions": {"list": {"method": "GET"}}},
-                    "device": {"actions": {"list": {"method": "GET"}}},
-                    "user": {"actions": {"list": {"method": "GET"}}},
+                    "chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {"get": {"method": "GET"}},
+                    }
                 }
             },
             "full_modules": {
@@ -207,6 +208,33 @@ def test_get_service_entry_accepts_canonical_service_name_from_full_modules():
     )
 
     assert entry["actions"]["get"]["method"] == "GET"
+
+
+def test_get_service_entry_rejects_hidden_full_only_service():
+    cp = clearpass.ClearPassClient(
+        "server:443", https_prefix="https://", verify_ssl=False
+    )
+
+    with pytest.raises(KeyError, match="Unknown service 'certificate-chain'"):
+        cp._get_service_entry(
+            {
+                "modules": {
+                    "certificateauthority": {
+                        "certificate": {"actions": {"list": {"method": "GET"}}}
+                    }
+                },
+                "full_modules": {
+                    "certificateauthority": {
+                        "certificate-chain": {
+                            "summary": "Get a certificate and its trust chain",
+                            "actions": {"get": {"method": "GET"}},
+                        }
+                    }
+                },
+            },
+            "certificateauthority",
+            "certificate-chain",
+        )
 
 
 def test_get_service_entry_merges_actions_from_hidden_alias():

@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.10.1 - 2026-03-31
+
+### Changed
+- added vendor-style Bash `?` help for the current command context so inline
+  help can be shown without pressing `Enter`, while keeping the existing
+  `?` + `Enter` flow available
+- taught the ClearPass catalog builder to capture service descriptions and
+  canonical service names from `/api-docs`, which now lets module help and
+  completion show names such as `certificate-chain`,
+  `certificate-export`, `certificate-sign-request`, and `onboard-device`
+- unified normal help, cached interactive help, runtime service resolution,
+  and Bash completion around the same canonical ClearPass service naming so
+  `netloom <module>`, `--help`, `?`, and command execution stay consistent
+- restored privilege-aware visibility for user-facing command lists so only
+  baseline-accessible or privilege-verified ClearPass services are shown,
+  while canonical names still resolve correctly behind the scenes
+- aligned package metadata, release notes, README badge, and checked-in
+  manpage version headers for the `1.10.1` release
+
 ## 1.9.15 - 2026-03-31
 
 ### Changed

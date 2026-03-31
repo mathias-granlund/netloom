@@ -1,37 +1,35 @@
-# netloom v1.9.15
+# netloom v1.10.1
 
-This release continues the ClearPass privilege-mapping work, closes the last
-remaining `globalserverconfiguration` gaps, and fixes help output for
-multi-part path selectors.
+This release makes the ClearPass help and completion experience much more
+vendor-like while keeping command visibility aligned with verified privilege
+mapping.
 
 ## Highlights
 
-- promoted `globalserverconfiguration/attribute-name` to
-  `cppm_attributes` using a real `entity_name=LocalUser`, `name=Title` probe
-- promoted `globalserverconfiguration/messaging-setup` to
-  `cppm_admin_user_pass_policy` after confirming it flips both `GET` and
-  `POST` from baseline `403` to authenticated responses
-- fixed CLI help and cached interactive help so routes like
-  `attribute-name` show grouped selector requirements such as
-  `--entity-name=VALUE --name=VALUE`
-- documented that `GET /api/attribute` returns the default available
-  attributes per `entity_name`, while custom attributes can also exist
-- updated `PLANNED_FEATURES.md` coverage to `125` privilege-gated verified,
-  `10` baseline verified, and `57` unresolved retained services
+- added vendor-style Bash `?` help so the current context can be described
+  immediately without pressing `Enter`
+- taught the ClearPass catalog parser to read service summaries and canonical
+  service names from `/api-docs`, which now surfaces names like
+  `certificate-chain`, `certificate-export`, `certificate-sign-request`, and
+  `onboard-device`
+- unified normal help, cached interactive help, Bash completion, and runtime
+  service resolution around the same canonical ClearPass service names
+- restored privilege-aware service visibility so user-facing command lists only
+  show baseline-accessible or privilege-verified commands even when canonical
+  names are available in the full catalog
 
 ## Examples
 
 ```bash
-python -m netloom.plugins.clearpass.privilege_discovery --out=clearpass_privilege_discovery.json
-netloom globalserverconfiguration attribute-name get --entity_name=LocalUser --name=Title --console
+netloom policyelements ?
+netloom certificateauthority certificate-chain --help
+netloom certificateauthority certificate-chain get --id=123 --console
 ```
 
 ## Notes
 
 - installable man pages still come from `netloom/data/man/`
-- `PLANNED_FEATURES.md` tracks both the completed interactive performance
-  work and the remaining ClearPass privilege-mapping backlog
-- `certificateauthority` is now effectively the only remaining
-  higher-priority unmapped area in the retained ClearPass catalog
-- several lower-value unresolved retained services are candidates to hide from
-  the CLI view later if they stay unmapped
+- the privilege-aware visible catalog remains the source of truth for
+  user-facing command lists
+- the richer full catalog is still used behind the scenes to map visible
+  services onto their canonical `/api-docs` names when possible

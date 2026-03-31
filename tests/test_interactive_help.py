@@ -288,7 +288,7 @@ def test_describe_context_uses_manage_fallback_from_list_summary():
     assert "Manage network devices" in text
 
 
-def test_describe_context_includes_full_only_services_for_module_help():
+def test_describe_context_hides_full_only_services_for_module_help():
     text = helpmod.describe_context(
         ["certificateauthority"],
         {
@@ -326,8 +326,7 @@ def test_describe_context_includes_full_only_services_for_module_help():
     )
 
     assert "certificate" in text
-    assert "certificate-chain" in text
-    assert "Get a certificate and its trust chain" in text
+    assert "certificate-chain" not in text
 
 
 def test_describe_context_hides_short_alias_when_canonical_service_exists():
@@ -444,7 +443,7 @@ def test_describe_context_hides_request_alias_when_summary_picks_one_match():
     )
 
     assert "certificate-request" in text
-    assert "certificate-sign-request" in text
+    assert "certificate-sign-request" not in text
     assert "  request " not in text
 
 
@@ -453,19 +452,14 @@ def test_render_help_accepts_canonical_service_name_from_full_modules():
         {
             "modules": {
                 "certificateauthority": {
-                    "certificate": {
+                    "chain": {
+                        "summary": "Get a certificate and its trust chain",
                         "actions": {
-                            "list": {"method": "GET", "paths": ["/api/certificate"]}
-                        }
-                    },
-                    "device": {
-                        "actions": {
-                            "list": {"method": "GET", "paths": ["/api/device"]}
-                        }
-                    },
-                    "user": {
-                        "actions": {
-                            "list": {"method": "GET", "paths": ["/api/user"]}
+                            "get": {
+                                "method": "GET",
+                                "paths": ["/api/certificate/chain/{id}"],
+                                "summary": "Get a certificate and its trust chain",
+                            }
                         }
                     },
                 }
@@ -493,6 +487,39 @@ def test_render_help_accepts_canonical_service_name_from_full_modules():
     assert "Service: certificate-chain" in text
     assert "Available actions:" in text
     assert "get" in text
+
+
+def test_render_help_hides_full_only_service_without_visible_alias():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "certificateauthority": {
+                    "certificate": {
+                        "actions": {
+                            "list": {"method": "GET", "paths": ["/api/certificate"]}
+                        }
+                    }
+                }
+            },
+            "full_modules": {
+                "certificateauthority": {
+                    "certificate-chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {
+                            "get": {
+                                "method": "GET",
+                                "paths": ["/api/certificate/chain/{id}"],
+                            }
+                        },
+                    }
+                }
+            },
+        },
+        {"module": "certificateauthority"},
+        version="1.9.15",
+    )
+
+    assert "certificate-chain" not in text
 
 
 def test_describe_context_lists_actions_with_summaries():

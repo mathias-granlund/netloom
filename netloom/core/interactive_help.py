@@ -6,11 +6,11 @@ from netloom.core.help_shared import (
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
-    combined_catalog_modules,
     display_services_for_module,
     resolve_service_entry,
     service_cli_actions,
     service_display_summary,
+    visible_catalog_modules,
 )
 from netloom.core.interactive import (
     credentials_env_path,
@@ -258,7 +258,7 @@ def _describe_builtin_context(module: str) -> str:
 
 
 def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
-    modules = combined_catalog_modules(api_catalog)
+    modules = visible_catalog_modules(api_catalog)
     positionals = [word for word in words if not word.startswith("-")]
 
     if not positionals:
@@ -519,7 +519,7 @@ def render_catalog_help(
     action: str | None,
     has_plugin: bool,
 ) -> str:
-    modules = combined_catalog_modules(api_catalog)
+    modules = visible_catalog_modules(api_catalog)
     if not modules:
         builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
         text = header + usage + "\nAvailable modules:\n" + builtin_modules

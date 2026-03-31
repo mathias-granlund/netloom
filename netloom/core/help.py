@@ -7,10 +7,10 @@ from netloom.core.help_shared import (
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
-    combined_catalog_modules,
     display_services_for_module,
     resolve_service_entry,
     service_cli_actions,
+    visible_catalog_modules,
 )
 
 __all__ = [
@@ -452,7 +452,7 @@ def render_catalog_help(
     action: str | None,
     has_plugin: bool,
 ) -> str:
-    modules = combined_catalog_modules(api_catalog)
+    modules = visible_catalog_modules(api_catalog)
     if not modules:
         builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
         text = header + usage + "\nAvailable modules:\n" + builtin_modules
