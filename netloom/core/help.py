@@ -7,6 +7,9 @@ from netloom.core.help_shared import (
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
+    combined_catalog_modules,
+    display_services_for_module,
+    resolve_service_entry,
     service_cli_actions,
 )
 
@@ -449,7 +452,7 @@ def render_catalog_help(
     action: str | None,
     has_plugin: bool,
 ) -> str:
-    modules = (api_catalog or {}).get("modules") or {}
+    modules = combined_catalog_modules(api_catalog)
     if not modules:
         builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
         text = header + usage + "\nAvailable modules:\n" + builtin_modules
@@ -474,7 +477,7 @@ def render_catalog_help(
         available = ", ".join([*BUILTIN_MODULES, *sorted(modules.keys())])
         return header + f"Unknown module '{module}'\nAvailable modules: {available}"
 
-    services = modules[module]
+    services = display_services_for_module(api_catalog, module)
     if not service:
         available_services = "\n".join(
             f"  - {name}" for name in sorted(services.keys())
@@ -485,15 +488,14 @@ def render_catalog_help(
             + f"\nModule: {module}\nAvailable services:\n{available_services}"
         )
 
-    if service not in services:
+    service_entry = resolve_service_entry(api_catalog, module, service)
+    if service_entry is None:
         available = ", ".join(sorted(services.keys()))
         return (
             header
             + f"Unknown service '{service}' under module '{module}'. "
             + f"Available services: {available}"
         )
-
-    service_entry = services[service]
     cli_actions = service_cli_actions(service_entry)
     action_map = service_entry.get("actions") or {}
 

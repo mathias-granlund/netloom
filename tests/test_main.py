@@ -246,6 +246,21 @@ def test_complete_server_builtin_does_not_touch_plugin_or_settings(capsys, monke
     assert "use" in out
 
 
+def test_describe_outputs_action_summaries(capsys, monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: TEST_CATALOG,
+    )
+
+    main.describe(["identities", "endpoint"], settings=_settings(plugin="clearpass"))
+
+    out = capsys.readouterr().out
+    assert "list" in out
+    assert "copy" in out
+    assert "diff" in out
+
+
 def test_print_help_prefers_cached_index_for_compact_help(monkeypatch, capsys):
     plugin = types.SimpleNamespace(
         load_cached_index=lambda settings=None, catalog_view="visible": TEST_CATALOG,

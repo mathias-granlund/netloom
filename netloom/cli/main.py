@@ -71,6 +71,12 @@ def render_help(*args, **kwargs):
     return impl(*args, **kwargs)
 
 
+def describe_context(*args, **kwargs):
+    from netloom.core.interactive_help import describe_context as impl
+
+    return impl(*args, **kwargs)
+
+
 def load_interactive_settings():
     from netloom.core.interactive import load_interactive_settings as impl
 
@@ -540,6 +546,68 @@ def complete(words: list[str], settings: Settings | None = None) -> None:
     profiler.emit()
 
 
+def describe(words: list[str], settings: Settings | None = None) -> None:
+    effective_settings = settings
+    if effective_settings is None and _env_completion_timing_value() is None:
+        try:
+            effective_settings = load_interactive_settings()
+        except Exception:
+            effective_settings = None
+    profiler = _CliProfiler(
+        "describe",
+        settings=effective_settings,
+        env_value=_env_completion_timing_value(),
+        allow_settings_fallback=False,
+    )
+    catalog = None
+    if _completion_needs_catalog(words):
+        profiler.call("import_interactive_layer", _import_interactive_layer)
+        profiler.call("import_cache_layer", _import_cache_layer)
+        active_settings = effective_settings or profiler.call(
+            "load_interactive_settings", load_interactive_settings
+        )
+        plugin_name = getattr(active_settings, "plugin", None)
+        catalog_view = _catalog_view_from_completion_words(words)
+        catalog = profiler.call(
+            "load_core_cached_catalog",
+            load_cached_catalog_for_plugin,
+            plugin_name,
+            settings=active_settings,
+            catalog_view=catalog_view,
+            prefer_index=True,
+        )
+        if catalog is None:
+            profiler.call("import_plugin_layer", _import_plugin_layer)
+            if _needs_full_settings(active_settings):
+                active_settings = profiler.call("load_settings", load_settings)
+            try:
+                plugin = profiler.call(
+                    "plugin_fallback_get_plugin",
+                    get_plugin,
+                    None,
+                    settings=active_settings,
+                )
+            except ValueError:
+                plugin = None
+            catalog = (
+                profiler.call(
+                    "plugin_fallback_cached_catalog",
+                    _load_catalog_for_cli,
+                    plugin,
+                    settings=active_settings,
+                    catalog_view=catalog_view,
+                    prefer_index=True,
+                )
+                if plugin is not None
+                else None
+            )
+    profiler.call("import_help_layer", _import_help_layer)
+    text = profiler.call("describe_context", describe_context, words, catalog)
+    if text:
+        print(text)
+    profiler.emit()
+
+
 def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
     api_token = args.get("api_token") or args.get("token") or settings.api_token
     token_file = (
@@ -557,6 +625,10 @@ def main() -> None:
     if "--_complete" in sys.argv:
         words = [word for word in sys.argv[1:] if word != "--_complete"]
         complete(words)
+        return
+    if "--_describe" in sys.argv:
+        words = [word for word in sys.argv[1:] if word != "--_describe"]
+        describe(words)
         return
 
     try:

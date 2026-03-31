@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 import requests
 
+from netloom.core.help_shared import display_services_for_module, resolve_service_entry
 from netloom.io.output import sanitize_secrets
 
 log = logging.getLogger(__name__)
@@ -174,11 +175,14 @@ class ClearPassClient:
         return self.request(api_paths, "POST", "oauth", json_body=payload)
 
     def _get_service_entry(self, api_catalog: dict, module: str, service: str) -> dict:
-        modules = api_catalog.get("modules") or {}
-        try:
-            return modules[module][service]
-        except KeyError as exc:
-            raise KeyError(f"Unknown service '{service}' in module '{module}'") from exc
+        service_entry = resolve_service_entry(api_catalog, module, service)
+        if isinstance(service_entry, dict):
+            return service_entry
+        available = ", ".join(sorted(display_services_for_module(api_catalog, module)))
+        raise KeyError(
+            f"Unknown service '{service}' in module '{module}'. "
+            f"Available services: {available}"
+        )
 
     def _get_action_definition(
         self, api_catalog: dict, module: str, service: str, action: str

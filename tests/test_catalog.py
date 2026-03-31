@@ -3,7 +3,11 @@ import json
 from netloom.core.config import AppPaths, Settings
 from netloom.plugins.clearpass.catalog import (
     ApiEndpointCache,
+    _canonicalize_service_names_from_api_docs,
+    _derive_service_key,
+    _extract_service_summaries_from_api_docs,
     _filter_catalog_by_effective_privileges,
+    _seed_missing_services_from_api_docs,
     _visible_catalog_modules,
     build_catalog_index,
     clear_api_cache,
@@ -18,6 +22,120 @@ class FakeCP:
     https_prefix = "https://"
     verify_ssl = False
     timeout = 5
+
+
+def test_extract_service_summaries_from_api_docs_html():
+    text = """
+    <tr>
+      <td><a href="/api-docs/CertificateAuthority-v1">CertificateAuthority</a></td>
+      <td>
+        <a
+          class="apiService"
+          href="/api-docs/CertificateAuthority-v1#!/Certificate"
+          title="Manage Onboard certificates">Certificate</a>,
+        <a
+          class="apiService"
+          href="/api-docs/CertificateAuthority-v1#!/CertificateChain"
+          title="Get a certificate and its trust chain">CertificateChain</a>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/api-docs/PolicyElements-v1">PolicyElements</a></td>
+      <td>
+        <a
+          class="apiService"
+          href="/api-docs/PolicyElements-v1#!/NetworkDevice"
+          title="Manage network devices">NetworkDevice</a>
+      </td>
+    </tr>
+    """
+
+    summaries = _extract_service_summaries_from_api_docs(text)
+
+    assert summaries[("certificateauthority", "certificate")] == (
+        "Manage Onboard certificates"
+    )
+    assert summaries[("certificateauthority", "certificate-chain")] == (
+        "Get a certificate and its trust chain"
+    )
+    assert summaries[("policyelements", "network-device")] == (
+        "Manage network devices"
+    )
+
+
+def test_derive_service_key_keeps_lookup_alias_under_base_service():
+    assert (
+        _derive_service_key(
+            "/api/network-device",
+            "/api/network-device/name/{name}",
+        )
+        == "network-device"
+    )
+
+
+def test_derive_service_key_keeps_real_subservice_suffix():
+    assert (
+        _derive_service_key(
+            "/api/certificate",
+            "/api/certificate/chain/{id}",
+        )
+        == "certificate-chain"
+    )
+
+
+def test_seed_missing_services_from_api_docs_adds_missing_service_entries():
+    modules = {
+        "certificateauthority": {
+            "certificate": {
+                "summary": "Manage Onboard certificates",
+                "actions": {"list": {"method": "GET"}},
+            }
+        }
+    }
+
+    _seed_missing_services_from_api_docs(
+        modules,
+        {
+            ("certificateauthority", "certificate"): "Manage Onboard certificates",
+            (
+                "certificateauthority",
+                "certificate-chain",
+            ): "Get a certificate and its trust chain",
+        },
+    )
+
+    assert "certificate-chain" in modules["certificateauthority"]
+    assert modules["certificateauthority"]["certificate-chain"]["summary"] == (
+        "Get a certificate and its trust chain"
+    )
+    assert modules["certificateauthority"]["certificate-chain"]["actions"] == {}
+
+
+def test_canonicalize_service_names_from_api_docs_renames_summary_match():
+    modules = {
+        "certificateauthority": {
+            "chain": {
+                "summary": "Get a certificate and its trust chain",
+                "actions": {"get": {"method": "GET"}},
+            }
+        }
+    }
+
+    _canonicalize_service_names_from_api_docs(
+        modules,
+        {
+            (
+                "certificateauthority",
+                "certificate-chain",
+            ): "Get a certificate and its trust chain"
+        },
+    )
+
+    assert "chain" not in modules["certificateauthority"]
+    assert "certificate-chain" in modules["certificateauthority"]
+    assert modules["certificateauthority"]["certificate-chain"]["actions"] == {
+        "get": {"method": "GET"}
+    }
 
 
 def test_process_swagger_subdoc_captures_body_and_response_metadata(tmp_path):
@@ -80,6 +198,42 @@ def test_process_swagger_subdoc_captures_body_and_response_metadata(tmp_path):
     assert action["body_example"]["enabled"] is True
 
 
+def test_process_swagger_subdoc_captures_service_summary(tmp_path):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    cache = ApiEndpointCache(FakeCP(), token="tok", settings=settings)
+    module_services = {}
+    subdoc = {
+        "resourcePath": "/network-device",
+        "apis": [
+            {
+                "path": "/network-device",
+                "description": "Manage network devices",
+                "operations": [
+                    {
+                        "method": "GET",
+                        "summary": "Get a list of network devices",
+                        "parameters": [
+                            {"name": "filter"},
+                            {"name": "limit"},
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+    cache._process_swagger_subdoc(module_services, subdoc)
+
+    assert module_services["network-device"]["summary"] == "Manage network devices"
+
+
 def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
     settings = Settings(
         paths=AppPaths(
@@ -135,6 +289,76 @@ def test_process_swagger_subdoc_strips_html_from_notes(tmp_path):
             'Field is equal to "value" | {"fieldName":"value"}'
         )
     ]
+
+
+def test_process_apigility_services_captures_service_summary(tmp_path):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    cache = ApiEndpointCache(FakeCP(), token="tok", settings=settings)
+    module_services = {}
+    listing = {
+        "apis": [
+            {
+                "path": "/network-device",
+                "description": "Manage network devices",
+            }
+        ],
+        "services": [
+            {
+                "name": "NetworkDevice",
+                "route": "/network-device",
+                "collection_http_methods": ["GET", "POST"],
+                "entity_http_methods": ["GET", "PATCH", "PUT", "DELETE"],
+                "entity_identifier_name": "id",
+            }
+        ]
+    }
+
+    added = cache._process_apigility_services(module_services, listing)
+
+    assert added is True
+    assert module_services["network-device"]["summary"] == "Manage network devices"
+
+
+def test_process_apigility_services_captures_summary_from_optional_api_route(tmp_path):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    cache = ApiEndpointCache(FakeCP(), token="tok", settings=settings)
+    module_services = {}
+    listing = {
+        "apis": [
+            {
+                "path": "/network-device[/:id]",
+                "description": "Manage network devices",
+            }
+        ],
+        "services": [
+            {
+                "name": "NetworkDevice",
+                "route": "/network-device",
+                "collection_http_methods": ["GET", "POST"],
+                "entity_http_methods": ["GET", "PATCH", "PUT", "DELETE"],
+                "entity_identifier_name": "id",
+            }
+        ],
+    }
+
+    added = cache._process_apigility_services(module_services, listing)
+
+    assert added is True
+    assert module_services["network-device"]["summary"] == "Manage network devices"
 
 
 def test_filter_catalog_by_effective_privileges_filters_known_services():
@@ -351,6 +575,7 @@ def test_build_catalog_index_trims_heavy_action_metadata():
         "modules": {
             "policyelements": {
                 "network-device": {
+                    "summary": "Manage network devices",
                     "actions": {
                         "add": {
                             "method": "POST",
@@ -397,6 +622,9 @@ def test_build_catalog_index_trims_heavy_action_metadata():
 
     assert index["index_version"] == 1
     assert "full_modules" in index
+    assert index["modules"]["policyelements"]["network-device"]["summary"] == (
+        "Manage network devices"
+    )
     assert action["method"] == "POST"
     assert action["paths"] == ["/api/network-device"]
     assert action["body_required"] == ["name"]

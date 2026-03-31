@@ -306,6 +306,44 @@ def test_main_complete_server_builtin_skips_runtime_setup(monkeypatch, capsys):
     assert "use" in out
 
 
+def test_main_describe_mode_outputs_and_exits(monkeypatch, capsys, tmp_path):
+    settings = make_settings(tmp_path)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(main, "load_interactive_settings", lambda: settings)
+    monkeypatch.setattr(
+        main,
+        "configure_logging",
+        lambda *a, **k: (_ for _ in ()).throw(
+            AssertionError("should not build logger")
+        ),
+    )
+    monkeypatch.setattr(
+        main,
+        "load_cached_catalog_for_plugin",
+        lambda name, **kwargs: {
+            "modules": {
+                "identities": {
+                    "endpoint": {
+                        "actions": {
+                            "list": {
+                                "method": "GET",
+                                "paths": ["/api/endpoint"],
+                                "summary": "Get a list of endpoints",
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    )
+
+    monkeypatch.setattr(sys, "argv", ["netloom", "--_describe", "identities"])
+    main.main()
+
+    out = capsys.readouterr().out
+    assert "endpoint" in out
+
+
 def test_main_uses_direct_api_token_without_login(monkeypatch, tmp_path):
     calls = {}
     mgr = FakeLogMgr()

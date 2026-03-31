@@ -6,7 +6,11 @@ from netloom.core.help_shared import (
     BUILTIN_MODULES,
     NETLOOM_BANNER,
     PLUGIN_SELECTION_HINT,
+    combined_catalog_modules,
+    display_services_for_module,
+    resolve_service_entry,
     service_cli_actions,
+    service_display_summary,
 )
 from netloom.core.interactive import (
     credentials_env_path,
@@ -19,7 +23,34 @@ from netloom.core.interactive import (
 # Keep its user-visible output aligned with `netloom.cli.help.render_help`
 # for the cached compact-help cases, and rely on parity tests to catch drift.
 
-
+_DESCRIBE_BUILTIN_SUMMARIES = {
+    "cache": "Manage the local API catalog cache",
+    "load": "Select or inspect the active plugin",
+    "server": "Select or inspect the active profile",
+}
+_DESCRIBE_CACHE_COMMANDS = [
+    ("clear", "Remove the cached API catalog"),
+    ("update", "Refresh the cached API catalog"),
+]
+_DESCRIBE_LOAD_COMMANDS = [
+    ("list", "List available plugins"),
+    ("show", "Show the active plugin"),
+]
+_DESCRIBE_SERVER_COMMANDS = [
+    ("list", "List configured profiles"),
+    ("show", "Show the active profile"),
+    ("use", "Select the active profile"),
+]
+_DESCRIBE_ACTION_SUMMARIES = {
+    "list": "List matching resources",
+    "get": "Get one resource or use --all",
+    "add": "Create a resource",
+    "update": "Patch an existing resource",
+    "replace": "Replace an existing resource",
+    "delete": "Delete a resource",
+    "copy": "Copy matching resources between profiles",
+    "diff": "Compare matching resources between profiles",
+}
 def render_copy_action_help(module: str, service: str) -> str:
     return (
         f"copy ({module} {service}):\n"
@@ -175,6 +206,151 @@ def render_list_action_help(module: str, service: str, action_def: dict) -> str:
         lines.append("  options:")
         lines.extend(f"    - {option}" for option in options)
     return "\n".join(lines)
+
+
+def _describe_lines(rows: list[tuple[str, str | None]]) -> str:
+    visible_rows = [(name, summary) for name, summary in rows if name]
+    if not visible_rows:
+        return ""
+
+    width = max(len(name) for name, _ in visible_rows) + 2
+    lines: list[str] = []
+    for name, summary in visible_rows:
+        if summary:
+            lines.append(f"  {name.ljust(width)} {summary}")
+        else:
+            lines.append(f"  {name}")
+    return "\n".join(lines)
+
+
+def _service_summary(service_entry: dict) -> str | None:
+    summary = service_display_summary(service_entry)
+    if summary:
+        return summary
+    action_map = service_entry.get("actions") or {}
+    cli_actions = service_cli_actions(service_entry)
+    catalog_actions = [action for action in cli_actions if action in action_map]
+    if len(catalog_actions) > 1:
+        return "Actions: " + ", ".join(cli_actions)
+    for action in catalog_actions:
+        summary = (action_map.get(action) or {}).get("summary")
+        if isinstance(summary, str) and summary.strip():
+            return summary.strip()
+    return None
+
+
+def _action_summary(action: str, action_def: dict | None = None) -> str | None:
+    summary = (action_def or {}).get("summary")
+    if isinstance(summary, str) and summary.strip():
+        return summary.strip()
+    return _DESCRIBE_ACTION_SUMMARIES.get(action)
+
+
+def _describe_builtin_context(module: str) -> str:
+    if module == "cache":
+        return _describe_lines(_DESCRIBE_CACHE_COMMANDS)
+    if module == "load":
+        plugin_rows = [(name, "Activate this plugin") for name in list_plugins()]
+        return _describe_lines([*_DESCRIBE_LOAD_COMMANDS, *plugin_rows])
+    if module == "server":
+        return _describe_lines(_DESCRIBE_SERVER_COMMANDS)
+    return ""
+
+
+def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
+    modules = combined_catalog_modules(api_catalog)
+    positionals = [word for word in words if not word.startswith("-")]
+
+    if not positionals:
+        rows = [
+            *[
+                (name, _DESCRIBE_BUILTIN_SUMMARIES.get(name))
+                for name in BUILTIN_MODULES
+            ],
+            *[
+                (name, None)
+                for name in sorted(modules.keys())
+                if name not in _DESCRIBE_BUILTIN_SUMMARIES
+            ],
+        ]
+        return _describe_lines(rows)
+
+    module = positionals[0]
+    if module in _DESCRIBE_BUILTIN_SUMMARIES:
+        if module == "server" and len(positionals) >= 2 and positionals[1] == "use":
+            return _describe_lines(
+                [(profile, "Configured profile") for profile in list_profiles()]
+            )
+        return _describe_builtin_context(module)
+
+    if module not in modules:
+        rows = [
+            *[
+                (name, _DESCRIBE_BUILTIN_SUMMARIES.get(name))
+                for name in BUILTIN_MODULES
+            ],
+            *[
+                (name, None)
+                for name in sorted(modules.keys())
+                if name not in _DESCRIBE_BUILTIN_SUMMARIES
+            ],
+        ]
+        return _describe_lines(rows)
+
+    services = display_services_for_module(api_catalog, module)
+    if len(positionals) == 1:
+        return _describe_lines(
+            [
+                (name, _service_summary(entry))
+                for name, entry in sorted(services.items())
+            ]
+        )
+
+    service = positionals[1]
+    if service not in services:
+        return _describe_lines(
+            [
+                (name, _service_summary(entry))
+                for name, entry in sorted(services.items())
+            ]
+        )
+
+    service_entry = resolve_service_entry(api_catalog, module, service)
+    if service_entry is None:
+        return _describe_lines(
+            [
+                (name, _service_summary(entry))
+                for name, entry in sorted(services.items())
+            ]
+        )
+    action_map = service_entry.get("actions") or {}
+    cli_actions = service_cli_actions(service_entry)
+
+    if len(positionals) == 2:
+        return _describe_lines(
+            [
+                (action, _action_summary(action, action_map.get(action)))
+                for action in cli_actions
+            ]
+        )
+
+    action = positionals[2]
+    if action == "copy":
+        return render_copy_action_help(module, service)
+    if action == "diff":
+        return render_diff_action_help(module, service)
+    if action == "get":
+        return render_get_action_help(module, service, service_entry)
+    if action == "list" and action in action_map:
+        return render_list_action_help(module, service, action_map[action])
+    if action in {"add", "update", "replace"} and action in action_map:
+        return render_write_action_help(module, service, action, action_map[action])
+    if action == "delete" and action in action_map:
+        return render_delete_action_help(module, service, action_map[action])
+
+    return _describe_lines(
+        [(name, _action_summary(name, action_map.get(name))) for name in cli_actions]
+    )
 
 
 def render_get_action_help(module: str, service: str, service_entry: dict) -> str:
@@ -343,7 +519,7 @@ def render_catalog_help(
     action: str | None,
     has_plugin: bool,
 ) -> str:
-    modules = (api_catalog or {}).get("modules") or {}
+    modules = combined_catalog_modules(api_catalog)
     if not modules:
         builtin_modules = "\n".join(f"  - {name}" for name in BUILTIN_MODULES)
         text = header + usage + "\nAvailable modules:\n" + builtin_modules
@@ -368,7 +544,7 @@ def render_catalog_help(
         available = ", ".join([*BUILTIN_MODULES, *sorted(modules.keys())])
         return header + f"Unknown module '{module}'\nAvailable modules: {available}"
 
-    services = modules[module]
+    services = display_services_for_module(api_catalog, module)
     if not service:
         available_services = "\n".join(
             f"  - {name}" for name in sorted(services.keys())
@@ -379,15 +555,14 @@ def render_catalog_help(
             + f"\nModule: {module}\nAvailable services:\n{available_services}"
         )
 
-    if service not in services:
+    service_entry = resolve_service_entry(api_catalog, module, service)
+    if service_entry is None:
         available = ", ".join(sorted(services.keys()))
         return (
             header
             + f"Unknown service '{service}' under module '{module}'. "
             + f"Available services: {available}"
         )
-
-    service_entry = services[service]
     cli_actions = service_cli_actions(service_entry)
     action_map = service_entry.get("actions") or {}
 
@@ -571,4 +746,4 @@ def render_help(
     )
 
 
-__all__ = ["render_help", "service_cli_actions"]
+__all__ = ["describe_context", "render_help", "service_cli_actions"]

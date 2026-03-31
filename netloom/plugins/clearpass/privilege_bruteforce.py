@@ -38,16 +38,27 @@ SERVICE_SUFFIXES = (
 )
 MANUAL_SERVICE_CANDIDATES: dict[str, list[str | list[str]]] = {
     "certificateauthority/chain": ["mdps_ca"],
+    "certificateauthority/certificate-chain": ["mdps_ca"],
     "certificateauthority/export": [
         "#mdps_export_ca_key",
         "#mdps_export_private_key",
     ],
+    "certificateauthority/certificate-export": [
+        "#mdps_export_ca_key",
+        "#mdps_export_private_key",
+    ],
     "certificateauthority/import": ["mdps_csc_import"],
+    "certificateauthority/certificate-import": ["mdps_csc_import"],
     "certificateauthority/new": ["mdps_create_ca", "mdps_ca"],
+    "certificateauthority/certificate-new": ["mdps_create_ca", "mdps_ca"],
     "certificateauthority/reject": ["mdps_ca"],
+    "certificateauthority/certificate-reject": ["mdps_ca"],
     "certificateauthority/request": ["mdps_create_csr"],
+    "certificateauthority/certificate-request": ["mdps_create_csr"],
     "certificateauthority/revoke": ["mdps_revoke_certificate"],
+    "certificateauthority/certificate-revoke": ["mdps_revoke_certificate"],
     "certificateauthority/sign": ["mdps_issue_certificate"],
+    "certificateauthority/certificate-sign-request": ["mdps_issue_certificate"],
     "endpointvisibility/device-fingerprint": ["cppm_device_fingerprint"],
     "endpointvisibility/global-settings": ["cppm_onguard_global_settings"],
     "endpointvisibility/onguard-activity": ["cppm_on_guard_activity"],

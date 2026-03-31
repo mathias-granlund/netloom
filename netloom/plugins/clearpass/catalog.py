@@ -32,6 +32,7 @@ _CATALOG_VERSION = 5
 _CATALOG_INDEX_VERSION = 1
 _CATALOG_VIEW_VISIBLE = "visible"
 _CATALOG_VIEW_FULL = "full"
+_LOOKUP_ALIAS_SEGMENTS = {"id", "name"}
 _DEFAULT_VISIBLE_SERVICE_KEYS: set[tuple[str, str]] = {
     ("apioperations", "oauth"),
     ("apioperations", "oauth-me"),
@@ -110,6 +111,88 @@ def _extract_modules_from_api_docs(text: str) -> list[str]:
                             out.append(match.group(1))
         return sorted(set(out))
     return _extract_module_doc_paths_from_api_docs_html(text)
+
+
+def _extract_service_summaries_from_api_docs(text: str) -> dict[tuple[str, str], str]:
+    if _is_json_content(text):
+        return {}
+
+    summaries: dict[tuple[str, str], str] = {}
+    pattern = re.compile(
+        r'<a\s+class="apiService"\s+href="/api-docs/'
+        r'(?P<module>[A-Za-z0-9_-]+-v\d+)#!/(?P<service>[A-Za-z0-9_+-]+)"'
+        r'[^>]*\s+title="(?P<title>[^"]+)"',
+        re.IGNORECASE,
+    )
+    for match in pattern.finditer(text):
+        cli_module = _module_to_cli(match.group("module"))
+        cli_service = _camel_to_kebab(match.group("service"))
+        title = _clean_text(match.group("title"))
+        if title:
+            summaries.setdefault((cli_module, cli_service), title)
+    return summaries
+
+
+def _seed_missing_services_from_api_docs(
+    modules: dict[str, dict[str, Any]],
+    summaries: dict[tuple[str, str], str],
+) -> None:
+    for (module_name, service_name), summary in summaries.items():
+        if not summary:
+            continue
+        module_services = modules.setdefault(module_name, {})
+        service_entry = module_services.setdefault(service_name, {"actions": {}})
+        if not service_entry.get("summary"):
+            service_entry["summary"] = summary
+
+
+def _merge_service_entries(target: dict[str, Any], source: dict[str, Any]) -> None:
+    if not target.get("summary") and source.get("summary"):
+        target["summary"] = source["summary"]
+
+    target_actions = target.setdefault("actions", {})
+    for action_name, action_def in (source.get("actions") or {}).items():
+        target_actions.setdefault(action_name, action_def)
+
+    for key, value in source.items():
+        if key in {"summary", "actions"}:
+            continue
+        target.setdefault(key, value)
+
+
+def _canonicalize_service_names_from_api_docs(
+    modules: dict[str, dict[str, Any]],
+    summaries: dict[tuple[str, str], str],
+) -> None:
+    summaries_by_module: dict[str, dict[str, str]] = {}
+    for (module_name, service_name), summary in summaries.items():
+        if not summary:
+            continue
+        summaries_by_module.setdefault(module_name, {})[summary] = service_name
+
+    for module_name, module_services in modules.items():
+        if not isinstance(module_services, dict):
+            continue
+        canonical_by_summary = summaries_by_module.get(module_name) or {}
+        if not canonical_by_summary:
+            continue
+
+        for service_name in list(module_services.keys()):
+            service_entry = module_services.get(service_name)
+            if not isinstance(service_entry, dict):
+                continue
+            summary = _clean_text(service_entry.get("summary"))
+            canonical_name = canonical_by_summary.get(summary)
+            if not canonical_name or canonical_name == service_name:
+                continue
+
+            target_entry = module_services.get(canonical_name)
+            if not isinstance(target_entry, dict):
+                module_services[canonical_name] = module_services.pop(service_name)
+                continue
+
+            _merge_service_entries(target_entry, service_entry)
+            module_services.pop(service_name, None)
 
 
 def _extract_placeholders(path: str) -> list[str]:
@@ -240,7 +323,11 @@ def _trim_modules_for_index(modules: dict[str, Any]) -> dict[str, Any]:
             }
             if not next_actions:
                 continue
-            next_services[service_name] = {"actions": next_actions}
+            next_service_entry: dict[str, Any] = {"actions": next_actions}
+            summary = _clean_text(service_entry.get("summary"))
+            if summary:
+                next_service_entry["summary"] = summary
+            next_services[service_name] = next_service_entry
         if next_services:
             trimmed_modules[module_name] = next_services
     return trimmed_modules
@@ -570,6 +657,42 @@ def _extract_operation_params(
     return _dedupe_keep_order(params)
 
 
+def _extract_service_summary(service: dict[str, Any]) -> str | None:
+    for key in ("description", "summary", "title"):
+        value = _clean_text(service.get(key))
+        if value:
+            return value
+    return None
+
+
+def _extract_listing_api_summaries(listing: dict[str, Any]) -> dict[str, str]:
+    summaries: dict[str, str] = {}
+    apis = listing.get("apis")
+    if not isinstance(apis, list):
+        return summaries
+
+    for api_item in apis:
+        if not isinstance(api_item, dict):
+            continue
+        path = api_item.get("path")
+        if not isinstance(path, str) or not path.strip():
+            continue
+        summary = None
+        for key in ("description", "summary", "title"):
+            summary = _clean_text(api_item.get(key))
+            if summary:
+                break
+        if not summary:
+            continue
+        normalized_path = _normalize_template_placeholders(
+            _ensure_api_prefix(_clean_apigility_route(path))
+        )
+        service_key = _derive_service_key(normalized_path, normalized_path)
+        summaries.setdefault(service_key, summary)
+
+    return summaries
+
+
 def _has_list_query_params(params: list[str]) -> bool:
     return any(param in _LIST_QUERY_PARAMS for param in params)
 
@@ -604,6 +727,10 @@ def _derive_service_key(base_path: str, normalized_path: str) -> str:
         and not relative[0].startswith("{")
         and relative[1].startswith("{")
         and relative[1].endswith("}")
+        and (
+            relative[0] in _LOOKUP_ALIAS_SEGMENTS
+            or relative[0] == relative[1][1:-1]
+        )
     ):
         return base_segments[-1]
 
@@ -1057,6 +1184,11 @@ class ApiEndpointCache:
         base_path = _normalize_template_placeholders(
             _ensure_api_prefix(_clean_apigility_route(resource_path))
         )
+        subdoc_summary = None
+        for key in ("description", "summary", "title"):
+            subdoc_summary = _clean_text(subdoc.get(key))
+            if subdoc_summary:
+                break
 
         raw_entries: list[dict[str, Any]] = []
         for api_item in apis:
@@ -1069,6 +1201,13 @@ class ApiEndpointCache:
                 _ensure_api_prefix(raw_path)
             )
             service_key = _derive_service_key(base_path, normalized_path)
+            service_summary = None
+            for key in ("description", "summary", "title"):
+                service_summary = _clean_text(api_item.get(key))
+                if service_summary:
+                    break
+            if not service_summary:
+                service_summary = subdoc_summary
             for operation in api_item.get("operations", []) or []:
                 if not isinstance(operation, dict):
                     continue
@@ -1082,6 +1221,7 @@ class ApiEndpointCache:
                 raw_entries.append(
                     {
                         "service": service_key,
+                        "service_summary": service_summary,
                         "base_path": base_path,
                         "path": normalized_path,
                         "method": method,
@@ -1108,6 +1248,16 @@ class ApiEndpointCache:
 
         for service_key, entries in by_service.items():
             service = module_services.setdefault(service_key, {"actions": {}})
+            service_summary = next(
+                (
+                    entry.get("service_summary")
+                    for entry in entries
+                    if entry.get("service_summary")
+                ),
+                None,
+            )
+            if service_summary and not service.get("summary"):
+                service["summary"] = service_summary
             actions = service.setdefault("actions", {})
             has_item_style = any(entry["placeholders"] for entry in entries)
             has_post_on_base = any(
@@ -1166,6 +1316,7 @@ class ApiEndpointCache:
         services = listing.get("services")
         if not isinstance(services, list) or not services:
             return False
+        api_summaries = _extract_listing_api_summaries(listing)
 
         added = 0
         for service in services:
@@ -1182,6 +1333,11 @@ class ApiEndpointCache:
                 str(service.get("name") or base_path.strip("/").split("/")[-1])
             )
             service_entry = module_services.setdefault(service_key, {"actions": {}})
+            service_summary = api_summaries.get(service_key)
+            if not service_summary:
+                service_summary = _extract_service_summary(service)
+            if service_summary and not service_entry.get("summary"):
+                service_entry["summary"] = service_summary
             actions = service_entry.setdefault("actions", {})
 
             collection_methods = {
@@ -1228,6 +1384,9 @@ class ApiEndpointCache:
             "/api-docs",
         )
         module_doc_paths = _extract_modules_from_api_docs(api_docs_text)
+        api_docs_service_summaries = _extract_service_summaries_from_api_docs(
+            api_docs_text
+        )
         self._emit_progress("fetch_effective_privileges")
         effective_privileges = self._call_timed(
             "fetch_effective_privileges",
@@ -1275,22 +1434,22 @@ class ApiEndpointCache:
                 log.warning("[api_catalog] %s: no JSON docs found", module_name)
                 continue
 
-            if self._call_timed(
+            self._call_timed(
                 "build_catalog",
                 self._process_apigility_services,
                 module_services,
                 listing,
-            ):
-                continue
+            )
 
             listing_apis = listing.get("apis")
             if not isinstance(listing_apis, list) or not listing_apis:
-                log.warning(
-                    "[api_catalog] %s: JSON docs contained neither usable "
-                    "'services' nor usable 'apis' (keys=%s)",
-                    module_name,
-                    list(listing.keys())[:30],
-                )
+                if not module_services:
+                    log.warning(
+                        "[api_catalog] %s: JSON docs contained neither usable "
+                        "'services' nor usable 'apis' (keys=%s)",
+                        module_name,
+                        list(listing.keys())[:30],
+                    )
                 continue
 
             sub_paths: list[str] = []
@@ -1347,6 +1506,9 @@ class ApiEndpointCache:
             if not module_services:
                 log.warning("[api_catalog] %s: no services were extracted", module_name)
                 continue
+
+        _canonicalize_service_names_from_api_docs(modules, api_docs_service_summaries)
+        _seed_missing_services_from_api_docs(modules, api_docs_service_summaries)
 
         self._emit_progress("build_catalog")
         started = time.perf_counter()

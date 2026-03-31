@@ -177,3 +177,33 @@ def test_request_http_error_can_show_secrets_when_masking_disabled(monkeypatch):
 
     joined = "\n".join(fake_log.debug_calls)
     assert "SUPERSECRET" in joined
+
+
+def test_get_service_entry_accepts_canonical_service_name_from_full_modules():
+    cp = clearpass.ClearPassClient(
+        "server:443", https_prefix="https://", verify_ssl=False
+    )
+
+    entry = cp._get_service_entry(
+        {
+            "modules": {
+                "certificateauthority": {
+                    "certificate": {"actions": {"list": {"method": "GET"}}},
+                    "device": {"actions": {"list": {"method": "GET"}}},
+                    "user": {"actions": {"list": {"method": "GET"}}},
+                }
+            },
+            "full_modules": {
+                "certificateauthority": {
+                    "certificate-chain": {
+                        "summary": "Get a certificate and its trust chain",
+                        "actions": {"get": {"method": "GET"}},
+                    }
+                }
+            },
+        },
+        "certificateauthority",
+        "certificate-chain",
+    )
+
+    assert entry["actions"]["get"]["method"] == "GET"

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from netloom.core.help_shared import service_cli_actions
+from netloom.core.help_shared import (
+    combined_services_for_module,
+    display_services_for_module,
+    service_cli_actions,
+)
 
 
 def list_profiles() -> list[str]:
@@ -52,16 +56,17 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
     if module not in modules:
         return ["cache", "load", "server", *sorted(modules.keys())]
 
-    services = modules[module]
+    services = display_services_for_module(catalog, module)
+    all_services = combined_services_for_module(catalog, module)
     if len(positionals) == 1 or (len(positionals) == 2 and current != ""):
         return sorted(services.keys())
 
     service = positionals[1]
-    if service not in services:
+    if service not in all_services:
         return sorted(services.keys())
 
     if len(positionals) == 2:
-        return service_cli_actions(services[service])
+        return service_cli_actions(all_services[service])
 
     return []
 
