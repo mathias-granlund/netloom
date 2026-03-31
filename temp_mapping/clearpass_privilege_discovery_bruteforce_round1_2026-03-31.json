@@ -1,0 +1,52 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "modules": [
+    "enforcementprofile",
+    "globalserverconfiguration",
+    "identities",
+    "localserverconfiguration",
+    "logs",
+    "policyelements"
+  ],
+  "services": [
+    "enforcementprofile/captive-portal-profile",
+    "enforcementprofile/dur-class",
+    "enforcementprofile/ethertype-access-control-list",
+    "enforcementprofile/mac-access-control-list",
+    "enforcementprofile/nat-pool",
+    "enforcementprofile/net-destination",
+    "enforcementprofile/net-service",
+    "enforcementprofile/policer-profile",
+    "enforcementprofile/policy",
+    "enforcementprofile/qos-profile",
+    "enforcementprofile/session-access-control-list",
+    "enforcementprofile/stateless-access-control-list",
+    "enforcementprofile/time-range",
+    "enforcementprofile/voip-profile"
+  ],
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "include_mapped": false,
+  "candidate_file": "clearpass_privilege_candidates_bruteforce_2026-03-31.json",
+  "probe_writes": false,
+  "results": []
+}
