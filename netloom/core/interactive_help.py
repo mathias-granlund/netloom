@@ -48,6 +48,8 @@ _DESCRIBE_ACTION_SUMMARIES = {
     "copy": "Copy matching resources between profiles",
     "diff": "Compare matching resources between profiles",
 }
+
+
 def render_copy_action_help(module: str, service: str) -> str:
     return (
         f"copy ({module} {service}):\n"
@@ -120,11 +122,6 @@ def _dedupe_lines(lines: list[str]) -> list[str]:
         seen.add(line)
         deduped.append(line)
     return deduped
-
-
-def _supports_path_token(paths: list[str], token: str) -> bool:
-    marker = "{" + token + "}"
-    return any(marker in path for path in paths)
 
 
 def _path_tokens(path: str) -> list[str]:
@@ -264,10 +261,7 @@ def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
 
     if not positionals:
         rows = [
-            *[
-                (name, BUILTIN_MODULE_SUMMARIES.get(name))
-                for name in BUILTIN_MODULES
-            ],
+            *[(name, BUILTIN_MODULE_SUMMARIES.get(name)) for name in BUILTIN_MODULES],
             *[
                 (name, module_display_summary(name))
                 for name in sorted(modules.keys())
@@ -286,10 +280,7 @@ def describe_context(words: list[str], api_catalog: dict | None = None) -> str:
 
     if module not in modules:
         rows = [
-            *[
-                (name, BUILTIN_MODULE_SUMMARIES.get(name))
-                for name in BUILTIN_MODULES
-            ],
+            *[(name, BUILTIN_MODULE_SUMMARIES.get(name)) for name in BUILTIN_MODULES],
             *[
                 (name, module_display_summary(name))
                 for name in sorted(modules.keys())

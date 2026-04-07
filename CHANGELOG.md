@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.10.3 - 2026-04-07
+
+### Changed
+- refactored `netloom.cli.main` into smaller CLI support modules for runtime
+  orchestration, catalog/help loading, builtins, dependency shims, and
+  telemetry while preserving the existing public CLI entrypoints
+- kept compatibility surfaces such as `netloom.cli.main.ACTIONS`,
+  `print_help`, `complete`, `describe`, and `_get_catalog_for_cli` intact so
+  existing tests and callers continue to work after the internal split
+- removed small amounts of stale code, including dead private help helpers and
+  an unused config constant
+- aligned package metadata, release notes, README badge, and bundled manpage
+  version headers for the `1.10.3` release
+
 ## 1.10.2 - 2026-03-31
 
 ### Changed

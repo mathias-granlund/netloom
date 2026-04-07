@@ -1,32 +1,25 @@
-# netloom v1.10.2
+# netloom v1.10.3
 
-This release rounds out the help and documentation work with clearer module
-descriptions and generated installable manpages.
+This release refactors the CLI entrypoint into smaller orchestration modules
+while keeping the public CLI behavior intact.
 
 ## Highlights
 
-- added short vendor-style descriptions for the ClearPass API modules in
-  top-level `--help` output and cached interactive help
-- made the markdown manpages under `man/` the single authoring source and
-  added `netloom.generate_manpages` / `netloom-generate-manpages` to build and
-  check the bundled installable manpages
-- refreshed the shared and ClearPass manpages to document canonical full
-  service names, vendor-style `?` help behavior, and privilege-aware command
-  visibility
-- replaced hard-coded example profile names with generic placeholders such as
-  `<profile>`, `<source-profile>`, and `<target-profile>`
+- split `netloom.cli.main` into focused runtime, catalog/help, builtin, deps,
+  and telemetry modules while preserving existing imports and command behavior
+- kept lazy-import boundaries and command-dispatch compatibility intact, so
+  completions, help, cache update flow, and plugin-backed commands still work
+- removed a small amount of stale code, including dead help helpers and an
+  unused config constant
 
 ## Examples
 
 ```bash
-python -m netloom.generate_manpages
-python -m netloom.generate_manpages --check
 netloom --help
+netloom identities endpoint list
 ```
 
 ## Notes
 
-- the markdown manpages in `man/` are now the source of truth for the bundled
-  installable manpages in `netloom/data/man/`
-- the privilege-aware visible catalog remains the source of truth for
-  user-facing command lists
+- this release is primarily an internal maintenance release focused on CLI
+  structure and cleanup rather than new user-facing features

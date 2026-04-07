@@ -124,11 +124,6 @@ def _dedupe_lines(lines: list[str]) -> list[str]:
     return deduped
 
 
-def _supports_path_token(paths: list[str], token: str) -> bool:
-    marker = "{" + token + "}"
-    return any(marker in path for path in paths)
-
-
 def _path_tokens(path: str) -> list[str]:
     tokens: list[str] = []
     for segment in path.split("/"):
