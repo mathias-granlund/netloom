@@ -384,10 +384,14 @@ def _probe_action_for_service(
             continue
         if _has_non_parameterized_action_path(service_entry, action_name):
             return action_name
-        if module_name and service_name and _action_supports_probe_args(
-            service_entry,
-            action_name,
-            _parameterized_read_probe_args(module_name, service_name, action_name),
+        if (
+            module_name
+            and service_name
+            and _action_supports_probe_args(
+                service_entry,
+                action_name,
+                _parameterized_read_probe_args(module_name, service_name, action_name),
+            )
         ):
             return action_name
     return None
@@ -851,9 +855,10 @@ def _iter_target_services(
                 continue
             if not include_mapped and (module_name, service_name) in rules:
                 continue
-            if _probe_action_for_service(
-                service_entry, module_name, service_name
-            ) is None:
+            if (
+                _probe_action_for_service(service_entry, module_name, service_name)
+                is None
+            ):
                 continue
             services.append((module_name, service_name))
     return services

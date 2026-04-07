@@ -58,9 +58,7 @@ def test_extract_service_summaries_from_api_docs_html():
     assert summaries[("certificateauthority", "certificate-chain")] == (
         "Get a certificate and its trust chain"
     )
-    assert summaries[("policyelements", "network-device")] == (
-        "Manage network devices"
-    )
+    assert summaries[("policyelements", "network-device")] == ("Manage network devices")
 
 
 def test_derive_service_key_keeps_lookup_alias_under_base_service():
@@ -317,7 +315,7 @@ def test_process_apigility_services_captures_service_summary(tmp_path):
                 "entity_http_methods": ["GET", "PATCH", "PUT", "DELETE"],
                 "entity_identifier_name": "id",
             }
-        ]
+        ],
     }
 
     added = cache._process_apigility_services(module_services, listing)
@@ -599,7 +597,7 @@ def test_build_catalog_index_trims_heavy_action_metadata():
                             ],
                             "body_example": {"name": "switch-a"},
                         }
-                    }
+                    },
                 }
             }
         },

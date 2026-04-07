@@ -727,10 +727,7 @@ def _derive_service_key(base_path: str, normalized_path: str) -> str:
         and not relative[0].startswith("{")
         and relative[1].startswith("{")
         and relative[1].endswith("}")
-        and (
-            relative[0] in _LOOKUP_ALIAS_SEGMENTS
-            or relative[0] == relative[1][1:-1]
-        )
+        and (relative[0] in _LOOKUP_ALIAS_SEGMENTS or relative[0] == relative[1][1:-1])
     ):
         return base_segments[-1]
 

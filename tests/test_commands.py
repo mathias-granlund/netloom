@@ -61,7 +61,7 @@ def api_catalog():
                         }
                     }
                 }
-            }
+            },
         }
     }
 

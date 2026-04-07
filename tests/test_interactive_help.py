@@ -219,8 +219,8 @@ def test_describe_context_lists_services_with_summaries():
                                 "method": "GET",
                                 "paths": ["/api/endpoint/{id}"],
                                 "summary": "Get one endpoint",
-                            }
-                        }
+                            },
+                        },
                     }
                 }
             }
@@ -461,7 +461,7 @@ def test_render_help_accepts_canonical_service_name_from_full_modules():
                                 "paths": ["/api/certificate/chain/{id}"],
                                 "summary": "Get a certificate and its trust chain",
                             }
-                        }
+                        },
                     },
                 }
             },

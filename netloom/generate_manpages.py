@@ -81,7 +81,7 @@ def _release_label(version: str) -> str:
         "11": "November",
         "12": "December",
     }
-    return f'{month_names[month]} {year}'
+    return f"{month_names[month]} {year}"
 
 
 def _strip_source_preamble(lines: list[str]) -> list[str]:
@@ -120,7 +120,7 @@ def _render_name_line(text: str) -> str:
     match = _NAME_SECTION_RE.match(_plain_text(text))
     if not match:
         return _roff_text(text)
-    return f'{match.group("name")} \\- {match.group("desc")}'
+    return f"{match.group('name')} \\- {match.group('desc')}"
 
 
 def render_roff(spec: ManpageSpec, markdown: str, *, version: str, release: str) -> str:
