@@ -2,128 +2,108 @@
 
 ## Current Priorities
 
-### 1. ClearPass privilege coverage for the full retained catalog
+### 1. `netloom shell` UX
 
-Lower priority for now.
+Primary product direction for the next UX phase.
 
-Current measured coverage against the retained full ClearPass catalog:
-- full retained services: `192`
-- privilege-gated verified services: `127`
-- baseline verified services: `11`
-- unresolved services: `54`
+Goal:
+- make `netloom` feel like an operator-first interactive tool rather than only
+  a one-shot command runner
+- keep the interaction model familiar to Cisco and Aruba-CX users while
+  preserving the existing `netloom` command structure and UNIX-style flags
 
-Current stance:
-- the current verified mapping coverage is good enough for now
-- stop treating `certificateauthority` as a special high-priority mapping
-  area
-- keep the remaining unresolved services as opportunistic cleanup and only
-  revisit them when they block real workflows or when we decide to hide them
-  from the default CLI surface
-- prefer spending effort on real user-facing CLI behavior over more mapping
-  rounds unless a clear gap shows up in practice
+Planned behavior:
+- launch with `netloom shell`
+- run inside the user's current terminal first; do not make a separate window
+  the default behavior
+- support a resizable terminal naturally by staying terminal-native
+- use a context-aware prompt driven by the active configured server profile
+  name under `.config/netloom/plugins/clearpass/profiles`
+- reflect navigation in the prompt, for example:
+  - `<profile>:netloom#`
+  - `<profile>:netloom/policyelements#`
+  - `<profile>:netloom/policyelements/network-device#`
+- allow bare module and service navigation, so entering `policyelements`
+  changes context and entering `network-device` inside that context narrows it
+  further
+- allow action execution relative to the current context, for example
+  `list --limit=10`
+- support CLI-native affordances such as `?`, tab completion, `exit`, `top`,
+  `pwd`, `show context`, and `do <full command>`
 
-Current unmapped retained services by module:
+Design constraints:
+- the shell must remain compatible with the existing non-interactive CLI
+- the shell should be a thin interaction layer over the current parser,
+  catalog, help, and command runtime where possible
+- do not start implementation until explicitly requested
 
-#### `certificateauthority` (`5`)
-- `certificate-import`
-- `certificate-reject`
-- `certificate-request`
-- `certificate-revoke`
-- `certificate-sign-request`
+### 2. Shared session layer for CLI UX
 
-#### `endpointvisibility` (`13`)
-- `device-fingerprint`
-- `fingerprint-name`
-- `network-scan-disable`
-- `network-scan-enable`
-- `onguard-activity`
-- `onguard-activity-message`
-- `onguard-activity-notification`
-- `onguard-custom-script`
-- `subnet-mapping-disable`
-- `subnet-mapping-enable`
-- `subnet-mapping-name-disable`
-- `subnet-mapping-name-enable`
-- `windows-hotfix-kbid-operating_system`
+Needed to make the shell fast, coherent, and extensible.
 
-#### `guestactions` (`4`)
-- `sms`
-- `smtp`
-- `sponsor`
-- `{id}`
+Goal:
+- introduce a reusable command session model that can be shared by the shell,
+  future GUI work, and any later long-lived runtime
 
-#### `guestconfiguration` (`2`)
-- `pass`
-- `weblogin`
+Scope:
+- keep active profile, plugin, and context state in one place
+- reuse cached catalog data and interactive help data across commands
+- centralize prompt state and context transitions
+- prepare for token/session reuse where it is safe and useful
+- keep the implementation local to the current process first
 
-#### `integrations` (`10`)
-- `config`
-- `context-server-action-action-name`
-- `endpoint-context-server-server-name-trigger-poll`
-- `endpoint-context-server-trigger-poll`
-- `log`
-- `reinstall`
-- `restart`
-- `start`
-- `stop`
-- `upgrade`
+Current recommendation:
+- do this before any GUI work
+- treat this as the architectural foundation for future UX improvements
 
-#### `localserverconfiguration` (`6`)
-- `ad-domain`
-- `ad-domain-netbios-name`
-- `{server_uuid}`
-- `{server_uuid}-start`
-- `{server_uuid}-stop`
-- `{service_id}`
+### 3. Web GUI on top of the same session model
 
-#### `logs` (`2`)
-- `endpoint`
-- `endpoint-time-range`
+Desirable after the shell and shared session layer exist.
 
-#### `sessioncontrol` (`12`)
-- `active-session`
-- `disconnect`
-- `reauthorize`
-- `session-action`
-- `session-action-coa`
-- `session-action-coa-ip`
-- `session-action-coa-mac`
-- `session-action-coa-username`
-- `session-action-disconnect`
-- `session-action-disconnect-ip`
-- `session-action-disconnect-mac`
-- `session-action-disconnect-username`
+Goal:
+- provide a click-through experience for discovery, list/get flows, and common
+  operational tasks without splitting the product into two different models
 
-### 2. Cache/help/completion performance follow-up
+Scope:
+- expose modules, services, and actions as navigable UI pages
+- use dropdowns, forms, and guided action views generated from the same
+  catalog/help metadata already used by the CLI
+- surface active profile and context clearly
+- add a built-in CLI pane or terminal launcher inside the GUI
+
+Current recommendation:
+- do not build the GUI first
+- reuse the shell/session abstractions rather than creating a separate UI-only
+  command model
+
+### 4. `netloomd` only if later metrics justify it
+
+Not a current priority.
 
 Focused check completed on `2026-04-10`.
 
-Focused local measurements against the current cached catalog:
-- module help (`netloom identities ?`) is roughly `153-181 ms` steady-state
-  end-to-end, with a first-run outlier around `244 ms`
-- top-level completion (`netloom --_complete --_cur=`) is roughly `114-142 ms`
-  steady-state end-to-end, with a first-run outlier around `154 ms`
-- representative internal CLI timing showed help around `100 ms` total with
-  `load_core_cached_catalog` around `65 ms`
-- representative internal CLI timing showed completion around `59 ms` total
-  with `load_core_cached_catalog` around `48 ms`
-- a focused loader-only microbenchmark with explicit settings landed around
-  `15 ms` median for the visible fast index and around `11 ms` median for the
-  visible full-cache path, which suggests the remaining end-to-end cost is
-  mostly process/import overhead plus cached catalog loading rather than help
-  rendering itself
-
 Current recommendation:
 - do not continue with a `netloomd` implementation right now
-- keep the timing and progress instrumentation in place
-- only revisit deeper optimization if users actually feel the current latency
-  in real shell use
-- if we optimize further before a daemon, focus on startup/import overhead and
-  cached catalog/index deserialization cost
+- only revisit a daemon if normal shell use shows real latency pain, cache
+  size grows substantially, or repeated command startup becomes a meaningful
+  workflow drag
+- if more optimization is needed before a daemon, focus first on startup/import
+  overhead and cached catalog/index deserialization cost
+
+### 5. Remaining ClearPass catalog and privilege coverage
+
+Lower priority for now.
+
+Current stance:
+- current verified coverage is good enough to stop treating additional mapping
+  rounds as the main focus
+- keep unresolved services as opportunistic cleanup
+- revisit this work when it blocks real workflows or when a UX decision depends
+  on whether a service should be shown by default
 
 ## Completed Work
 
-### Phase 1: Cache performance and UX
+### Cache/help/completion performance and UX groundwork
 
 Done:
 - compact full cache JSON
@@ -143,12 +123,6 @@ Measured outcomes:
 - cache-update timing showed the rebuild is network-bound, especially
   subdocument fetches
 
-### Phase 2: `netloomd`
-
-Not recommended right now:
-- a focused local check on `2026-04-10` still puts normal cached help and
-  completion in the "noticeable but acceptable" range rather than in a range
-  that clearly justifies daemon complexity
-- only revisit a daemon approach if help/completion become materially slower
-  in practice, the cache grows substantially, or repeated shell completion
-  starts to feel like a real workflow drag
+Implication:
+- the current foundation is good enough to move attention from raw cache speed
+  to overall shell and workflow UX
