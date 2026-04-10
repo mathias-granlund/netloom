@@ -133,6 +133,40 @@ def _extract_service_summaries_from_api_docs(text: str) -> dict[tuple[str, str],
     return summaries
 
 
+_SERVICE_CANONICAL_ALIASES: dict[tuple[str, str], str] = {
+    ("certificateauthority", "chain"): "certificate-chain",
+    ("certificateauthority", "export"): "certificate-export",
+    ("certificateauthority", "import"): "certificate-import",
+    ("certificateauthority", "new"): "certificate-new",
+    ("certificateauthority", "reject"): "certificate-reject",
+    ("certificateauthority", "request"): "certificate-request",
+    ("certificateauthority", "revoke"): "certificate-revoke",
+    ("certificateauthority", "sign"): "certificate-sign-request",
+    ("certificateauthority", "device"): "onboard-device",
+    ("certificateauthority", "user"): "onboard-user",
+}
+
+
+def _canonical_service_name(module_name: str, service_name: str) -> str:
+    return _SERVICE_CANONICAL_ALIASES.get((module_name, service_name), service_name)
+
+
+def _rename_service_entry(
+    module_services: dict[str, Any], old_name: str, new_name: str
+) -> None:
+    if old_name == new_name:
+        return
+    service_entry = module_services.get(old_name)
+    if not isinstance(service_entry, dict):
+        return
+    target_entry = module_services.get(new_name)
+    if not isinstance(target_entry, dict):
+        module_services[new_name] = module_services.pop(old_name)
+        return
+    _merge_service_entries(target_entry, service_entry)
+    module_services.pop(old_name, None)
+
+
 def _seed_missing_services_from_api_docs(
     modules: dict[str, dict[str, Any]],
     summaries: dict[tuple[str, str], str],
@@ -140,8 +174,9 @@ def _seed_missing_services_from_api_docs(
     for (module_name, service_name), summary in summaries.items():
         if not summary:
             continue
+        canonical_name = _canonical_service_name(module_name, service_name)
         module_services = modules.setdefault(module_name, {})
-        service_entry = module_services.setdefault(service_name, {"actions": {}})
+        service_entry = module_services.setdefault(canonical_name, {"actions": {}})
         if not service_entry.get("summary"):
             service_entry["summary"] = summary
 
@@ -168,14 +203,22 @@ def _canonicalize_service_names_from_api_docs(
     for (module_name, service_name), summary in summaries.items():
         if not summary:
             continue
-        summaries_by_module.setdefault(module_name, {})[summary] = service_name
+        canonical_name = _canonical_service_name(module_name, service_name)
+        summaries_by_module.setdefault(module_name, {})[summary] = canonical_name
 
     for module_name, module_services in modules.items():
         if not isinstance(module_services, dict):
             continue
         canonical_by_summary = summaries_by_module.get(module_name) or {}
         if not canonical_by_summary:
+            for service_name in list(module_services.keys()):
+                canonical_name = _canonical_service_name(module_name, service_name)
+                _rename_service_entry(module_services, service_name, canonical_name)
             continue
+
+        for service_name in list(module_services.keys()):
+            canonical_name = _canonical_service_name(module_name, service_name)
+            _rename_service_entry(module_services, service_name, canonical_name)
 
         for service_name in list(module_services.keys()):
             service_entry = module_services.get(service_name)
@@ -185,14 +228,7 @@ def _canonicalize_service_names_from_api_docs(
             canonical_name = canonical_by_summary.get(summary)
             if not canonical_name or canonical_name == service_name:
                 continue
-
-            target_entry = module_services.get(canonical_name)
-            if not isinstance(target_entry, dict):
-                module_services[canonical_name] = module_services.pop(service_name)
-                continue
-
-            _merge_service_entries(target_entry, service_entry)
-            module_services.pop(service_name, None)
+            _rename_service_entry(module_services, service_name, canonical_name)
 
 
 def _extract_placeholders(path: str) -> list[str]:
@@ -286,6 +322,15 @@ def _trim_body_fields_for_index(
         next_field = {"name": name}
         if field.get("required") is True:
             next_field["required"] = True
+        field_type = field.get("type")
+        if isinstance(field_type, str) and field_type:
+            next_field["type"] = field_type
+        description = field.get("description")
+        if isinstance(description, str) and description:
+            next_field["description"] = description
+        enum_values = field.get("enum")
+        if isinstance(enum_values, list) and enum_values:
+            next_field["enum"] = copy.deepcopy(enum_values)
         trimmed.append(next_field)
     return trimmed
 
@@ -374,6 +419,48 @@ def _type_label_for_schema(schema: dict[str, Any]) -> str:
         return _type_label_for_schema(nested)
 
     return "object"
+
+
+def _enum_values_for_schema(schema: dict[str, Any]) -> list[str]:
+    if not isinstance(schema, dict):
+        return []
+
+    def _scalar_values(raw: Any) -> list[str]:
+        if isinstance(raw, list):
+            return _dedupe_keep_order([str(item) for item in raw if item is not None])
+        if isinstance(raw, (str, int, float)) and not isinstance(raw, bool):
+            return [str(raw)]
+        return []
+
+    enum = schema.get("enum")
+    if isinstance(enum, list) and enum:
+        return _dedupe_keep_order([str(item) for item in enum if item is not None])
+
+    allowable = schema.get("allowableValues")
+    if isinstance(allowable, dict):
+        for key in ("values", "allowedValues", "enum", "examples"):
+            values = _scalar_values(allowable.get(key))
+            if values:
+                return values
+    else:
+        values = _scalar_values(allowable)
+        if values:
+            return values
+
+    for key in ("defaultValue", "default", "example", "exampleValue", "x-example"):
+        values = _scalar_values(schema.get(key))
+        if values:
+            return values
+
+    nested = schema.get("schema")
+    if isinstance(nested, dict):
+        return _enum_values_for_schema(nested)
+
+    items = schema.get("items")
+    if isinstance(items, dict):
+        return _enum_values_for_schema(items)
+
+    return []
 
 
 def _model_required_names(model: dict[str, Any]) -> set[str]:
@@ -510,6 +597,7 @@ def _body_fields_for_model(
                 "type": _type_label_for_schema(prop),
                 "required": field_name in required,
                 "description": _clean_text(prop.get("description")),
+                "enum": _enum_values_for_schema(prop),
             }
         )
         existing_names.add(field_name)
@@ -708,6 +796,13 @@ def _path_segments(path: str) -> list[str]:
 def _derive_service_key(base_path: str, normalized_path: str) -> str:
     base_segments = _path_segments(base_path)
     path_segments = _path_segments(normalized_path)
+
+    fixed_base_segments = [
+        segment
+        for segment in base_segments
+        if not (segment.startswith("{") and segment.endswith("}"))
+    ]
+
     if path_segments[: len(base_segments)] != base_segments:
         fixed = [
             segment
@@ -718,10 +813,10 @@ def _derive_service_key(base_path: str, normalized_path: str) -> str:
 
     relative = path_segments[len(base_segments) :]
     if not relative:
-        return base_segments[-1]
+        return "-".join(fixed_base_segments) if fixed_base_segments else "unknown"
 
     if len(relative) == 1 and relative[0].startswith("{") and relative[0].endswith("}"):
-        return base_segments[-1]
+        return "-".join(fixed_base_segments) if fixed_base_segments else "unknown"
     if (
         len(relative) == 2
         and not relative[0].startswith("{")
@@ -729,7 +824,7 @@ def _derive_service_key(base_path: str, normalized_path: str) -> str:
         and relative[1].endswith("}")
         and (relative[0] in _LOOKUP_ALIAS_SEGMENTS or relative[0] == relative[1][1:-1])
     ):
-        return base_segments[-1]
+        return "-".join(fixed_base_segments) if fixed_base_segments else "unknown"
 
     fixed_suffix = [
         segment
@@ -737,8 +832,8 @@ def _derive_service_key(base_path: str, normalized_path: str) -> str:
         if not (segment.startswith("{") and segment.endswith("}"))
     ]
     if not fixed_suffix:
-        return base_segments[-1]
-    return base_segments[-1] + "-" + "-".join(fixed_suffix)
+        return "-".join(fixed_base_segments) if fixed_base_segments else "unknown"
+    return "-".join(fixed_base_segments + fixed_suffix)
 
 
 def _count_services(modules: dict[str, dict[str, Any]]) -> int:
@@ -939,6 +1034,10 @@ def _filter_catalog_by_effective_privileges(
 
             actions = service_entry.get("actions") or {}
             filtered_actions = _filter_actions_for_access(actions, access_level)
+            for action_name in getattr(rule, "action_allowlist", ()):
+                action_def = actions.get(action_name)
+                if action_def is not None:
+                    filtered_actions.setdefault(action_name, action_def)
             if not filtered_actions:
                 filtered_services.append(
                     {"module": module_name, "service": service_name}

@@ -79,6 +79,7 @@ class ServicePrivilegeRule:
     privileges: tuple[str, ...]
     match: str = "any"
     source: str = "privilege_gated_verified"
+    action_allowlist: tuple[str, ...] = ()
 
 
 SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
@@ -102,17 +103,35 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="certificateauthority",
+        service="certificate-chain",
+        privileges=(),
+        source="baseline_verified",
+    ),
+    ServicePrivilegeRule(
+        module="certificateauthority",
         service="certificate",
         privileges=("mdps_view_certificate",),
     ),
     ServicePrivilegeRule(
         module="certificateauthority",
-        service="device",
+        service="certificate-export",
+        privileges=("mdps_view_certificate", "mdps_export_ca_key"),
+        match="all",
+        action_allowlist=("add",),
+    ),
+    ServicePrivilegeRule(
+        module="certificateauthority",
+        service="certificate-new",
+        privileges=("mdps_create_csr",),
+    ),
+    ServicePrivilegeRule(
+        module="certificateauthority",
+        service="onboard-device",
         privileges=("mdps_device_manage",),
     ),
     ServicePrivilegeRule(
         module="certificateauthority",
-        service="user",
+        service="onboard-user",
         privileges=("mdps_device_manage",),
     ),
     ServicePrivilegeRule(

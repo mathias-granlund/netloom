@@ -81,6 +81,26 @@ def test_derive_service_key_keeps_real_subservice_suffix():
     )
 
 
+def test_derive_service_key_keeps_canonical_nested_base_service_name():
+    assert (
+        _derive_service_key(
+            "/api/certificate/{id}/export",
+            "/api/certificate/{id}/export",
+        )
+        == "certificate-export"
+    )
+
+
+def test_derive_service_key_keeps_multi_segment_base_service_name():
+    assert (
+        _derive_service_key(
+            "/api/onboard/device",
+            "/api/onboard/device",
+        )
+        == "onboard-device"
+    )
+
+
 def test_seed_missing_services_from_api_docs_adds_missing_service_entries():
     modules = {
         "certificateauthority": {
@@ -136,6 +156,28 @@ def test_canonicalize_service_names_from_api_docs_renames_summary_match():
     }
 
 
+def test_canonicalize_service_names_from_api_docs_renames_known_short_aliases():
+    modules = {
+        "certificateauthority": {
+            "export": {
+                "summary": "Export a certificate or certificate signing request",
+                "actions": {"add": {"method": "POST"}},
+            },
+            "user": {
+                "summary": "Manage Onboard users",
+                "actions": {"list": {"method": "GET"}},
+            },
+        }
+    }
+
+    _canonicalize_service_names_from_api_docs(modules, {})
+
+    assert "certificate-export" in modules["certificateauthority"]
+    assert "export" not in modules["certificateauthority"]
+    assert "onboard-user" in modules["certificateauthority"]
+    assert "user" not in modules["certificateauthority"]
+
+
 def test_process_swagger_subdoc_captures_body_and_response_metadata(tmp_path):
     settings = Settings(
         paths=AppPaths(
@@ -154,7 +196,11 @@ def test_process_swagger_subdoc_captures_body_and_response_metadata(tmp_path):
             "ExampleCreate": {
                 "required": ["name"],
                 "properties": {
-                    "name": {"type": "string", "description": "Object name"},
+                    "name": {
+                        "type": "string",
+                        "description": "Object name",
+                        "enum": ["demo", "lab"],
+                    },
                     "enabled": {"type": "boolean", "description": "Toggle flag"},
                 },
             }
@@ -193,7 +239,93 @@ def test_process_swagger_subdoc_captures_body_and_response_metadata(tmp_path):
     assert action["response_content_types"] == ["application/x-pkcs12"]
     assert action["body_required"] == ["name"]
     assert action["body_fields"][0]["name"] == "name"
+    assert action["body_fields"][0]["enum"] == ["demo", "lab"]
     assert action["body_example"]["enabled"] is True
+
+
+def test_process_swagger_subdoc_captures_display_values_from_defaults_and_examples(
+    tmp_path,
+):
+    settings = Settings(
+        paths=AppPaths(
+            cache_dir=tmp_path / "cache",
+            state_dir=tmp_path / "state",
+            response_dir=tmp_path / "responses",
+            app_log_dir=tmp_path / "logs",
+        ).ensure()
+    )
+    cache = ApiEndpointCache(FakeCP(), token="tok", settings=settings)
+    module_services = {}
+    subdoc = {
+        "resourcePath": "/certificate/new",
+        "models": {
+            "CertificateNew": {
+                "required": ["ca_id", "cert_type", "key_type"],
+                "properties": {
+                    "ca_id": {
+                        "type": "integer",
+                        "defaultValue": 1,
+                        "description": "Select the certificate authority",
+                    },
+                    "cert_type": {
+                        "type": "string",
+                        "enum": ["tls-client", "trusted", "ca", "code-signing", "https"],
+                        "description": "Select the type of certificate",
+                    },
+                    "key_type": {
+                        "type": "string",
+                        "example": [
+                            "rsa_1024",
+                            "rsa_2048",
+                            "rsa_4096",
+                            "ec_prime256v1",
+                            "ec_secp384r1",
+                        ],
+                        "description": "Select the type of private key",
+                    },
+                },
+            }
+        },
+        "apis": [
+            {
+                "path": "/certificate/new",
+                "operations": [
+                    {
+                        "method": "POST",
+                        "parameters": [
+                            {
+                                "paramType": "body",
+                                "name": "body",
+                                "type": "CertificateNew",
+                            }
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+    cache._process_swagger_subdoc(module_services, subdoc)
+
+    fields = {
+        field["name"]: field
+        for field in module_services["certificate-new"]["actions"]["add"]["body_fields"]
+    }
+    assert fields["ca_id"]["enum"] == ["1"]
+    assert fields["cert_type"]["enum"] == [
+        "tls-client",
+        "trusted",
+        "ca",
+        "code-signing",
+        "https",
+    ]
+    assert fields["key_type"]["enum"] == [
+        "rsa_1024",
+        "rsa_2048",
+        "rsa_4096",
+        "ec_prime256v1",
+        "ec_secp384r1",
+    ]
 
 
 def test_process_swagger_subdoc_captures_service_summary(tmp_path):
@@ -442,6 +574,42 @@ def test_filter_catalog_by_effective_privileges_supports_all_of_rules():
     assert filtered_present["identities"]["device"]["privilege_match"] == "all"
 
 
+def test_filter_catalog_keeps_verified_post_with_read_only_privileges():
+    catalog = {
+        "modules": {
+            "certificateauthority": {
+                "certificate-export": {
+                    "actions": {
+                        "add": {"method": "POST"},
+                    }
+                }
+            }
+        }
+    }
+
+    filtered, _ = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {
+                "name": "mdps_view_certificate",
+                "access": "read-only",
+                "raw": "#mdps_view_certificate",
+            },
+            {
+                "name": "mdps_export_ca_key",
+                "access": "read-only",
+                "raw": "#mdps_export_ca_key",
+            },
+        ],
+    )
+
+    assert "certificate-export" in filtered["certificateauthority"]
+    assert "add" in filtered["certificateauthority"]["certificate-export"]["actions"]
+    assert filtered["certificateauthority"]["certificate-export"]["granted_access"] == (
+        "read-only"
+    )
+
+
 def test_visible_catalog_modules_hide_unmapped_services_when_filter_applied():
     filtered_modules = {
         "identities": {
@@ -588,6 +756,7 @@ def test_build_catalog_index_trims_heavy_action_metadata():
                                     "required": True,
                                     "type": "string",
                                     "description": "Device name",
+                                    "enum": ["switch-a", "switch-b"],
                                 },
                                 {
                                     "name": "description",
@@ -627,8 +796,14 @@ def test_build_catalog_index_trims_heavy_action_metadata():
     assert action["paths"] == ["/api/network-device"]
     assert action["body_required"] == ["name"]
     assert action["body_fields"] == [
-        {"name": "name", "required": True},
-        {"name": "description"},
+        {
+            "name": "name",
+            "required": True,
+            "type": "string",
+            "description": "Device name",
+            "enum": ["switch-a", "switch-b"],
+        },
+        {"name": "description", "type": "string"},
     ]
     assert "response_codes" not in action
     assert "response_content_types" not in action

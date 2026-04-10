@@ -173,6 +173,59 @@ def _body_field_names(action_def: dict) -> tuple[list[str], list[str]]:
     return required_names, optional_names
 
 
+def _field_usage_suffix(field: dict) -> str:
+    details: list[str] = []
+    field_type = field.get("type")
+    if isinstance(field_type, str) and field_type:
+        details.append(field_type)
+    enum_values = field.get("enum")
+    normalized_type = field_type.strip().lower() if isinstance(field_type, str) else ""
+    suppress_enum = normalized_type in {
+        "int",
+        "integer",
+        "long",
+        "number",
+        "float",
+        "double",
+    }
+    if isinstance(enum_values, list) and enum_values and not suppress_enum:
+        rendered = " | ".join(str(item) for item in enum_values if item is not None)
+        if rendered:
+            details.append(f"[{rendered}]")
+    if not details:
+        return ""
+    return " ".join(details)
+
+
+def _field_usage_row(field: dict) -> tuple[str, str | None] | None:
+    name = field.get("name")
+    if not isinstance(name, str) or not name:
+        return None
+    detail = _field_usage_suffix(field)
+    description = field.get("description")
+    if isinstance(description, str) and description:
+        detail = f"{detail}  {description}" if detail else description
+    return name, detail or None
+
+
+def _body_field_usage_rows(
+    action_def: dict, *, required: bool
+) -> list[tuple[str, str | None]]:
+    rows: list[tuple[str, str | None]] = []
+    seen: set[tuple[str, str | None]] = set()
+    for field in action_def.get("body_fields") or []:
+        if not isinstance(field, dict):
+            continue
+        if bool(field.get("required")) != required:
+            continue
+        row = _field_usage_row(field)
+        if row is None or row in seen:
+            continue
+        seen.add(row)
+        rows.append(row)
+    return rows
+
+
 def render_list_action_help(module: str, service: str, action_def: dict) -> str:
     params = action_def.get("params") or []
     selectors: list[str] = []
@@ -219,6 +272,24 @@ def _describe_lines(rows: list[tuple[str, str | None]]) -> str:
 
 def _format_named_rows(rows: list[tuple[str, str | None]]) -> str:
     return _describe_lines(rows)
+
+
+def _format_aligned_rows(
+    rows: list[tuple[str, str | None]], *, width: int | None = None
+) -> list[str]:
+    visible_rows = [(name, detail) for name, detail in rows if name]
+    if not visible_rows:
+        return []
+
+    if width is None:
+        width = max(len(name) for name, _ in visible_rows) + 2
+    lines: list[str] = []
+    for name, detail in visible_rows:
+        if detail:
+            lines.append(f"  {name.ljust(width)} {detail}")
+        else:
+            lines.append(f"  {name}")
+    return lines
 
 
 def _service_summary(service_entry: dict) -> str | None:
@@ -396,6 +467,14 @@ def render_write_action_help(
     paths = action_def.get("paths") or []
     selectors = _selector_flags_from_paths(paths)
     required_fields, optional_fields = _body_field_names(action_def)
+    required_field_rows = _body_field_usage_rows(action_def, required=True)
+    optional_field_rows = _body_field_usage_rows(action_def, required=False)
+    field_width = None
+    all_field_rows = [*required_field_rows, *optional_field_rows]
+    if all_field_rows:
+        field_width = max(len(name) for name, _ in all_field_rows) + 2
+    required_field_lines = _format_aligned_rows(required_field_rows, width=field_width)
+    optional_field_lines = _format_aligned_rows(optional_field_rows, width=field_width)
 
     options = ["--file=PATH", "--console", "--out=PATH"]
     usage = (
@@ -415,10 +494,10 @@ def render_write_action_help(
         lines.extend(f"    - {selector}" for selector in selectors)
     if required_fields:
         lines.append("  required fields:")
-        lines.extend(f"    - {field}" for field in required_fields)
+        lines.extend(required_field_lines or [f"    - {field}" for field in required_fields])
     if optional_fields:
         lines.append("  optional fields:")
-        lines.extend(f"    - {field}" for field in optional_fields)
+        lines.extend(optional_field_lines or [f"    - {field}" for field in optional_fields])
     lines.append("  options:")
     lines.extend(f"    - {option}" for option in options)
     return "\n".join(lines)

@@ -4,36 +4,32 @@
 
 ### 1. ClearPass privilege coverage for the full retained catalog
 
-Top priority.
+Lower priority for now.
 
 Current measured coverage against the retained full ClearPass catalog:
 - full retained services: `192`
-- privilege-gated verified services: `125`
-- baseline verified services: `10`
-- unresolved services: `57`
+- privilege-gated verified services: `127`
+- baseline verified services: `11`
+- unresolved services: `54`
 
-Goal:
-- continue turning retained full-catalog services into verified privilege
-  rules
-- keep using small live discovery rounds against the dedicated discovery
-  operator profile
-- explicitly separate real privilege gaps from endpoints that are not
-  actually usable on the current ClearPass server
-- treat `certificateauthority` as the only remaining higher-priority mapping
-  area for now; the remaining unresolved services are lower value and may be
-  hidden from the CLI later if they stay unmapped
+Current stance:
+- the current verified mapping coverage is good enough for now
+- stop treating `certificateauthority` as a special high-priority mapping
+  area
+- keep the remaining unresolved services as opportunistic cleanup and only
+  revisit them when they block real workflows or when we decide to hide them
+  from the default CLI surface
+- prefer spending effort on real user-facing CLI behavior over more mapping
+  rounds unless a clear gap shows up in practice
 
 Current unmapped retained services by module:
 
-#### `certificateauthority` (`8`)
-- `chain`
-- `export`
-- `import`
-- `new`
-- `reject`
-- `request`
-- `revoke`
-- `sign`
+#### `certificateauthority` (`5`)
+- `certificate-import`
+- `certificate-reject`
+- `certificate-request`
+- `certificate-revoke`
+- `certificate-sign-request`
 
 #### `endpointvisibility` (`13`)
 - `device-fingerprint`
@@ -100,17 +96,30 @@ Current unmapped retained services by module:
 
 ### 2. Cache/help/completion performance follow-up
 
-Lower priority for now.
+Focused check completed on `2026-04-10`.
 
-Interactive performance now feels good in normal use:
-- help is roughly `40-45 ms`
-- completion is roughly `26-33 ms`
-- cache loading is down around `3-5 ms`
+Focused local measurements against the current cached catalog:
+- module help (`netloom identities ?`) is roughly `153-181 ms` steady-state
+  end-to-end, with a first-run outlier around `244 ms`
+- top-level completion (`netloom --_complete --_cur=`) is roughly `114-142 ms`
+  steady-state end-to-end, with a first-run outlier around `154 ms`
+- representative internal CLI timing showed help around `100 ms` total with
+  `load_core_cached_catalog` around `65 ms`
+- representative internal CLI timing showed completion around `59 ms` total
+  with `load_core_cached_catalog` around `48 ms`
+- a focused loader-only microbenchmark with explicit settings landed around
+  `15 ms` median for the visible fast index and around `11 ms` median for the
+  visible full-cache path, which suggests the remaining end-to-end cost is
+  mostly process/import overhead plus cached catalog loading rather than help
+  rendering itself
 
 Current recommendation:
-- stop active latency shaving unless a new real-world pain point appears
+- do not continue with a `netloomd` implementation right now
 - keep the timing and progress instrumentation in place
-- revisit remaining import-time trimming only if users actually feel a need
+- only revisit deeper optimization if users actually feel the current latency
+  in real shell use
+- if we optimize further before a daemon, focus on startup/import overhead and
+  cached catalog/index deserialization cost
 
 ## Completed Work
 
@@ -137,5 +146,9 @@ Measured outcomes:
 ### Phase 2: `netloomd`
 
 Not recommended right now:
-- only revisit a daemon approach if help/completion become slow again in
-  practice
+- a focused local check on `2026-04-10` still puts normal cached help and
+  completion in the "noticeable but acceptable" range rather than in a range
+  that clearly justifies daemon complexity
+- only revisit a daemon approach if help/completion become materially slower
+  in practice, the cache grows substantially, or repeated shell completion
+  starts to feel like a real workflow drag

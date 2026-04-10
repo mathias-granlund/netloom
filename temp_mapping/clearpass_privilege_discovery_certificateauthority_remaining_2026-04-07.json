@@ -1,0 +1,1073 @@
+{
+  "operator_profile_name": "netloom-privileges-discovery-profile",
+  "baseline_privileges": [
+    "apigility",
+    "api_docs"
+  ],
+  "baseline_effective_privileges": [
+    {
+      "raw": "?api_index",
+      "name": "api_index",
+      "access": "allowed"
+    },
+    {
+      "raw": "api_docs",
+      "name": "api_docs",
+      "access": "full"
+    },
+    {
+      "raw": "apigility",
+      "name": "apigility",
+      "access": "full"
+    }
+  ],
+  "results": [
+    {
+      "service": "certificate-import",
+      "path": "/api/certificate/import",
+      "payload": {
+        "type": "trusted",
+        "certificate_file": "bm90LWEtdmFsaWQtY2VydA==",
+        "certificate_file_encoding": "base64"
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 148,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_csc_import"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_csc_import",
+              "name": "mdps_csc_import",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_csc_import",
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_csc_import",
+              "name": "mdps_csc_import",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        }
+      ],
+      "first_non_403": null
+    },
+    {
+      "service": "certificate-new",
+      "path": "/api/certificate/new",
+      "payload": {
+        "ca_id": 1,
+        "cert_type": "tls-client",
+        "country": "S",
+        "state": "",
+        "locality": "",
+        "organization": "",
+        "common_name": "",
+        "email_address": "not-an-email",
+        "key_type": "rsa_1024",
+        "issue_cert": false
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 148,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_create_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_ca",
+              "name": "mdps_create_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_create_ca",
+            "mdps_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_ca",
+              "name": "mdps_create_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate",
+            "mdps_create_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_ca",
+              "name": "mdps_create_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate",
+            "mdps_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate",
+            "mdps_create_ca",
+            "mdps_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_ca",
+              "name": "mdps_create_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        }
+      ],
+      "first_non_403": null
+    },
+    {
+      "service": "certificate-reject",
+      "path": "/api/certificate/1/reject",
+      "payload": {
+        "confirm_reject": false
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 123,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_ca"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 123,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 123,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_ca",
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_ca",
+              "name": "mdps_ca",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 123,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          },
+          "classification": null
+        }
+      ],
+      "first_non_403": null
+    },
+    {
+      "service": "certificate-request",
+      "path": "/api/certificate/request",
+      "payload": {
+        "ca_id": 1,
+        "file_csr_encoding": "base64",
+        "file_csr": "bm90LWEtdmFsaWQtY3Ny",
+        "cert_type": "tls-client",
+        "issue_cert": false
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 148,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_create_csr"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_csr",
+              "name": "mdps_create_csr",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 422,
+            "content_type": "application/problem+json",
+            "size": 233,
+            "detail": "{\"validation_messages\":{\"file_csr\":{\"IsValidFileUpload\":\"Invalid PKCS#10 Certificate Request\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+          },
+          "classification": "likely-gated"
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 148,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied, insufficient privileges\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_create_csr",
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_create_csr",
+              "name": "mdps_create_csr",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 422,
+            "content_type": "application/problem+json",
+            "size": 233,
+            "detail": "{\"validation_messages\":{\"file_csr\":{\"IsValidFileUpload\":\"Invalid PKCS#10 Certificate Request\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+          },
+          "classification": "likely-gated"
+        }
+      ],
+      "first_non_403": {
+        "candidate_keys": [
+          "mdps_create_csr"
+        ],
+        "classification": "likely-gated",
+        "probe": {
+          "status_code": 422,
+          "content_type": "application/problem+json",
+          "size": 233,
+          "detail": "{\"validation_messages\":{\"file_csr\":{\"IsValidFileUpload\":\"Invalid PKCS#10 Certificate Request\"}},\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"Failed Validation\"}"
+        }
+      }
+    },
+    {
+      "service": "certificate-revoke",
+      "path": "/api/certificate/1/revoke",
+      "payload": {
+        "ca_id": 1,
+        "confirm_revoke": false
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 123,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_revoke_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_revoke_certificate",
+              "name": "mdps_revoke_certificate",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 400,
+            "content_type": "application/problem+json",
+            "size": 198,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Certificate is already revoked. Revocation occurred on Thu, 01 Jan 1970 01:00:00 +0100\"}"
+          },
+          "classification": "likely-gated"
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 123,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_revoke_certificate",
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_revoke_certificate",
+              "name": "mdps_revoke_certificate",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 400,
+            "content_type": "application/problem+json",
+            "size": 198,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Certificate is already revoked. Revocation occurred on Thu, 01 Jan 1970 01:00:00 +0100\"}"
+          },
+          "classification": "likely-gated"
+        }
+      ],
+      "first_non_403": {
+        "candidate_keys": [
+          "mdps_revoke_certificate"
+        ],
+        "classification": "likely-gated",
+        "probe": {
+          "status_code": 400,
+          "content_type": "application/problem+json",
+          "size": 198,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Certificate is already revoked. Revocation occurred on Thu, 01 Jan 1970 01:00:00 +0100\"}"
+        }
+      }
+    },
+    {
+      "service": "certificate-sign-request",
+      "path": "/api/certificate/1/sign",
+      "payload": {
+        "ca_id": 1,
+        "days": 365,
+        "confirm_sign": false
+      },
+      "baseline_probe": {
+        "status_code": 403,
+        "content_type": "application/problem+json",
+        "size": 123,
+        "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+      },
+      "attempts": [
+        {
+          "candidate_keys": [
+            "mdps_issue_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_issue_certificate",
+              "name": "mdps_issue_certificate",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 400,
+            "content_type": "application/problem+json",
+            "size": 135,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Cannot sign this entity\"}"
+          },
+          "classification": "likely-gated"
+        },
+        {
+          "candidate_keys": [
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 403,
+            "content_type": "application/problem+json",
+            "size": 123,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Access denied\"}"
+          },
+          "classification": null
+        },
+        {
+          "candidate_keys": [
+            "mdps_issue_certificate",
+            "#mdps_view_certificate"
+          ],
+          "update_status": 200,
+          "effective_privileges": [
+            {
+              "raw": "#mdps_view_certificate",
+              "name": "mdps_view_certificate",
+              "access": "read-only"
+            },
+            {
+              "raw": "?api_index",
+              "name": "api_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "?mdps_index",
+              "name": "mdps_index",
+              "access": "allowed"
+            },
+            {
+              "raw": "api_docs",
+              "name": "api_docs",
+              "access": "full"
+            },
+            {
+              "raw": "apigility",
+              "name": "apigility",
+              "access": "full"
+            },
+            {
+              "raw": "mdps_issue_certificate",
+              "name": "mdps_issue_certificate",
+              "access": "full"
+            }
+          ],
+          "probe": {
+            "status_code": 400,
+            "content_type": "application/problem+json",
+            "size": 135,
+            "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Cannot sign this entity\"}"
+          },
+          "classification": "likely-gated"
+        }
+      ],
+      "first_non_403": {
+        "candidate_keys": [
+          "mdps_issue_certificate"
+        ],
+        "classification": "likely-gated",
+        "probe": {
+          "status_code": 400,
+          "content_type": "application/problem+json",
+          "size": 135,
+          "detail": "{\"type\":\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Cannot sign this entity\"}"
+        }
+      }
+    }
+  ]
+}

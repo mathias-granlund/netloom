@@ -21,6 +21,7 @@ def test_render_action_block_includes_dynamic_body_metadata():
                     "type": "string",
                     "required": True,
                     "description": "Unique object name",
+                    "enum": ["demo", "prod"],
                 }
             ],
             "body_example": {"name": "demo"},
@@ -30,6 +31,8 @@ def test_render_action_block_includes_dynamic_body_metadata():
     assert "summary: Create an example object" in text
     assert "response codes:" in text
     assert "body required:" in text
+    assert "name" in text
+    assert "string [demo | prod]  Unique object name (required)" in text
     assert '"name": "demo"' in text
 
 
@@ -408,10 +411,29 @@ def test_render_help_for_add_action_is_compact_and_shows_required_fields():
                                 "paths": ["/api/network-device"],
                                 "body_required": ["name", "ip_address"],
                                 "body_fields": [
-                                    {"name": "name", "required": True},
-                                    {"name": "ip_address", "required": True},
-                                    {"name": "description", "required": False},
-                                    {"name": "radius_secret", "required": False},
+                                    {
+                                        "name": "name",
+                                        "required": True,
+                                        "type": "string",
+                                        "description": "Device name",
+                                    },
+                                    {
+                                        "name": "ip_address",
+                                        "required": True,
+                                        "type": "string",
+                                        "description": "Management IP",
+                                    },
+                                    {
+                                        "name": "description",
+                                        "required": False,
+                                        "type": "string",
+                                    },
+                                    {
+                                        "name": "radius_secret",
+                                        "required": False,
+                                        "type": "string",
+                                        "description": "Shared secret",
+                                    },
                                 ],
                                 "response_codes": ["201 Created"],
                             }
@@ -434,17 +456,150 @@ def test_render_help_for_add_action_is_compact_and_shows_required_fields():
         "[options]" in text
     )
     assert "  required fields:" in text
-    assert "    - name" in text
-    assert "    - ip_address" in text
+    assert "  name" in text
+    assert "string  Device name" in text
+    assert "  ip_address" in text
+    assert "string  Management IP" in text
     assert "  optional fields:" in text
-    assert "    - description" in text
-    assert "    - radius_secret" in text
+    assert "  description" in text
+    assert "  radius_secret" in text
+    assert "string  Shared secret" in text
     assert "  options:" in text
     assert "    - --file=PATH" in text
     assert "    - --console" in text
     assert "    - --out=PATH" in text
     assert "response codes:" not in text
     assert "body example:" not in text
+
+
+def test_render_help_for_add_action_shows_enum_values_when_available():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "certificateauthority": {
+                    "certificate-export": {
+                        "actions": {
+                            "add": {
+                                "method": "POST",
+                                "paths": ["/api/certificate/{id}/export"],
+                                "body_required": ["export_format"],
+                                "body_fields": [
+                                    {
+                                        "name": "export_format",
+                                        "required": True,
+                                        "type": "string",
+                                        "enum": ["p7b", "pem", "crt", "txt", "p12"],
+                                        "description": "Select the file format",
+                                    },
+                                    {
+                                        "name": "include_chain",
+                                        "required": False,
+                                        "type": "boolean",
+                                        "description": "Include certificate chain",
+                                    },
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "certificateauthority",
+            "service": "certificate-export",
+            "action": "add",
+        },
+        version="1.9.5",
+    )
+
+    assert "export_format" in text
+    assert "string [p7b | pem | crt | txt | p12]  Select the file format" in text
+    assert "include_chain" in text
+    assert "boolean  Include certificate chain" in text
+
+
+def test_render_help_for_add_action_shows_single_schema_value_when_available():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "certificateauthority": {
+                    "certificate-new": {
+                        "actions": {
+                            "add": {
+                                "method": "POST",
+                                "paths": ["/api/certificate/new"],
+                                "body_required": ["ca_id"],
+                                "body_fields": [
+                                    {
+                                        "name": "ca_id",
+                                        "required": True,
+                                        "type": "integer",
+                                        "enum": ["1"],
+                                        "description": "Select the certificate authority",
+                                    }
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "certificateauthority",
+            "service": "certificate-new",
+            "action": "add",
+        },
+        version="1.9.5",
+    )
+
+    assert "ca_id" in text
+    assert "integer  Select the certificate authority" in text
+    assert "integer [1]" not in text
+
+
+def test_render_help_for_write_action_aligns_required_and_optional_columns():
+    text = helpmod.render_help(
+        {
+            "modules": {
+                "example": {
+                    "demo": {
+                        "actions": {
+                            "add": {
+                                "method": "POST",
+                                "paths": ["/api/demo"],
+                                "body_required": ["id"],
+                                "body_fields": [
+                                    {
+                                        "name": "id",
+                                        "required": True,
+                                        "type": "string",
+                                        "description": "Required value",
+                                    },
+                                    {
+                                        "name": "very_long_optional_name",
+                                        "required": False,
+                                        "type": "string",
+                                        "description": "Optional value",
+                                    },
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "module": "example",
+            "service": "demo",
+            "action": "add",
+        },
+        version="1.9.5",
+    )
+
+    required_line = next(line for line in text.splitlines() if "Required value" in line)
+    optional_line = next(line for line in text.splitlines() if "Optional value" in line)
+
+    assert required_line.index("string") == optional_line.index("string")
 
 
 def test_render_help_for_update_action_is_compact_and_shows_selectors():
@@ -489,9 +644,9 @@ def test_render_help_for_update_action_is_compact_and_shows_selectors():
     assert "    - --id=VALUE" in text
     assert "    - --name=VALUE" in text
     assert "  optional fields:" in text
-    assert "    - description" in text
-    assert "    - name" in text
-    assert "    - ip_address" in text
+    assert "  description" in text
+    assert "  name" in text
+    assert "  ip_address" in text
     assert "response codes:" not in text
     assert "body example:" not in text
 
@@ -536,10 +691,10 @@ def test_render_help_for_replace_action_is_compact_and_shows_required_fields():
         "[--file=PATH | field=value ...] [options]" in text
     )
     assert "  required fields:" in text
-    assert "    - name" in text
-    assert "    - ip_address" in text
+    assert "  name" in text
+    assert "  ip_address" in text
     assert "  optional fields:" in text
-    assert "    - description" in text
+    assert "  description" in text
     assert "response codes:" not in text
     assert "body example:" not in text
 

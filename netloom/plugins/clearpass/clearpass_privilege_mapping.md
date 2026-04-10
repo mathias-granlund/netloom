@@ -25,8 +25,10 @@ Useful flags for future mapping rounds:
 | Operator profile privilege key | Effective runtime privilege | Module | Service | Verified access |
 | --- | --- | --- | --- | --- |
 | `#mdps_view_certificate` | `mdps_view_certificate` | `certificateauthority` | `certificate` | `list` |
-| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `device` | `list` |
-| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `user` | `list` |
+| `#mdps_view_certificate` + `#mdps_export_ca_key` | `mdps_view_certificate` + `mdps_export_ca_key` | `certificateauthority` | `certificate-export` | `add` via direct `POST /api/certificate/1/export` returning `200` with `application/x-pkcs12` |
+| `mdps_create_csr` | `mdps_create_csr` | `certificateauthority` | `certificate-new` | `add` via direct `POST /api/certificate/new` returning `200` and creating pending certificate request `id=220` |
+| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `onboard-device` | `list` |
+| `mdps_device_manage` | `mdps_device_manage` | `certificateauthority` | `onboard-user` | `list` |
 | `cppm_enforcement_profile` | `cppm_enforcement_profile` | `enforcementprofile` | `enforcement-profile` | `list` |
 | `cppm_captive_portal_profile` | `cppm_captive_portal_profile` | `enforcementprofile` | `captive-portal-profile` | `get` |
 | `cppm_captive_portal_profile` | `cppm_captive_portal_profile` | `enforcementprofile` | `captive-portal-profile-name` | `get` via fake name returning `404` instead of baseline `403` |
@@ -161,6 +163,7 @@ privilege mappings.
 | `apioperations` | `me` | `list`, `add` |
 | `apioperations` | `oauth` | `add` |
 | `apioperations` | `privileges` | `get` |
+| `certificateauthority` | `certificate-chain` | `get` via direct `GET /api/certificate/1/chain`; restricted discovery token still showed only baseline runtime privileges `?api_index`, `api_docs`, and `apigility` |
 | `globalserverconfiguration` | `all-privileges` | `get` |
 | `globalserverconfiguration` | `db-sync` | `add` via direct `POST` with `{"timeout":"10"}` returning JSON fields `error`, `is_publisher`, `sync_time`, `timeout`, `timeout_error`, and `message` |
 | `localserverconfiguration` | `cppm-version` | `get` |
@@ -181,6 +184,8 @@ the cache filter yet.
 | `pass_template` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
 | `pass_config` | `guestconfiguration` | `pass` | accepted, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
 | `pass_index` | `guestconfiguration` | `pass` | accepted; enabling it also exposed `pass_config`, `pass_template`, `pass_cert_install`, and `pass_cert_view`, but both the `list` probe and the reversible `add` probe still returned baseline `403` |
+| `mdps_create_csr` | `certificateauthority` | `certificate-request` | accepted and exposed runtime key `mdps_create_csr`; an intentionally invalid CSR upload moved from baseline `403` to `422 Invalid PKCS#10 Certificate Request`, so this is the strongest current candidate but not yet promotable |
+| `mdps_revoke_certificate` | `certificateauthority` | `certificate-revoke` | accepted and exposed runtime key `mdps_revoke_certificate`; a non-destructive confirm-false probe moved from baseline `403` to `400`, so this is the strongest current candidate but not yet promotable |
 | `insight_reports` | `insight` | `report-enable` | accepted on the operator profile and exposed runtime key `insight_reports`, but the real `test_report` enable probe still returned baseline `403` |
 | `insight_reports` | `insight` | `report-run` | accepted on the operator profile and exposed runtime key `insight_reports`, but the real `test_report` run probe still returned baseline `403` |
 
@@ -207,6 +212,7 @@ matches.
 
 | Module | Service | Required effective privileges |
 | --- | --- | --- |
+| `certificateauthority` | `certificate-export` | `mdps_view_certificate` and `mdps_export_ca_key` |
 | `identities` | `device` | `mac` and `guest_users` |
 | `policyelements` | `auth-source` | `auth_config` and `cppm_config` |
 
@@ -227,15 +233,30 @@ backlog still lives in `PLANNED_FEATURES.md`.
 
 | Module | Service | Current blocker |
 | --- | --- | --- |
+| `certificateauthority` | `certificate-import` | focused probes with `mdps_csc_import`, `cppm_certificates`, `cppm_cert_trust_list`, `mdps_ca`, and tested combinations still returned baseline `403` for the invalid trusted-certificate import payload |
+| `certificateauthority` | `certificate-reject` | even against a real pending CSR (`certificate/216`), tested `mdps_issue_certificate`, `mdps_ca`, `mdps_revoke_certificate`, `mdps_create_csr`, and combinations still returned baseline `403` |
+| `certificateauthority` | `certificate-request` | `mdps_create_csr` now looks like the strongest candidate because the invalid CSR upload moved from baseline `403` to `422`, but the endpoint still lacks a safe promotable success probe |
+| `certificateauthority` | `certificate-revoke` | `mdps_revoke_certificate` now looks like the strongest candidate because the confirm-false probe moved from baseline `403` to `400`, but the endpoint still lacks a safe promotable success probe |
+| `certificateauthority` | `certificate-sign-request` | even against a real pending CSR (`certificate/216`), tested `mdps_issue_certificate`, `mdps_ca`, `mdps_create_csr`, and combinations still returned baseline `403` |
 | `guestconfiguration` | `pass` | candidate probes with `pass_template`, `pass_config`, `pass_index`, and their tested combinations still return `403` for both `list` and reversible `add` probes |
 
 `certificateauthority/certificate` was promoted after enabling the read-only
 Onboard `View Certificate` privilege on the dedicated discovery profile. Its
 effective runtime privilege is `mdps_view_certificate`.
 
-`certificateauthority/device` and `certificateauthority/user` were promoted
-after enabling the Onboard `Manage Devices` privilege on the dedicated
-discovery profile. Its effective runtime privilege is `mdps_device_manage`.
+`certificateauthority/certificate-export` was promoted after enabling the
+read-only `View Certificate` and `Export CA Key` privileges on the dedicated
+discovery profile. The successful live export probe produced effective runtime
+privileges `mdps_view_certificate` and `mdps_export_ca_key`.
+
+`certificateauthority/certificate-new` was promoted after a direct live
+`POST /api/certificate/new` probe succeeded with a token whose runtime
+privileges were limited to the baseline plus `mdps_create_csr`.
+
+`certificateauthority/onboard-device` and `certificateauthority/onboard-user`
+were promoted after enabling the Onboard `Manage Devices` privilege on the
+dedicated discovery profile. Its effective runtime privilege is
+`mdps_device_manage`.
 
 ## Baseline Effective Privileges
 

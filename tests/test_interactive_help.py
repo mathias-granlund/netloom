@@ -580,6 +580,47 @@ def test_describe_context_for_action_reuses_compact_help():
     assert "usage: netloom <module> <service> list [options]" in text
 
 
+def test_describe_context_for_write_action_shows_field_usage_details():
+    text = helpmod.describe_context(
+        ["certificateauthority", "certificate-export", "add"],
+        {
+            "modules": {
+                "certificateauthority": {
+                    "certificate-export": {
+                        "actions": {
+                            "add": {
+                                "method": "POST",
+                                "paths": ["/api/certificate/{id}/export"],
+                                "body_required": ["export_format"],
+                                "body_fields": [
+                                    {
+                                        "name": "export_format",
+                                        "required": True,
+                                        "type": "string",
+                                        "enum": ["p7b", "pem", "crt", "txt", "p12"],
+                                        "description": "Select the file format",
+                                    },
+                                    {
+                                        "name": "include_chain",
+                                        "required": False,
+                                        "type": "boolean",
+                                        "description": "Include certificate chain",
+                                    },
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    )
+
+    assert "export_format" in text
+    assert "string [p7b | pem | crt | txt | p12]  Select the file format" in text
+    assert "include_chain" in text
+    assert "boolean  Include certificate chain" in text
+
+
 def test_describe_context_for_server_use_lists_profiles(monkeypatch):
     monkeypatch.setattr(helpmod, "list_profiles", lambda: ["dev", "prod"])
 

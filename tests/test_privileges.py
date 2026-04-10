@@ -114,6 +114,10 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("apioperations", "oauth")].privileges == ()
     assert rules[("apioperations", "privileges")].source == "baseline_verified"
     assert rules[("apioperations", "privileges")].privileges == ()
+    assert rules[("certificateauthority", "certificate-chain")].source == (
+        "baseline_verified"
+    )
+    assert rules[("certificateauthority", "certificate-chain")].privileges == ()
     assert rules[("globalserverconfiguration", "db-sync")].source == (
         "baseline_verified"
     )
@@ -121,10 +125,23 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("certificateauthority", "certificate")].privileges == (
         "mdps_view_certificate",
     )
-    assert rules[("certificateauthority", "device")].privileges == (
+    assert rules[("certificateauthority", "certificate-export")].privileges == (
+        "mdps_view_certificate",
+        "mdps_export_ca_key",
+    )
+    assert rules[("certificateauthority", "certificate-export")].match == "all"
+    assert rules[("certificateauthority", "certificate-export")].action_allowlist == (
+        "add",
+    )
+    assert rules[("certificateauthority", "certificate-new")].privileges == (
+        "mdps_create_csr",
+    )
+    assert rules[("certificateauthority", "onboard-device")].privileges == (
         "mdps_device_manage",
     )
-    assert rules[("certificateauthority", "user")].privileges == ("mdps_device_manage",)
+    assert rules[("certificateauthority", "onboard-user")].privileges == (
+        "mdps_device_manage",
+    )
     assert rules[("enforcementprofile", "enforcement-profile")].privileges == (
         "cppm_enforcement_profile",
     )
