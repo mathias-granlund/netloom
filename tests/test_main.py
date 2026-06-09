@@ -60,6 +60,11 @@ def test_parse_cli_basic():
     assert args["log_level"] == "debug"
 
 
+def test_parse_cli_shell_builtin():
+    args = main.parse_cli(["netloom", "shell"])
+    assert args["module"] == "shell"
+
+
 def test_parse_cli_ignores_unknown_flags_in_completion_mode():
     argv = ["netloom", "--_complete", "--_cur=ep", "-x", "identities"]
     args = main.parse_cli(argv)
@@ -72,6 +77,7 @@ def test_complete_outputs_modules(capsys, monkeypatch):
     main.complete(["--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "identities" in out
+    assert "shell" in out
     assert "copy" not in out
 
 

@@ -9,6 +9,12 @@ if TYPE_CHECKING:
 
 
 def handle_lightweight_builtin_command(args: dict, *, deps: Any) -> bool:
+    if args.get("module") == "shell":
+        if deps.handle_shell_command(args, deps=deps):
+            return True
+        deps.print_help({"module": "shell"})
+        return True
+
     if args.get("module") == "server":
         if deps.handle_server_command(args):
             return True

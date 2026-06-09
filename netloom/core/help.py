@@ -30,6 +30,7 @@ __all__ = [
     "render_list_action_help",
     "render_load_help",
     "render_server_help",
+    "render_shell_help",
     "render_write_action_help",
     "service_cli_actions",
 ]
@@ -351,10 +352,14 @@ def render_write_action_help(
         lines.extend(f"    - {selector}" for selector in selectors)
     if required_fields:
         lines.append("  required fields:")
-        lines.extend(required_field_lines or [f"    - {field}" for field in required_fields])
+        lines.extend(
+            required_field_lines or [f"    - {field}" for field in required_fields]
+        )
     if optional_fields:
         lines.append("  optional fields:")
-        lines.extend(optional_field_lines or [f"    - {field}" for field in optional_fields])
+        lines.extend(
+            optional_field_lines or [f"    - {field}" for field in optional_fields]
+        )
     lines.append("  options:")
     lines.extend(f"    - {option}" for option in options)
     return "\n".join(lines)
@@ -532,6 +537,24 @@ def render_load_help(header: str, usage: str, plugins: list[str]) -> str:
         + "  netloom load <plugin>\n\n"
         + "Available plugins:\n"
         + plugin_lines
+    )
+
+
+def render_shell_help(header: str, usage: str) -> str:
+    return (
+        header
+        + usage
+        + "\nBuilt-in module: shell\n"
+        + "Launches the interactive netloom shell.\n\n"
+        + "Shell commands:\n"
+        + "  netloom shell\n\n"
+        + "Inside the shell:\n"
+        + "  ?              Show help for the current context\n"
+        + "  exit           Move up one level or quit at the top level\n"
+        + "  quit           Quit the shell\n"
+        + "  top            Return to the root netloom context\n"
+        + "  show context   Show active profile, plugin, and context\n"
+        + "  do <command>   Run a full netloom command from the root context"
     )
 
 

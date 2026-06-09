@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.11.1 - 2026-06-09
+
+### Added
+- added `netloom shell`, an interactive shell with context navigation,
+  context-sensitive help, completion, command history, `show context`, `top`,
+  `exit`, `quit`, and `do <command>` for root-level execution
+- added Delinea Secret Server as a shared read-only keystore backend under
+  `~/.config/netloom/keystores/secretserver/`
+- added `secretserver://<profile>/<path>?field=<slug>` support for
+  `NETLOOM_CLIENT_SECRET_REF`
+
+### Changed
+- routed client-secret resolution through a shared secret-reference dispatcher
+  so keychain references keep working while Secret Server references can be
+  resolved by scheme
+- added plugin write-payload preparation hooks and applied them to normal
+  add/update/replace handlers and the ClearPass copy workflow
+- taught ClearPass `policyelements network-device` add, update, replace, and
+  copy flows to backfill missing or masked `radius_secret` and `tacacs_secret`
+  values from Secret Server by device name when the provider is configured
+- updated `PLANNED_FEATURES.md`, release notes, README guidance, credentials
+  examples, and bundled manpage metadata for the `1.11.1` release
+
 ## 1.10.3 - 2026-04-07
 
 ### Changed

@@ -313,6 +313,31 @@ def _emit_summary(report: dict[str, Any]) -> None:
             print(f"- report: {artifacts['report']}")
 
 
+def _prepare_copy_payload(
+    plugin,
+    cp,
+    api_catalog: dict,
+    args: dict[str, Any],
+    action: str,
+    payload,
+    *,
+    token: str,
+    settings: Settings,
+):
+    hook = getattr(plugin, "prepare_write_payload", None)
+    if callable(hook):
+        return hook(
+            cp,
+            api_catalog,
+            args,
+            action,
+            payload,
+            token=token,
+            settings=settings,
+        )
+    return payload
+
+
 def handle_copy_command(
     args: dict[str, Any],
     *,
@@ -378,6 +403,16 @@ def handle_copy_command(
             payload = plugin.normalize_copy_payload(
                 target_cp, target_catalog, action_args, "add", item
             )
+            payload = _prepare_copy_payload(
+                plugin,
+                target_cp,
+                target_catalog,
+                action_args,
+                "add",
+                payload,
+                token=target_token,
+                settings=target_settings,
+            )
         elif on_conflict == "skip":
             action_name = "skip"
             payload = None
@@ -392,6 +427,16 @@ def handle_copy_command(
             payload = plugin.normalize_copy_payload(
                 target_cp, target_catalog, action_args, "update", item
             )
+            payload = _prepare_copy_payload(
+                plugin,
+                target_cp,
+                target_catalog,
+                action_args,
+                "update",
+                payload,
+                token=target_token,
+                settings=target_settings,
+            )
         else:
             action_name = "replace"
             action_args = _service_args(
@@ -399,6 +444,16 @@ def handle_copy_command(
             )
             payload = plugin.normalize_copy_payload(
                 target_cp, target_catalog, action_args, "replace", item
+            )
+            payload = _prepare_copy_payload(
+                plugin,
+                target_cp,
+                target_catalog,
+                action_args,
+                "replace",
+                payload,
+                token=target_token,
+                settings=target_settings,
             )
         preflight_error = plugin.preflight_error_for_payload(
             module, service, action_name, payload

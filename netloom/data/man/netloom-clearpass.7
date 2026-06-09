@@ -1,4 +1,4 @@
-.TH NETLOOM-CLEARPASS 7 "April 2026" "netloom 1.10.3" "Miscellaneous Information Manual"
+.TH NETLOOM-CLEARPASS 7 "June 2026" "netloom 1.11.1" "Miscellaneous Information Manual"
 .SH NAME
 .PP
 netloom-clearpass \- ClearPass plugin reference for netloom
@@ -53,6 +53,20 @@ NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 .EE
 .PP
 Direct NETLOOM_ environment variables still override profile files when set in the current shell session.
+.PP
+NETLOOM_CLIENT_SECRET_REF may also point to Delinea Secret Server with a reference such as:
+.PP
+.EX
+NETLOOM_CLIENT_SECRET_REF=secretserver://prod/Shared/ClearPass/API?field=password
+.EE
+.PP
+Shared Secret Server provider configuration lives under:
+.PP
+.EX
+~/.config/netloom/keystores/secretserver/defaults.env
+~/.config/netloom/keystores/secretserver/profiles/<profile>.env
+~/.config/netloom/keystores/secretserver/credentials/<profile>.env
+.EE
 .SH AUTHENTICATION
 .PP
 The ClearPass plugin supports three practical authentication paths:
@@ -114,6 +128,20 @@ python -m keyring set netloom/clearpass <profile>/client-secret
 .EE
 .PP
 If NETLOOM_CLIENT_SECRET_REF is configured but no usable backend exists, the runtime only falls back to plaintext NETLOOM_CLIENT_SECRET when that value is also configured.
+.SH SECRET SERVER KEYSTORE
+.PP
+When the shared Secret Server provider is configured, netloom can resolve ClearPass login secrets and network-device shared secrets from Delinea without changing the active runtime plugin.
+.PP
+Typical provider settings:
+.PP
+.EX
+NETLOOM_SECRETSERVER_URL=https://vault.example.com/SecretServer
+NETLOOM_SECRETSERVER_USERNAME=svc-netloom
+NETLOOM_SECRETSERVER_PASSWORD_REF=prod/secretserver-password
+NETLOOM_SECRETSERVER_NETWORK_DEVICE_PATH_TEMPLATE=/Shared/ClearPass/network-devices/{name}
+.EE
+.PP
+The current integration is read-only. For policyelements network-device add, update, replace, and copy workflows, missing or masked radius_secret and tacacs_secret values can be backfilled from Secret Server by device name before the ClearPass write is sent.
 .SH DISCOVERY AND CACHE
 .PP
 The ClearPass plugin discovers API structure from documentation endpoints such as:
@@ -263,6 +291,8 @@ Useful options include:
 --save-plan=FILE: Save the planned operations.
 .PP
 The plugin normalizes payloads before replaying them so response-only metadata, links, IDs, and similar API noise are not sent back as write input.
+.PP
+For policyelements network-device, the write path can also resolve missing radius_secret and tacacs_secret values from the shared Secret Server keystore when the provider is configured.
 .SH DIFF WORKFLOW
 .PP
 Preferred syntax:

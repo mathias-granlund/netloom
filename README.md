@@ -8,7 +8,7 @@
 
 **A CLI for working with network APIs — easy, consistent, safe, and fast.**
 
-[![Version](https://img.shields.io/badge/version-1.10.3-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.11.1-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey.svg)]()
 
@@ -79,6 +79,35 @@ If you use an OS keychain, store the referenced secret with:
 ```bash
 python -m keyring set netloom/clearpass <profile>/client-secret
 ```
+
+You can also resolve `NETLOOM_CLIENT_SECRET_REF` from Delinea Secret Server with
+a reference such as:
+
+```bash
+NETLOOM_CLIENT_SECRET_REF="secretserver://prod/Shared/ClearPass/API?field=password"
+```
+
+Shared Secret Server provider config lives under:
+
+```text
+~/.config/netloom/keystores/secretserver/defaults.env
+~/.config/netloom/keystores/secretserver/profiles/<profile>.env
+~/.config/netloom/keystores/secretserver/credentials/<profile>.env
+```
+
+Typical Secret Server provider settings:
+
+```bash
+NETLOOM_SECRETSERVER_URL="https://vault.example.com/SecretServer"
+NETLOOM_SECRETSERVER_USERNAME="svc-netloom"
+NETLOOM_SECRETSERVER_PASSWORD_REF="prod/secretserver-password"
+NETLOOM_SECRETSERVER_NETWORK_DEVICE_PATH_TEMPLATE="/Shared/ClearPass/network-devices/{name}"
+```
+
+When that provider is configured, `netloom policyelements network-device`
+`add`, `update`, `replace`, and `copy` can backfill missing `radius_secret`
+and `tacacs_secret` values from Delinea by device name. The current
+integration is read-only and only fetches those secret fields.
 
 ## First Run / Quick Start
 

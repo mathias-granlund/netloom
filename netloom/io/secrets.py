@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
+from urllib.parse import urlparse
 
 KEYCHAIN_SERVICE_PREFIX = "netloom"
 
@@ -55,3 +56,17 @@ def load_keychain_secret(*, plugin: str | None, secret_ref: str) -> str:
         )
 
     return secret
+
+
+def load_secret_reference(*, plugin: str | None, secret_ref: str) -> str:
+    ref = secret_ref.strip()
+    if not ref:
+        raise SecretLookupError("NETLOOM_CLIENT_SECRET_REF must not be empty.")
+
+    parsed = urlparse(ref)
+    if parsed.scheme.lower() == "secretserver":
+        from netloom.keystores.secretserver import resolve_secretserver_reference
+
+        return resolve_secretserver_reference(ref)
+
+    return load_keychain_secret(plugin=plugin, secret_ref=ref)

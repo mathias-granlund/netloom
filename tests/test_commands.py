@@ -591,6 +591,56 @@ def test_add_handler_builds_payload_from_args(monkeypatch, api_catalog, settings
     assert logged["thing"]["id"] == 7
 
 
+def test_add_handler_applies_plugin_prepare_write_payload(
+    monkeypatch, api_catalog, settings
+):
+    logged = {}
+
+    class CP:
+        last_response_meta = None
+        plugin_prepare_write_payload = staticmethod(
+            lambda cp, api_catalog, args, action, payload, **kwargs: {
+                **payload,
+                "radius_secret": "resolved-from-delinea",
+            }
+        )
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def resolve_action(self, api_catalog, module, service, action, args):
+            return (
+                api_catalog["modules"][module][service]["actions"][action],
+                "/api/endpoint",
+                [],
+            )
+
+        def add(self, api_catalog, token, args, payload):
+            logged["payload"] = payload
+            return {"id": 7, **payload}
+
+    monkeypatch.setattr(
+        commands,
+        "log_to_file",
+        lambda thing, filename, **kwargs: logged.update({"thing": thing}),
+    )
+
+    commands.add_handler(
+        CP(),
+        "tok",
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "add",
+            "name": "alice",
+        },
+        settings=settings,
+    )
+
+    assert logged["payload"]["radius_secret"] == "resolved-from-delinea"
+
+
 def test_add_handler_file_payload_filters_response_fields(
     monkeypatch, api_catalog, settings, tmp_path
 ):

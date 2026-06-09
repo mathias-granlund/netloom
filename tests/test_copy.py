@@ -76,7 +76,7 @@ def _catalog():
     }
 
 
-def _plugin(build_client, catalog, *, get_api_catalog=None):
+def _plugin(build_client, catalog, *, get_api_catalog=None, prepare_write_payload=None):
     return types.SimpleNamespace(
         build_client=build_client,
         resolve_auth_token=lambda cp, settings: f"{settings.server}-token",
@@ -108,6 +108,7 @@ def _plugin(build_client, catalog, *, get_api_catalog=None):
             )
             else None
         ),
+        prepare_write_payload=prepare_write_payload,
     )
 
 
@@ -417,6 +418,59 @@ def test_handle_copy_command_updates_existing_match_and_restores_secret(
     }
     assert report["summary"]["updated"] == 1
     assert report["items"][0]["response"]["radius_secret"] == "abc123"
+
+
+def test_handle_copy_command_applies_prepare_write_payload_hook(monkeypatch, tmp_path):
+    catalog = _catalog()
+    source_cp = _SourceCP(
+        catalog,
+        [
+            {
+                "id": 1,
+                "name": "switch-a",
+                "ip_address": "10.0.0.1",
+                "radius_secret": "",
+            }
+        ],
+    )
+    target_cp = _TargetCP(catalog, {})
+
+    monkeypatch.setattr(copymod, "list_profiles", lambda: ["dev", "prod"])
+    monkeypatch.setattr(
+        copymod,
+        "load_settings_for_profile",
+        lambda profile: _make_settings(tmp_path, profile),
+    )
+
+    def build_client(settings, *, mask_secrets=True):
+        return source_cp if settings.server == "dev" else target_cp
+
+    def prepare_write_payload(cp, api_catalog, args, action, payload, **kwargs):
+        return {
+            **payload,
+            "radius_secret": "resolved-from-delinea",
+        }
+
+    report = copymod.handle_copy_command(
+        {
+            "module": "copy",
+            "copy_module": "policyelements",
+            "copy_service": "network-device",
+            "from": "dev",
+            "to": "prod",
+            "all": True,
+            "dry_run": True,
+        },
+        settings=_make_settings(tmp_path, "prod"),
+        plugin=_plugin(
+            build_client,
+            catalog,
+            prepare_write_payload=prepare_write_payload,
+        ),
+    )
+
+    assert report["summary"]["created"] == 1
+    assert report["items"][0]["payload"]["radius_secret"] == "resolved-from-delinea"
 
 
 def test_handle_copy_command_uses_cached_catalog_by_default(monkeypatch, tmp_path):

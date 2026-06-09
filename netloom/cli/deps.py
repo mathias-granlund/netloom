@@ -112,6 +112,12 @@ def handle_server_command(*args, **kwargs):
     return impl(*args, **kwargs)
 
 
+def handle_shell_command(*args, **kwargs):
+    from netloom.cli.shell import handle_shell_command as impl
+
+    return impl(*args, **kwargs)
+
+
 def configure_logging(*args, **kwargs):
     from netloom.logging.setup import configure_logging as impl
 

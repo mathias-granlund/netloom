@@ -1,3 +1,4 @@
+import sys
 import types
 
 import pytest
@@ -83,10 +84,38 @@ def test_load_keychain_secret_errors_when_entry_missing(monkeypatch):
         )
 
 
+def test_load_secret_reference_dispatches_secretserver_refs(monkeypatch):
+    calls = {}
+    monkeypatch.setattr(
+        secretsmod,
+        "load_keychain_secret",
+        lambda *, plugin, secret_ref: (_ for _ in ()).throw(
+            AssertionError("should not use keychain")
+        ),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "netloom.keystores.secretserver",
+        types.SimpleNamespace(
+            resolve_secretserver_reference=lambda ref: (
+                calls.update({"ref": ref}) or "resolved-from-secretserver"
+            )
+        ),
+    )
+
+    secret = secretsmod.load_secret_reference(
+        plugin="clearpass",
+        secret_ref="secretserver://prod/Shared/Example?field=password",
+    )
+
+    assert secret == "resolved-from-secretserver"
+    assert calls["ref"] == "secretserver://prod/Shared/Example?field=password"
+
+
 def test_settings_credentials_prefers_keychain_secret(monkeypatch):
     monkeypatch.setattr(
         config,
-        "load_keychain_secret",
+        "load_secret_reference",
         lambda *, plugin, secret_ref: "resolved-secret",
     )
     settings = Settings(
@@ -101,10 +130,10 @@ def test_settings_credentials_prefers_keychain_secret(monkeypatch):
 def test_settings_credentials_falls_back_to_plaintext_when_keychain_lookup_fails(
     monkeypatch,
 ):
-    def fake_load_keychain_secret(*, plugin, secret_ref):
+    def fake_load_secret_reference(*, plugin, secret_ref):
         raise SecretLookupError("keychain backend unavailable")
 
-    monkeypatch.setattr(config, "load_keychain_secret", fake_load_keychain_secret)
+    monkeypatch.setattr(config, "load_secret_reference", fake_load_secret_reference)
     settings = Settings(
         plugin="clearpass",
         client_id="prod-client",
@@ -118,10 +147,10 @@ def test_settings_credentials_falls_back_to_plaintext_when_keychain_lookup_fails
 def test_settings_credentials_raises_when_keychain_lookup_fails_without_fallback(
     monkeypatch,
 ):
-    def fake_load_keychain_secret(*, plugin, secret_ref):
+    def fake_load_secret_reference(*, plugin, secret_ref):
         raise SecretLookupError("keychain backend unavailable")
 
-    monkeypatch.setattr(config, "load_keychain_secret", fake_load_keychain_secret)
+    monkeypatch.setattr(config, "load_secret_reference", fake_load_secret_reference)
     settings = Settings(
         plugin="clearpass",
         client_id="prod-client",

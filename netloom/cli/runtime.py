@@ -109,7 +109,6 @@ def run_cli(args: dict, *, deps: Any = cli_deps) -> None:
         active_settings.verify_ssl,
     )
     token = plugin.resolve_auth_token(cp, active_settings)
-    #print(token)
     api_catalog = deps._get_catalog_for_cli(
         plugin,
         cp,

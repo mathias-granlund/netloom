@@ -56,7 +56,34 @@ Current recommendation:
 - do this before any GUI work
 - treat this as the architectural foundation for future UX improvements
 
-### 3. Web GUI on top of the same session model
+### 3. Delinea Secret Server as a shared keystore backend
+
+High-value security and operations integration.
+
+Goal:
+- let `netloom-clearpass` resolve its client secret from Delinea Secret Server
+- support centralized secret management without changing the active runtime
+  plugin model
+
+Scope:
+- add Secret Server as a shared secret-provider backend
+- support one ClearPass client-secret lookup by Secret Server path plus field
+  slug
+- preserve local keyring and plaintext fallback behavior
+
+Current recommendation:
+- do not introduce `netloom load secretserver` in v1
+- do not build full multi-field environment mapping in v1
+- prefer a small read-only `requests` client over the Delinea SDK for the
+  first implementation
+- use direct REST integration first, based on `/oauth2/token` and
+  `/SecretServer/api/v1/...`
+- use a new shared `keystores/secretserver` config area rather than
+  `plugins/secretserver`
+- revisit a standalone Secret Server runtime plugin only if later workflows
+  need direct Secret Server operations
+
+### 4. Web GUI on top of the same session model
 
 Desirable after the shell and shared session layer exist.
 
@@ -76,7 +103,7 @@ Current recommendation:
 - reuse the shell/session abstractions rather than creating a separate UI-only
   command model
 
-### 4. `netloomd` only if later metrics justify it
+### 5. `netloomd` only if later metrics justify it
 
 Not a current priority.
 
@@ -90,7 +117,7 @@ Current recommendation:
 - if more optimization is needed before a daemon, focus first on startup/import
   overhead and cached catalog/index deserialization cost
 
-### 5. Remaining ClearPass catalog and privilege coverage
+### 6. Remaining ClearPass catalog and privilege coverage
 
 Lower priority for now.
 
@@ -100,6 +127,33 @@ Current stance:
 - keep unresolved services as opportunistic cleanup
 - revisit this work when it blocks real workflows or when a UX decision depends
   on whether a service should be shown by default
+
+### 7. Object reference inspection for ClearPass
+
+Useful for operator safety and dependency visibility.
+
+Goal:
+- let a user check whether a ClearPass object is referenced by other objects
+- surface reverse-reference information in a Fortinet-like operator-friendly way
+  without forcing the user to manually inspect multiple related objects
+
+Planned behavior:
+- support checking whether an object has one or more references from parent
+  objects
+- show the total reference count
+- list each parent object with at least:
+  - object name
+  - object id
+- keep the feature usable from the standard `get` and/or dedicated inspection
+  flows rather than making it shell-only
+
+Design constraints:
+- the implementation should fit the existing `netloom` command model and
+  ClearPass plugin structure
+- reference output should be easy to read in the terminal and safe to use
+  before copy, update, or delete operations
+- do not assume every ClearPass object type exposes references the same way;
+  feature design should allow per-service handling where needed
 
 ## Completed Work
 

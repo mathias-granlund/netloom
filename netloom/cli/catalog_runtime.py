@@ -50,7 +50,7 @@ def completion_needs_catalog(words: list[str]) -> bool:
         return True
 
     module = positionals[0]
-    return module not in {"cache", "load", "server"}
+    return module not in {"cache", "load", "server", "shell"}
 
 
 def load_catalog_for_cli(
@@ -103,7 +103,7 @@ def help_prefers_index(args: dict | None) -> bool:
 
 def help_needs_catalog(args: dict | None) -> bool:
     module = (args or {}).get("module")
-    return module not in {"cache", "load", "server"}
+    return module not in {"cache", "load", "server", "shell"}
 
 
 def get_catalog_for_cli(

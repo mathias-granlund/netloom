@@ -30,6 +30,7 @@ handle_copy_command = _deps.handle_copy_command
 handle_diff_command = _deps.handle_diff_command
 handle_load_command = _deps.handle_load_command
 handle_server_command = _deps.handle_server_command
+handle_shell_command = _deps.handle_shell_command
 configure_logging = _deps.configure_logging
 _log_levels = _deps._log_levels
 should_mask_secrets = _deps.should_mask_secrets
@@ -181,4 +182,5 @@ __all__ = [
     "print_help",
     "run_cli",
     "settings_with_cli_overrides",
+    "handle_shell_command",
 ]

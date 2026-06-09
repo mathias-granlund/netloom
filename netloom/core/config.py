@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
-from netloom.io.secrets import SecretLookupError, load_keychain_secret
+from netloom.io.secrets import SecretLookupError, load_secret_reference
 
 APP_NAME = "netloom"
 ACTIVE_PROFILE_ENV = "NETLOOM_ACTIVE_PROFILE"
@@ -552,7 +552,7 @@ class Settings:
     def resolve_client_secret(self) -> str:
         if self.client_secret_ref:
             try:
-                return load_keychain_secret(
+                return load_secret_reference(
                     plugin=self.plugin, secret_ref=self.client_secret_ref
                 )
             except SecretLookupError as exc:

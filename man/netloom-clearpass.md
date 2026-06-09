@@ -73,6 +73,21 @@ NETLOOM_CLIENT_SECRET_REF=<profile>/client-secret
 Direct `NETLOOM_*` environment variables still override profile files when set
 in the current shell session.
 
+`NETLOOM_CLIENT_SECRET_REF` may also point to Delinea Secret Server with a
+reference such as:
+
+```bash
+NETLOOM_CLIENT_SECRET_REF=secretserver://prod/Shared/ClearPass/API?field=password
+```
+
+Shared Secret Server provider configuration lives under:
+
+```text
+~/.config/netloom/keystores/secretserver/defaults.env
+~/.config/netloom/keystores/secretserver/profiles/<profile>.env
+~/.config/netloom/keystores/secretserver/credentials/<profile>.env
+```
+
 ## Authentication
 
 The ClearPass plugin supports three practical authentication paths:
@@ -134,6 +149,26 @@ python -m keyring set netloom/clearpass <profile>/client-secret
 If `NETLOOM_CLIENT_SECRET_REF` is configured but no usable backend exists, the
 runtime only falls back to plaintext `NETLOOM_CLIENT_SECRET` when that value is
 also configured.
+
+## Secret Server Keystore
+
+When the shared Secret Server provider is configured, `netloom` can resolve
+ClearPass login secrets and `network-device` shared secrets from Delinea
+without changing the active runtime plugin.
+
+Typical provider settings:
+
+```bash
+NETLOOM_SECRETSERVER_URL=https://vault.example.com/SecretServer
+NETLOOM_SECRETSERVER_USERNAME=svc-netloom
+NETLOOM_SECRETSERVER_PASSWORD_REF=prod/secretserver-password
+NETLOOM_SECRETSERVER_NETWORK_DEVICE_PATH_TEMPLATE=/Shared/ClearPass/network-devices/{name}
+```
+
+The current integration is read-only. For `policyelements network-device`
+`add`, `update`, `replace`, and `copy` workflows, missing or masked
+`radius_secret` and `tacacs_secret` values can be backfilled from Secret
+Server by device name before the ClearPass write is sent.
 
 ## Discovery And Cache
 
@@ -294,6 +329,10 @@ Useful options include:
 
 The plugin normalizes payloads before replaying them so response-only metadata,
 links, IDs, and similar API noise are not sent back as write input.
+
+For `policyelements network-device`, the write path can also resolve missing
+`radius_secret` and `tacacs_secret` values from the shared Secret Server
+keystore when the provider is configured.
 
 ## Diff Workflow
 

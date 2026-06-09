@@ -52,6 +52,30 @@ def _request_args_and_payload(
     return request_args, request_payload
 
 
+def _prepare_plugin_write_payload(
+    cp,
+    token,
+    api_catalog,
+    args: dict,
+    action: str,
+    payload,
+    *,
+    settings: Settings | None,
+):
+    hook = getattr(cp, "plugin_prepare_write_payload", None)
+    if callable(hook):
+        return hook(
+            cp,
+            api_catalog,
+            args,
+            action,
+            payload,
+            token=token,
+            settings=settings,
+        )
+    return payload
+
+
 def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
     action_def = cp.get_action_definition(
@@ -66,10 +90,28 @@ def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
             request_args, request_payload = _request_args_and_payload(
                 cp, api_catalog, args, "add", item
             )
+            request_payload = _prepare_plugin_write_payload(
+                cp,
+                token,
+                api_catalog,
+                request_args,
+                "add",
+                request_payload,
+                settings=active_settings,
+            )
             result.append(cp.add(api_catalog, token, request_args, request_payload))
     else:
         request_args, request_payload = _request_args_and_payload(
             cp, api_catalog, args, "add", payload
+        )
+        request_payload = _prepare_plugin_write_payload(
+            cp,
+            token,
+            api_catalog,
+            request_args,
+            "add",
+            request_payload,
+            settings=active_settings,
         )
         result = cp.add(api_catalog, token, request_args, request_payload)
 
@@ -165,10 +207,28 @@ def replace_handler(cp, token, api_catalog, args, settings: Settings | None = No
             request_args, request_payload = _request_args_and_payload(
                 cp, api_catalog, args, "replace", item
             )
+            request_payload = _prepare_plugin_write_payload(
+                cp,
+                token,
+                api_catalog,
+                request_args,
+                "replace",
+                request_payload,
+                settings=active_settings,
+            )
             result.append(cp.replace(api_catalog, token, request_args, request_payload))
     else:
         request_args, request_payload = _request_args_and_payload(
             cp, api_catalog, args, "replace", payload
+        )
+        request_payload = _prepare_plugin_write_payload(
+            cp,
+            token,
+            api_catalog,
+            request_args,
+            "replace",
+            request_payload,
+            settings=active_settings,
         )
         result = cp.replace(api_catalog, token, request_args, request_payload)
 
@@ -202,10 +262,28 @@ def update_handler(cp, token, api_catalog, args, settings: Settings | None = Non
             request_args, request_payload = _request_args_and_payload(
                 cp, api_catalog, args, "update", item
             )
+            request_payload = _prepare_plugin_write_payload(
+                cp,
+                token,
+                api_catalog,
+                request_args,
+                "update",
+                request_payload,
+                settings=active_settings,
+            )
             result.append(cp.update(api_catalog, token, request_args, request_payload))
     else:
         request_args, request_payload = _request_args_and_payload(
             cp, api_catalog, args, "update", payload
+        )
+        request_payload = _prepare_plugin_write_payload(
+            cp,
+            token,
+            api_catalog,
+            request_args,
+            "update",
+            request_payload,
+            settings=active_settings,
         )
         result = cp.update(api_catalog, token, request_args, request_payload)
 

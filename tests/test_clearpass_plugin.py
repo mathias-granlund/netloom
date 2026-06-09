@@ -40,7 +40,7 @@ def test_resolve_auth_token_uses_resolved_secret_for_login(monkeypatch, tmp_path
     )
     monkeypatch.setattr(
         config,
-        "load_keychain_secret",
+        "load_secret_reference",
         lambda *, plugin, secret_ref: "resolved-secret",
     )
 

@@ -127,6 +127,15 @@ def test_render_help_includes_server_builtin(monkeypatch):
     assert "Common flags:" not in text
 
 
+def test_render_help_includes_shell_builtin():
+    text = helpmod.render_help({}, {"module": "shell"}, version="1.6.0")
+
+    assert "netloom shell" in text
+    assert "Built-in module: shell" in text
+    assert "show context" in text
+    assert "do <command>" in text
+
+
 def test_render_help_without_catalog_lists_builtin_modules():
     text = helpmod.render_help({}, {}, version="1.4.7")
 
@@ -535,7 +544,9 @@ def test_render_help_for_add_action_shows_single_schema_value_when_available():
                                         "required": True,
                                         "type": "integer",
                                         "enum": ["1"],
-                                        "description": "Select the certificate authority",
+                                        "description": (
+                                            "Select the certificate authority"
+                                        ),
                                     }
                                 ],
                             }

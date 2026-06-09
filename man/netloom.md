@@ -16,6 +16,7 @@ netloom [GLOBAL-OPTIONS] <module> <service> <action> [KEY=VALUE ...]
 netloom load [list | show | <plugin>]
 netloom server [list | show | use <profile>]
 netloom cache [clear | update]
+netloom shell
 netloom [--help | ?]
 netloom --version
 ```
@@ -47,6 +48,8 @@ For provider-specific behavior, use the matching plugin reference such as
   plugin.
 - `netloom cache update`: Refresh the local API catalog for the active plugin.
 - `netloom cache clear`: Remove the cached API catalog for the active plugin.
+- `netloom shell`: Launch the interactive shell with context navigation,
+  completion, history, and context-aware help.
 
 ## Command Model
 

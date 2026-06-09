@@ -22,11 +22,12 @@ NETLOOM_BANNER = r"""
 """.strip("\n")
 
 PLUGIN_SELECTION_HINT = "<select a plugin with `netloom load <plugin>`>"
-BUILTIN_MODULES = ["cache", "load", "server"]
+BUILTIN_MODULES = ["cache", "load", "server", "shell"]
 BUILTIN_MODULE_SUMMARIES = {
     "cache": "Manage the local API catalog cache",
     "load": "Select or inspect the active plugin",
     "server": "Select or inspect the active profile",
+    "shell": "Launch the interactive netloom shell",
 }
 CATALOG_MODULE_SUMMARIES = {
     "apioperations": "API authentication and token operations",

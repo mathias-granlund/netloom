@@ -9,6 +9,7 @@ from netloom.plugins.clearpass.copy_hooks import (
     normalize_copy_payload,
     normalize_diff_item,
     preflight_error_for_payload,
+    prepare_write_payload,
     restore_secret_fields,
 )
 from netloom.plugins.clearpass.help import build_help_context
@@ -21,13 +22,15 @@ def build_client(settings: Settings, *, mask_secrets: bool = True) -> ClearPassC
             "before running network actions."
         )
     try:
-        return ClearPassClient(
+        cp = ClearPassClient(
             server=settings.server,
             https_prefix=settings.https_prefix,
             verify_ssl=settings.verify_ssl,
             timeout=settings.timeout,
             mask_secrets=mask_secrets,
         )
+        setattr(cp, "plugin_prepare_write_payload", prepare_write_payload)
+        return cp
     except TypeError as exc:
         if "mask_secrets" not in str(exc):
             raise
@@ -38,6 +41,7 @@ def build_client(settings: Settings, *, mask_secrets: bool = True) -> ClearPassC
             timeout=settings.timeout,
         )
         setattr(cp, "mask_secrets", mask_secrets)
+        setattr(cp, "plugin_prepare_write_payload", prepare_write_payload)
         return cp
 
 
@@ -61,6 +65,7 @@ PLUGIN = PluginDefinition(
     normalize_copy_payload=normalize_copy_payload,
     restore_secret_fields=restore_secret_fields,
     preflight_error_for_payload=preflight_error_for_payload,
+    prepare_write_payload=prepare_write_payload,
     help_context=build_help_context,
     normalize_diff_item=normalize_diff_item,
 )
