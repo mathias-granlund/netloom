@@ -269,7 +269,13 @@ def test_process_swagger_subdoc_captures_display_values_from_defaults_and_exampl
                     },
                     "cert_type": {
                         "type": "string",
-                        "enum": ["tls-client", "trusted", "ca", "code-signing", "https"],
+                        "enum": [
+                            "tls-client",
+                            "trusted",
+                            "ca",
+                            "code-signing",
+                            "https",
+                        ],
                         "description": "Select the type of certificate",
                     },
                     "key_type": {
