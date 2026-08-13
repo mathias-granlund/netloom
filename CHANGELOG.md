@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.11.2 - 2026-08-13
+
+### Added
+- added `--log-level=none` and `NETLOOM_LOG_LEVEL=NONE` to suppress all
+  runtime log messages
+- added `--format=netloom` for `get`, `get --all`, and `list` output so
+  fetched resources can be rendered as replayable `netloom ... --payload-json`
+  commands
+
+### Changed
+- added `--format=FORMAT` as the preferred global output-format option while
+  keeping `--data-format=FORMAT` as a compatibility alias
+- documented the `netloom` output format in the shared and ClearPass manpages
+  and env examples
+
+### Removed
+- removed the local `NETLOOM_CONTEXT_PROMPT.md` context prompt file from the
+  tracked repository
+
 ## 1.11.1 - 2026-06-09
 
 ### Added

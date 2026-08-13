@@ -1,35 +1,30 @@
-# netloom v1.11.1
+# netloom v1.11.2
 
-This release adds the first interactive shell workflow and introduces Delinea
-Secret Server as a shared read-only keystore backend for ClearPass secrets.
+This release adds quieter automation output controls and a replayable
+`netloom` command export format for normal read workflows.
 
 ## Highlights
 
-- added `netloom shell`, an interactive mode with context navigation,
-  context-aware help, history, completion, `show context`, `top`, `exit`,
-  `quit`, and `do <command>` for root-level commands
-- added `secretserver://<profile>/<path>?field=<slug>` support for
-  `NETLOOM_CLIENT_SECRET_REF`, while preserving keychain and plaintext fallback
-  behavior
-- added a shared Secret Server provider under
-  `~/.config/netloom/keystores/secretserver/` with defaults, profile, and
-  credential files
-- taught ClearPass `policyelements network-device` add, update, replace, and
-  copy workflows to backfill missing or masked `radius_secret` and
-  `tacacs_secret` values from Secret Server by device name
-- added plugin write-payload hooks so providers can prepare outgoing write
-  payloads consistently across normal write commands and copy workflows
+- added `--log-level=none` and `NETLOOM_LOG_LEVEL=NONE` to suppress runtime log
+  messages
+- added `--format=netloom` for `get`, `get --all`, and `list` to render
+  replayable `netloom ... add|replace|update --payload-json=...` commands
+- added `--format=FORMAT` as the preferred output-format flag while preserving
+  `--data-format=FORMAT` as a compatibility alias
+- kept `netloom` output secret masking aligned with existing CLI behavior:
+  values are masked by default and visible with `--decrypt`
+- removed the tracked `NETLOOM_CONTEXT_PROMPT.md` context prompt file
 
 ## Examples
 
 ```bash
-netloom shell
-NETLOOM_CLIENT_SECRET_REF="secretserver://prod/Shared/ClearPass/API?field=password"
-netloom policyelements network-device copy --from=<source-profile> --to=<target-profile> --all --dry-run
+netloom identities endpoint get --id=1001 --format=netloom
+netloom policyelements network-device list --format=netloom --out=network-devices.netloom
+NETLOOM_LOG_LEVEL=NONE netloom identities endpoint list --limit=10
 ```
 
 ## Notes
 
-- the Secret Server integration is read-only in this release
-- no standalone `secretserver` runtime plugin is introduced; Secret Server is a
-  shared keystore backend used by existing runtime plugins
+- `--format=netloom` is intentionally limited to read workflows and is rejected
+  before mutating commands run
+- `--data-format=FORMAT` remains accepted for existing scripts
