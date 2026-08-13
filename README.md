@@ -187,5 +187,4 @@ netloom-generate-manpages --check
 
 ## License
 
-Proprietary / Internal Use  
-See [LICENSE](LICENSE).
+MIT License. See [LICENSE](LICENSE).
