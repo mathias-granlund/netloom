@@ -28,6 +28,17 @@ def test_settings_with_cli_overrides_updates_token_fields():
     assert updated.api_token_file == Path("token.txt")
 
 
+def test_settings_with_cli_overrides_updates_log_level():
+    settings = _settings()
+
+    updated = runtime.settings_with_cli_overrides(
+        settings,
+        {"log_level": "none"},
+    )
+
+    assert updated.log_level == "NONE"
+
+
 def test_run_cli_version_uses_injected_deps_and_skips_runtime_work(capsys):
     class _Deps:
         def get_version(self):

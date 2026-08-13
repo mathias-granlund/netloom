@@ -77,13 +77,13 @@ netloom load clearpass
 .EE
 .SH GLOBAL OPTIONS
 .IP "\[bu]" 2
---log-level=LEVEL: Set the runtime log level.
+--log-level=LEVEL: Set the runtime log level. Use none to suppress logs.
 .IP "\[bu]" 2
 --console: Also print response output to the terminal.
 .IP "\[bu]" 2
 --out=FILE: Write output to an explicit file.
 .IP "\[bu]" 2
---data-format=FORMAT: Choose json, csv, or raw.
+--format=FORMAT: Choose json, csv, raw, or netloom.
 .IP "\[bu]" 2
 --csv-fieldnames=FIELDS: Comma-separated field order for CSV output.
 .IP "\[bu]" 2
@@ -195,6 +195,8 @@ json: Pretty-printed JSON output.
 csv: CSV output for list-style data.
 .IP "\[bu]" 2
 raw: Raw text or binary output, commonly used for export and download endpoints.
+.IP "\[bu]" 2
+netloom: Replayable netloom ... add|replace|update --payload-json=... commands for get, get --all, and list output.
 .SH ENVIRONMENT
 .IP "\[bu]" 2
 NETLOOM_ACTIVE_PROFILE
@@ -203,7 +205,7 @@ NETLOOM_VERIFY_SSL
 .IP "\[bu]" 2
 NETLOOM_TIMEOUT
 .IP "\[bu]" 2
-NETLOOM_LOG_LEVEL
+NETLOOM_LOG_LEVEL (NONE suppresses logs)
 .IP "\[bu]" 2
 NETLOOM_DATA_FORMAT
 .IP "\[bu]" 2

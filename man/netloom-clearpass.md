@@ -274,13 +274,14 @@ ClearPass plugin:
 
 - `--file=PATH`: Path to JSON/CSV bulk payload input.
 - `--out=PATH`: Override the output file path.
-- `--data-format=JSON|CSV|RAW`: Output format (default: `json`).
+- `--format=JSON|CSV|RAW|NETLOOM`: Output format (default: `json`).
 - `--csv-fieldnames=A,B,C`: Fields and order for CSV output.
 - `--filter=JSON|FIELD:OP:VALUE`: Server-side filter applied across all
   matching pages.
 - `--limit=N`: Page size for list/get `--all` and `copy` requests.
 - `--calculate-count=true|false`: Request total count metadata.
-- `--log-level=LEVEL`: Select log level (default: `info`).
+- `--log-level=LEVEL`: Select log level; use `none` to suppress logs
+  (default: `info`).
 - `--api-token=TOKEN`: Use an existing bearer token.
 - `--token-file=PATH`: Load a bearer token from a file.
 - `--encrypt=enable|disable`: Mask or show secret fields.

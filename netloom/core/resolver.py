@@ -219,6 +219,7 @@ def resolve_out_path(
     action_def: dict | None = None,
     response_meta=None,
 ) -> str:
+    data_format = str(data_format).strip().lower()
     out_arg = args.get("out")
     if out_arg:
         return str(Path(out_arg))
@@ -262,11 +263,11 @@ def output_settings(
     if response_meta is not None and getattr(response_meta, "is_binary", False):
         data_format = "raw"
     elif "data_format" in args:
-        data_format = str(args["data_format"])
+        data_format = str(args["data_format"]).strip().lower()
     elif action_prefers_raw_output(action_def):
         data_format = "raw"
     else:
-        data_format = settings.default_format
+        data_format = str(settings.default_format).strip().lower()
     out_path = resolve_out_path(
         args,
         args["service"],

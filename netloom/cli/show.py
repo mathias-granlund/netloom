@@ -307,6 +307,27 @@ def _header(
     ]
 
 
+def _netloom_format_header(
+    settings: Settings, plugin, args: dict[str, Any], hydrate_mode: str
+) -> list[str]:
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    source = " ".join(
+        str(args.get(key))
+        for key in ("module", "service", "action")
+        if args.get(key) not in (None, "")
+    )
+    return [
+        "# netloom export",
+        f"# generated-at: {generated_at}",
+        f"# profile: {getattr(settings, 'active_profile', None) or '<unset>'}",
+        f"# plugin: {getattr(plugin, 'name', None) or '<unset>'}",
+        f"# server: {getattr(settings, 'server', None) or '<unset>'}",
+        f"# source: netloom {source}",
+        f"# hydrate: {hydrate_mode}",
+        "",
+    ]
+
+
 def _hydrate_item(
     cp,
     token: str,
@@ -692,6 +713,61 @@ def render_running_config(
     return "\n".join(lines).rstrip() + "\n"
 
 
+def render_netloom_format(
+    plugin,
+    cp,
+    token: str,
+    api_catalog: dict[str, Any],
+    args: dict[str, Any],
+    result,
+    *,
+    settings: Settings,
+    source_action: str,
+    mask_secrets: bool = True,
+    hydrate_mode: str = "auto",
+    log=None,
+) -> str:
+    hydrate_mode = _normalize_hydrate_mode(hydrate_mode)
+    module = args["module"]
+    service = args["service"]
+    lines = _netloom_format_header(settings, plugin, args, hydrate_mode)
+    _emit_line(lines, None, f"# {module} {service}")
+
+    items = _extract_items(result)
+    rendered = 0
+    for item_index, item in enumerate(items, start=1):
+        _emit_debug(
+            log,
+            "netloom-format: render item %d/%d from %s %s",
+            item_index,
+            len(items),
+            module,
+            service,
+        )
+        identity_comments, command = _render_item_for_hydrate_mode(
+            plugin,
+            cp,
+            token,
+            api_catalog,
+            module,
+            service,
+            item,
+            hydrate_mode=hydrate_mode,
+            source_action=source_action,
+            mask_secrets=mask_secrets,
+            log=log,
+        )
+        if command:
+            _emit_lines(lines, None, identity_comments)
+            _emit_line(lines, None, command)
+            rendered += 1
+
+    if rendered == 0:
+        _emit_line(lines, None, f"# skipped {module} {service}: no renderable items")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def handle_show_command(
     args: dict[str, Any],
     *,
@@ -761,4 +837,4 @@ def handle_show_command(
     return True
 
 
-__all__ = ["handle_show_command", "render_running_config"]
+__all__ = ["handle_show_command", "render_netloom_format", "render_running_config"]

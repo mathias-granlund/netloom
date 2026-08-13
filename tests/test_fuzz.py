@@ -22,7 +22,7 @@ BOOLEAN_FLAGS = {
     "help",
 }
 BUILTIN_MODULES = {"cache", "load", "server"}
-RESTRICTED_VALUE_FLAGS = {"catalog_view"}
+RESTRICTED_VALUE_FLAGS = {"catalog_view", "format"}
 
 SAFE_VALUE_ALPHABET = string.ascii_letters + string.digits + "_-.:/="
 POSITIONAL_ALPHABET = string.ascii_letters + string.digits + "._/"

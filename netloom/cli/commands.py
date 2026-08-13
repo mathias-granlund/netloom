@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from netloom.core.config import Settings, load_settings
 from netloom.core.pagination import fetch_all_list_results
@@ -13,6 +14,9 @@ from netloom.core.resolver import (
 )
 from netloom.core.resolver import resolve_out_path as _resolve_out_path
 from netloom.io.output import log_to_file, should_mask_secrets
+
+NETLOOM_FORMAT = "netloom"
+SUPPORTED_OUTPUT_FORMATS = {"json", "csv", "raw", NETLOOM_FORMAT}
 
 
 def _settings_or_default(settings: Settings | None) -> Settings:
@@ -34,6 +38,66 @@ def resolve_out_path(
 
 def payload_from_cli_args(args: dict, excluded_keys: set[str]) -> dict:
     return payload_from_args(args, excluded_keys)
+
+
+def _requested_format(args: dict, settings: Settings) -> str:
+    raw = args.get("data_format", settings.default_format)
+    return str(raw).strip().lower()
+
+
+def _validate_requested_format(args: dict, settings: Settings) -> str:
+    data_format = _requested_format(args, settings)
+    if data_format not in SUPPORTED_OUTPUT_FORMATS:
+        valid = ", ".join(sorted(SUPPORTED_OUTPUT_FORMATS))
+        raise ValueError(f"--format must be one of: {valid}")
+    return data_format
+
+
+def _reject_netloom_format_for_mutation(args: dict, settings: Settings) -> None:
+    if _validate_requested_format(args, settings) == NETLOOM_FORMAT:
+        raise ValueError(
+            "--format=netloom is only supported for get, get --all, and list"
+        )
+
+
+def _plugin_for_netloom_format(cp) -> Any:
+    return getattr(cp, "netloom_plugin", None)
+
+
+def _write_netloom_format(
+    cp,
+    token,
+    api_catalog,
+    args: dict,
+    result,
+    *,
+    settings: Settings,
+    source_action: str,
+    out_path: str,
+    console: bool,
+    mask_secrets: bool,
+):
+    from netloom.cli.show import render_netloom_format
+
+    rendered = render_netloom_format(
+        _plugin_for_netloom_format(cp),
+        cp,
+        token,
+        api_catalog,
+        args,
+        result,
+        settings=settings,
+        source_action=source_action,
+        mask_secrets=mask_secrets,
+        hydrate_mode=args.get("hydrate") or "auto",
+    )
+    return log_to_file(
+        rendered,
+        filename=out_path,
+        data_format="raw",
+        also_console=console,
+        mask_secrets=False,
+    )
 
 
 def _request_args_and_payload(
@@ -81,6 +145,7 @@ def _prepare_plugin_write_payload(
 
 def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
+    _reject_netloom_format_for_mutation(args, active_settings)
     action_def = cp.get_action_definition(
         api_catalog, args["module"], args["service"], "add"
     )
@@ -136,6 +201,7 @@ def add_handler(cp, token, api_catalog, args, settings: Settings | None = None):
 
 def delete_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
+    _reject_netloom_format_for_mutation(args, active_settings)
     action_def = cp.get_action_definition(
         api_catalog, args["module"], args["service"], "delete"
     )
@@ -160,6 +226,7 @@ def delete_handler(cp, token, api_catalog, args, settings: Settings | None = Non
 
 def get_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = settings or load_settings()
+    _validate_requested_format(args, active_settings)
     mask_secrets = should_mask_secrets(args, active_settings)
 
     if args.get("all"):
@@ -179,6 +246,19 @@ def get_handler(cp, token, api_catalog, args, settings: Settings | None = None):
         action_def=action_def,
         response_meta=getattr(cp, "last_response_meta", None),
     )
+    if data_format == NETLOOM_FORMAT:
+        return _write_netloom_format(
+            cp,
+            token,
+            api_catalog,
+            args,
+            result,
+            settings=active_settings,
+            source_action=action_name,
+            out_path=out_path,
+            console=console,
+            mask_secrets=mask_secrets,
+        )
     return log_to_file(
         result,
         filename=out_path,
@@ -198,6 +278,7 @@ def list_handler(cp, token, api_catalog, args, settings: Settings | None = None)
 
 def replace_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
+    _reject_netloom_format_for_mutation(args, active_settings)
     action_def = cp.get_action_definition(
         api_catalog, args["module"], args["service"], "replace"
     )
@@ -253,6 +334,7 @@ def replace_handler(cp, token, api_catalog, args, settings: Settings | None = No
 
 def update_handler(cp, token, api_catalog, args, settings: Settings | None = None):
     active_settings = _settings_or_default(settings)
+    _reject_netloom_format_for_mutation(args, active_settings)
     action_def = cp.get_action_definition(
         api_catalog, args["module"], args["service"], "update"
     )

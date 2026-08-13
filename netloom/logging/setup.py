@@ -7,6 +7,8 @@ from pathlib import Path
 
 from netloom.core.config import Settings
 
+NO_LOGGING_LEVEL = logging.CRITICAL + 1
+
 
 @dataclass(frozen=True)
 class LoggerConfig:
@@ -94,6 +96,7 @@ class LoggingManager:
 
 
 LOG_LEVELS = {
+    "NONE": NO_LOGGING_LEVEL,
     "DEBUG": logging.DEBUG,
     "INFO": logging.INFO,
     "WARNING": logging.WARNING,
@@ -105,13 +108,14 @@ LOG_LEVELS = {
 def configure_logging(
     settings: Settings, *, root_name: str = "netloom"
 ) -> LoggingManager:
-    level = LOG_LEVELS.get(settings.log_level.upper(), logging.INFO)
-    log_file = settings.log_file if settings.log_to_file else None
+    level = LOG_LEVELS.get(settings.log_level.strip().upper(), logging.INFO)
+    logging_enabled = level != NO_LOGGING_LEVEL
+    log_file = settings.log_file if logging_enabled and settings.log_to_file else None
     return LoggingManager(
         LoggerConfig(
             root_name=root_name,
             level=level,
-            console=True,
+            console=logging_enabled,
             log_file=log_file,
         )
     )

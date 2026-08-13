@@ -391,6 +391,77 @@ def test_get_handler_calls_cp_and_logs(monkeypatch, api_catalog, settings):
     )
 
 
+def test_get_handler_netloom_format_renders_replay_command(
+    monkeypatch, api_catalog, settings
+):
+    logged = {}
+
+    class CP:
+        last_response_meta = None
+
+        def __init__(self):
+            self.netloom_plugin = type(
+                "Plugin",
+                (),
+                {
+                    "name": "clearpass",
+                    "normalize_copy_payload": staticmethod(
+                        lambda cp, api_catalog, action_args, action, item: {
+                            key: value
+                            for key, value in item.items()
+                            if key not in {"id", "_links"}
+                        }
+                    ),
+                },
+            )()
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def get(self, api_catalog, token, args, *, params=None):
+            assert params == {"name": "bob"}
+            return {
+                "id": 2,
+                "name": "bob",
+                "radius_secret": "top-secret",
+                "_links": {"self": {"href": "/api/endpoint/2"}},
+            }
+
+    def fake_log_to_file(thing, filename, **kwargs):
+        logged["thing"] = thing
+        logged["filename"] = str(filename)
+        logged["kwargs"] = kwargs
+
+    monkeypatch.setattr(commands, "log_to_file", fake_log_to_file)
+
+    commands.get_handler(
+        CP(),
+        "tok",
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "get",
+            "name": "bob",
+            "data_format": "NETLOOM",
+        },
+        settings=settings,
+    )
+
+    assert logged["kwargs"]["data_format"] == "raw"
+    assert re.search(
+        r"endpoint_get_\d{8}-\d{6}-\d{6}\.netloom$",
+        logged["filename"],
+    )
+    assert "# netloom export" in logged["thing"]
+    assert "# source-id: 2" in logged["thing"]
+    assert "netloom identities endpoint add --payload-json=" in logged["thing"]
+    assert '"name":"bob"' in logged["thing"]
+    assert '"radius_secret":""' in logged["thing"]
+    assert "top-secret" not in logged["thing"]
+    assert '"id":2' not in logged["thing"]
+
+
 def test_get_handler_all_fetches_all_pages_without_count(
     monkeypatch, api_catalog, settings
 ):
@@ -589,6 +660,29 @@ def test_add_handler_builds_payload_from_args(monkeypatch, api_catalog, settings
         "foo": "bar",
     }
     assert logged["thing"]["id"] == 7
+
+
+def test_add_handler_rejects_netloom_format_before_write(api_catalog, settings):
+    class CP:
+        last_response_meta = None
+
+        def add(self, *args, **kwargs):
+            raise AssertionError("should not write")
+
+    with pytest.raises(ValueError, match="--format=netloom is only supported"):
+        commands.add_handler(
+            CP(),
+            "tok",
+            api_catalog,
+            {
+                "module": "identities",
+                "service": "endpoint",
+                "action": "add",
+                "name": "alice",
+                "data_format": "netloom",
+            },
+            settings=settings,
+        )
 
 
 def test_add_handler_applies_plugin_prepare_write_payload(

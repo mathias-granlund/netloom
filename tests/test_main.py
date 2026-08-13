@@ -544,6 +544,19 @@ def test_parse_cli_catalog_view_flag():
     assert args["catalog_view"] == "full"
 
 
+def test_parse_cli_format_alias_maps_to_data_format():
+    argv = [
+        "netloom",
+        "identities",
+        "endpoint",
+        "get",
+        "--format=netloom",
+    ]
+    args = main.parse_cli(argv)
+    assert args["data_format"] == "netloom"
+    assert "format" not in args
+
+
 def test_parse_cli_global_flags_before_dynamic_command():
     argv = [
         "netloom",

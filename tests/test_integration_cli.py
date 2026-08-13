@@ -3,6 +3,7 @@ import types
 
 import netloom.cli.main as main
 from netloom.core.config import AppPaths, Settings
+from netloom.logging.setup import NO_LOGGING_LEVEL
 
 
 class FakeLogger:
@@ -126,6 +127,7 @@ def test_main_end_to_end_calls_login_and_action(monkeypatch, tmp_path):
     assert calls["cp_init"]["server"] == "example:443"
     assert calls["login"]["credentials"]["client_id"] == "x"
     assert calls["action"]["token"] == "TOKEN"
+    assert calls["action"]["cp"].netloom_plugin is plugin
     assert calls["action"]["args"]["module"] == "identities"
     assert calls["action"]["args"]["service"] == "endpoint"
     assert calls["action"]["args"]["action"] == "list"
@@ -155,6 +157,34 @@ def test_main_invalid_log_level_exits_early(monkeypatch, tmp_path):
 
     assert mgr.logger.errors
     assert "Invalid log level" in mgr.logger.errors[0]
+
+
+def test_main_accepts_none_log_level(monkeypatch, capsys, tmp_path):
+    mgr = FakeLogMgr()
+    settings = make_settings(tmp_path)
+    monkeypatch.setattr(main, "configure_logging", lambda settings, root_name: mgr)
+    monkeypatch.setattr(main, "load_settings", lambda: settings)
+    monkeypatch.setattr(
+        main,
+        "print_help",
+        lambda args=None, **kwargs: print("Usage:\n  netloom ..."),
+    )
+    monkeypatch.setattr(
+        main,
+        "get_plugin",
+        lambda *a, **k: (_ for _ in ()).throw(ValueError("no plugin")),
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["netloom", "identities", "endpoint", "list", "--log-level=none"],
+    )
+    main.main()
+
+    capsys.readouterr()
+    assert mgr.logger.errors == []
+    assert mgr.levels == [NO_LOGGING_LEVEL]
 
 
 def test_main_version_prints_and_exits(monkeypatch, capsys, tmp_path):

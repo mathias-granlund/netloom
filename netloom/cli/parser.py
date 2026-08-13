@@ -24,6 +24,7 @@ GLOBAL_VALUE_FLAGS = {
     "catalog_view",
     "log_level",
     "out",
+    "format",
     "data_format",
     "csv_fieldnames",
     "file",
@@ -33,6 +34,10 @@ GLOBAL_VALUE_FLAGS = {
     "sort",
     "calculate_count",
     "encrypt",
+}
+
+VALUE_FLAG_ALIASES = {
+    "format": "data_format",
 }
 
 
@@ -53,7 +58,8 @@ class _ArgumentParser(argparse.ArgumentParser):
 
 
 def _normalize_flag_name(key: str) -> str:
-    return key.replace("-", "_")
+    normalized = key.replace("-", "_")
+    return VALUE_FLAG_ALIASES.get(normalized, normalized)
 
 
 def _flag_names(name: str) -> list[str]:
@@ -94,7 +100,7 @@ def _add_shared_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(*_flag_names("token_file"), dest="token_file")
     parser.add_argument(*_flag_names("api_token_file"), dest="api_token_file")
     parser.add_argument(*_flag_names("out"), dest="out")
-    parser.add_argument(*_flag_names("data_format"), dest="data_format")
+    parser.add_argument("--format", *_flag_names("data_format"), dest="data_format")
     parser.add_argument(*_flag_names("csv_fieldnames"), dest="csv_fieldnames")
     parser.add_argument(*_flag_names("file"), dest="file")
     parser.add_argument(*_flag_names("filter"), dest="filter")

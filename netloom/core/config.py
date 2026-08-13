@@ -43,6 +43,7 @@ RESERVED_ARGS = {
     "file",
     "payload_json",
     "csv_fieldnames",
+    "format",
     "data_format",
     "log_level",
     "all",

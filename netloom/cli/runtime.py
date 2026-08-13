@@ -18,11 +18,23 @@ def settings_with_cli_overrides(settings: Settings, args: dict) -> Settings:
     token_file = (
         args.get("token_file") or args.get("api_token_file") or settings.api_token_file
     )
+    log_level = args.get("log_level") or settings.log_level
     if is_dataclass(settings):
-        return replace(settings, api_token=api_token, api_token_file=token_file)
+        return replace(
+            settings,
+            api_token=api_token,
+            api_token_file=token_file,
+            log_level=str(log_level).upper(),
+        )
 
     values = dict(vars(settings))
-    values.update({"api_token": api_token, "api_token_file": token_file})
+    values.update(
+        {
+            "api_token": api_token,
+            "api_token_file": token_file,
+            "log_level": str(log_level).upper(),
+        }
+    )
     return type(settings)(**values)
 
 
@@ -102,6 +114,10 @@ def run_cli(args: dict, *, deps: Any = cli_deps) -> None:
 
     mask_secrets = deps.should_mask_secrets(args, active_settings)
     cp = plugin.build_client(active_settings, mask_secrets=mask_secrets)
+    try:
+        setattr(cp, "netloom_plugin", plugin)
+    except Exception:
+        pass
     log.info(
         "Connecting via plugin '%s' to server: %s (SSL verify: %s)",
         plugin.name,

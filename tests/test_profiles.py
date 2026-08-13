@@ -191,12 +191,14 @@ def test_load_settings_prefers_process_environment(monkeypatch, tmp_path):
     _write_profiles(config_dir)
     monkeypatch.setenv("NETLOOM_SERVER", "override.example:443")
     monkeypatch.setenv("NETLOOM_CLIENT_ID", "override-client")
+    monkeypatch.setenv("NETLOOM_LOG_LEVEL", "none")
 
     settings = load_settings()
 
     assert settings.server == "override.example:443"
     assert settings.client_id == "override-client"
     assert settings.client_secret == "prod-secret"
+    assert settings.log_level == "NONE"
 
 
 def test_load_settings_reads_cli_timing_from_global_config(monkeypatch, tmp_path):

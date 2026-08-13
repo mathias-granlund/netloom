@@ -88,10 +88,10 @@ netloom load clearpass
 
 ## Global Options
 
-- `--log-level=LEVEL`: Set the runtime log level.
+- `--log-level=LEVEL`: Set the runtime log level. Use `none` to suppress logs.
 - `--console`: Also print response output to the terminal.
 - `--out=FILE`: Write output to an explicit file.
-- `--data-format=FORMAT`: Choose `json`, `csv`, or `raw`.
+- `--format=FORMAT`: Choose `json`, `csv`, `raw`, or `netloom`.
 - `--csv-fieldnames=FIELDS`: Comma-separated field order for CSV output.
 - `--file=FILE`: Load JSON or CSV input for write or bulk-style actions.
 - `--api-token=TOKEN`: Use an existing bearer token instead of logging in
@@ -199,13 +199,15 @@ Supported output formats:
 - `csv`: CSV output for list-style data.
 - `raw`: Raw text or binary output, commonly used for export and download
   endpoints.
+- `netloom`: Replayable `netloom ... add|replace|update --payload-json=...`
+  commands for `get`, `get --all`, and `list` output.
 
 ## Environment
 
 - `NETLOOM_ACTIVE_PROFILE`
 - `NETLOOM_VERIFY_SSL`
 - `NETLOOM_TIMEOUT`
-- `NETLOOM_LOG_LEVEL`
+- `NETLOOM_LOG_LEVEL` (`NONE` suppresses logs)
 - `NETLOOM_DATA_FORMAT`
 - `NETLOOM_CONSOLE`
 - `NETLOOM_ENCRYPT_SECRETS`
