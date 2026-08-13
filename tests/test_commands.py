@@ -713,6 +713,64 @@ def test_add_handler_file_payload_filters_response_fields(
     }
 
 
+def test_add_handler_payload_json_filters_response_fields(
+    monkeypatch, api_catalog, settings
+):
+    logged = {}
+    api_catalog["modules"]["identities"]["endpoint"]["actions"]["add"][
+        "body_fields"
+    ] = [
+        {"name": "name", "required": True},
+        {"name": "description", "required": False},
+        {"name": "attributes", "required": False},
+    ]
+
+    class CP:
+        last_response_meta = None
+
+        def get_action_definition(self, api_catalog, module, service, action):
+            return api_catalog["modules"][module][service]["actions"][action]
+
+        def resolve_action(self, api_catalog, module, service, action, args):
+            return (
+                api_catalog["modules"][module][service]["actions"][action],
+                "/api/endpoint",
+                [],
+            )
+
+        def add(self, api_catalog, token, args, payload):
+            logged["payload"] = payload
+            return {"id": 7, **payload}
+
+    monkeypatch.setattr(
+        commands,
+        "log_to_file",
+        lambda thing, filename, **kwargs: logged.update({"thing": thing}),
+    )
+
+    commands.add_handler(
+        CP(),
+        "tok",
+        api_catalog,
+        {
+            "module": "identities",
+            "service": "endpoint",
+            "action": "add",
+            "payload_json": (
+                '{"id":7,"name":"alice","description":"demo",'
+                '"attributes":{"role":"guest"},"ignored":"x"}'
+            ),
+        },
+        settings=settings,
+    )
+
+    assert logged["payload"] == {
+        "name": "alice",
+        "description": "demo",
+        "attributes": {"role": "guest"},
+    }
+
+
 def test_add_handler_normalizes_random_password_method_alias(
     monkeypatch, api_catalog, settings
 ):

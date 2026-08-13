@@ -78,6 +78,7 @@ def test_complete_outputs_modules(capsys, monkeypatch):
     out = capsys.readouterr().out.strip().splitlines()
     assert "identities" in out
     assert "shell" in out
+    assert "show" in out
     assert "copy" not in out
 
 
@@ -588,6 +589,42 @@ def test_parse_cli_cache_builtin_accepts_global_flag():
     args = main.parse_cli(argv)
     assert args["module"] == "cache"
     assert args["service"] == "update"
+    assert args["catalog_view"] == "full"
+
+
+def test_parse_cli_show_running_config_builtin():
+    argv = [
+        "netloom",
+        "--catalog-view=full",
+        "show",
+        "running-config",
+        "--include=policyelements/network-device",
+        "--hydrate=never",
+        "--continue-on-error",
+    ]
+    args = main.parse_cli(argv)
+    assert args["module"] == "show"
+    assert args["service"] == "running-config"
+    assert args["catalog_view"] == "full"
+    assert args["include"] == "policyelements/network-device"
+    assert args["hydrate"] == "never"
+    assert args["continue_on_error"] is True
+
+
+def test_parse_cli_show_running_config_accepts_shared_flags_after_command():
+    argv = [
+        "netloom",
+        "show",
+        "running-config",
+        "--log-level=debug",
+        "--out=running-config.txt",
+        "--catalog-view=full",
+    ]
+    args = main.parse_cli(argv)
+    assert args["module"] == "show"
+    assert args["service"] == "running-config"
+    assert args["log_level"] == "debug"
+    assert args["out"] == "running-config.txt"
     assert args["catalog_view"] == "full"
 
 

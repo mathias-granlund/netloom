@@ -41,6 +41,9 @@ _DESCRIBE_SERVER_COMMANDS = [
 _DESCRIBE_SHELL_COMMANDS = [
     ("start", "Launch the interactive netloom shell"),
 ]
+_DESCRIBE_SHOW_COMMANDS = [
+    ("running-config", "Export live configuration as replayable netloom commands"),
+]
 _DESCRIBE_ACTION_SUMMARIES = {
     "list": "List matching resources",
     "get": "Get one resource or use --all",
@@ -328,6 +331,8 @@ def _describe_builtin_context(module: str) -> str:
         return _describe_lines(_DESCRIBE_SERVER_COMMANDS)
     if module == "shell":
         return _describe_lines(_DESCRIBE_SHELL_COMMANDS)
+    if module == "show":
+        return _describe_lines(_DESCRIBE_SHOW_COMMANDS)
     return ""
 
 
@@ -481,7 +486,7 @@ def render_write_action_help(
     required_field_lines = _format_aligned_rows(required_field_rows, width=field_width)
     optional_field_lines = _format_aligned_rows(optional_field_rows, width=field_width)
 
-    options = ["--file=PATH", "--console", "--out=PATH"]
+    options = ["--file=PATH", "--payload-json=JSON", "--console", "--out=PATH"]
     usage = (
         f"  usage: netloom <module> <service> {action} "
         "[--file=PATH | field=value ...] [options]"
@@ -604,6 +609,28 @@ def render_shell_help(header: str, usage: str) -> str:
         + "  top            Return to the root netloom context\n"
         + "  show context   Show active profile, plugin, and context\n"
         + "  do <command>   Run a full netloom command from the root context"
+    )
+
+
+def render_show_help(header: str, usage: str) -> str:
+    return (
+        header
+        + usage
+        + "\nBuilt-in module: show\n"
+        + "Commands:\n"
+        + "  netloom show running-config\n\n"
+        + "running-config:\n"
+        + "  Export live, read-only API data as replayable netloom commands.\n"
+        + "  The cached catalog selects services and live list/get calls fetch "
+        + "data.\n\n"
+        + "Options:\n"
+        + "  --out=PATH                 Default: NETLOOM_OUT_DIR/running-config.txt\n"
+        + "  --include=module[/service][,...]\n"
+        + "  --exclude=module[/service][,...]\n"
+        + "  --hydrate=auto|never|always  Default: auto\n"
+        + "  --continue-on-error\n"
+        + "  --catalog-view=visible|full\n"
+        + "  --decrypt"
     )
 
 
@@ -769,6 +796,18 @@ def _render_usage(
             + "\n"
         )
 
+    if module == "show":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom show running-config [options]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
     if module and service and not action:
         return (
             "\n".join(
@@ -809,6 +848,7 @@ def _render_usage(
         "  netloom server [list | show | use <profile>]",
         "  netloom cache [clear | update]",
         "  netloom shell",
+        "  netloom show running-config [options]",
         "  netloom <module> <service> <action> [options] [flags]",
         (
             "  netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET "
@@ -853,6 +893,9 @@ def render_help(
 
     if module == "shell":
         return render_shell_help(header, usage)
+
+    if module == "show":
+        return render_show_help(header, usage)
 
     return render_catalog_help(
         header,

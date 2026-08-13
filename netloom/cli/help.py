@@ -8,6 +8,7 @@ from netloom.core.help import (
     render_load_help,
     render_server_help,
     render_shell_help,
+    render_show_help,
     service_cli_actions,
 )
 
@@ -96,6 +97,18 @@ def _render_usage(
             + "\n"
         )
 
+    if module == "show":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom show running-config [options]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
     if module and service and not action:
         return (
             "\n".join(
@@ -136,6 +149,7 @@ def _render_usage(
         "  netloom server [list | show | use <profile>]",
         "  netloom cache [clear | update]",
         "  netloom shell",
+        "  netloom show running-config [options]",
         "  netloom <module> <service> <action> [options] [flags]",
         (
             "  netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET "
@@ -181,6 +195,9 @@ def render_help(
 
     if module == "shell":
         return render_shell_help(header, usage)
+
+    if module == "show":
+        return render_show_help(header, usage)
 
     return render_catalog_help(
         header,

@@ -30,7 +30,7 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
     positionals = [word for word in words if not word.startswith("-")]
 
     if len(positionals) == 0:
-        return ["cache", "load", "server", "shell", *sorted(modules.keys())]
+        return ["cache", "load", "server", "shell", "show", *sorted(modules.keys())]
 
     module = positionals[0]
     if module == "cache":
@@ -56,8 +56,20 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
     if module == "shell":
         return []
 
+    if module == "show":
+        if len(positionals) == 1:
+            return ["running-config"]
+        return []
+
     if module not in modules:
-        return ["cache", "load", "server", "shell", *sorted(modules.keys())]
+        return [
+            "cache",
+            "load",
+            "server",
+            "shell",
+            "show",
+            *sorted(modules.keys()),
+        ]
 
     services = display_services_for_module(catalog, module)
     if len(positionals) == 1 or (len(positionals) == 2 and current != ""):

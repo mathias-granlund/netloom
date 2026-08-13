@@ -116,6 +116,104 @@ def test_shell_updates_prompt_after_server_use():
     assert prompts[1] == "prod:netloom# "
 
 
+def test_shell_show_running_config_uses_module_context():
+    deps = FakeDeps()
+    commands = iter(
+        [
+            "policyelements",
+            "show running-config --continue-on-error",
+            "quit",
+        ]
+    )
+
+    def fake_input(prompt: str) -> str:
+        return next(commands)
+
+    NetloomShell(deps=deps, input_func=fake_input).run()
+
+    assert deps.executed == [
+        {
+            "module": "show",
+            "service": "running-config",
+            "include": "policyelements",
+            "continue_on_error": True,
+        }
+    ]
+
+
+def test_shell_show_running_config_uses_service_context():
+    deps = FakeDeps()
+    commands = iter(
+        [
+            "policyelements",
+            "network-device",
+            "show running-config --log-level=debug",
+            "quit",
+        ]
+    )
+
+    def fake_input(prompt: str) -> str:
+        return next(commands)
+
+    NetloomShell(deps=deps, input_func=fake_input).run()
+
+    assert deps.executed == [
+        {
+            "module": "show",
+            "service": "running-config",
+            "include": "policyelements/network-device",
+            "log_level": "debug",
+        }
+    ]
+
+
+def test_shell_show_running_config_preserves_explicit_include():
+    deps = FakeDeps()
+    commands = iter(
+        [
+            "policyelements",
+            "show running-config --include=policyelements/network-device",
+            "quit",
+        ]
+    )
+
+    def fake_input(prompt: str) -> str:
+        return next(commands)
+
+    NetloomShell(deps=deps, input_func=fake_input).run()
+
+    assert deps.executed == [
+        {
+            "module": "show",
+            "service": "running-config",
+            "include": "policyelements/network-device",
+        }
+    ]
+
+
+def test_shell_do_show_running_config_uses_root_context():
+    deps = FakeDeps()
+    commands = iter(
+        [
+            "policyelements",
+            "do show running-config",
+            "quit",
+        ]
+    )
+
+    def fake_input(prompt: str) -> str:
+        return next(commands)
+
+    NetloomShell(deps=deps, input_func=fake_input).run()
+
+    assert deps.executed == [
+        {
+            "module": "show",
+            "service": "running-config",
+        }
+    ]
+
+
 def test_shell_help_uses_current_context(capsys):
     deps = FakeDeps()
     commands = iter(["policyelements", "network-device", "?", "quit"])
@@ -153,6 +251,7 @@ def test_shell_completion_candidates_follow_current_context():
 
     assert "policyelements" in shell.completion_candidates("")
     assert "show" in shell.completion_candidates("")
+    assert "running-config" in shell.completion_candidates("show ")
     assert shell.completion_candidates("cache ") == ["clear", "update"]
 
     shell.context = shell.context.__class__(module="policyelements")

@@ -39,14 +39,17 @@ def payload_from_cli_args(args: dict, excluded_keys: set[str]) -> dict:
 def _request_args_and_payload(
     cp, api_catalog, args: dict, action: str, payload
 ) -> tuple[dict, dict]:
+    structured_payload = "file" in args or "payload_json" in args
     request_args = (
-        {**args, **payload} if "file" in args and isinstance(payload, dict) else args
+        {**args, **payload}
+        if structured_payload and isinstance(payload, dict)
+        else args
     )
     request_payload = (
         normalize_file_payload_for_action(
             cp, api_catalog, request_args, action, payload
         )
-        if "file" in args and isinstance(payload, dict)
+        if structured_payload and isinstance(payload, dict)
         else payload
     )
     return request_args, request_payload

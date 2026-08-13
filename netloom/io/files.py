@@ -80,3 +80,11 @@ def load_payload_file(filename: str | Path):
             return list(csv.DictReader(handle))
 
     raise ValueError("Unsupported file type. Use .json or .csv")
+
+
+def load_payload_json(raw: str):
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError("--payload-json must contain valid JSON") from exc
+    return _normalize_json_payload(data)

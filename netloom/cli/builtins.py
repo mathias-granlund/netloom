@@ -39,6 +39,17 @@ def handle_plugin_builtin_command(
     deps: Any,
 ) -> bool:
     if args.get("module") != "cache":
+        if args.get("module") == "show":
+            if deps.handle_show_command(
+                args,
+                plugin=plugin,
+                settings=settings,
+                deps=deps,
+                log=log,
+            ):
+                return True
+            deps.print_help({"module": "show"}, plugin=plugin, settings=settings)
+            return True
         return False
 
     service = args.get("service")

@@ -41,6 +41,7 @@ RESERVED_ARGS = {
     "action",
     "out",
     "file",
+    "payload_json",
     "csv_fieldnames",
     "data_format",
     "log_level",

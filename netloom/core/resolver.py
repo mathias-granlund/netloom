@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from netloom.core.config import RESERVED_ARGS, Settings
-from netloom.io.files import load_payload_file
+from netloom.io.files import load_payload_file, load_payload_json
 
 _LIST_QUERY_PARAMS = {"filter", "sort", "offset", "limit", "calculate_count"}
 _FILTER_OPERATOR_ALIASES = {
@@ -322,6 +322,8 @@ def resolve_placeholders_for_action(
 def payload_for_write_action(cp, api_catalog, args: dict, action: str):
     if "file" in args:
         return load_payload_file(args["file"])
+    if "payload_json" in args:
+        return load_payload_json(args["payload_json"])
 
     placeholders = set(resolve_placeholders_for_action(cp, api_catalog, args, action))
     excluded = set(RESERVED_ARGS) | placeholders

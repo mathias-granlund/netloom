@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
-BUILTIN_MODULES = {"cache", "load", "server", "shell"}
+BUILTIN_MODULES = {"cache", "load", "server", "shell", "show"}
 BOOLEAN_FLAGS = {
     "verbose",
     "version",
@@ -127,6 +127,23 @@ def _build_builtin_parser() -> _ArgumentParser:
     cache_parser.add_argument("service", nargs="?")
 
     subparsers.add_parser("shell", add_help=False, allow_abbrev=False)
+
+    show_parser = subparsers.add_parser("show", add_help=False, allow_abbrev=False)
+    _add_shared_options(show_parser)
+    show_parser.add_argument("service", nargs="?")
+    show_parser.add_argument("action", nargs="?")
+    show_parser.add_argument(
+        *_flag_names("continue_on_error"),
+        dest="continue_on_error",
+        action="store_true",
+    )
+    show_parser.add_argument(*_flag_names("include"), dest="include")
+    show_parser.add_argument(*_flag_names("exclude"), dest="exclude")
+    show_parser.add_argument(
+        *_flag_names("hydrate"),
+        dest="hydrate",
+        choices=("auto", "never", "always"),
+    )
 
     return parser
 

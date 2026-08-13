@@ -31,6 +31,7 @@ __all__ = [
     "render_load_help",
     "render_server_help",
     "render_shell_help",
+    "render_show_help",
     "render_write_action_help",
     "service_cli_actions",
 ]
@@ -334,7 +335,7 @@ def render_write_action_help(
     required_field_lines = _format_aligned_rows(required_field_rows, width=field_width)
     optional_field_lines = _format_aligned_rows(optional_field_rows, width=field_width)
 
-    options = ["--file=PATH", "--console", "--out=PATH"]
+    options = ["--file=PATH", "--payload-json=JSON", "--console", "--out=PATH"]
     usage = (
         f"  usage: netloom <module> <service> {action} "
         "[--file=PATH | field=value ...] [options]"
@@ -555,6 +556,28 @@ def render_shell_help(header: str, usage: str) -> str:
         + "  top            Return to the root netloom context\n"
         + "  show context   Show active profile, plugin, and context\n"
         + "  do <command>   Run a full netloom command from the root context"
+    )
+
+
+def render_show_help(header: str, usage: str) -> str:
+    return (
+        header
+        + usage
+        + "\nBuilt-in module: show\n"
+        + "Commands:\n"
+        + "  netloom show running-config\n\n"
+        + "running-config:\n"
+        + "  Export live, read-only API data as replayable netloom commands.\n"
+        + "  The cached catalog selects services and live list/get calls fetch "
+        + "data.\n\n"
+        + "Options:\n"
+        + "  --out=PATH                 Default: NETLOOM_OUT_DIR/running-config.txt\n"
+        + "  --include=module[/service][,...]\n"
+        + "  --exclude=module[/service][,...]\n"
+        + "  --hydrate=auto|never|always  Default: auto\n"
+        + "  --continue-on-error\n"
+        + "  --catalog-view=visible|full\n"
+        + "  --decrypt"
     )
 
 

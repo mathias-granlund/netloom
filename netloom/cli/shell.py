@@ -15,7 +15,7 @@ from netloom.core.help_shared import (
     service_cli_actions,
 )
 
-_GLOBAL_BUILTINS = {"cache", "load", "server", "shell"}
+_GLOBAL_BUILTINS = {"cache", "load", "server", "shell", "show"}
 _SHELL_BUILTINS = {"do", "exit", "quit", "show", "top"}
 
 
@@ -691,6 +691,10 @@ class NetloomShell:
         if absolute or not tokens:
             return list(tokens)
 
+        contextual_show = self._contextual_show_running_config_tokens(tokens)
+        if contextual_show is not None:
+            return contextual_show
+
         first = tokens[0]
         modules = self._module_names()
         if first in _GLOBAL_BUILTINS or first in modules:
@@ -708,6 +712,21 @@ class NetloomShell:
             return [self.context.module, *tokens]
 
         return list(tokens)
+
+    def _contextual_show_running_config_tokens(
+        self, tokens: list[str]
+    ) -> list[str] | None:
+        if tokens[:2] != ["show", "running-config"]:
+            return None
+        if not self.context.module:
+            return list(tokens)
+        if _has_option(tokens[2:], "--include"):
+            return list(tokens)
+
+        selector = self.context.module
+        if self.context.service:
+            selector = f"{selector}/{self.context.service}"
+        return [*tokens, f"--include={selector}"]
 
     def _maybe_navigate(self, absolute_tokens: list[str]) -> bool:
         if not absolute_tokens or any(
@@ -744,7 +763,7 @@ class NetloomShell:
 
     def _completion_candidates_for_tokens(self, tokens: list[str]) -> list[str]:
         if tokens and tokens[0] == "show":
-            return ["context"] if len(tokens) <= 1 else []
+            return ["context", "running-config"] if len(tokens) <= 1 else []
 
         if tokens and tokens[0] == "do":
             return self._root_completion_candidates(tokens[1:], include_shell=False)
@@ -770,7 +789,7 @@ class NetloomShell:
                 return sorted(set([*candidates, *extras]))
             return candidates
         if tokens[0] == "show":
-            return ["context"] if len(tokens) <= 1 else []
+            return ["context", "running-config"] if len(tokens) <= 1 else []
         if include_shell and tokens[0] in _SHELL_BUILTINS:
             return sorted(set([*candidates, *_SHELL_BUILTINS]))
         return candidates
@@ -785,7 +804,7 @@ class NetloomShell:
         if tokens[0] in _GLOBAL_BUILTINS or tokens[0] in self._module_names():
             return self._root_completion_candidates(tokens)
         if tokens[0] == "show":
-            return ["context"] if len(tokens) <= 1 else []
+            return ["context", "running-config"] if len(tokens) <= 1 else []
         if tokens[0] in _SHELL_BUILTINS:
             return sorted([*services, "do", "exit", "quit", "show", "top"])
         if tokens[0] in self._service_names(module):
@@ -803,7 +822,7 @@ class NetloomShell:
         if tokens[0] in _GLOBAL_BUILTINS or tokens[0] in self._module_names():
             return self._root_completion_candidates(tokens)
         if tokens[0] == "show":
-            return ["context"] if len(tokens) <= 1 else []
+            return ["context", "running-config"] if len(tokens) <= 1 else []
         if tokens[0] in _SHELL_BUILTINS:
             return sorted([*actions, "do", "exit", "quit", "show", "top"])
         if tokens[0] in actions:
@@ -837,6 +856,14 @@ def _current_token_bounds(text: str, cursor: int) -> tuple[int, int]:
     while end < len(text) and not text[end].isspace():
         end += 1
     return start, end
+
+
+def _has_option(tokens: list[str], *names: str) -> bool:
+    for token in tokens:
+        for name in names:
+            if token == name or token.startswith(f"{name}="):
+                return True
+    return False
 
 
 def handle_shell_command(args: dict, *, deps: Any) -> bool:
