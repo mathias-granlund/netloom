@@ -9,6 +9,8 @@ build/
 .venv/
 .pytest_cache/
 .pytest_tmp/
+.tmp_diff_tests/
+.tmp_pytest*/
 /.nl_discovery*/
 pytest-cache-files-*/
 .hypothesis/
