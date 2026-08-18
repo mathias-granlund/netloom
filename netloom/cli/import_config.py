@@ -307,8 +307,7 @@ def _payloads_match_without_field(
 
 def _is_config_service(obj: ConfigObject) -> bool:
     return (
-        obj.module == _CONFIG_SERVICE_MODULE
-        and obj.service in _CONFIG_SERVICE_SERVICES
+        obj.module == _CONFIG_SERVICE_MODULE and obj.service in _CONFIG_SERVICE_SERVICES
     )
 
 
@@ -1015,7 +1014,7 @@ def build_import_plan(
                         "status": "skipped",
                         "reason": str(exc),
                     }
-            )
+                )
             continue
 
         matched_current.add(id(current))
@@ -1293,8 +1292,7 @@ def _changes_only_report(report: dict[str, Any]) -> dict[str, Any]:
             item
             for item in report.get("items", [])
             if not (
-                item.get("operation") == "none"
-                and item.get("status") == "unchanged"
+                item.get("operation") == "none" and item.get("status") == "unchanged"
             )
         ],
     }

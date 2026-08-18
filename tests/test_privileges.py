@@ -308,9 +308,7 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
     assert rules[("policyelements", "config-service-reorder")].privileges == (
         "cppm_services",
     )
-    assert rules[("policyelements", "config-service")].privileges == (
-        "cppm_services",
-    )
+    assert rules[("policyelements", "config-service")].privileges == ("cppm_services",)
     assert rules[("policyelements", "auth-source")].privileges == (
         "auth_config",
         "cppm_config",

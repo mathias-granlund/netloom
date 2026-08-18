@@ -225,9 +225,7 @@ class _CP:
             }
         )
         return {
-            "deleted": args.get("id")
-            or args.get("name")
-            or args.get("services_name")
+            "deleted": args.get("id") or args.get("name") or args.get("services_name")
         }
 
 
@@ -530,8 +528,7 @@ def test_import_running_config_restores_config_service_with_single_reorder(
     assert planned[0]["label"] == "deleted-service"
     assert "order_no" not in planned[0]["command"]
     assert (
-        "netloom policyelements config-service delete "
-        "--services-name=deleted-service"
+        "netloom policyelements config-service delete --services-name=deleted-service"
     ) in planned[0]["rollback_command"]
     assert planned[1]["service"] == "config-service-reorder"
     assert planned[1]["label"] == "config-service order"
