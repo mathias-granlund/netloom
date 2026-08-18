@@ -32,6 +32,7 @@ handle_load_command = _deps.handle_load_command
 handle_server_command = _deps.handle_server_command
 handle_shell_command = _deps.handle_shell_command
 handle_show_command = _deps.handle_show_command
+handle_import_command = _deps.handle_import_command
 configure_logging = _deps.configure_logging
 _log_levels = _deps._log_levels
 should_mask_secrets = _deps.should_mask_secrets

@@ -19,6 +19,8 @@ with a shared command model, context-aware help and tab completion.
 It keeps server profiles and discovery data organized locally, and supports 
 day-to-day tasks such as list, create, update or delete objects as well as 
 compare and copy configuration between servers.
+It can also export live configuration as replayable netloom commands and import
+that export later to rebuild a previous configuration state.
 
 **HPE Aruba ClearPass** is a bundled plugin with netloom.
 
@@ -109,6 +111,14 @@ When that provider is configured, `netloom policyelements network-device`
 and `tacacs_secret` values from Delinea by device name. The current
 integration is read-only and only fetches those secret fields.
 
+Running-config export and import exclusions use the same syntax as
+`--exclude=module[/service][,...]`. The default excludes ClearPass event logs
+and SMTP messaging setup because those values are not restorable:
+
+```bash
+NETLOOM_RUNNING_CONFIG_EXCLUDE="logs,globalserverconfiguration/messaging-setup"
+```
+
 ## First Run / Quick Start
 
 ```bash
@@ -152,6 +162,20 @@ Preview a cross-profile copy without writing changes:
 ```bash
 netloom policyelements network-device copy --from=<source-profile> --to=<target-profile> --all --dry-run
 ```
+
+Export and import a running configuration:
+
+```bash
+netloom show running-config --out=running-config.txt --decrypt
+netloom import --file=running-config.txt --dry-run
+netloom import --file=running-config.txt --out=import-report.json
+```
+
+`--exclude=module[/service][,...]` replaces `NETLOOM_RUNNING_CONFIG_EXCLUDE`
+for a single export or import run.
+
+If the export was created without `--decrypt`, secret fields are masked and may
+need a configured secret provider before import.
 
 ## Feature Roadmap
 

@@ -273,6 +273,10 @@ def _parse_scope(value: Any) -> set[tuple[str, str | None]]:
     return scope
 
 
+def _exclude_scope_from_settings(settings: Settings) -> set[tuple[str, str | None]]:
+    return _parse_scope(getattr(settings, "running_config_exclude", None))
+
+
 def _in_scope(
     module: str,
     service: str,
@@ -512,7 +516,9 @@ def render_running_config(
 ) -> str:
     hydrate_mode = _normalize_hydrate_mode(hydrate_mode)
     include = include or set()
-    exclude = exclude or set()
+    exclude = (
+        _exclude_scope_from_settings(settings) if exclude is None else set(exclude)
+    )
     lines: list[str] = []
     _emit_lines(lines, line_sink, _header(settings, plugin, catalog_view, hydrate_mode))
     modules = api_catalog.get("modules") or {}
@@ -819,7 +825,11 @@ def handle_show_command(
                 settings=settings,
                 catalog_view=catalog_view,
                 include=_parse_scope(args.get("include")),
-                exclude=_parse_scope(args.get("exclude")),
+                exclude=(
+                    _parse_scope(args.get("exclude"))
+                    if args.get("exclude") is not None
+                    else None
+                ),
                 continue_on_error=bool(args.get("continue_on_error")),
                 mask_secrets=mask_secrets,
                 hydrate_mode=args.get("hydrate") or "auto",

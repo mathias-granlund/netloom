@@ -155,6 +155,190 @@ Design constraints:
 - do not assume every ClearPass object type exposes references the same way;
   feature design should allow per-service handling where needed
 
+### 8. Running-config import ID remapping
+
+High priority for making `netloom import` restore a complete ClearPass
+configuration graph after objects have been deleted and recreated.
+
+Background:
+- ClearPass auto-increments object IDs on create. The API does not appear to
+  allow callers to choose the original object ID.
+- `show running-config` preserves original IDs as comments such as
+  `# source-id: 3085`, but mutation commands intentionally omit those IDs from
+  `add` payloads.
+- The generic payload normalizer strips `id` on `add`, and this is correct for
+  normal ClearPass creates.
+- This means importing a missing object can restore its content but not its
+  numeric ID. Example:
+  - export contained `# source-id: 3085`
+  - import recreated `TEST-ROLE-4`
+  - ClearPass assigned new ID `3088`
+- The next problem is dependent object references. Any later imported payload
+  that references old ID `3085` must be rewritten to new ID `3088`.
+
+Goal:
+- keep treating exported IDs as source identity metadata, not restorable
+  configuration
+- build an import-time ID mapping from exported source IDs to current or newly
+  created ClearPass IDs
+- rewrite known dependent references before applying later import operations
+- keep the first implementation conservative and ClearPass-aware rather than
+  blindly replacing every numeric value that happens to equal an old ID
+
+Current relevant files:
+- `netloom/cli/show.py`
+  - writes `# source-id:` / `# source-uuid:` comments
+  - renders replayable `netloom ... add|replace|update --payload-json=...`
+    commands
+- `netloom/cli/import_config.py`
+  - parses running-config files into `ConfigCommand`
+  - stores source identity in `ConfigCommand.source_identity`
+  - builds and applies import plans
+  - currently uses source IDs for matching only
+- `netloom/core/resolver.py`
+  - `normalize_file_payload_for_action(...)` strips `id` from `add` payloads
+- `netloom/plugins/clearpass/copy_hooks.py`
+  - ClearPass payload normalization goes through the generic normalizer
+
+Desired behavior:
+- When desired and current objects match:
+  - if desired has `source-id` and current has an `id`, record:
+    `(<module>, <service>, <old_id>) -> <current_id>`
+  - this is needed even for unchanged objects, because dependencies may refer
+    to old IDs from the export
+- When a missing object is created:
+  - apply the `add`
+  - read the new ID from the API response if present
+  - if the response does not include an ID, fetch the created object by a stable
+    natural key such as `name`
+  - record `source-id -> new_id`
+- Before applying a payload that may contain references:
+  - rewrite only known reference fields using the mapping
+  - do not rewrite arbitrary integers globally
+  - include the rewritten payload in the report, with secrets masked unless
+    `--decrypt` was used
+- Dry-run behavior:
+  - show that a mapping would be needed for planned creates
+  - mark reference rewrites as pending/conditional when the target object will
+    only be known after create
+  - do not claim exact new IDs during dry-run
+- Report behavior:
+  - include an `id_mappings` section:
+    - module
+    - service
+    - source_id
+    - current_id or created_id
+    - source object label
+    - how the mapping was learned: `matched`, `created_response`, or
+      `created_lookup`
+  - include per-item `rewrites` when payload references were changed:
+    - payload path
+    - old value
+    - new value
+    - mapped service/type when known
+
+Implementation plan:
+- Add an import identity map structure in `netloom/cli/import_config.py`.
+  Suggested shape:
+  - key: `(module, service, str(source_id))`
+  - value:
+    - `target_id`
+    - `label`
+    - `source_line`
+    - `mapping_source`
+- Populate the map during plan construction for already matched objects:
+  - when `_find_current_match(...)` returns a current object
+  - desired `source_identity["id"]` exists
+  - current payload or current source identity has `id`
+- Populate the map during execution for created objects:
+  - after `_execute_plan_item(...)` returns successfully for an `add`
+  - use response `id` first
+  - fallback to a get/list lookup by stable natural key if needed
+- Keep the current all-at-once planning model if possible, but make payload
+  rewrite happen as late as possible:
+  - build planned items with desired payloads
+  - before executing each planned write, run reference rewrite against the
+    latest ID map
+  - for dry-run, report unresolved rewrite opportunities without mutating state
+- Add a ClearPass reference rewrite registry.
+  Start with explicit known fields only. Possible location:
+  `netloom/plugins/clearpass/import_references.py`.
+  Suggested rule shape:
+  - affected module/service
+  - payload path matcher
+  - referenced module/service
+  - whether field is scalar, list, or nested list
+- Do not infer reference semantics from field names alone in v1.
+  Field names like `id`, `role_id`, or `profile_id` are not enough without
+  knowing which service they point to.
+- Use plugin hook discovery so core import stays generic:
+  - optional plugin hook name:
+    `rewrite_import_references(payload, id_map, module, service)`
+  - ClearPass plugin implements the hook
+  - core import calls the hook before prepare/write preflight
+- Ensure rewrite happens before:
+  - `_request_args_and_payload(...)`
+  - `_prepare_plugin_write_payload(...)`
+  - plugin preflight
+  so validation sees the final payload that will be sent.
+
+Initial ClearPass scope:
+- Start with services where broken references are likely and easy to verify:
+  - `policyelements/enforcement-policy`
+  - `policyelements/role-mapping`
+  - `policyelements/auth-method`
+  - `policyelements/auth-source`
+  - `enforcementprofile/enforcement-profile`
+- Inspect real exported payloads before coding exact rewrite paths.
+  Use `running-config.txt` and targeted `netloom <module> <service> get/list
+  --format=netloom --decrypt` output to identify reference fields.
+- Add more rewrite rules only when confirmed by payload examples or API schema.
+
+Tests to add:
+- Unit test: unchanged desired/current object records source-id to current-id
+  mapping.
+- Unit test: created object records source-id to response id.
+- Unit test: created object records source-id via lookup when response lacks id.
+- Unit test: dependent payload is rewritten from old ID to mapped new ID before
+  execution.
+- Unit test: dry-run reports unresolved conditional rewrites without executing.
+- Unit test: unrelated numeric values are not rewritten.
+- Unit test: secret masking still applies in reports after rewrite.
+- Integration-style test with fake ClearPass objects:
+  - export role with source ID `100`
+  - delete it
+  - import recreates role as ID `200`
+  - dependent object referencing role ID `100` is applied with `200`
+
+Risks and constraints:
+- Import ordering matters. If a dependent object is applied before its
+  referenced object has been mapped, it must be skipped, delayed, or reported as
+  unresolved.
+- Some ClearPass services may reference objects by name rather than ID. Those
+  should not be rewritten.
+- Existing IDs in an export may not match a user's current file if the file is
+  stale. Mapping should be based on the file being imported, not on assumptions
+  from the live server.
+- Do not try to force `id` back into ClearPass create payloads unless the API is
+  proven to support it for a specific service.
+
+Suggested prompt for a future implementation session:
+
+```text
+Implement running-config import ID remapping for netloom.
+
+Read PLANNED_FEATURES.md section "Running-config import ID remapping" first.
+The goal is to preserve logical references when ClearPass recreates missing
+objects with new auto-incremented IDs. Do not try to restore object IDs
+directly. Add an import identity map in netloom/cli/import_config.py, populate
+it for matched and newly created objects, add a plugin hook for ClearPass
+reference rewriting, and start with conservative service-specific rewrite rules
+based on confirmed exported payload paths. Keep dry-run behavior honest by
+reporting conditional/unresolved rewrites instead of inventing future IDs.
+Add focused tests for mapping creation, reference rewriting, non-reference
+numeric fields, and report output.
+```
+
 ## Completed Work
 
 ### Cache/help/completion performance and UX groundwork

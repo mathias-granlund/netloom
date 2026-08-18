@@ -149,6 +149,31 @@ class _FailingListCP(_CP):
         raise RuntimeError("list failed")
 
 
+class _ScopedCP(_CP):
+    def list(self, api_catalog, token, args, *, params=None):
+        del params
+        if args["module"] == "logs":
+            return {
+                "_embedded": {
+                    "items": [
+                        {"source": "system", "description": "event"},
+                    ]
+                }
+            }
+        if (
+            args["module"] == "globalserverconfiguration"
+            and args["service"] == "messaging-setup"
+        ):
+            return {
+                "_embedded": {
+                    "items": [
+                        {"server_name": "smtp.example", "password": "******"},
+                    ]
+                }
+            }
+        return super().list(api_catalog, token, args)
+
+
 class _Log:
     def __init__(self):
         self.info_messages: list[str] = []
@@ -331,6 +356,117 @@ def test_render_running_config_writes_source_id_before_command(tmp_path):
         if line.startswith("netloom policyelements network-device add ")
     )
     assert source_index + 1 == command_index
+
+
+def test_render_running_config_excludes_non_restorable_scopes(tmp_path):
+    settings = _settings(tmp_path)
+    catalog = _catalog()
+    catalog["modules"]["logs"] = {
+        "system-event": {
+            "actions": {
+                "list": {"method": "GET", "paths": ["/api/system-event"]},
+                "add": {
+                    "method": "POST",
+                    "paths": ["/api/system-event"],
+                    "body_fields": [
+                        {"name": "source", "required": True},
+                        {"name": "description", "required": False},
+                    ],
+                },
+            }
+        }
+    }
+    catalog["modules"]["globalserverconfiguration"] = {
+        "messaging-setup": {
+            "actions": {
+                "list": {"method": "GET", "paths": ["/api/messaging-setup"]},
+                "add": {
+                    "method": "POST",
+                    "paths": ["/api/messaging-setup"],
+                    "body_fields": [
+                        {"name": "server_name", "required": True},
+                        {"name": "password", "required": False},
+                    ],
+                },
+            }
+        }
+    }
+    cp = _CP(catalog)
+
+    text = render_running_config(
+        _plugin(cp),
+        cp,
+        "token",
+        catalog,
+        settings=settings,
+        catalog_view="visible",
+        include={
+            ("logs", "system-event"),
+            ("globalserverconfiguration", "messaging-setup"),
+            ("policyelements", "network-device"),
+        },
+        mask_secrets=True,
+    )
+
+    assert "# logs system-event" not in text
+    assert "netloom logs system-event" not in text
+    assert "# globalserverconfiguration messaging-setup" not in text
+    assert "netloom globalserverconfiguration messaging-setup" not in text
+    assert "# policyelements network-device" in text
+
+
+def test_render_running_config_explicit_exclude_replaces_settings(tmp_path):
+    settings = _settings(tmp_path)
+    catalog = _catalog()
+    catalog["modules"]["logs"] = {
+        "system-event": {
+            "actions": {
+                "list": {"method": "GET", "paths": ["/api/system-event"]},
+                "add": {
+                    "method": "POST",
+                    "paths": ["/api/system-event"],
+                    "body_fields": [
+                        {"name": "source", "required": True},
+                        {"name": "description", "required": False},
+                    ],
+                },
+            }
+        }
+    }
+    catalog["modules"]["globalserverconfiguration"] = {
+        "messaging-setup": {
+            "actions": {
+                "list": {"method": "GET", "paths": ["/api/messaging-setup"]},
+                "add": {
+                    "method": "POST",
+                    "paths": ["/api/messaging-setup"],
+                    "body_fields": [
+                        {"name": "server_name", "required": True},
+                        {"name": "password", "required": False},
+                    ],
+                },
+            }
+        }
+    }
+    cp = _ScopedCP(catalog)
+
+    text = render_running_config(
+        _plugin(cp),
+        cp,
+        "token",
+        catalog,
+        settings=settings,
+        catalog_view="visible",
+        include={
+            ("logs", "system-event"),
+            ("globalserverconfiguration", "messaging-setup"),
+        },
+        exclude=set(),
+        mask_secrets=True,
+    )
+
+    assert "netloom logs system-event" in text
+    assert "netloom globalserverconfiguration messaging-setup" in text
 
 
 def test_handle_show_command_writes_default_running_config_file(tmp_path, capsys):

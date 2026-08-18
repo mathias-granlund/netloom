@@ -124,6 +124,12 @@ def handle_show_command(*args, **kwargs):
     return impl(*args, **kwargs)
 
 
+def handle_import_command(*args, **kwargs):
+    from netloom.cli.import_config import handle_import_command as impl
+
+    return impl(*args, **kwargs)
+
+
 def configure_logging(*args, **kwargs):
     from netloom.logging.setup import configure_logging as impl
 

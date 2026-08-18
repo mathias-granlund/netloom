@@ -35,6 +35,7 @@ def _configure_runtime(monkeypatch, tmp_path):
     monkeypatch.delenv("NETLOOM_CLIENT_SECRET_REF", raising=False)
     monkeypatch.delenv("NETLOOM_ACTIVE_PROFILE", raising=False)
     monkeypatch.delenv("NETLOOM_ACTIVE_PLUGIN", raising=False)
+    monkeypatch.delenv("NETLOOM_RUNNING_CONFIG_EXCLUDE", raising=False)
     return config_dir
 
 
@@ -173,6 +174,32 @@ def test_load_settings_uses_defaults_as_profile_fallback(monkeypatch, tmp_path):
     assert settings.https_prefix == "https://fallback/"
     assert settings.verify_ssl is True
     assert settings.timeout == 42
+
+
+def test_load_settings_reads_running_config_exclude(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_profiles(config_dir)
+
+    settings = load_settings()
+    assert settings.running_config_exclude == config.DEFAULT_RUNNING_CONFIG_EXCLUDE
+
+    _profile_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_SERVER=prod.clearpass.example:443",
+                "NETLOOM_RUNNING_CONFIG_EXCLUDE=logs",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+    assert settings.running_config_exclude == "logs"
+
+    monkeypatch.setenv("NETLOOM_RUNNING_CONFIG_EXCLUDE", "")
+    settings = load_settings()
+    assert settings.running_config_exclude == ""
 
 
 def test_load_settings_without_active_plugin(monkeypatch, tmp_path):

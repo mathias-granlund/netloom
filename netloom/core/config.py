@@ -13,6 +13,7 @@ ACTIVE_PROFILE_ENV = "NETLOOM_ACTIVE_PROFILE"
 ACTIVE_PLUGIN_ENV = "NETLOOM_ACTIVE_PLUGIN"
 CONFIG_DIR_ENV = "NETLOOM_CONFIG_DIR"
 CLI_TIMING_ENV = "NETLOOM_CLI_TIMING"
+RUNNING_CONFIG_EXCLUDE_ENV = "NETLOOM_RUNNING_CONFIG_EXCLUDE"
 CONFIG_FILE_NAME = "config.env"
 PLUGINS_DIR_NAME = "plugins"
 DEFAULTS_FILE_NAME = "defaults.env"
@@ -23,6 +24,7 @@ DEFAULT_FORMAT = "json"
 DEFAULT_HTTPS_PREFIX = "https://"
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_PLUGIN = None
+DEFAULT_RUNNING_CONFIG_EXCLUDE = "logs,globalserverconfiguration/messaging-setup"
 SECRET_FIELDS = (
     "client_secret",
     "radius_secret",
@@ -516,6 +518,7 @@ class Settings:
     active_profile: str | None = None
     profiles_path: Path | None = None
     credentials_path: Path | None = None
+    running_config_exclude: str = DEFAULT_RUNNING_CONFIG_EXCLUDE
     paths: AppPaths = field(default_factory=lambda: default_paths().ensure())
 
     @property
@@ -650,6 +653,9 @@ def _build_settings_from_values(
     cli_timing_raw = _resolve_value(
         CLI_TIMING_ENV, values, active_profile=active_profile
     )
+    running_config_exclude = _resolve_value(
+        RUNNING_CONFIG_EXCLUDE_ENV, values, active_profile=active_profile
+    )
 
     return Settings(
         plugin=active_plugin,
@@ -711,6 +717,11 @@ def _build_settings_from_values(
         active_profile=active_profile,
         profiles_path=profiles_env_path(active_plugin, profile=active_profile),
         credentials_path=credentials_env_path(active_plugin, profile=active_profile),
+        running_config_exclude=(
+            DEFAULT_RUNNING_CONFIG_EXCLUDE
+            if running_config_exclude is None
+            else running_config_exclude
+        ),
         paths=paths,
     )
 

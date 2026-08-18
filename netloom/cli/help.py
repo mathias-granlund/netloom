@@ -5,6 +5,7 @@ from netloom.core.help import (
     render_action_block,
     render_cache_help,
     render_catalog_help,
+    render_import_help,
     render_load_help,
     render_server_help,
     render_shell_help,
@@ -55,6 +56,18 @@ def _render_usage(
                 [
                     "Usage:",
                     "  netloom cache [clear | update]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
+    if module == "import":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom import --file=PATH [options]",
                     "  netloom [--help | ?]",
                 ]
             )
@@ -150,6 +163,7 @@ def _render_usage(
         "  netloom cache [clear | update]",
         "  netloom shell",
         "  netloom show running-config [options]",
+        "  netloom import --file=PATH [options]",
         "  netloom <module> <service> <action> [options] [flags]",
         (
             "  netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET "
@@ -180,6 +194,9 @@ def render_help(
 
     if module == "cache":
         return render_cache_help(header, usage)
+
+    if module == "import":
+        return render_import_help(header, usage)
 
     if module == "server":
         return render_server_help(

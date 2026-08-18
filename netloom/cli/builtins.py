@@ -38,6 +38,18 @@ def handle_plugin_builtin_command(
     log,
     deps: Any,
 ) -> bool:
+    if args.get("module") == "import":
+        if deps.handle_import_command(
+            args,
+            plugin=plugin,
+            settings=settings,
+            deps=deps,
+            log=log,
+        ):
+            return True
+        deps.print_help({"module": "import"}, plugin=plugin, settings=settings)
+        return True
+
     if args.get("module") != "cache":
         if args.get("module") == "show":
             if deps.handle_show_command(

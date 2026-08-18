@@ -76,6 +76,7 @@ def test_complete_outputs_modules(capsys, monkeypatch):
     monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
     main.complete(["--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
+    assert "import" in out
     assert "identities" in out
     assert "shell" in out
     assert "show" in out
@@ -117,6 +118,14 @@ def test_complete_outputs_services_for_module(capsys, monkeypatch):
     main.complete(["identities", "--_cur="], settings=_settings())
     out = capsys.readouterr().out.strip().splitlines()
     assert "endpoint" in out
+
+
+def test_complete_import_has_no_positional_children(capsys, monkeypatch):
+    plugin = _catalog_plugin(TEST_CATALOG)
+    monkeypatch.setattr(main, "get_plugin", lambda *args, **kwargs: plugin)
+    main.complete(["import"], settings=_settings())
+    out = capsys.readouterr().out.strip().splitlines()
+    assert out == []
 
 
 def test_complete_outputs_actions_for_service(capsys, monkeypatch):
@@ -639,6 +648,28 @@ def test_parse_cli_show_running_config_accepts_shared_flags_after_command():
     assert args["log_level"] == "debug"
     assert args["out"] == "running-config.txt"
     assert args["catalog_view"] == "full"
+
+
+def test_parse_cli_import_builtin():
+    argv = [
+        "netloom",
+        "--catalog-view=full",
+        "import",
+        "--file=running-config.txt",
+        "--dry-run",
+        "--continue-on-error",
+        "--exclude=logs",
+        "--out=import-report.json",
+    ]
+    args = main.parse_cli(argv)
+    assert args["module"] == "import"
+    assert "service" not in args or args["service"] is None
+    assert args["catalog_view"] == "full"
+    assert args["file"] == "running-config.txt"
+    assert args["dry_run"] is True
+    assert args["continue_on_error"] is True
+    assert args["exclude"] == "logs"
+    assert args["out"] == "import-report.json"
 
 
 def test_parse_cli_copy_command():

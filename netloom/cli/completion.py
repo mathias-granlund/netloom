@@ -30,9 +30,20 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
     positionals = [word for word in words if not word.startswith("-")]
 
     if len(positionals) == 0:
-        return ["cache", "load", "server", "shell", "show", *sorted(modules.keys())]
+        return [
+            "cache",
+            "import",
+            "load",
+            "server",
+            "shell",
+            "show",
+            *sorted(modules.keys()),
+        ]
 
     module = positionals[0]
+    if module == "import":
+        return []
+
     if module == "cache":
         if len(positionals) == 1:
             return ["clear", "update"]
@@ -64,6 +75,7 @@ def completion_candidates(words: list[str], catalog: dict | None) -> list[str]:
     if module not in modules:
         return [
             "cache",
+            "import",
             "load",
             "server",
             "shell",

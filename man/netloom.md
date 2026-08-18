@@ -17,6 +17,8 @@ netloom load [list | show | <plugin>]
 netloom server [list | show | use <profile>]
 netloom cache [clear | update]
 netloom shell
+netloom show running-config [options]
+netloom import --file=FILE [options]
 netloom [--help | ?]
 netloom --version
 ```
@@ -50,6 +52,10 @@ For provider-specific behavior, use the matching plugin reference such as
 - `netloom cache clear`: Remove the cached API catalog for the active plugin.
 - `netloom shell`: Launch the interactive shell with context navigation,
   completion, history, and context-aware help.
+- `netloom show running-config`: Export live configuration data as replayable
+  `netloom ... --payload-json=...` commands.
+- `netloom import --file=FILE`: Read a running-config export, compare it to the
+  active server, and apply only reversible changes.
 
 ## Command Model
 
@@ -202,6 +208,43 @@ Supported output formats:
 - `netloom`: Replayable `netloom ... add|replace|update --payload-json=...`
   commands for `get`, `get --all`, and `list` output.
 
+## Running Config Export And Import
+
+`netloom show running-config` walks the active catalog, reads supported
+configuration objects, and writes replayable netloom commands. The default
+output path is `NETLOOM_OUT_DIR/running-config.txt`. The `logs` module is
+excluded because it contains event history, and
+`globalserverconfiguration/messaging-setup` is excluded because ClearPass does
+not return the SMTP password even with `--decrypt`.
+
+Default exclusions come from `NETLOOM_RUNNING_CONFIG_EXCLUDE`, using the same
+syntax as `--exclude=module[/service][,...]`. Passing `--exclude` on the CLI
+replaces the configured list for that run.
+
+```bash
+netloom show running-config --out=running-config.txt
+netloom show running-config --include=policyelements/network-device --decrypt
+```
+
+`netloom import` reads that file, exports the same services from the active
+server, compares both running-config command sets, and applies only reversible
+changes. Identical objects are skipped. Creates require a matching delete
+action for rollback, deletes require a matching add action for rollback, and
+updates use replace or update actions that can be matched to current objects.
+
+```bash
+netloom import --file=running-config.txt --dry-run
+netloom import --file=running-config.txt --continue-on-error --out=import-report.json
+```
+
+Use `--dry-run` before writing to review the planned reversible changes.
+Use `--continue-on-error` to keep processing after a failed line and
+`--out=FILE` to save a JSON import report.
+
+By default, exports mask secret fields. To produce a complete replay file,
+export with `--decrypt` or configure a plugin-supported secret provider that
+can backfill missing secret values during import.
+
 ## Environment
 
 - `NETLOOM_ACTIVE_PROFILE`
@@ -216,6 +259,7 @@ Supported output formats:
 - `NETLOOM_OUT_DIR`
 - `NETLOOM_APP_LOG_DIR`
 - `NETLOOM_CONFIG_DIR`
+- `NETLOOM_RUNNING_CONFIG_EXCLUDE`
 
 Plugin references may define additional provider-specific variables.
 
@@ -245,6 +289,7 @@ netloom ?
   cache                       Manage the local API catalog cache
   load                        Select or inspect the active plugin
   server                      Select or inspect the active profile
+  import                      Import a saved running-config file
   policyelements              Policy elements and network services
 
 netloom certificateauthority ?
@@ -303,6 +348,8 @@ netloom identities endpoint list --limit=10
 netloom policyelements network-device get --id=1001 --console
 netloom policyelements network-device add ?
 netloom certificateauthority certificate-chain get ?
+netloom show running-config --out=running-config.txt
+netloom import --file=running-config.txt --dry-run
 ```
 
 ## See Also

@@ -324,6 +324,8 @@ def _action_summary(action: str, action_def: dict | None = None) -> str | None:
 def _describe_builtin_context(module: str) -> str:
     if module == "cache":
         return _describe_lines(_DESCRIBE_CACHE_COMMANDS)
+    if module == "import":
+        return ""
     if module == "load":
         plugin_rows = [(name, "Activate this plugin") for name in list_plugins()]
         return _describe_lines([*_DESCRIBE_LOAD_COMMANDS, *plugin_rows])
@@ -551,6 +553,27 @@ def render_cache_help(header: str, usage: str) -> str:
     )
 
 
+def render_import_help(header: str, usage: str) -> str:
+    return (
+        header
+        + usage
+        + "\nBuilt-in module: import\n"
+        + "Commands:\n"
+        + "  netloom import --file=PATH\n\n"
+        + "import:\n"
+        + "  Read a running-config export, compare it to the active server, "
+        + "and apply only reversible changes.\n\n"
+        + "Options:\n"
+        + "  --file=PATH                Required running-config export\n"
+        + "  --dry-run                  Build the import plan without writing\n"
+        + "  --continue-on-error        Continue after a failed planned write\n"
+        + "  --exclude=module[/service][,...]\n"
+        + "  --out=PATH                 Write an import report as JSON\n"
+        + "  --catalog-view=visible|full\n"
+        + "  --decrypt"
+    )
+
+
 def render_server_help(
     header: str,
     usage: str,
@@ -622,11 +645,13 @@ def render_show_help(header: str, usage: str) -> str:
         + "running-config:\n"
         + "  Export live, read-only API data as replayable netloom commands.\n"
         + "  The cached catalog selects services and live list/get calls fetch "
-        + "data.\n\n"
+        + "data.\n"
+        + "  Exclusions default to NETLOOM_RUNNING_CONFIG_EXCLUDE; --exclude "
+        + "replaces that list for one run.\n\n"
         + "Options:\n"
         + "  --out=PATH                 Default: NETLOOM_OUT_DIR/running-config.txt\n"
         + "  --include=module[/service][,...]\n"
-        + "  --exclude=module[/service][,...]\n"
+        + "  --exclude=module[/service][,...]  Replace configured exclusions\n"
         + "  --hydrate=auto|never|always  Default: auto\n"
         + "  --continue-on-error\n"
         + "  --catalog-view=visible|full\n"
@@ -748,6 +773,18 @@ def _render_usage(
     if module == "copy":
         module = None
 
+    if module == "import":
+        return (
+            "\n".join(
+                [
+                    "Usage:",
+                    "  netloom import --file=PATH [options]",
+                    "  netloom [--help | ?]",
+                ]
+            )
+            + "\n"
+        )
+
     if module == "cache":
         return (
             "\n".join(
@@ -849,6 +886,7 @@ def _render_usage(
         "  netloom cache [clear | update]",
         "  netloom shell",
         "  netloom show running-config [options]",
+        "  netloom import --file=PATH [options]",
         "  netloom <module> <service> <action> [options] [flags]",
         (
             "  netloom <module> <service> {copy|diff} --from=SOURCE --to=TARGET "
@@ -875,6 +913,9 @@ def render_help(
         service=args.get("service"),
         action=args.get("action"),
     )
+
+    if module == "import":
+        return render_import_help(header, usage)
 
     if module == "cache":
         return render_cache_help(header, usage)

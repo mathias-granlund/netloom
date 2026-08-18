@@ -15,7 +15,7 @@ from netloom.core.help_shared import (
     service_cli_actions,
 )
 
-_GLOBAL_BUILTINS = {"cache", "load", "server", "shell", "show"}
+_GLOBAL_BUILTINS = {"cache", "import", "load", "server", "shell", "show"}
 _SHELL_BUILTINS = {"do", "exit", "quit", "show", "top"}
 
 

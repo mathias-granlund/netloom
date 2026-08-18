@@ -27,6 +27,7 @@ __all__ = [
     "render_delete_action_help",
     "render_diff_action_help",
     "render_get_action_help",
+    "render_import_help",
     "render_list_action_help",
     "render_load_help",
     "render_server_help",
@@ -498,6 +499,27 @@ def render_cache_help(header: str, usage: str) -> str:
     )
 
 
+def render_import_help(header: str, usage: str) -> str:
+    return (
+        header
+        + usage
+        + "\nBuilt-in module: import\n"
+        + "Commands:\n"
+        + "  netloom import --file=PATH\n\n"
+        + "import:\n"
+        + "  Read a running-config export, compare it to the active server, "
+        + "and apply only reversible changes.\n\n"
+        + "Options:\n"
+        + "  --file=PATH                Required running-config export\n"
+        + "  --dry-run                  Build the import plan without writing\n"
+        + "  --continue-on-error        Continue after a failed planned write\n"
+        + "  --exclude=module[/service][,...]\n"
+        + "  --out=PATH                 Write an import report as JSON\n"
+        + "  --catalog-view=visible|full\n"
+        + "  --decrypt"
+    )
+
+
 def render_server_help(
     header: str,
     usage: str,
@@ -569,11 +591,13 @@ def render_show_help(header: str, usage: str) -> str:
         + "running-config:\n"
         + "  Export live, read-only API data as replayable netloom commands.\n"
         + "  The cached catalog selects services and live list/get calls fetch "
-        + "data.\n\n"
+        + "data.\n"
+        + "  Exclusions default to NETLOOM_RUNNING_CONFIG_EXCLUDE; --exclude "
+        + "replaces that list for one run.\n\n"
         + "Options:\n"
         + "  --out=PATH                 Default: NETLOOM_OUT_DIR/running-config.txt\n"
         + "  --include=module[/service][,...]\n"
-        + "  --exclude=module[/service][,...]\n"
+        + "  --exclude=module[/service][,...]  Replace configured exclusions\n"
         + "  --hydrate=auto|never|always  Default: auto\n"
         + "  --continue-on-error\n"
         + "  --catalog-view=visible|full\n"
@@ -684,5 +708,4 @@ def render_catalog_help(
         blocks.append(render_delete_action_help(module, service, action_map["delete"]))
     else:
         blocks.append(render_action_block(action, action_map[action]))
-
     return "\n\n".join(blocks)

@@ -22,9 +22,10 @@ NETLOOM_BANNER = r"""
 """.strip("\n")
 
 PLUGIN_SELECTION_HINT = "<select a plugin with `netloom load <plugin>`>"
-BUILTIN_MODULES = ["cache", "load", "server", "shell", "show"]
+BUILTIN_MODULES = ["cache", "import", "load", "server", "shell", "show"]
 BUILTIN_MODULE_SUMMARIES = {
     "cache": "Manage the local API catalog cache",
+    "import": "Import a saved running-config file",
     "load": "Select or inspect the active plugin",
     "server": "Select or inspect the active profile",
     "shell": "Launch the interactive netloom shell",
