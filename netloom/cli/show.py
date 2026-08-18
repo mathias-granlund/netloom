@@ -21,6 +21,9 @@ _WRITE_ACTION_ORDER = ("add", "replace", "update")
 _SOURCE_IDENTITY_FIELDS = ("id", "uuid")
 _HYDRATE_MODES = {"auto", "never", "always"}
 _PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
+_SELECTOR_ALIASES = {
+    "services_name": ("name",),
+}
 
 
 def _action_map(api_catalog: dict[str, Any], module: str, service: str) -> dict:
@@ -115,8 +118,19 @@ def _selector_args_for_item(
 
     candidate_sets.sort(key=lambda names: (-len(names), names))
     for names in candidate_sets:
-        if all(item.get(name) not in (None, "") for name in names):
-            return {name: item[name] for name in names}
+        selectors: dict[str, Any] = {}
+        for name in names:
+            value = item.get(name)
+            if value in (None, ""):
+                for alias in _SELECTOR_ALIASES.get(name, ()):
+                    value = item.get(alias)
+                    if value not in (None, ""):
+                        break
+            if value in (None, ""):
+                break
+            selectors[name] = value
+        if len(selectors) == len(names):
+            return selectors
     return None
 
 

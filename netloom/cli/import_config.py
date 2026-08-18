@@ -20,6 +20,7 @@ from netloom.cli.show import (
     render_running_config,
 )
 from netloom.core.config import SECRET_FIELDS, Settings
+from netloom.core.help_shared import resolve_service_entry
 from netloom.core.resolver import query_params_for_action
 from netloom.io.files import ensure_parent_dir, load_payload_json
 from netloom.io.output import (
@@ -32,6 +33,10 @@ _IMPORT_ACTIONS = {"add", "replace", "update"}
 _CHANGE_ACTION_ORDER = ("replace", "update")
 _SOURCE_IDENTITY_FIELDS = ("id", "uuid")
 _MASKED_SECRET_VALUES = {"", "********", "******", "*****", "<hidden>", "<masked>"}
+_CONFIG_SERVICE_MODULE = "policyelements"
+_CONFIG_SERVICE_SERVICES = {"config-service", "service"}
+_CONFIG_SERVICE_REORDER_SERVICES = ("config-service-reorder", "service-reorder")
+_ORDERED_OPERATIONS = {"add", "update", "replace", "delete"}
 
 
 @dataclass(frozen=True)
@@ -60,6 +65,15 @@ class ConfigObject:
         return str(self.command.args["action"])
 
 
+@dataclass(frozen=True)
+class _ServiceOrderContext:
+    module: str
+    service: str
+    line: int
+    desired_orders: list[dict[str, Any]]
+    current_orders: list[dict[str, Any]]
+
+
 def _parse_metadata_value(raw: str) -> Any:
     text = raw.strip()
     try:
@@ -75,6 +89,24 @@ def _metadata_from_comment(line: str) -> tuple[str, Any] | None:
         if stripped.startswith(prefix):
             return field, _parse_metadata_value(stripped[len(prefix) :])
     return None
+
+
+def _parse_import_order(value: Any) -> dict[tuple[str, str], int]:
+    if value in (None, ""):
+        return {}
+
+    order: dict[tuple[str, str], int] = {}
+    for raw_item in str(value).split(","):
+        item = raw_item.strip().lower()
+        if not item or "/" not in item:
+            continue
+        module, service = item.split("/", 1)
+        module = module.strip()
+        service = service.strip()
+        if not module or not service:
+            continue
+        order.setdefault((module, service), len(order))
+    return order
 
 
 def _parse_command_line(
@@ -256,6 +288,165 @@ def _payloads_match(
     return desired == current
 
 
+def _without_field(payload: dict[str, Any], field: str) -> dict[str, Any]:
+    cleaned = dict(payload)
+    cleaned.pop(field, None)
+    return cleaned
+
+
+def _payloads_match_without_field(
+    desired_payload: dict[str, Any],
+    current_payload: dict[str, Any],
+    field: str,
+) -> bool:
+    return _payloads_match(
+        _without_field(desired_payload, field),
+        _without_field(current_payload, field),
+    )
+
+
+def _is_config_service(obj: ConfigObject) -> bool:
+    return (
+        obj.module == _CONFIG_SERVICE_MODULE
+        and obj.service in _CONFIG_SERVICE_SERVICES
+    )
+
+
+def _drop_order_no(payload: dict[str, Any]) -> dict[str, Any]:
+    return _without_field(payload, "order_no")
+
+
+def _normalize_order_no(value: Any) -> Any:
+    if isinstance(value, bool):
+        return value
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return value
+
+
+def _order_sort_key(entry: dict[str, Any]) -> tuple[int, int | str, str]:
+    order_no = entry.get("order_no")
+    if isinstance(order_no, int) and not isinstance(order_no, bool):
+        return 0, order_no, str(entry.get("service_name", ""))
+    return 1, str(order_no), str(entry.get("service_name", ""))
+
+
+def _service_order_entries(objects: list[ConfigObject]) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for obj in objects:
+        name = obj.payload.get("name")
+        order_no = obj.payload.get("order_no")
+        if name in (None, "") or order_no in (None, ""):
+            continue
+        service_name = str(name)
+        if service_name in seen:
+            continue
+        seen.add(service_name)
+        entries.append(
+            {
+                "service_name": service_name,
+                "order_no": _normalize_order_no(order_no),
+            }
+        )
+    return sorted(entries, key=_order_sort_key)
+
+
+def _config_service_reorder_service(
+    api_catalog: dict[str, Any],
+    preferred_service: str,
+) -> str | None:
+    candidates = []
+    if preferred_service in _CONFIG_SERVICE_SERVICES:
+        candidates.append(f"{preferred_service}-reorder")
+    candidates.extend(_CONFIG_SERVICE_REORDER_SERVICES)
+
+    seen: set[str] = set()
+    for service in candidates:
+        if service in seen:
+            continue
+        seen.add(service)
+        if _has_action(api_catalog, _CONFIG_SERVICE_MODULE, service, "update"):
+            return service
+    return None
+
+
+def _service_order_context(
+    api_catalog: dict[str, Any],
+    desired_objects: list[ConfigObject],
+    current_objects: list[ConfigObject],
+) -> _ServiceOrderContext | None:
+    desired_services = [obj for obj in desired_objects if _is_config_service(obj)]
+    if not desired_services:
+        return None
+
+    reorder_service = _config_service_reorder_service(
+        api_catalog,
+        desired_services[0].service,
+    )
+    if reorder_service is None:
+        return None
+
+    desired_orders = _service_order_entries(desired_services)
+    if not desired_orders:
+        return None
+
+    current_orders = _service_order_entries(
+        [obj for obj in current_objects if _is_config_service(obj)]
+    )
+    if desired_orders == current_orders:
+        return None
+
+    return _ServiceOrderContext(
+        module=_CONFIG_SERVICE_MODULE,
+        service=reorder_service,
+        line=min(obj.command.line_no for obj in desired_services),
+        desired_orders=desired_orders,
+        current_orders=current_orders,
+    )
+
+
+def _is_reorder_item(item: dict[str, Any]) -> bool:
+    return (
+        item.get("module") == _CONFIG_SERVICE_MODULE
+        and item.get("service") in _CONFIG_SERVICE_REORDER_SERVICES
+    )
+
+
+def _ordered_plan(
+    plan: list[dict[str, Any]],
+    *,
+    settings: Settings,
+) -> list[dict[str, Any]]:
+    import_order = _parse_import_order(getattr(settings, "import_order", None))
+    if not import_order:
+        return plan
+
+    unordered_rank = len(import_order)
+
+    def rank(item: dict[str, Any]) -> int:
+        key = (
+            str(item.get("module", "")).lower(),
+            str(item.get("service", "")).lower(),
+        )
+        return import_order.get(key, unordered_rank)
+
+    def sort_key(indexed_item: tuple[int, dict[str, Any]]) -> tuple[int, int, int]:
+        index, item = indexed_item
+        operation = item.get("operation")
+        item_rank = rank(item)
+        if _is_reorder_item(item):
+            return 3, item_rank, index
+        if operation == "delete":
+            return 2, -item_rank, index
+        if operation in _ORDERED_OPERATIONS:
+            return 1, item_rank, index
+        return 4, item_rank, index
+
+    return [item for _index, item in sorted(enumerate(plan), key=sort_key)]
+
+
 def _selector_source(
     obj: ConfigObject, *, include_source_identity: bool = True
 ) -> dict:
@@ -324,9 +515,8 @@ def _find_current_match(
 
 
 def _has_action(api_catalog: dict[str, Any], module: str, service: str, action: str):
-    actions = ((api_catalog.get("modules") or {}).get(module) or {}).get(
-        service, {}
-    ).get("actions") or {}
+    entry = resolve_service_entry(api_catalog, module, service) or {}
+    actions = entry.get("actions") or {}
     return action in actions
 
 
@@ -490,6 +680,7 @@ def _plan_change(
     match_key: tuple[str, str, str, str] | None,
     settings: Settings,
     mask_secrets: bool,
+    payload_override: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     action, selectors = _choose_change_action(api_catalog, current)
     if action is None or selectors is None:
@@ -503,7 +694,11 @@ def _plan_change(
             "reason": "no reversible update or replace action is available",
         }
 
-    desired_payload = _drop_masked_secret_placeholders(desired.payload)
+    desired_payload = (
+        payload_override
+        if payload_override is not None
+        else _drop_masked_secret_placeholders(desired.payload)
+    )
     request_args, request_payload = _prepare_write_payload(
         plugin,
         cp,
@@ -546,6 +741,7 @@ def _plan_create(
     *,
     settings: Settings,
     mask_secrets: bool,
+    payload_override: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not _has_action(api_catalog, desired.module, desired.service, "add"):
         return {
@@ -586,7 +782,11 @@ def _plan_create(
             "reason": "create is not reversible without a stable delete selector",
         }
 
-    desired_payload = _drop_masked_secret_placeholders(desired.payload)
+    desired_payload = (
+        payload_override
+        if payload_override is not None
+        else _drop_masked_secret_placeholders(desired.payload)
+    )
     request_args, request_payload = _prepare_write_payload(
         plugin,
         cp,
@@ -686,6 +886,62 @@ def _plan_delete(
     return item
 
 
+def _plan_service_reorder(
+    plugin,
+    cp,
+    token: str,
+    api_catalog: dict[str, Any],
+    context: _ServiceOrderContext,
+    *,
+    settings: Settings,
+    mask_secrets: bool,
+) -> dict[str, Any]:
+    payload = {"service_orders": context.desired_orders}
+    rollback_payload = {"service_orders": context.current_orders}
+    request_args, request_payload = _prepare_write_payload(
+        plugin,
+        cp,
+        token,
+        api_catalog,
+        module=context.module,
+        service=context.service,
+        action="update",
+        selectors={},
+        payload=payload,
+        settings=settings,
+    )
+    return {
+        "line": context.line,
+        "module": context.module,
+        "service": context.service,
+        "label": "config-service order",
+        "operation": "update",
+        "match_key": None,
+        "command": _render_report_command(
+            context.module,
+            context.service,
+            "update",
+            {},
+            request_payload,
+            mask_secrets=mask_secrets,
+        ),
+        "rollback_command": _render_report_command(
+            context.module,
+            context.service,
+            "update",
+            {},
+            rollback_payload,
+            mask_secrets=mask_secrets,
+        ),
+        "_request": {
+            "action": "update",
+            "args": request_args,
+            "payload": request_payload,
+        },
+        "status": "pending",
+    }
+
+
 def build_import_plan(
     plugin,
     cp,
@@ -704,6 +960,11 @@ def build_import_plan(
     )
     current_objects = _objects_from_commands(
         _importable_commands(current_commands, exclude=active_exclude)
+    )
+    service_order_context = _service_order_context(
+        api_catalog,
+        desired_objects,
+        current_objects,
     )
     current_index = _build_index(current_objects)
     plan: list[dict[str, Any]] = []
@@ -726,6 +987,11 @@ def build_import_plan(
             continue
         if current is None:
             try:
+                payload_override = None
+                if service_order_context is not None and _is_config_service(desired):
+                    payload_override = _drop_order_no(
+                        _drop_masked_secret_placeholders(desired.payload)
+                    )
                 plan.append(
                     _plan_create(
                         plugin,
@@ -735,6 +1001,7 @@ def build_import_plan(
                         desired,
                         settings=settings,
                         mask_secrets=mask_secrets,
+                        payload_override=payload_override,
                     )
                 )
             except Exception as exc:
@@ -748,7 +1015,7 @@ def build_import_plan(
                         "status": "skipped",
                         "reason": str(exc),
                     }
-                )
+            )
             continue
 
         matched_current.add(id(current))
@@ -766,7 +1033,34 @@ def build_import_plan(
             )
             continue
 
+        if (
+            service_order_context is not None
+            and _is_config_service(desired)
+            and _payloads_match_without_field(
+                desired.payload,
+                current.payload,
+                "order_no",
+            )
+        ):
+            plan.append(
+                {
+                    "line": desired.command.line_no,
+                    "module": desired.module,
+                    "service": desired.service,
+                    "label": _object_label(desired),
+                    "operation": "none",
+                    "status": "unchanged",
+                    "match_key": list(match_key) if match_key is not None else None,
+                }
+            )
+            continue
+
         try:
+            payload_override = None
+            if service_order_context is not None and _is_config_service(desired):
+                payload_override = _drop_order_no(
+                    _drop_masked_secret_placeholders(desired.payload)
+                )
             plan.append(
                 _plan_change(
                     plugin,
@@ -778,6 +1072,7 @@ def build_import_plan(
                     match_key=match_key,
                     settings=settings,
                     mask_secrets=mask_secrets,
+                    payload_override=payload_override,
                 )
             )
         except Exception as exc:
@@ -809,7 +1104,56 @@ def build_import_plan(
         if item is not None:
             plan.append(item)
 
-    return plan
+    if service_order_context is not None:
+        config_service_create_skipped = any(
+            item.get("module") == _CONFIG_SERVICE_MODULE
+            and item.get("service") in _CONFIG_SERVICE_SERVICES
+            and item.get("operation") == "add"
+            and item.get("status") == "skipped"
+            for item in plan
+        )
+        if config_service_create_skipped:
+            plan.append(
+                {
+                    "line": service_order_context.line,
+                    "module": service_order_context.module,
+                    "service": service_order_context.service,
+                    "label": "config-service order",
+                    "operation": "update",
+                    "status": "skipped",
+                    "reason": (
+                        "service order restore requires missing config-services "
+                        "to be creatable"
+                    ),
+                }
+            )
+        else:
+            try:
+                plan.append(
+                    _plan_service_reorder(
+                        plugin,
+                        cp,
+                        token,
+                        api_catalog,
+                        service_order_context,
+                        settings=settings,
+                        mask_secrets=mask_secrets,
+                    )
+                )
+            except Exception as exc:
+                plan.append(
+                    {
+                        "line": service_order_context.line,
+                        "module": service_order_context.module,
+                        "service": service_order_context.service,
+                        "label": "config-service order",
+                        "operation": "update",
+                        "status": "skipped",
+                        "reason": str(exc),
+                    }
+                )
+
+    return _ordered_plan(plan, settings=settings)
 
 
 def _execute_plan_item(
@@ -942,6 +1286,20 @@ def _emit_summary(report: dict[str, Any]) -> None:
         print(f"Report: {artifacts['report']}")
 
 
+def _changes_only_report(report: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **report,
+        "items": [
+            item
+            for item in report.get("items", [])
+            if not (
+                item.get("operation") == "none"
+                and item.get("status") == "unchanged"
+            )
+        ],
+    }
+
+
 def _current_scope(
     commands: list[ConfigCommand],
     *,
@@ -1042,7 +1400,7 @@ def handle_import_command(
         report["artifacts"] = {"report": str(out_path)}
         ensure_parent_dir(Path(out_path))
         write_value_to_file(
-            report,
+            _changes_only_report(report),
             out_path,
             data_format="json",
             mask_secrets=False,

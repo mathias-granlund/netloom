@@ -14,6 +14,7 @@ ACTIVE_PLUGIN_ENV = "NETLOOM_ACTIVE_PLUGIN"
 CONFIG_DIR_ENV = "NETLOOM_CONFIG_DIR"
 CLI_TIMING_ENV = "NETLOOM_CLI_TIMING"
 RUNNING_CONFIG_EXCLUDE_ENV = "NETLOOM_RUNNING_CONFIG_EXCLUDE"
+IMPORT_ORDER_ENV = "NETLOOM_IMPORT_ORDER"
 CONFIG_FILE_NAME = "config.env"
 PLUGINS_DIR_NAME = "plugins"
 DEFAULTS_FILE_NAME = "defaults.env"
@@ -25,6 +26,20 @@ DEFAULT_HTTPS_PREFIX = "https://"
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_PLUGIN = None
 DEFAULT_RUNNING_CONFIG_EXCLUDE = "logs,globalserverconfiguration/messaging-setup"
+DEFAULT_IMPORT_ORDER = (
+    "policyelements/auth-method,"
+    "policyelements/auth-source,"
+    "policyelements/role,"
+    "policyelements/network-device,"
+    "policyelements/network-device-group,"
+    "enforcementprofile/enforcement-profile,"
+    "policyelements/enforcement-policy,"
+    "policyelements/role-mapping,"
+    "policyelements/config-service,"
+    "policyelements/service,"
+    "policyelements/config-service-reorder,"
+    "policyelements/service-reorder"
+)
 SECRET_FIELDS = (
     "client_secret",
     "radius_secret",
@@ -519,6 +534,7 @@ class Settings:
     profiles_path: Path | None = None
     credentials_path: Path | None = None
     running_config_exclude: str = DEFAULT_RUNNING_CONFIG_EXCLUDE
+    import_order: str = DEFAULT_IMPORT_ORDER
     paths: AppPaths = field(default_factory=lambda: default_paths().ensure())
 
     @property
@@ -656,6 +672,9 @@ def _build_settings_from_values(
     running_config_exclude = _resolve_value(
         RUNNING_CONFIG_EXCLUDE_ENV, values, active_profile=active_profile
     )
+    import_order = _resolve_value(
+        IMPORT_ORDER_ENV, values, active_profile=active_profile
+    )
 
     return Settings(
         plugin=active_plugin,
@@ -722,6 +741,7 @@ def _build_settings_from_values(
             if running_config_exclude is None
             else running_config_exclude
         ),
+        import_order=DEFAULT_IMPORT_ORDER if import_order is None else import_order,
         paths=paths,
     )
 

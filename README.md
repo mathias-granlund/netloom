@@ -171,6 +171,13 @@ netloom import --file=running-config.txt --dry-run
 netloom import --file=running-config.txt --out=import-report.json
 ```
 
+`--out` writes a JSON report with only changed, planned, skipped, or failed
+items; unchanged objects are counted in the summary but omitted from `items`.
+
+Imports follow `NETLOOM_IMPORT_ORDER` so dependency objects are restored before
+objects that reference them. Override it with comma-separated `module/service`
+entries if a deployment needs a different order.
+
 `--exclude=module[/service][,...]` replaces `NETLOOM_RUNNING_CONFIG_EXCLUDE`
 for a single export or import run.
 

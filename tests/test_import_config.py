@@ -82,6 +82,80 @@ def _catalog(*, delete: bool = True, replace: bool = True):
     }
 
 
+def _service_catalog():
+    service_fields = [
+        {"name": "name", "required": True},
+        {"name": "template", "required": True},
+        {"name": "enabled", "required": False},
+        {"name": "order_no", "required": False},
+        {"name": "enf_policy", "required": True},
+    ]
+    return {
+        "modules": {
+            "policyelements": {
+                "config-service": {
+                    "actions": {
+                        "add": {
+                            "method": "POST",
+                            "paths": ["/api/config/service"],
+                            "body_fields": service_fields,
+                        },
+                        "replace": {
+                            "method": "PUT",
+                            "paths": [
+                                "/api/config/service/{id}",
+                                "/api/config/service/name/{services_name}",
+                            ],
+                            "params": ["id", "services_name"],
+                            "body_fields": service_fields,
+                        },
+                        "delete": {
+                            "method": "DELETE",
+                            "paths": [
+                                "/api/config/service/{id}",
+                                "/api/config/service/name/{services_name}",
+                            ],
+                            "params": ["id", "services_name"],
+                        },
+                    },
+                },
+                "config-service-reorder": {
+                    "actions": {
+                        "update": {
+                            "method": "PATCH",
+                            "paths": ["/api/config/service/reorder"],
+                            "params": ["service_orders"],
+                            "body_fields": [
+                                {"name": "service_orders", "required": True},
+                            ],
+                        }
+                    },
+                },
+                "enforcement-policy": {
+                    "actions": {
+                        "add": {
+                            "method": "POST",
+                            "paths": ["/api/enforcement-policy"],
+                            "body_fields": [
+                                {"name": "name", "required": True},
+                                {"name": "enforcement_type", "required": True},
+                                {"name": "default_enforcement_profile"},
+                                {"name": "rule_eval_algo"},
+                                {"name": "rules"},
+                            ],
+                        },
+                        "delete": {
+                            "method": "DELETE",
+                            "paths": ["/api/enforcement-policy/name/{name}"],
+                            "params": ["name"],
+                        },
+                    },
+                },
+            }
+        }
+    }
+
+
 class _CP:
     def __init__(self):
         self.calls: list[dict] = []
@@ -135,7 +209,10 @@ class _CP:
                 "payload": payload,
             }
         )
-        return {"id": args["id"], **payload}
+        response = dict(payload)
+        if "id" in args:
+            response["id"] = args["id"]
+        return response
 
     def delete(self, api_catalog, token, args, *, params=None):
         self.calls.append(
@@ -147,7 +224,11 @@ class _CP:
                 "params": params,
             }
         )
-        return {"deleted": args["id"]}
+        return {
+            "deleted": args.get("id")
+            or args.get("name")
+            or args.get("services_name")
+        }
 
 
 def _plugin(cp, *, preflight=None):
@@ -175,17 +256,83 @@ def _command(line_no, payload, *, source_id=7, action="add", **extra):
     )
 
 
+def _config_texts(*entries: tuple[int, dict]) -> str:
+    lines = ["# netloom running-config"]
+    for source_id, payload in entries:
+        lines.extend(
+            [
+                f"# source-id: {source_id}",
+                (
+                    "netloom policyelements network-device add "
+                    f"--payload-json={json.dumps(json.dumps(payload))}"
+                ),
+            ]
+        )
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _config_text(payload: dict, *, source_id=7) -> str:
-    return "\n".join(
-        [
-            "# netloom running-config",
-            f"# source-id: {source_id}",
-            (
-                "netloom policyelements network-device add "
-                f"--payload-json={json.dumps(json.dumps(payload))}"
+    return _config_texts((source_id, payload))
+
+
+def _network_device_config(name: str, ip_address: str) -> dict:
+    return {"name": name, "ip_address": ip_address}
+
+
+def _service_payload(
+    name: str,
+    order_no: int,
+    *,
+    enabled: bool = True,
+    enf_policy: str = "Allow Access",
+) -> dict:
+    return {
+        "name": name,
+        "template": "802.1X Wired",
+        "enabled": enabled,
+        "order_no": order_no,
+        "enf_policy": enf_policy,
+    }
+
+
+def _service_command(line_no: int, source_id: int, payload: dict) -> ConfigCommand:
+    return ConfigCommand(
+        line_no=line_no,
+        text="netloom policyelements config-service add",
+        args={
+            "module": "policyelements",
+            "service": "config-service",
+            "action": "add",
+            "payload_json": json.dumps(payload),
+        },
+        source_identity={"id": source_id},
+    )
+
+
+def _enforcement_policy_command(
+    line_no: int,
+    source_id: int,
+    name: str,
+) -> ConfigCommand:
+    return ConfigCommand(
+        line_no=line_no,
+        text="netloom policyelements enforcement-policy add",
+        args={
+            "module": "policyelements",
+            "service": "enforcement-policy",
+            "action": "add",
+            "payload_json": json.dumps(
+                {
+                    "name": name,
+                    "enforcement_type": "RADIUS",
+                    "default_enforcement_profile": "[Deny Access Profile]",
+                    "rule_eval_algo": "first-applicable",
+                    "rules": [],
+                }
             ),
-            "",
-        ]
+        },
+        source_identity={"id": source_id},
     )
 
 
@@ -346,6 +493,111 @@ def test_import_running_config_dry_run_plans_replace_for_changed_match(tmp_path)
     )
 
 
+def test_import_running_config_restores_config_service_with_single_reorder(
+    tmp_path,
+):
+    cp = _CP()
+    desired = [
+        _service_command(10, 1001, _service_payload("service-a", 1)),
+        _service_command(12, 1002, _service_payload("deleted-service", 2)),
+        _service_command(14, 1003, _service_payload("service-b", 3)),
+    ]
+    current = [
+        _service_command(10, 1001, _service_payload("service-a", 1)),
+        _service_command(14, 1003, _service_payload("service-b", 2)),
+    ]
+
+    report = import_running_config(
+        _plugin(cp),
+        cp,
+        "token",
+        _service_catalog(),
+        desired,
+        current,
+        source="running-config.txt",
+        settings=_settings(tmp_path),
+        dry_run=True,
+    )
+
+    assert cp.calls == []
+    assert report["summary"]["planned"] == 2
+    assert report["summary"]["create"] == 1
+    assert report["summary"]["update"] == 1
+    assert report["summary"]["replace"] == 0
+
+    planned = [item for item in report["items"] if item["status"] == "planned"]
+    assert [item["operation"] for item in planned] == ["add", "update"]
+    assert planned[0]["label"] == "deleted-service"
+    assert "order_no" not in planned[0]["command"]
+    assert (
+        "netloom policyelements config-service delete "
+        "--services-name=deleted-service"
+    ) in planned[0]["rollback_command"]
+    assert planned[1]["service"] == "config-service-reorder"
+    assert planned[1]["label"] == "config-service order"
+    assert '"service_name":"deleted-service","order_no":2' in planned[1]["command"]
+    assert '"service_name":"service-b","order_no":3' in planned[1]["command"]
+
+
+def test_import_running_config_orders_dependencies_before_config_services(
+    tmp_path,
+):
+    cp = _CP()
+    desired = [
+        _service_command(
+            30,
+            3001,
+            _service_payload(
+                "MG_prefix_802.1X_Service",
+                3,
+                enf_policy="MG_Prefix_Enforcement_Policy",
+            ),
+        ),
+        _enforcement_policy_command(
+            40,
+            4001,
+            "MG_Prefix_Enforcement_Policy",
+        ),
+    ]
+
+    report = import_running_config(
+        _plugin(cp),
+        cp,
+        "token",
+        _service_catalog(),
+        desired,
+        [],
+        source="running-config.txt",
+        settings=_settings(tmp_path),
+        dry_run=True,
+    )
+
+    planned = [item for item in report["items"] if item["status"] == "planned"]
+    assert [
+        (item["module"], item["service"], item["label"], item["operation"])
+        for item in planned
+    ] == [
+        (
+            "policyelements",
+            "enforcement-policy",
+            "MG_Prefix_Enforcement_Policy",
+            "add",
+        ),
+        (
+            "policyelements",
+            "config-service",
+            "MG_prefix_802.1X_Service",
+            "add",
+        ),
+        (
+            "policyelements",
+            "config-service-reorder",
+            "config-service order",
+            "update",
+        ),
+    ]
+
+
 def test_import_running_config_executes_replace_for_changed_match(tmp_path):
     cp = _CP()
     desired = [_command(3, {"name": "switch-a", "ip_address": "192.0.2.11"})]
@@ -406,12 +658,19 @@ def test_handle_import_command_exports_current_and_writes_report(
     cp = _CP()
     config_path = tmp_path / "running-config.txt"
     report_path = tmp_path / "import-report.json"
-    text = _config_text({"name": "switch-a", "ip_address": "192.0.2.10"})
-    config_path.write_text(text, encoding="utf-8")
+    desired_text = _config_texts(
+        (7, _network_device_config("switch-a", "192.0.2.10")),
+        (8, _network_device_config("switch-b", "192.0.2.11")),
+    )
+    current_text = _config_texts(
+        (7, _network_device_config("switch-a", "192.0.2.10")),
+        (8, _network_device_config("switch-b", "192.0.2.12")),
+    )
+    config_path.write_text(desired_text, encoding="utf-8")
 
     def render_current(*args, **kwargs):
         assert kwargs["exclude"] == {("logs", None)}
-        return text
+        return current_text
 
     monkeypatch.setattr(import_config, "render_running_config", render_current)
     deps = types.SimpleNamespace(
@@ -436,7 +695,12 @@ def test_handle_import_command_exports_current_and_writes_report(
     assert report_path.exists()
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert report["summary"]["unchanged"] == 1
-    assert report["summary"]["planned"] == 0
+    assert report["summary"]["planned"] == 1
+    assert len(report["items"]) == 1
+    assert report["items"][0]["label"] == "switch-b"
+    assert report["items"][0]["operation"] == "replace"
+    assert report["items"][0]["status"] == "planned"
     out = capsys.readouterr().out
     assert "Import dry run" in out
     assert "Unchanged: 1" in out
+    assert "Planned: 1" in out

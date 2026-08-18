@@ -36,6 +36,7 @@ def _configure_runtime(monkeypatch, tmp_path):
     monkeypatch.delenv("NETLOOM_ACTIVE_PROFILE", raising=False)
     monkeypatch.delenv("NETLOOM_ACTIVE_PLUGIN", raising=False)
     monkeypatch.delenv("NETLOOM_RUNNING_CONFIG_EXCLUDE", raising=False)
+    monkeypatch.delenv("NETLOOM_IMPORT_ORDER", raising=False)
     return config_dir
 
 
@@ -200,6 +201,32 @@ def test_load_settings_reads_running_config_exclude(monkeypatch, tmp_path):
     monkeypatch.setenv("NETLOOM_RUNNING_CONFIG_EXCLUDE", "")
     settings = load_settings()
     assert settings.running_config_exclude == ""
+
+
+def test_load_settings_reads_import_order(monkeypatch, tmp_path):
+    config_dir = _configure_runtime(monkeypatch, tmp_path)
+    _write_profiles(config_dir)
+
+    settings = load_settings()
+    assert settings.import_order == config.DEFAULT_IMPORT_ORDER
+
+    _profile_path(config_dir, "prod").write_text(
+        "\n".join(
+            [
+                "NETLOOM_SERVER=prod.clearpass.example:443",
+                "NETLOOM_IMPORT_ORDER=policyelements/config-service",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings()
+    assert settings.import_order == "policyelements/config-service"
+
+    monkeypatch.setenv("NETLOOM_IMPORT_ORDER", "")
+    settings = load_settings()
+    assert settings.import_order == ""
 
 
 def test_load_settings_without_active_plugin(monkeypatch, tmp_path):

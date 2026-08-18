@@ -514,7 +514,7 @@ def render_import_help(header: str, usage: str) -> str:
         + "  --dry-run                  Build the import plan without writing\n"
         + "  --continue-on-error        Continue after a failed planned write\n"
         + "  --exclude=module[/service][,...]\n"
-        + "  --out=PATH                 Write an import report as JSON\n"
+        + "  --out=PATH                 Write a changes-only import report as JSON\n"
         + "  --catalog-view=visible|full\n"
         + "  --decrypt"
     )

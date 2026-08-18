@@ -239,7 +239,10 @@ netloom import --file=running-config.txt --continue-on-error --out=import-report
 
 Use `--dry-run` before writing to review the planned reversible changes.
 Use `--continue-on-error` to keep processing after a failed line and
-`--out=FILE` to save a JSON import report.
+`--out=FILE` to save a JSON import report. The saved report omits unchanged
+object entries and keeps only changed, planned, skipped, or failed items.
+Imports follow `NETLOOM_IMPORT_ORDER` so dependency objects are restored before
+objects that reference them.
 
 By default, exports mask secret fields. To produce a complete replay file,
 export with `--decrypt` or configure a plugin-supported secret provider that
@@ -260,6 +263,7 @@ can backfill missing secret values during import.
 - `NETLOOM_APP_LOG_DIR`
 - `NETLOOM_CONFIG_DIR`
 - `NETLOOM_RUNNING_CONFIG_EXCLUDE`
+- `NETLOOM_IMPORT_ORDER`
 
 Plugin references may define additional provider-specific variables.
 
