@@ -293,6 +293,24 @@ def test_service_privilege_rule_index_includes_verified_live_mappings():
         "cppm_services",
     )
     assert rules[("policyelements", "service-reorder")].privileges == ("cppm_services",)
+    assert rules[("policyelements", "config-service-disable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "config-service-enable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "config-service-name-disable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "config-service-name-enable")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "config-service-reorder")].privileges == (
+        "cppm_services",
+    )
+    assert rules[("policyelements", "config-service")].privileges == (
+        "cppm_services",
+    )
     assert rules[("policyelements", "auth-source")].privileges == (
         "auth_config",
         "cppm_config",

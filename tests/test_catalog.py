@@ -547,6 +547,76 @@ def test_filter_catalog_by_effective_privileges_filters_known_services():
     assert metadata["filtered_service_count"] == 1
 
 
+def test_filter_catalog_by_effective_privileges_maps_config_service():
+    catalog = {
+        "modules": {
+            "policyelements": {
+                "config-service": {
+                    "actions": {
+                        "list": {"method": "GET"},
+                        "add": {"method": "POST"},
+                    }
+                }
+            }
+        }
+    }
+
+    filtered, metadata = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {
+                "name": "cppm_services",
+                "access": "full",
+                "raw": "cppm_services",
+            }
+        ],
+    )
+
+    service = filtered["policyelements"]["config-service"]
+    assert service["required_privileges"] == ["cppm_services"]
+    assert service["catalog_visibility"] == "privilege_gated_verified"
+    assert "add" in service["actions"]
+    assert metadata["filtered_service_count"] == 0
+
+
+def test_filter_catalog_by_effective_privileges_maps_config_service_actions():
+    service_names = [
+        "config-service-disable",
+        "config-service-enable",
+        "config-service-name-disable",
+        "config-service-name-enable",
+        "config-service-reorder",
+    ]
+    catalog = {
+        "modules": {
+            "policyelements": {
+                service_name: {"actions": {"add": {"method": "POST"}}}
+                for service_name in service_names
+            }
+        }
+    }
+
+    filtered, metadata = _filter_catalog_by_effective_privileges(
+        catalog,
+        [
+            {
+                "name": "cppm_services",
+                "access": "full",
+                "raw": "cppm_services",
+            }
+        ],
+    )
+
+    filtered_services = filtered["policyelements"]
+    assert set(service_names) <= set(filtered_services)
+    for service_name in service_names:
+        service = filtered_services[service_name]
+        assert service["required_privileges"] == ["cppm_services"]
+        assert service["catalog_visibility"] == "privilege_gated_verified"
+        assert "add" in service["actions"]
+    assert metadata["filtered_service_count"] == 0
+
+
 def test_filter_catalog_by_effective_privileges_supports_all_of_rules():
     catalog = {
         "modules": {

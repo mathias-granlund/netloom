@@ -780,6 +780,36 @@ SERVICE_PRIVILEGE_RULES: tuple[ServicePrivilegeRule, ...] = (
     ),
     ServicePrivilegeRule(
         module="policyelements",
+        service="config-service-disable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="config-service-enable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="config-service-name-disable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="config-service-name-enable",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="config-service-reorder",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
+        service="config-service",
+        privileges=("cppm_services",),
+    ),
+    ServicePrivilegeRule(
+        module="policyelements",
         service="service",
         privileges=("cppm_services",),
     ),
