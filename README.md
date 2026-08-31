@@ -196,8 +196,8 @@ need a configured secret provider before import.
 
 For full command reference and plugin-specific details:
 
-- Shared CLI reference: `man netloom` or [man/netloom.md](man/netloom.md)
-- ClearPass plugin reference: `man netloom-clearpass` or [man/netloom-clearpass.md](man/netloom-clearpass.md)
+- Shared CLI reference: `man netloom` or [docs/man/netloom.md](docs/man/netloom.md)
+- ClearPass plugin reference: `man netloom-clearpass` or [docs/man/netloom-clearpass.md](docs/man/netloom-clearpass.md)
 - Shell completion setup and generic `--filter=` syntax: `man netloom`
 - ClearPass-oriented filter and workflow examples: `man netloom-clearpass`
 - Live action help from your current cache: `netloom <module> <service> ?`

@@ -15,12 +15,13 @@ class ManpageSpec:
 
     @property
     def markdown_path(self) -> Path:
-        return _project_root() / "man" / f"{self.stem}.md"
+        return _project_root() / "docs" / "man" / f"{self.stem}.md"
 
     @property
     def roff_path(self) -> Path:
         suffix = f".{self.section}"
-        return _project_root() / "netloom" / "data" / "man" / f"{self.stem}{suffix}"
+        package_root = _package_root()
+        return package_root / "data" / "man" / f"{self.stem}{suffix}"
 
 
 MANPAGE_SPECS = (
@@ -46,7 +47,18 @@ _NAME_SECTION_RE = re.compile(
 
 
 def _project_root() -> Path:
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "pyproject.toml").exists():
+            return parent
     return Path(__file__).resolve().parents[1]
+
+
+def _package_root() -> Path:
+    project_root = _project_root()
+    src_package = project_root / "src" / "netloom"
+    if src_package.exists():
+        return src_package
+    return project_root / "netloom"
 
 
 def _read_version() -> str:
@@ -267,7 +279,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="netloom-generate-manpages",
         description=(
             "Generate installable roff man pages under netloom/data/man from the "
-            "markdown sources in man/."
+            "markdown sources in docs/man/."
         ),
     )
     parser.add_argument(
@@ -306,3 +318,7 @@ __all__ = [
     "rendered_manpages",
     "write_manpages",
 ]
+
+
+if __name__ == "__main__":
+    main()

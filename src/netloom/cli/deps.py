@@ -89,13 +89,13 @@ def load_cached_catalog_for_plugin(*args, **kwargs):
 
 
 def handle_copy_command(*args, **kwargs):
-    from netloom.cli.copy import handle_copy_command as impl
+    from netloom.core.copy import handle_copy_command as impl
 
     return impl(*args, **kwargs)
 
 
 def handle_diff_command(*args, **kwargs):
-    from netloom.cli.diff import handle_diff_command as impl
+    from netloom.core.diff import handle_diff_command as impl
 
     return impl(*args, **kwargs)
 
@@ -119,13 +119,13 @@ def handle_shell_command(*args, **kwargs):
 
 
 def handle_show_command(*args, **kwargs):
-    from netloom.cli.show import handle_show_command as impl
+    from netloom.core.show import handle_show_command as impl
 
     return impl(*args, **kwargs)
 
 
 def handle_import_command(*args, **kwargs):
-    from netloom.cli.import_config import handle_import_command as impl
+    from netloom.core.import_config import handle_import_command as impl
 
     return impl(*args, **kwargs)
 
@@ -150,7 +150,7 @@ def should_mask_secrets(*args, **kwargs):
 
 def _actions() -> dict[str, object]:
     if not _ACTIONS:
-        from netloom.cli.commands import ACTIONS as imported_actions
+        from netloom.core.actions import ACTIONS as imported_actions
 
         _ACTIONS.update(imported_actions)
     return _ACTIONS

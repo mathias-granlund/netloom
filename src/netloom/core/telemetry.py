@@ -120,3 +120,6 @@ class CacheUpdateProgressReporter:
             return
         if event == "done":
             self._print("cache update complete")
+
+
+__all__ = ["CacheUpdateProgressReporter", "CliProfiler"]

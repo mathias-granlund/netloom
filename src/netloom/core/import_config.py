@@ -7,21 +7,22 @@ from dataclasses import field as dataclass_field
 from pathlib import Path
 from typing import Any
 
-from netloom.cli.commands import (
+from netloom.core.actions import (
     _prepare_plugin_write_payload,
     _request_args_and_payload,
 )
-from netloom.cli.parser import BOOLEAN_FLAGS, _normalize_flag_name
-from netloom.cli.show import (
+from netloom.core.command_syntax import BOOLEAN_FLAGS
+from netloom.core.command_syntax import normalize_flag_name as _normalize_flag_name
+from netloom.core.config import SECRET_FIELDS, Settings
+from netloom.core.help_shared import resolve_service_entry
+from netloom.core.resolver import query_params_for_action
+from netloom.core.running_config import (
     _exclude_scope_from_settings,
     _parse_scope,
     _render_command,
     _selector_args_for_item,
     render_running_config,
 )
-from netloom.core.config import SECRET_FIELDS, Settings
-from netloom.core.help_shared import resolve_service_entry
-from netloom.core.resolver import query_params_for_action
 from netloom.io.files import ensure_parent_dir, load_payload_json
 from netloom.io.output import (
     sanitize_secrets,

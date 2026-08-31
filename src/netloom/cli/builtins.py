@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from netloom.cli.telemetry import CacheUpdateProgressReporter, CliProfiler
+from netloom.core.telemetry import CacheUpdateProgressReporter, CliProfiler
 
 if TYPE_CHECKING:
     from netloom.core.config import Settings

@@ -3,19 +3,9 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
+from netloom.core.command_syntax import BOOLEAN_FLAGS, normalize_flag_name
+
 BUILTIN_MODULES = {"cache", "import", "load", "server", "shell", "show"}
-BOOLEAN_FLAGS = {
-    "verbose",
-    "version",
-    "debug",
-    "console",
-    "all",
-    "show_all",
-    "decrypt",
-    "dry_run",
-    "continue_on_error",
-    "help",
-}
 GLOBAL_VALUE_FLAGS = {
     "api_token",
     "api_token_file",
@@ -36,10 +26,6 @@ GLOBAL_VALUE_FLAGS = {
     "encrypt",
 }
 
-VALUE_FLAG_ALIASES = {
-    "format": "data_format",
-}
-
 
 class CliParseError(ValueError):
     def __init__(self, message: str, *, context: dict[str, Any] | None = None):
@@ -58,8 +44,7 @@ class _ArgumentParser(argparse.ArgumentParser):
 
 
 def _normalize_flag_name(key: str) -> str:
-    normalized = key.replace("-", "_")
-    return VALUE_FLAG_ALIASES.get(normalized, normalized)
+    return normalize_flag_name(key)
 
 
 def _flag_names(name: str) -> list[str]:

@@ -3,7 +3,7 @@
 GitHub-friendly reference for the bundled ClearPass plugin.
 
 Markdown source of truth for the installable man page:
-[netloom/data/man/netloom-clearpass.7](../netloom/data/man/netloom-clearpass.7)
+[../../src/netloom/data/man/netloom-clearpass.7](../../src/netloom/data/man/netloom-clearpass.7)
 
 ## Name
 
@@ -398,5 +398,5 @@ netloom certificateauthority ?
 
 ## See Also
 
-- [man/netloom.md](./netloom.md)
-- [netloom/data/man/netloom-clearpass.7](../netloom/data/man/netloom-clearpass.7)
+- [docs/man/netloom.md](./netloom.md)
+- [src/netloom/data/man/netloom-clearpass.7](../../src/netloom/data/man/netloom-clearpass.7)

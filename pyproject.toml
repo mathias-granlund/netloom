@@ -52,8 +52,10 @@ netloom-install-manpage = "netloom.install_manpage:main"
 
 [tool.setuptools]
 include-package-data = true
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["netloom*"]
 exclude = ["tests*", "cache*", "logs*", "examples*"]
 
@@ -73,4 +75,5 @@ indent-style = "space"
 line-ending = "lf"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+pythonpath = ["src"]
+testpaths = ["src/tests"]

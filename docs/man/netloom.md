@@ -3,7 +3,7 @@
 GitHub-friendly reference for the shared `netloom` CLI.
 
 Markdown source of truth for the installable man page:
-[netloom/data/man/netloom.1](../netloom/data/man/netloom.1)
+[../../src/netloom/data/man/netloom.1](../../src/netloom/data/man/netloom.1)
 
 ## Name
 
@@ -358,5 +358,5 @@ netloom import --file=running-config.txt --dry-run
 
 ## See Also
 
-- [man/netloom-clearpass.md](./netloom-clearpass.md)
-- [netloom/data/man/netloom.1](../netloom/data/man/netloom.1)
+- [docs/man/netloom-clearpass.md](./netloom-clearpass.md)
+- [src/netloom/data/man/netloom.1](../../src/netloom/data/man/netloom.1)

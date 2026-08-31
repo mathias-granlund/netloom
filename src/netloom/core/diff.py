@@ -5,7 +5,8 @@ import json
 from collections import defaultdict
 from typing import Any
 
-from netloom.cli.copy import (
+from netloom.core.config import Settings, load_settings_for_profile
+from netloom.core.copy import (
     VALID_MATCH_MODES,
     _copy_item_label,
     _default_artifact_path,
@@ -18,7 +19,6 @@ from netloom.cli.copy import (
     _service_args,
     _validate_compare_args,
 )
-from netloom.core.config import Settings, load_settings_for_profile
 from netloom.core.pagination import fetch_all_list_results
 from netloom.io.output import should_mask_secrets, write_value_to_file
 

@@ -4,8 +4,15 @@ from importlib.metadata import version as _version
 from pathlib import Path
 
 
+def _project_root() -> Path:
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return Path(__file__).resolve().parents[1]
+
+
 def _source_version() -> str | None:
-    pyproject_path = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    pyproject_path = _project_root() / "pyproject.toml"
     try:
         text = pyproject_path.read_text(encoding="utf-8")
     except OSError:

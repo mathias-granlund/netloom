@@ -101,3 +101,7 @@ def main() -> None:
             "If `man netloom` or `man netloom-clearpass` still do not work, "
             "add ~/.local/share/man to MANPATH."
         )
+
+
+if __name__ == "__main__":
+    main()

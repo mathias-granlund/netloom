@@ -58,6 +58,8 @@ Current implementation:
 
 ## Step 3: Move Execution Orchestration Into Core
 
+Status: implemented.
+
 Move generic execution flow out of `netloom.cli` while keeping vendor execution in
 plugins.
 
@@ -87,6 +89,27 @@ CLI responsibilities after this step:
 - Parse command-line syntax into `NetloomRequest` and `ExecutionOptions`.
 - Call core.
 - Render or write `NetloomResult` for terminal users.
+
+Current implementation:
+
+- `netloom.core.runtime.run_request()` accepts `NetloomRequest` plus
+  `ExecutionOptions` and now owns plugin-backed execution orchestration:
+  settings loading, CLI/API override application, logging setup, plugin
+  resolution, plugin builtin dispatch, copy/diff dispatch, generic action
+  lookup, client/auth/catalog setup, and `NetloomResult` wrapping.
+- `netloom.cli.runtime.run_cli()` keeps lightweight CLI concerns such as version,
+  help, and syntax-only builtins, then delegates plugin-backed execution to core.
+- `netloom.cli.commands` is a compatibility alias for `netloom.core.actions` so
+  existing imports and monkeypatch-based tests keep targeting the actual action
+  implementation.
+- Copy and diff workflow implementations now live in `netloom.core.copy` and
+  `netloom.core.diff`; the old `netloom.cli.copy` and `netloom.cli.diff` modules
+  are compatibility aliases.
+- Running-config show command orchestration now lives in `netloom.core.show`; the
+  old `netloom.cli.show` module is a compatibility alias.
+- Stale imports from the removed `netloom.cli.commands` module were redirected to
+  `netloom.core.actions`, and running-config helper imports were redirected to
+  `netloom.core.running_config`.
 
 ## Step 4: Move To `src/` Layout And Finalize Boundaries
 

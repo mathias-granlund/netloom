@@ -197,8 +197,7 @@ class ExecutablePlugin(Plugin, Protocol):
         self,
         request: NetloomRequest,
         context: PluginExecutionContext,
-    ) -> NetloomResult:
-        ...
+    ) -> NetloomResult: ...
 
 
 __all__ = [

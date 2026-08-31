@@ -7,7 +7,7 @@ from netloom.cli import catalog_runtime as _catalog_runtime
 from netloom.cli import deps as _deps
 from netloom.cli import runtime as _runtime
 from netloom.cli.parser import CliParseError, parse_cli
-from netloom.cli.telemetry import CacheUpdateProgressReporter, CliProfiler
+from netloom.core.telemetry import CacheUpdateProgressReporter, CliProfiler
 
 if TYPE_CHECKING:
     from netloom.core.config import Settings
