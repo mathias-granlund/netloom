@@ -77,7 +77,7 @@ def _write_netloom_format(
     console: bool,
     mask_secrets: bool,
 ):
-    from netloom.cli.show import render_netloom_format
+    from netloom.core.running_config import render_netloom_format
 
     rendered = render_netloom_format(
         _plugin_for_netloom_format(cp),

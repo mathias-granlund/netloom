@@ -1,32 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+from netloom.contracts import PluginDefinition
 from netloom.core.cache import (
     load_cached_interactive_catalog,
     supports_interactive_catalog,
 )
 from netloom.core.config import Settings, plugins_config_dir
-
-
-@dataclass(frozen=True)
-class PluginDefinition:
-    name: str
-    display_name: str
-    build_client: Callable[..., Any]
-    resolve_auth_token: Callable[..., str]
-    get_api_catalog: Callable[..., dict[str, Any]]
-    load_cached_catalog: Callable[..., dict[str, Any] | None]
-    clear_api_cache: Callable[..., bool]
-    normalize_copy_payload: Callable[..., dict[str, Any]]
-    restore_secret_fields: Callable[..., Any]
-    preflight_error_for_payload: Callable[..., str | None]
-    prepare_write_payload: Callable[..., Any] | None = None
-    load_cached_index: Callable[..., dict[str, Any] | None] | None = None
-    help_context: Callable[[], dict[str, Any]] | None = None
-    normalize_diff_item: Callable[..., Any] | None = None
 
 
 def _load_clearpass_plugin() -> PluginDefinition:

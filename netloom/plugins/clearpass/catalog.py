@@ -1157,6 +1157,10 @@ class ApiEndpointCache:
         self._record_timing("write_fast_index", started)
 
     def _raw_get_text(self, path: str) -> str:
+        raw_get_text = getattr(self.cp, "raw_get_text", None)
+        if callable(raw_get_text):
+            return raw_get_text(path, token=self.token)
+
         url = f"{self.cp.https_prefix}{self.cp.server}{path}"
         headers = {
             "Accept": "application/json, application/vnd.swagger+json, */*",

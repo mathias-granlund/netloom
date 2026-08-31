@@ -2,54 +2,21 @@ from __future__ import annotations
 
 import logging
 import re
-from dataclasses import dataclass
 from urllib.parse import quote
 
 import requests
 
+from netloom.contracts import HttpRequest, HttpResponse
 from netloom.core.help_shared import display_services_for_module, resolve_service_entry
+from netloom.http import (
+    RequestsHttpClient,
+    ResponseMetadata,
+    response_metadata,
+)
 from netloom.io.output import sanitize_secrets
 
 log = logging.getLogger(__name__)
 _PLACEHOLDER_RE = re.compile(r"\{([^}]+)\}")
-_TEXT_CONTENT_MARKERS = (
-    "json",
-    "xml",
-    "javascript",
-    "yaml",
-    "html",
-    "csv",
-    "x-www-form-urlencoded",
-)
-
-
-@dataclass(frozen=True)
-class ResponseMetadata:
-    content_type: str = ""
-    filename: str | None = None
-    is_binary: bool = False
-
-
-def _parse_content_type(value: str | None) -> str:
-    return (value or "").split(";", 1)[0].strip().lower()
-
-
-def _is_binary_content_type(content_type: str | None) -> bool:
-    parsed = _parse_content_type(content_type)
-    if not parsed:
-        return False
-    if parsed.startswith("text/"):
-        return False
-    return not any(marker in parsed for marker in _TEXT_CONTENT_MARKERS)
-
-
-def _filename_from_content_disposition(value: str | None) -> str | None:
-    if not value:
-        return None
-    match = re.search(r'filename\*?=(?:UTF-8\'\')?"?([^";]+)"?', value, re.IGNORECASE)
-    if not match:
-        return None
-    return match.group(1).strip().strip('"')
 
 
 class ClearPassClient:
@@ -69,6 +36,7 @@ class ClearPassClient:
         self.mask_secrets = mask_secrets
         self.session = requests.Session()
         self.session.headers.update({"accept": "application/json"})
+        self.http_client = RequestsHttpClient(self.session)
         self.last_response_meta = ResponseMetadata()
 
     def request(
@@ -105,55 +73,25 @@ class ClearPassClient:
         json_body: dict | None = None,
     ):
         url = f"{self.https_prefix}{self.server}{path}"
-        headers = {"Authorization": f"Bearer {token}"} if token else None
-        response = self.session.request(
-            method=method.upper(),
-            url=url,
-            params=params,
-            json=json_body,
-            headers=headers,
-            verify=self.verify_ssl,
-            timeout=self.timeout,
-        )
-        self.last_response_meta = ResponseMetadata(
-            content_type=_parse_content_type(response.headers.get("content-type")),
-            filename=_filename_from_content_disposition(
-                response.headers.get("content-disposition")
-            ),
-            is_binary=_is_binary_content_type(response.headers.get("content-type")),
-        )
-
-        try:
-            response.raise_for_status()
-        except requests.HTTPError:
-            content_type = response.headers.get("content-type", "")
-            body = response.text
-            if len(body) > 4000:
-                body = body[:4000] + "\n... (truncated)"
-
-            request_json = sanitize_secrets(json_body, mask_secrets=self.mask_secrets)
-
-            debug_lines = [
-                "HTTP ERROR (details below)",
-                f"HTTP {response.status_code} {response.reason}",
-                f"URL: {response.url}",
-                f"Method: {method.upper()}",
-                f"Content-Type: {content_type}",
-            ]
-            if params:
-                debug_lines.append(f"Query params: {params}")
-            if request_json is not None:
-                debug_lines.append(f"Request JSON: {request_json}")
-            debug_lines.append("Response body:")
-            debug_lines.extend(body.splitlines() or ["<empty>"])
-
-            log.error(
-                "HTTP %s %s - %s", response.status_code, response.reason, response.url
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        response = self.http_client.execute(
+            HttpRequest(
+                method=method,
+                url=url,
+                params=params or {},
+                json_body=json_body,
+                headers=headers,
+                verify_ssl=self.verify_ssl,
+                timeout=self.timeout,
             )
-            for line in debug_lines:
-                if line.strip():
-                    log.debug(line)
-            raise
+        )
+        self.last_response_meta = response_metadata(response)
+
+        if not response.ok:
+            self._log_http_error(response, method, params, json_body)
+            err = requests.HTTPError(response.text)
+            err.response = response
+            raise err
 
         if response.status_code == 204 or not response.content:
             return None
@@ -165,6 +103,67 @@ class ClearPassClient:
             return response.json()
         except ValueError:
             return response.text
+
+    def raw_get_text(
+        self,
+        path: str,
+        *,
+        token: str,
+        accept: str = "application/json, application/vnd.swagger+json, */*",
+    ) -> str:
+        url = f"{self.https_prefix}{self.server}{path}"
+        response = self.http_client.execute(
+            HttpRequest(
+                method="GET",
+                url=url,
+                headers={
+                    "Accept": accept,
+                    "Authorization": f"Bearer {token}",
+                },
+                verify_ssl=self.verify_ssl,
+                timeout=self.timeout,
+            )
+        )
+        if response.ok:
+            return response.text
+        err = requests.HTTPError(response.text)
+        err.response = response
+        raise err
+
+    def _log_http_error(
+        self,
+        response: HttpResponse,
+        method: str,
+        params: dict | None,
+        json_body: dict | None,
+    ) -> None:
+        content_type = response.headers.get("content-type", "")
+        body = response.text
+        if len(body) > 4000:
+            body = body[:4000] + "\n... (truncated)"
+
+        request_json = sanitize_secrets(json_body, mask_secrets=self.mask_secrets)
+
+        debug_lines = [
+            "HTTP ERROR (details below)",
+            f"HTTP {response.status_code} {response.reason}",
+            f"URL: {response.url}",
+            f"Method: {method.upper()}",
+            f"Content-Type: {content_type}",
+        ]
+        if params:
+            debug_lines.append(f"Query params: {params}")
+        if request_json is not None:
+            debug_lines.append(f"Request JSON: {request_json}")
+        debug_lines.append("Response body:")
+        debug_lines.extend(body.splitlines() or ["<empty>"])
+
+        log.error(
+            "HTTP %s %s - %s", response.status_code, response.reason, response.url
+        )
+        for line in debug_lines:
+            if line.strip():
+                log.debug(line)
 
     def login(self, api_paths: dict, credentials: dict) -> dict:
         payload = {

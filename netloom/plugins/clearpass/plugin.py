@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from netloom.contracts import PluginDefinition
 from netloom.core.config import Settings
-from netloom.core.plugin import PluginDefinition
 from netloom.io.files import load_api_token_file
 from netloom.plugins.clearpass import catalog
 from netloom.plugins.clearpass.client import ClearPassClient

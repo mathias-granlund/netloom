@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from netloom.core.config import RESERVED_ARGS, Settings
+from netloom.http.metadata import is_binary_content_type, parse_content_type
 from netloom.io.files import load_payload_file, load_payload_json
 
 _LIST_QUERY_PARAMS = {"filter", "sort", "offset", "limit", "calculate_count"}
@@ -34,15 +35,6 @@ _FILTER_OPERATOR_ALIASES = {
     "exists": "$exists",
 }
 
-_TEXT_CONTENT_MARKERS = (
-    "json",
-    "xml",
-    "javascript",
-    "yaml",
-    "html",
-    "csv",
-    "x-www-form-urlencoded",
-)
 _CONTENT_TYPE_EXTENSIONS = {
     "application/x-pkcs12": "p12",
     "application/pkcs12": "p12",
@@ -80,10 +72,6 @@ _RANDOM_PASSWORD_METHOD_ALIASES = {
     "strong": "nwa_strong_password",
     "nwa_strong_password": "nwa_strong_password",
 }
-
-
-def _normalize_content_type(value: str | None) -> str:
-    return (value or "").split(";", 1)[0].strip().lower()
 
 
 def _looks_like_json_filter(raw: str) -> bool:
@@ -175,34 +163,25 @@ def normalize_filter_value(raw):
     return json.dumps({field: {operator: value}}, ensure_ascii=False)
 
 
-def _is_binary_content_type(content_type: str | None) -> bool:
-    parsed = _normalize_content_type(content_type)
-    if not parsed:
-        return False
-    if parsed.startswith("text/"):
-        return False
-    return not any(marker in parsed for marker in _TEXT_CONTENT_MARKERS)
-
-
 def action_response_content_types(action_def: dict | None) -> list[str]:
     if not isinstance(action_def, dict):
         return []
     return [
-        _normalize_content_type(str(item))
+        parse_content_type(str(item))
         for item in action_def.get("response_content_types", []) or []
-        if isinstance(item, str) and _normalize_content_type(item)
+        if isinstance(item, str) and parse_content_type(item)
     ]
 
 
 def action_prefers_raw_output(action_def: dict | None) -> bool:
     content_types = action_response_content_types(action_def)
     return bool(content_types) and all(
-        _is_binary_content_type(content_type) for content_type in content_types
+        is_binary_content_type(content_type) for content_type in content_types
     )
 
 
 def _extension_for_content_type(content_type: str | None) -> str | None:
-    return _CONTENT_TYPE_EXTENSIONS.get(_normalize_content_type(content_type))
+    return _CONTENT_TYPE_EXTENSIONS.get(parse_content_type(content_type))
 
 
 def _timestamp_token() -> str:
