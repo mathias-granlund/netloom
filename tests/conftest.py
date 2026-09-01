@@ -18,12 +18,12 @@ PROJECT_ROOT = _project_root()
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from netloom.plugins.clearpass.api import ClearPassClient
 from netloom.plugins.clearpass.catalog import (
     OAUTH_ENDPOINTS,
     get_api_catalog,
     load_cached_catalog,
 )
-from netloom.plugins.clearpass.client import ClearPassClient
 
 
 def pytest_addoption(parser):

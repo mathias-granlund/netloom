@@ -76,4 +76,4 @@ line-ending = "lf"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["src/tests"]
+testpaths = ["tests"]

@@ -4,15 +4,15 @@ from netloom.contracts import PluginDefinition
 from netloom.core.config import Settings
 from netloom.io.files import load_api_token_file
 from netloom.plugins.clearpass import catalog
-from netloom.plugins.clearpass.client import ClearPassClient
-from netloom.plugins.clearpass.copy_hooks import (
+from netloom.plugins.clearpass.api import ClearPassClient
+from netloom.plugins.clearpass.help import build_help_context
+from netloom.plugins.clearpass.workflow_hooks import (
     normalize_copy_payload,
     normalize_diff_item,
     preflight_error_for_payload,
     prepare_write_payload,
     restore_secret_fields,
 )
-from netloom.plugins.clearpass.help import build_help_context
 
 
 def build_client(settings: Settings, *, mask_secrets: bool = True) -> ClearPassClient:

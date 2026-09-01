@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from netloom.cli.telemetry import CacheUpdateProgressReporter, CliProfiler
+from netloom.core.telemetry import CacheUpdateProgressReporter, CliProfiler
 
 
 def test_cli_profiler_emits_timing_summary(capsys):

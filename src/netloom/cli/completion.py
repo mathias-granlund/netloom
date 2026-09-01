@@ -8,13 +8,13 @@ from netloom.core.help_shared import (
 
 
 def list_profiles() -> list[str]:
-    from netloom.core.interactive import list_profiles as impl
+    from netloom.core.interactive_settings import list_profiles as impl
 
     return impl()
 
 
 def list_plugins() -> list[str]:
-    from netloom.core.interactive import list_plugins as impl
+    from netloom.core.interactive_settings import list_plugins as impl
 
     return impl()
 

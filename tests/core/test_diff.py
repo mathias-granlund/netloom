@@ -7,10 +7,10 @@ from uuid import uuid4
 import pytest
 import requests
 
-import netloom.cli.copy as copymod
-import netloom.cli.diff as diffmod
+import netloom.core.copy as copymod
+import netloom.core.diff as diffmod
 from netloom.core.config import AppPaths, Settings
-from netloom.plugins.clearpass.copy_hooks import (
+from netloom.plugins.clearpass.workflow_hooks import (
     normalize_diff_item as normalize_clearpass,
 )
 

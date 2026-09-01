@@ -736,12 +736,11 @@ def test_importing_main_does_not_eagerly_import_help_completion_or_plugin_layers
     blocked = {
         "netloom.cli.completion",
         "netloom.core.compact_help",
-        "netloom.core.cache",
-        "netloom.core.interactive",
+        "netloom.core.interactive_settings",
         "netloom.core.interactive_cache",
         "netloom.core.interactive_help",
         "netloom.core.config",
-        "netloom.core.plugin",
+        "netloom.core.plugin_registry",
     }
 
     def guarded_import(name, globals=None, locals=None, fromlist=(), level=0):

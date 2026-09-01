@@ -14,7 +14,7 @@ from netloom.core.help_shared import (
     service_display_summary,
     visible_catalog_modules,
 )
-from netloom.core.interactive import (
+from netloom.core.interactive_settings import (
     credentials_env_path,
     list_plugins,
     list_profiles,

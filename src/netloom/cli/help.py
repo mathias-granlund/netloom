@@ -35,7 +35,7 @@ def profiles_env_path(*args, **kwargs):
 
 
 def list_plugins(*args, **kwargs):
-    from netloom.core.plugin import list_plugins as impl
+    from netloom.core.plugin_registry import list_plugins as impl
 
     return impl(*args, **kwargs)
 

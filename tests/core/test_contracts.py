@@ -8,7 +8,7 @@ from netloom.contracts import (
     Plugin,
     PluginDefinition,
 )
-from netloom.core.plugin import PluginDefinition as CorePluginDefinition
+from netloom.core.plugin_registry import PluginDefinition as CorePluginDefinition
 
 
 def test_netloom_request_round_trips_legacy_arg_mapping():

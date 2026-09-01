@@ -4,12 +4,12 @@ from pathlib import Path
 from shutil import rmtree
 from uuid import uuid4
 
-from netloom.core.cache import (
+from netloom.core.config import AppPaths, Settings
+from netloom.core.interactive_cache import (
     load_cached_interactive_catalog,
     project_catalog_view,
     supports_interactive_catalog,
 )
-from netloom.core.config import AppPaths, Settings
 
 
 @contextmanager

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from netloom.core.config import describe_profile_state, set_active_plugin
-from netloom.core.plugin import has_runtime_plugin, list_plugins
+from netloom.core.plugin_registry import has_runtime_plugin, list_plugins
 
 
 def handle_load_command(args: dict) -> bool:

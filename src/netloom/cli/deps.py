@@ -39,11 +39,11 @@ def _import_cache_layer() -> None:
 
 
 def _import_interactive_layer() -> None:
-    importlib.import_module("netloom.core.interactive")
+    importlib.import_module("netloom.core.interactive_settings")
 
 
 def _import_plugin_layer() -> None:
-    importlib.import_module("netloom.core.plugin")
+    importlib.import_module("netloom.core.plugin_registry")
 
 
 def print_completions(*args, **kwargs):
@@ -65,7 +65,7 @@ def describe_context(*args, **kwargs):
 
 
 def load_interactive_settings():
-    from netloom.core.interactive import load_interactive_settings as impl
+    from netloom.core.interactive_settings import load_interactive_settings as impl
 
     return impl()
 
@@ -77,7 +77,7 @@ def load_settings() -> Settings:
 
 
 def get_plugin(*args, **kwargs):
-    from netloom.core.plugin import get_plugin as impl
+    from netloom.core.plugin_registry import get_plugin as impl
 
     return impl(*args, **kwargs)
 

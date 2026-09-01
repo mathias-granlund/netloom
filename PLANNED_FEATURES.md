@@ -186,18 +186,20 @@ Goal:
   blindly replacing every numeric value that happens to equal an old ID
 
 Current relevant files:
-- `netloom/cli/show.py`
+- `src/netloom/core/show.py`
+  - handles the `netloom show running-config` command orchestration
+- `src/netloom/core/running_config.py`
   - writes `# source-id:` / `# source-uuid:` comments
   - renders replayable `netloom ... add|replace|update --payload-json=...`
     commands
-- `netloom/cli/import_config.py`
+- `src/netloom/core/import_config.py`
   - parses running-config files into `ConfigCommand`
   - stores source identity in `ConfigCommand.source_identity`
   - builds and applies import plans
   - currently uses source IDs for matching only
-- `netloom/core/resolver.py`
+- `src/netloom/core/resolver.py`
   - `normalize_file_payload_for_action(...)` strips `id` from `add` payloads
-- `netloom/plugins/clearpass/copy_hooks.py`
+- `src/netloom/plugins/clearpass/workflow_hooks.py`
   - ClearPass payload normalization goes through the generic normalizer
 
 Desired behavior:
@@ -238,7 +240,7 @@ Desired behavior:
     - mapped service/type when known
 
 Implementation plan:
-- Add an import identity map structure in `netloom/cli/import_config.py`.
+- Add an import identity map structure in `src/netloom/core/import_config.py`.
   Suggested shape:
   - key: `(module, service, str(source_id))`
   - value:
@@ -262,7 +264,7 @@ Implementation plan:
   - for dry-run, report unresolved rewrite opportunities without mutating state
 - Add a ClearPass reference rewrite registry.
   Start with explicit known fields only. Possible location:
-  `netloom/plugins/clearpass/import_references.py`.
+  `src/netloom/plugins/clearpass/import_references.py`.
   Suggested rule shape:
   - affected module/service
   - payload path matcher
@@ -330,11 +332,12 @@ Implement running-config import ID remapping for netloom.
 Read PLANNED_FEATURES.md section "Running-config import ID remapping" first.
 The goal is to preserve logical references when ClearPass recreates missing
 objects with new auto-incremented IDs. Do not try to restore object IDs
-directly. Add an import identity map in netloom/cli/import_config.py, populate
-it for matched and newly created objects, add a plugin hook for ClearPass
-reference rewriting, and start with conservative service-specific rewrite rules
-based on confirmed exported payload paths. Keep dry-run behavior honest by
-reporting conditional/unresolved rewrites instead of inventing future IDs.
+directly. Add an import identity map in `src/netloom/core/import_config.py`,
+populate it for matched and newly created objects, add a plugin hook for
+ClearPass reference rewriting, and start with conservative service-specific
+rewrite rules based on confirmed exported payload paths. Keep dry-run behavior
+honest by reporting conditional/unresolved rewrites instead of inventing future
+IDs.
 Add focused tests for mapping creation, reference rewriting, non-reference
 numeric fields, and report output.
 ```

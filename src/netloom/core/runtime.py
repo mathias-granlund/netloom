@@ -27,7 +27,7 @@ class RuntimeDeps:
         return LOG_LEVELS
 
     def get_plugin(self, *args, **kwargs):
-        from netloom.core.plugin import get_plugin
+        from netloom.core.plugin_registry import get_plugin
 
         return get_plugin(*args, **kwargs)
 

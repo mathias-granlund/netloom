@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import netloom.plugins.clearpass.copy_hooks as hooks
+import netloom.plugins.clearpass.workflow_hooks as hooks
 from netloom.core.config import Settings
 
 

@@ -4,11 +4,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from netloom.contracts import PluginDefinition
-from netloom.core.cache import (
+from netloom.core.config import Settings, plugins_config_dir
+from netloom.core.interactive_cache import (
     load_cached_interactive_catalog,
     supports_interactive_catalog,
 )
-from netloom.core.config import Settings, plugins_config_dir
 
 
 def _load_clearpass_plugin() -> PluginDefinition:

@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 import requests
 
-import netloom.cli.copy as copymod
+import netloom.core.copy as copymod
 from netloom.core.config import AppPaths, Settings
 
 

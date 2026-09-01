@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-import netloom.cli.commands as commands
+import netloom.core.actions as commands
 from netloom.core.config import AppPaths, Settings
-from netloom.plugins.clearpass.client import ResponseMetadata
+from netloom.http import ResponseMetadata
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-import netloom.plugins.clearpass.client as clearpass
+import netloom.plugins.clearpass.api as clearpass
 
 MISSING = object()
 

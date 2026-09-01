@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from netloom.cli.show import handle_show_command, render_running_config
 from netloom.core.config import AppPaths, Settings
+from netloom.core.show import handle_show_command, render_running_config
 
 
 def _settings(tmp_path: Path) -> Settings:

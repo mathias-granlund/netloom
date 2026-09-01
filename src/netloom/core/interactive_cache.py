@@ -261,7 +261,7 @@ def load_cached_interactive_catalog(
     normalized_view = normalize_catalog_view(catalog_view)
     active_settings = settings
     if active_settings is None:
-        from netloom.core.interactive import load_interactive_settings
+        from netloom.core.interactive_settings import load_interactive_settings
 
         active_settings = load_interactive_settings()
 

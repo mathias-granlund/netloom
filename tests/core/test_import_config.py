@@ -6,15 +6,15 @@ from pathlib import Path
 
 import pytest
 
-import netloom.cli.import_config as import_config
-from netloom.cli.import_config import (
+import netloom.core.import_config as import_config
+from netloom.core.config import AppPaths, Settings
+from netloom.core.import_config import (
     ConfigCommand,
     build_import_plan,
     handle_import_command,
     import_running_config,
     parse_running_config,
 )
-from netloom.core.config import AppPaths, Settings
 
 
 def _settings(tmp_path: Path) -> Settings:

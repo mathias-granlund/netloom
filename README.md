@@ -48,9 +48,10 @@ man netloom-clearpass
 
 ## Configuration
 
-Example templates are included as [defaults.env.example](defaults.env.example),
-[profiles.env.example](profiles.env.example), and
-[credentials.env.example](credentials.env.example).
+Example templates are included as
+[defaults.env.example](examples/defaults.env.example),
+[profiles.env.example](examples/profiles.env.example), and
+[credentials.env.example](examples/credentials.env.example).
 
 For ClearPass, the minimal layout is:
 
